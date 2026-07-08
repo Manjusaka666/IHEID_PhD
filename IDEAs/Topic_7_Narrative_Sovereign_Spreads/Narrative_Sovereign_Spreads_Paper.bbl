@@ -91,8 +91,7 @@
     \field{sortinithash}{A}
     \field{number}{3}
     \field{pages}{29\bibrangedash 57}
-    \field{title}{The Financial and Macroeconomic Effects of the {OMT}
-  Announcements}
+    \field{title}{The Financial and Macroeconomic Effects of the {OMT} Announcements}
     \field{volume}{12}
     \field{journaltitle}{International Journal of Central Banking}
     \field{year}{2016}
@@ -310,37 +309,6 @@
     \field{year}{1988}
   \endentry
 
-  \entry{ColeKehoe2000}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=CHL}{%
-         family={Cole},
-         familyi={C\bibinitperiod},
-         given={Harold\bibnamedelima L.},
-         giveni={H\bibinitperiod\bibinitdelim L\bibinitperiod},
-      }}%
-      {{hash=KTJ}{%
-         family={Kehoe},
-         familyi={K\bibinitperiod},
-         given={Timothy\bibnamedelima J.},
-         giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{CHLKTJ1}
-    \strng{fullhash}{CHLKTJ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2000}
-    \field{labeldatesource}{}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-    \field{number}{1}
-    \field{pages}{91\bibrangedash 116}
-    \field{title}{Self-Fulfilling Debt Crises}
-    \field{volume}{67}
-    \field{journaltitle}{Review of Economic Studies}
-    \field{year}{2000}
-  \endentry
-
   \entry{CrucesTrebesch2013}{article}{}{}
     \name{author}{2}{}{%
       {{hash=CJJ}{%
@@ -402,46 +370,6 @@
     \field{year}{2013}
   \endentry
 
-  \entry{DergiadesEtAl2015}{article}{}{}
-    \name{author}{3}{}{%
-      {{hash=DT}{%
-         family={Dergiades},
-         familyi={D\bibinitperiod},
-         given={Theologos},
-         giveni={T\bibinitperiod},
-      }}%
-      {{hash=MC}{%
-         family={Milas},
-         familyi={M\bibinitperiod},
-         given={Costas},
-         giveni={C\bibinitperiod},
-      }}%
-      {{hash=PT}{%
-         family={Panagiotidis},
-         familyi={P\bibinitperiod},
-         given={Theodore},
-         giveni={T\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{DT+1}
-    \strng{fullhash}{DTMCPT1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2015}
-    \field{labeldatesource}{}
-    \field{sortinit}{D}
-    \field{sortinithash}{D}
-    \verb{doi}
-    \verb 10.1093/oep/gpu046
-    \endverb
-    \field{number}{2}
-    \field{pages}{406\bibrangedash 432}
-    \field{title}{Tweets, Google Trends, and Sovereign Spreads in the GIIPS}
-    \field{volume}{67}
-    \field{journaltitle}{Oxford Economic Papers}
-    \field{year}{2015}
-  \endentry
-
   \entry{EatonGersovitz1981}{article}{}{}
     \name{author}{2}{}{%
       {{hash=EJ}{%
@@ -467,8 +395,7 @@
     \field{sortinithash}{E}
     \field{number}{2}
     \field{pages}{289\bibrangedash 309}
-    \field{title}{Debt with Potential Repudiation: Theoretical and Empirical
-  Analysis}
+    \field{title}{Debt with Potential Repudiation: Theoretical and Empirical Analysis}
     \field{volume}{48}
     \field{journaltitle}{Review of Economic Studies}
     \field{year}{1981}
@@ -608,8 +535,7 @@
     \field{sortinithash}{K}
     \field{number}{1}
     \field{pages}{1\bibrangedash 44}
-    \field{title}{{ECB} Policies Involving Government Bond Purchases: Impact
-  and Channels}
+    \field{title}{{ECB} Policies Involving Government Bond Purchases: Impact and Channels}
     \field{volume}{22}
     \field{journaltitle}{Review of Finance}
     \field{year}{2018}

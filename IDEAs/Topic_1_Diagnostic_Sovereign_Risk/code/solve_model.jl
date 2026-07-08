@@ -278,8 +278,8 @@ function simulate(sol::Solution; T::Int = TSIM, burn::Int = TBURN, seed::Int = S
     # spread is a function of (b',x) alone, so the within-cell news slope is
     # exactly zero; under diagnostic pricing it identifies the schedule shift.
     nu = news[m]
-    # linear specification (for contrast: picks up curvature of the spread
-    # schedule even at theta = 0, so it does NOT recover the rational zero)
+    # linear specification for contrast: picks up curvature of the spread
+    # schedule even at theta = 0, unlike the within-cell estimator above
     Xlin = hcat(ones(length(m)), sol.x[ixs[m]], sol.b[ibp[m]], nu)
     blin = Xlin \ sprbp
     cellid = ibp[m] .* (NY + 1) .+ ixs[m]

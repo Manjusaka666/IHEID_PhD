@@ -52,6 +52,7 @@
   "iters": 351,
   "moments": {
    "bp_per_1sd_news": -1.8490570957585397e-24,
+   "bp_per_1sd_news_linear": -168.03133856548342,
    "corr_spread_y": -0.29272580180536734,
    "defaults_per_100y": 3.656,
    "frac_access": 0.96713,
@@ -171,6 +172,7 @@
   "iters": 351,
   "moments": {
    "bp_per_1sd_news": -462.04454173920254,
+   "bp_per_1sd_news_linear": 1619.567864864047,
    "corr_spread_y": -0.16750420223344076,
    "defaults_per_100y": 11.5752,
    "frac_access": 0.897344,
@@ -290,6 +292,7 @@
   "iters": 351,
   "moments": {
    "bp_per_1sd_news": -670.8634496252795,
+   "bp_per_1sd_news_linear": -99.51420253969798,
    "corr_spread_y": -0.17330396422323355,
    "defaults_per_100y": 6.6384,
    "frac_access": 0.940996,
@@ -409,6 +412,7 @@
   "iters": 351,
   "moments": {
    "bp_per_1sd_news": 9.142192510665573e-24,
+   "bp_per_1sd_news_linear": -3057.3825302168125,
    "corr_spread_y": -0.09595772878374202,
    "defaults_per_100y": 11.4032,
    "frac_access": 0.898994,
@@ -476,6 +480,6 @@
   "theta_lend": 0.0
  },
  "cells": "name, theta_gov, theta_lend",
- "runtime_sec": 33.333807945251465,
+ "runtime_sec": 149.11342787742615,
  "theta_diag": 0.5
 }

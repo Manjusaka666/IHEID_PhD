@@ -400,7 +400,7 @@ function main()
             "  wedge taus: ", [round(t, digits=4) for t in wedge["tau"]])
 end
 
-# JSON cannot carry NaN: convert to null recursively
+# JSON uses null for missing numeric cells.
 denan(x::Float64) = isnan(x) ? nothing : x
 denan(x::AbstractVector) = [denan(v) for v in x]
 denan(x::Dict) = Dict(k => denan(v) for (k, v) in x)

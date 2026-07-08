@@ -1,8 +1,8 @@
 # Dispersion and consumed-distance sensitivity for the fragmentation paper.
 #
-# Two referee questions this script answers with computation rather than
-# assertion. First, is the fold an artifact of too little heterogeneity? The
-# premium dispersion s smooths the sector map, so enough dispersion must kill
+# Two quantitative checks are computed here. First, is the fold an artifact of
+# too little heterogeneity? The
+# premium dispersion s smooths the sector map, so enough dispersion removes
 # the fold: this script finds where. Second, the headline "the 2022
 # reassessment consumed two thirds of the distance to the fold" is a point
 # estimate on the (theta, chi) grid of the sensitivity table: this script

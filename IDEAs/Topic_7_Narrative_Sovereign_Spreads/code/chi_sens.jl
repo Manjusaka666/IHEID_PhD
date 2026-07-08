@@ -1,6 +1,5 @@
 # Sensitivity of the headline narrative-contagion magnitudes to the fundamentals
-# feedback parameter chi, in response to the referee's request that chi be
-# COMPUTED from gross-financing-need arithmetic rather than asserted.
+# feedback parameter chi, computed from gross-financing-need arithmetic.
 #
 # ---------------------------------------------------------------------------
 # WHERE chi COMES FROM (gross-financing-need arithmetic).
@@ -45,7 +44,7 @@
 #
 # This file first reproduces the published chi = 0.20 baseline and @asserts
 # agreement with output/quant_numbers.tex, then recomputes across the band and
-# writes output/chi_numbers.tex. It does NOT overwrite results.json.
+# writes output/chi_numbers.tex while leaving results.json unchanged.
 
 using SpecialFunctions, Random, Printf
 
@@ -156,7 +155,7 @@ function detpath_theta(th0, n0, chi, relref; gam = GAM0, cap = Inf, A = 1.0, T =
     ths
 end
 
-"""first month in which the zone-scenario path (th0=0.06, n0=seed) has theta<0"""
+"""first month in which the zone path (th0=0.06, n0=seed) has theta<0"""
 function zone_def_month(chi, relref)
     ths = detpath_theta(0.06, N0SEED, chi, relref)
     idx = findfirst(<(0), ths)

@@ -142,7 +142,7 @@ for (name, th0) in SC
     paths[name] = Dict("n" => n1, "s" => s1, "th" => t1,
                        "s0" => s2, "th0" => t2)
 end
-# headline: peak excess spread and peak prevalence in the zone scenario
+# headline: peak excess spread and peak prevalence in the zone path
 pz = paths["zone"]
 peak_excess = maximum(pz["s"] .- pz["s0"]); peak_n = maximum(pz["n"])
 
@@ -234,7 +234,7 @@ open(out, "w") do io; JSON.print(io, denan(results)); end
 
 println("gainmax=$(round(GAINMAX, digits=3))  relref=$(round(RELREF*1e4, digits=0))bp/unit n")
 println("zones: ", zones)
-println("zone scenario: s=$(round(sz*1e4))bp  peak_n=$(round(peak_n, digits=2))  peak_excess=$(round(peak_excess))bp")
+println("zone path: s=$(round(sz*1e4))bp  peak_n=$(round(peak_n, digits=2))  peak_excess=$(round(peak_excess))bp")
 println("MC wedge: peak=$(round(mc["wedge_peak"], digits=3)) at th0=$(mc["wedge_argmax"])  safe=$(round(mc["wedge_safe"], digits=4))")
 println("wedge under policy: transparency $(round(mc["wedge_transp"], digits=3)), cap $(round(mc["wedge_cap"], digits=3)); cap fundamentals relief $(round(mc["fund_relief_cap"], digits=3))")
 println("timing cap_k: ", [round(p, digits = 3) for p in timing["cap_k"]])

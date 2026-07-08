@@ -2,8 +2,8 @@
 #
 # The break-even breadth p* solves  priv(pihat(1, p)) + omega*gam/2 = priv(0):
 # the anticipated breadth at which routine weaponization stops paying. The
-# referee requires this number to be reported as a scenario band, not a point.
-# This script computes p* one-way in each unidentified parameter and the
+# The paper reports this number as a sensitivity band. This script computes p*
+# one-way in each unidentified parameter and the
 # min/max band over the full grid, and writes macros to
 # ../output/breakeven_numbers.tex.
 #

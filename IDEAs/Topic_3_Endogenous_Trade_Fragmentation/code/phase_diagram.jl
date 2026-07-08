@@ -1,9 +1,8 @@
 # Phase diagram over the fold-driving (theta, chi) parameter plane.
 #
-# Referee cross-draft point 6.7 asks: where in the deterrence x capacity plane
-# does the critical sector's fold exist, where has the post-2022 dispute hazard
-# (delta = 0.10) already crossed it, and where is the sector safely monotone?
-# This script sweeps the plane and classifies every cell.
+# This script sweeps the deterrence x capacity plane and classifies where the
+# critical sector's fold exists, where the post-2022 dispute hazard (delta =
+# 0.10) has already crossed it, and where the sector map is monotone.
 #
 # The sector fixed-point machinery is copied verbatim from dispersion_sens.jl
 # (the trusted reimplementation), not include-d, because that file runs main()
@@ -11,10 +10,10 @@
 # is reproduced with the same @assert before anything else is trusted.
 #
 # theta  = deterred share: the share of escalations deterred by an intact sector
-#          (paper eq. (hazard), calibration table, baseline 0.6, scenario {0.4-0.7}).
+#          (paper eq. (hazard), calibration table, baseline 0.6, range {0.4-0.7}).
 # chi    = capacity-scale elasticity: the compression of the friend-shoring
 #          premium as friendly capacity scales, g_eff = g(1 - chi F_m)
-#          (paper eq. (capacity), baseline 0.4, scenario {0-0.6}).
+#          (paper eq. (capacity), baseline 0.4, range {0-0.6}).
 #
 # Run:  julia --project=. phase_diagram.jl     (~5 min at full dgrid resolution)
 

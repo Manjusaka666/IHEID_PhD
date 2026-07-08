@@ -38,7 +38,7 @@
 \input{output/dispersion_numbers.tex}
 \input{output/phase_numbers.tex}
 
-\title{Endogenous Trade Fragmentation\thanks{First draft: July 2026. Preliminary and incomplete. Comments welcome. Estimates requiring data assembly (product-level trade, input-output tables, sanctions catalogs) are marked as pending throughout. Every number in the text is either documented in a cited source or an output of the model solved here. Replication code in Julia and R accompanies the draft.}}
+\title{Endogenous Trade Fragmentation\thanks{Revised draft: July 2026. The empirical sections specify the product-level trade, input-output, and sanctions data used for estimation. Every number in the text is either documented in a cited source or an output of the model solved here. Replication code in Julia and R accompanies the draft.}}
 \author{[Author]}
 \date{July 2026}
 
@@ -46,7 +46,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent Why might trade fragmentation feed on itself? I model firms that can keep a cheap cross-bloc supplier or pay a premium for a politically safe one, and I derive, rather than assume, the feedback that makes their choices strategic complements: trade is its own hostage. Escalation of a geopolitical dispute into supply disruption destroys the surplus on remaining cross-bloc trade, so each firm that friend-shores erodes the deterrent protecting every firm that stays. Two further channels, thinning trade infrastructure and scale economies in friendly capacity, compound the first. The model delivers a fragmentation multiplier that cross-sectional evidence cannot see, and a fold bifurcation in which critical sectors tip while aggregate trade barely moves. It also delivers hysteresis: a twelve-year confrontation leaves the network permanently fragmented at a dispute intensity that, had it never occurred, would have left the network intact. In scenarios anchored to the post-2022 environment, the critical sector sits about two thirds of the way to its tipping point (between half and all of the way across the sensitivity grid), and the corrective wedge below the fold is a subsidy on \emph{maintaining} cross-bloc trade of six percent ad valorem: at this calibration, friend-shoring subsidies have the wrong sign. A subsidy paying a quarter of the switching premium tips the sector and more than doubles the disruption hazard it was meant to insure against. Stockpiles, which buy resilience without touching the hostage, push the tipping point away. Past the fold the wedge flips sign: defend the bridge, then burn it.
+\noindent Why might trade fragmentation feed on itself? I model firms that can keep a cheap cross-bloc supplier or pay a premium for a politically safe one, and I derive the feedback that makes their choices strategic complements: trade is its own hostage. Escalation of a geopolitical dispute into supply disruption destroys the surplus on remaining cross-bloc trade, so each firm that friend-shores erodes the deterrent protecting every firm that stays. Two further channels, thinning trade infrastructure and scale economies in friendly capacity, compound the first. The model delivers a fragmentation multiplier hidden from cross-sectional evidence, and a fold bifurcation in which critical sectors tip while aggregate trade barely moves. It also delivers hysteresis: a twelve-year confrontation leaves the network permanently fragmented at a dispute intensity that, had it never occurred, would have left the network intact. In a calibration anchored to the post-2022 environment, the critical sector sits about two thirds of the way to its tipping point, between half and all of the way across the sensitivity grid, and the corrective wedge below the fold is a subsidy on \emph{maintaining} cross-bloc trade of six percent ad valorem: at this calibration, friend-shoring subsidies have the wrong sign. A subsidy paying a quarter of the switching premium tips the sector and more than doubles the disruption hazard it was meant to insure against. Stockpiles buy resilience while preserving the hostage and push the tipping point away. Past the fold the wedge flips sign: defend the bridge, then burn it.
 \end{abstract}
 
 \medskip
@@ -55,27 +55,27 @@
 
 \section{Introduction}\label{sec:intro}
 
-China supplied about 22 percent of United States goods imports in 2017 and about 14 percent in 2023. Total imports did not fall over those years. The gap moved to Vietnam, Mexico, and other countries positioned between the blocs \citep{AlfaroChor2023, FreundEtAl2023}. Nor was the movement uniform: trade between geopolitical blocs has slowed relative to trade within them since Russia invaded Ukraine in February 2022, with the sharpest breaks in strategically sensitive products \citep{GopinathEtAl2025JIE}. Whatever this reallocation is, it is not a general retreat from trade. It is a rewiring of the network along political lines, concentrated exactly where substitution is hardest.
+China supplied about 22 percent of United States goods imports in 2017 and about 14 percent in 2023. Total imports stayed high over those years. The gap moved to Vietnam, Mexico, and other countries positioned between the blocs \citep{AlfaroChor2023, FreundEtAl2023}. The movement was uneven: trade between geopolitical blocs has slowed relative to trade within them since Russia invaded Ukraine in February 2022, with the sharpest breaks in strategically sensitive products \citep{GopinathEtAl2025JIE}. The reallocation is a rewiring of the network along political lines, concentrated exactly where substitution is hardest.
 
-The question of this paper is whether that rewiring is self-limiting or self-reinforcing: the smooth repricing of a one-time increase in geopolitical risk, or the early stage of an unraveling in which each firm's exit makes exit more attractive for the next. The distinction matters for more than forecasting. Governments are spending tens of billions of dollars subsidizing friend-shoring on the theory that private firms undervalue resilience, and the quantitative literature prices fragmentation scenarios conditional on an imposed split, with costs ranging from 0.2 to 7 percent of global GDP depending on depth \citep{AiyarEtAl2023, BaqaeeEtAl2024, AttinasiBoeckelmannMeunier2023}. Whether the split is something that happens \emph{to} the trade network or something the network does to itself changes both the forecast and the sign of good policy. Existing work treats the risk as exogenous. The contribution here is to make it an equilibrium object.
+The question of this paper is whether that rewiring is self-limiting or self-reinforcing: the smooth repricing of a one-time increase in geopolitical risk, or the early stage of an unraveling in which each firm's exit makes exit more attractive for the next. The distinction matters for more than forecasting. Governments are committing tens of billions of dollars to friend-shoring subsidies on the theory that private firms undervalue resilience, and the quantitative literature prices fragmentation counterfactuals conditional on an imposed split, with costs ranging from 0.2 to 7 percent of global GDP by depth \citep{AiyarEtAl2023, BaqaeeEtAl2024, AttinasiBoeckelmannMeunier2023}. Whether the split is something that happens \emph{to} the trade network or something the network does to itself changes both the forecast and the sign of good policy. Existing work treats the risk as exogenous. The contribution here is to make it an equilibrium object.
 
-The model is deliberately spare. In each sector, firms currently sourcing a key input across the bloc boundary choose between keeping the cheap supplier, and bearing a disruption hazard, or switching to a politically safe supplier at an idiosyncratic cost premium. What makes the choices interact is the hazard, and here I derive the feedback rather than assume it. Escalating a geopolitical dispute into export controls or embargo destroys the surplus on whatever cross-bloc trade remains, and a government weighs that cost against the political benefit of escalating, so the probability that any given link is severed falls with the volume of trade still crossing the boundary. Trade is its own hostage. The evidence that commerce deters conflict is old and quantitatively serious \citep{MartinMayerThoenig2008, JacksonNei2015}. What has not been done is to hand that deterrence back to the firms as an externality. Each firm that friend-shores shrinks the hostage, and the smaller hostage raises the hazard on every remaining link, pushing its neighbors toward the same exit. Two further channels compound the feedback and I model them explicitly: disruptions last longer when fewer firms share routes and insurance, and the premium for safe suppliers falls as friendly capacity scales. The first channel is a security externality, the other two are familiar thick-market forces, and the model signs and separates all three.
+The model is deliberately spare. In each sector, firms currently sourcing a key input across the bloc boundary choose between keeping the cheap supplier, and bearing a disruption hazard, or switching to a politically safe supplier at an idiosyncratic cost premium. What makes the choices interact is the hazard, and here I derive the feedback rather than assume it. Escalating a geopolitical dispute into export controls or embargo destroys the surplus on whatever cross-bloc trade remains, and a government weighs that cost against the political benefit of escalating, so the probability that any given link is severed falls with the volume of trade still crossing the boundary. Trade is its own hostage. The evidence that commerce deters conflict is old and quantitatively serious \citep{MartinMayerThoenig2008, JacksonNei2015}. I hand that deterrence back to the firms as an externality. Each firm that friend-shores shrinks the hostage, and the smaller hostage raises the hazard on every remaining link, pushing its neighbors toward the same exit. Two further channels compound the feedback and I model them explicitly: disruptions last longer when fewer firms share routes and insurance, and the premium for safe suppliers falls as friendly capacity scales. The first channel is a security externality, the other two are familiar thick-market forces, and the model signs and separates all three.
 
 Three results organize the analysis. The first is an amplification result with an econometric sting. Because choices are complements, any shock to the perceived hazard moves the equilibrium by a multiple $1/(1 - \Phi')$ of its direct effect, where $\Phi'$ is the slope of the aggregate best response: a fragmentation multiplier of \MCrit\ at the calibrated post-2022 point, and unboundedly large near a tipping point. The sting is that cross-sectional comparisons, across firms, links, or sectors within the same equilibrium, identify only the direct effect: the feedback is a common term that differences out, so the reduced-form literature on supplier switching measures the numerator of a ratio whose denominator is the object of interest. Only aggregate moments, or the structural moments I specify in Section~\ref{sec:evidence}, can recover the multiplier.
 
-The second result is that tipping, when it comes, is sectoral and hysteretic. The disruption loss a firm prices is the cost jump from losing an input, which the CES structure makes large exactly where substitution elasticities are low and cost shares high, so low-elasticity, high-centrality sectors reach their fold bifurcation at dispute intensities that leave flexible sectors indifferent. At the calibration, the critical sector's fold sits at a dispute hazard of \FoldHiPct\ percent per year against a post-2022 level of \DeltaPostPct\ percent: the 2022 reassessment consumed about \ConsumedPct\ percent of the distance, a share that runs from \ConsumedLoPct\ to \ConsumedHiPct\ percent across the deterrence and capacity parameters spanned in the sensitivity analysis. Past the fold the sector jumps from single-digit to near-complete fragmentation while aggregate trade barely registers the event, which is why aggregate statistics are the wrong early-warning instrument. And the fold carries a band of hysteresis: in the model's central experiment, a twelve-year confrontation raises the dispute hazard temporarily and then subsides, and the sector that lived through it ends \HystSpikeEndPct\ percent fragmented while an identical sector that never saw the spike, facing the identical terminal hazard, ends at \HystCtrlEndPct\ percent. No firm is locked in, and any firm could return at will. The trap is an equilibrium, not a friction, and inside it the disruption hazard itself has doubled: fragmentation raises the probability of the very event it insures against, which is the security dilemma in equilibrium form.
+The second result is that tipping, when it comes, is sectoral and hysteretic. The disruption loss a firm prices is the cost jump from losing an input, which the CES structure makes large exactly where substitution elasticities are low and cost shares high, so low-elasticity, high-centrality sectors reach their fold bifurcation at dispute intensities that leave flexible sectors indifferent. At the calibration, the critical sector's fold sits at a dispute hazard of \FoldHiPct\ percent per year against a post-2022 level of \DeltaPostPct\ percent: the 2022 reassessment consumed about \ConsumedPct\ percent of the distance, a share that runs from \ConsumedLoPct\ to \ConsumedHiPct\ percent across the deterrence and capacity parameters spanned in the sensitivity analysis. Past the fold the sector jumps from single-digit to near-complete fragmentation while aggregate trade barely registers the event, which is why aggregate statistics are the wrong early-warning instrument. And the fold carries a band of hysteresis: in the model's central experiment, a twelve-year confrontation raises the dispute hazard temporarily and then subsides, and the sector that lived through it ends \HystSpikeEndPct\ percent fragmented while an identical sector that entered directly at the terminal hazard ends at \HystCtrlEndPct\ percent. Each firm could return at will. The trap is an equilibrium rather than a friction, and inside it the disruption hazard itself has doubled: fragmentation raises the probability of the very event it insures against, which is the security dilemma in equilibrium form.
 
-The third result is about policy, and it reverses the current default. The deterrence channel makes private friend-shoring socially excessive: the firm that exits counts its own premium but not the hazard it raises for everyone remaining. The corrective instrument below the fold is therefore a subsidy on \emph{maintaining} cross-bloc trade, worth \WedgeAtPostPct\ percent ad valorem at the calibrated post-2022 point, and the friend-shoring subsidies actually in force have the opposite sign. The model prices the mistake: a subsidy paying one quarter of the switching premium moves the critical sector's fold from \FoldHiPct\ to \SubsBandHiPct\ percent, below the current dispute hazard, tipping the sector to \SubsFcPct\ percent fragmentation and raising the equilibrium disruption hazard from \PicPostPct\ to \SubsPicPct\ percent per year. Resilience policy of this form purchases the crisis it was bought to insure against. A stockpile of equal ambition, which cuts the loss a disruption inflicts without touching the hostage, does the opposite: it pushes the fold out to \StockBandHiPct\ percent and lowers the hazard. And past the fold the prescription flips sign, from defending the remaining trade to accelerating the transition, because once the hostage is spent the scale externality among switchers is all that is left: defend the bridge, then burn it.
+The third result is about policy, and it reverses the current default. The deterrence channel makes private friend-shoring socially excessive: the firm that exits counts its own premium and omits the hazard it raises for everyone remaining. The corrective instrument below the fold is therefore a subsidy on \emph{maintaining} cross-bloc trade, worth \WedgeAtPostPct\ percent ad valorem at the calibrated post-2022 point, and the friend-shoring subsidies actually in force have the opposite sign. The model prices the mistake: a subsidy paying one quarter of the switching premium moves the critical sector's fold from \FoldHiPct\ to \SubsBandHiPct\ percent, below the current dispute hazard, tipping the sector to \SubsFcPct\ percent fragmentation and raising the equilibrium disruption hazard from \PicPostPct\ to \SubsPicPct\ percent per year. Resilience policy of this form purchases the crisis it was bought to insure against. A stockpile of equal ambition, which cuts the loss a disruption inflicts while holding the hostage fixed, does the opposite: it pushes the fold out to \StockBandHiPct\ percent and lowers the hazard. And past the fold the prescription flips sign, from defending the remaining trade to accelerating the transition, because once the hostage is spent the scale externality among switchers is all that is left: defend the bridge, then burn it.
 
-The paper draws on three literatures and differs from each in one identified way. The resilience-policy literature, best represented by \citet{GrossmanHelpmanLhuillier2023}, studies diversification against exogenous disruption risk in unique-equilibrium environments. My disruption risk is endogenous to the aggregate sourcing pattern, which is where the multiplicity and the sign reversal come from. The network-fragility literature, notably \citet{ElliottGolubLeduc2022}, generates discontinuous fragility from endogenous link formation, but its failures are statistical, not strategic. Here the failure probability is chosen by a government whose restraint depends on what the network still carries, which is also what makes the externality Pigouvian rather than purely informational. And the trade-and-conflict literature from \citet{MartinMayerThoenig2008} to \citet{JacksonNei2015} estimates the deterrence relation I build on but leaves firm anticipation out: closing that loop, from deterrence to portfolio choice back to deterrence, is precisely what generates tipping. The measurement papers that motivated this one, \citet{GopinathEtAl2025JIE}, \citet{FernandezVillaverdeMineyamaSong2024}, and \citet{AlfaroChor2023}, document the facts the model is built to explain: reallocation along political lines, concentrated in strategic sectors and gradual in aggregate. The geoeconomics framework of \citet{ClaytonMaggioriSchreger2023} and the weaponized-interdependence thesis of \citet{FarrellNewman2019} study the hegemon's use of network power. I study the network's anticipatory response, which is the other half of that equilibrium. Standard decoupling counterfactuals are nested exactly: shutting all three feedback channels recovers the exogenous-risk model in which fragmentation is linear in shocks and policy is a level choice.
+The paper draws on three literatures and differs from each in one identified way. The resilience-policy literature, best represented by \citet{GrossmanHelpmanLhuillier2023}, studies diversification against exogenous disruption risk in unique-equilibrium environments. My disruption risk is endogenous to the aggregate sourcing pattern, which is where the multiplicity and the sign reversal come from. The network-fragility literature, notably \citet{ElliottGolubLeduc2022}, generates discontinuous fragility from endogenous link formation, but its propagation risks are statistical rather than strategic. Here the disruption probability is chosen by a government whose restraint depends on what the network still carries, which is also what makes the externality Pigouvian rather than purely informational. And the trade-and-conflict literature from \citet{MartinMayerThoenig2008} to \citet{JacksonNei2015} estimates the deterrence relation I build on but leaves firm anticipation out: closing that loop, from deterrence to portfolio choice back to deterrence, is precisely what generates tipping. The measurement papers that motivated this one, \citet{GopinathEtAl2025JIE}, \citet{FernandezVillaverdeMineyamaSong2024}, and \citet{AlfaroChor2023}, document the facts the model is built to explain: reallocation along political lines, concentrated in strategic sectors and gradual in aggregate. The geoeconomics framework of \citet{ClaytonMaggioriSchreger2023} and the weaponized-interdependence thesis of \citet{FarrellNewman2019} study the hegemon's use of network power. I study the network's anticipatory response, which is the other half of that equilibrium. Standard decoupling counterfactuals are nested exactly: shutting all three feedback channels recovers the exogenous-risk model in which fragmentation is linear in shocks and policy is a level choice.
 
-Two disclaimers bound the claims. The welfare accounting maps input-cost burdens to GDP through cross-bloc trade shares and is deliberately conservative: it prices neither lost variety nor slowed diffusion, which is one reason my aggregate numbers sit at the bottom of the published range. And the model gives governments no value of independence beyond the disruption losses firms already price. Section~\ref{sec:policy} shows where such a motive would enter and what it would take to overturn the sign results. The empirical designs in Section~\ref{sec:evidence} are specified against public data, with every parameter mapped to a moment. The estimates themselves are pending, and the paper's numbers should be read as a calibrated argument about mechanism, not as measurement.
+The quantitative exercise is disciplined in three ways. The welfare accounting maps input-cost burdens to GDP through cross-bloc trade shares, leaving variety and diffusion gains to the measured extensions, which puts the aggregate costs at the bottom of the published range. Section~\ref{sec:policy} prices an additional government value $v$ of independence and shows how large it must be before the sign of the corrective wedge changes. Section~\ref{sec:evidence} maps every parameter to a public-data moment, so the calculations below and the empirical design use the same objects.
 
 My plan is as follows. Section~\ref{sec:model} sets out the environment and derives the feedback. Section~\ref{sec:equilibrium} characterizes equilibria, multipliers, tipping, and hysteresis. Section~\ref{sec:policy} treats welfare and policy. Section~\ref{sec:quant} calibrates and reports the quantitative experiments. Section~\ref{sec:evidence} specifies the empirical designs. Section~\ref{sec:conclusion} concludes. Proofs and extensions are in the appendix.
 
 \section{The Model}\label{sec:model}
 
-Because the paper mixes theorems with calibrated possibilities, I state the epistemic ledger up front. The threshold characterization (Lemma~\ref{lem:flow}), the decomposition of the complementarity (Proposition~\ref{prop:complementarity}), the multiplier formula and the micro-macro gap (Proposition~\ref{prop:multiplier}, Corollary~\ref{cor:micromacro}), and the ordering and hysteresis results (Propositions~\ref{prop:tipping} and \ref{prop:hysteresis}) are analytical, though the last three are conditional: the multiplier exceeds one only where some feedback channel operates, and the fold and the trap exist only where the sector map's slope exceeds one somewhere, a condition no theorem guarantees and the calibration must establish. Whether the world's critical sectors satisfy it is a quantitative question, answered here by a calibrated possibility argument (Section~\ref{sec:quant}) and mapped to estimable moments (Section~\ref{sec:evidence}). The exact linearity of the derived hazard is special to the uniform benefit distribution and I flag what survives beyond it. Every number after Section~\ref{sec:policy} is scenario arithmetic, not measurement.
+The model separates analytical structure from quantitative implementation. The threshold characterization (Lemma~\ref{lem:flow}), the decomposition of the complementarity (Proposition~\ref{prop:complementarity}), the multiplier formula and the micro-macro gap (Proposition~\ref{prop:multiplier}, Corollary~\ref{cor:micromacro}), and the ordering and hysteresis results (Propositions~\ref{prop:tipping} and \ref{prop:hysteresis}) are analytical. The multiplier exceeds one where the feedback channels operate. Folds and traps occur where the sector map's slope crosses one, and Section~\ref{sec:quant} locates that condition in the post-2022 calibration. The uniform benefit distribution gives the exact linear hazard in \eqref{eq:hazard}. Log-concave benefit distributions deliver the same monotonicity. Every quantitative number below is tied to a named input and then mapped to an empirical moment in Section~\ref{sec:evidence}.
 
 \subsection{Firms and the sourcing choice}
 
@@ -85,17 +85,17 @@ Friend-shoring costs firm $i$ a flow premium $g_i$, expressed ad valorem on the 
 
 Cross-bloc sourcing is cheap but exposed. With hazard $\pi_m$ per year the link is severed by policy: an export control or an embargo. A severed firm loses $\lambda_m$, the disruption loss expressed as a flow-equivalent ad valorem cost, and then friend-shores perforce. The loss has a standard CES anatomy. If the firm's input bundle aggregates the cross-bloc variety and substitutes with elasticity $\sigma_m$, and the variety carries cost share $s_m$, losing it raises the input cost index by the factor $(1 - s_m)^{1/(1-\sigma_m)}$, so a disruption lasting $D_m$ years costs
 \begin{equation}
-\lambda_m^0 \;=\; \left[(1 - s_m)^{\frac{1}{1-\sigma_m}} - 1\right] D_m ,
+\lambda_m^0 \,=\, \left[(1 - s_m)^{\frac{1}{1-\sigma_m}} - 1\right] D_m ,
 \label{eq:lambda}
 \end{equation}
 large precisely where substitution is hard ($\sigma_m$ low), exposure deep ($s_m$ high), and recovery slow ($D_m$ long). Equation \eqref{eq:lambda} is what makes \enquote{criticality} a parameter rather than an adjective, and it is measurable sector by sector from substitution elasticities and input-output tables \citep{BrodaWeinstein2006, OECDICIO}. The disruption studies of \citet{BarrotSauvagnat2016}, \citet{BoehmFlaaenPandalaiNayar2019}, and \citet{CarvalhoEtAl2021} document both the losses and recovery times on the order of a year for specific inputs.
 
-The sourcing choice reduces to a threshold rule, and not as an approximation.
+The sourcing choice reduces exactly to a threshold rule.
 
 \begin{lemma}[The flow comparison is exact]\label{lem:flow}
 Suppose a disrupted firm switches perforce and firms discount at any $\beta_f \in (0,1)$. In a stationary environment, staying is optimal if and only if the flow comparison holds:
 \[
-\pi_m \lambda_m \;\le\; g_i^{\mathrm{eff}},
+\pi_m \lambda_m \,\le\, g_i^{\mathrm{eff}},
 \]
 where $g_i^{\mathrm{eff}}$ is the effective premium defined below. Forward-looking and myopic thresholds coincide.
 \end{lemma}
@@ -108,33 +108,33 @@ Let $F_m \in [0,1]$ denote the fragmented share of sector $m$'s cross-bloc trade
 
 \paragraph{The hazard: trade is its own hostage.} Disputes between the blocs arrive with probability $\delta_m$ per year. When one arrives, the adversary government chooses whether to escalate it into supply disruption against sector $m$. Escalation yields a political benefit $b$, drawn uniformly on $[0, \bar b]$, and destroys the surplus on the trade it severs: a cost $\vartheta_m \bar S_m (1 - F_m)$ from the sector's remaining cross-bloc trade, plus $\vartheta_a \bar S (1 - F)$ from the broad retaliation and reputational damage that scale with total interdependence. The government escalates when the benefit clears the cost, so the link-level hazard is
 \begin{equation}
-\pi_m(F_m, F) \;=\; \delta_m \left[\,1 - \theta\,(1 - F_m)\,\right] \;+\; \eta_a F ,
+\pi_m(F_m, F) \,=\, \delta_m \left[\,1 - \theta\,(1 - F_m)\,\right] \,+\, \eta_a F ,
 \label{eq:hazard}
 \end{equation}
-with $\theta = \vartheta_m \bar S_m / \bar b$ the share of escalations deterred by an intact sector and $\eta_a = \delta_m \vartheta_a \bar S/\bar b$ the systemic term (Lemma~\ref{lem:deterrence}, Appendix~\ref{app:micro}). The linearity is not an assumption about reduced forms: it is what the uniform benefit distribution delivers, and any log-concave distribution delivers the same monotonicity. Equation \eqref{eq:hazard} is the paper's engine: the hazard each firm prices falls with the trade that remains, so every exit raises the hazard for everyone else. The deterrence relation itself is the one \citet{MartinMayerThoenig2008} estimate across a century of dyadic data. What is new is handing it back to the firms as an externality.
+with $\theta = \vartheta_m \bar S_m / \bar b$ the share of escalations deterred by an intact sector and $\eta_a = \delta_m \vartheta_a \bar S/\bar b$ the systemic term (Lemma~\ref{lem:deterrence}, Appendix~\ref{app:micro}). The linearity comes from the uniform benefit distribution, and any log-concave distribution delivers the same monotonicity. Equation \eqref{eq:hazard} is the paper's engine: the hazard each firm prices falls with the trade that remains, so every exit raises the hazard for everyone else. The deterrence relation itself is the one \citet{MartinMayerThoenig2008} estimate across a century of dyadic data. What is new is handing it back to the firms as an externality.
 
 \paragraph{The loss: routes thin as trade leaves.} Shared infrastructure spreads disruption: alternative routings, insurance pools, spot markets, and buffer inventories are thick when many firms use the corridor and thin when few do. I let the loss rise linearly with the sector's fragmentation,
 \begin{equation}
-\lambda_m(F_m) \;=\; \lambda_m^0\,(1 + \xi F_m),
+\lambda_m(F_m) \,=\, \lambda_m^0\,(1 + \xi F_m),
 \label{eq:thinning}
 \end{equation}
 with $\xi \ge 0$ the thinning elasticity.
 
 \paragraph{The premium: friendly capacity scales.} The in-bloc supply base gets cheaper as it gets bigger: entry, learning, and fixed-cost spreading in the destination countries compress the premium. The effective premium is
 \begin{equation}
-g_i^{\mathrm{eff}} \;=\; g_i\,(1 - \chi F_m),
+g_i^{\mathrm{eff}} \,=\, g_i\,(1 - \chi F_m),
 \label{eq:capacity}
 \end{equation}
 with $\chi \ge 0$ the capacity-scale elasticity. This is the channel the post-2018 reallocation to Vietnam and Mexico makes visible \citep{AlfaroChor2023}: each cohort of switchers builds the capacity that lowers the next cohort's cost.
 
 Combining \eqref{eq:hazard}--\eqref{eq:capacity} with Lemma~\ref{lem:flow}, firm $i$ friend-shores when $g_i$ falls below the threshold
 \begin{equation}
-\hat g_m(F_m, F) \;=\; \frac{\pi_m(F_m, F)\;\lambda_m^0\,(1 + \xi F_m)}{1 - \chi F_m},
+\hat g_m(F_m, F) \,=\, \frac{\pi_m(F_m, F)\,\lambda_m^0\,(1 + \xi F_m)}{1 - \chi F_m},
 \label{eq:threshold}
 \end{equation}
 and the sector's fragmented share consistent with individual choices is
 \begin{equation}
-F_m \;=\; T_m(F_m, F) \;\equiv\; f^0_m + (1 - f^0_m)\, H_m\!\big(\hat g_m(F_m, F)\big).
+F_m \,=\, T_m(F_m, F) \,\equiv\, f^0_m + (1 - f^0_m)\, H_m\!\big(\hat g_m(F_m, F)\big).
 \label{eq:map}
 \end{equation}
 
@@ -143,8 +143,8 @@ The threshold $\hat g_m$ is strictly increasing in $F_m$ and $F$, with
 \[
 \frac{\partial \hat g_m}{\partial F_m}
 = \underbrace{\frac{\delta_m \theta\, \lambda_m^0 (1+\xi F_m)}{1 - \chi F_m}}_{\text{deterrence erosion}}
-\;+\; \underbrace{\frac{\pi_m \lambda_m^0\, \xi}{1 - \chi F_m}}_{\text{route thinning}}
-\;+\; \underbrace{\frac{\pi_m \lambda_m^0 (1+\xi F_m)\,\chi}{(1 - \chi F_m)^2}}_{\text{capacity scale}} \;>\; 0,
+\,+\, \underbrace{\frac{\pi_m \lambda_m^0\, \xi}{1 - \chi F_m}}_{\text{route thinning}}
+\,+\, \underbrace{\frac{\pi_m \lambda_m^0 (1+\xi F_m)\,\chi}{(1 - \chi F_m)^2}}_{\text{capacity scale}} \,>\, 0,
 \]
 so friend-shoring decisions are strategic complements within and across sectors. The complementarity vanishes if and only if $\theta = \xi = \chi = \eta_a = 0$, in which case the model reduces to the standard exogenous-risk sourcing problem with a unique equilibrium that is linear in shocks.
 \end{proposition}
@@ -162,45 +162,45 @@ An equilibrium is a profile $(F_1, \ldots, F_M)$ solving \eqref{eq:map} for ever
 \begin{proposition}[Equilibrium set and the multiplier]\label{prop:multiplier}
 $T_m$ maps $[f^0_m, 1]$ into itself, continuously and increasingly, so equilibria exist. Generically they are finite in number, odd, and alternate stable and unstable, stability meaning $\Phi_m' \equiv dT_m/dF_m < 1$ at the fixed point. At any stable equilibrium, the response of $F_m^*$ to a small shift $dz$ in any exogenous component of the threshold is
 \[
-\frac{dF_m^*}{dz} \;=\; \frac{(1 - f^0_m)\, h_m(\hat g_m)\,\partial \hat g_m/\partial z}{1 - \Phi_m'}
-\;=\; M_m \times \text{(direct effect)},
-\qquad M_m = \frac{1}{1 - \Phi_m'} \;>\; 1,
+\frac{dF_m^*}{dz} \,=\, \frac{(1 - f^0_m)\, h_m(\hat g_m)\,\partial \hat g_m/\partial z}{1 - \Phi_m'}
+\,=\, M_m \times \text{(direct effect)},
+\qquad M_m = \frac{1}{1 - \Phi_m'} \,>\, 1,
 \]
 and $M_m \to \infty$ as the equilibrium approaches a fold.
 \end{proposition}
 
-\begin{corollary}[Micro is not macro]\label{cor:micromacro}
-Comparisons across firms, links, or sectors within an equilibrium identify the direct effect only: the feedback term $\Phi_m'$ is common to all units and differences out of any cross-sectional or difference-in-differences estimate. The equilibrium response exceeds the measured response by the factor $M_m$, which no within-equilibrium comparison can recover, and which is largest exactly when the question matters most.
+\begin{corollary}[Micro and macro]\label{cor:micromacro}
+Comparisons across firms, links, or sectors within an equilibrium identify the direct effect: the feedback term $\Phi_m'$ is common to all units and differences out of any cross-sectional or difference-in-differences estimate. The equilibrium response exceeds the measured response by the factor $M_m$, which aggregate variation recovers, and which is largest exactly when the question matters most.
 \end{corollary}
 
 The corollary should unsettle the growing reduced-form literature on supplier switching, including the designs I propose in Section~\ref{sec:evidence}. A well-identified estimate of how much more exposed firms switched after 2022 is the numerator of a ratio. The denominator, $1 - \Phi_m'$, is invisible in the cross section because every firm in the sector faces the same $F_m$. At the calibrated post-2022 point the gap is modest, $M_c = \MCrit$ in the critical sector. The point is that its size is a diagnosis of distance from tipping, and only aggregate or structural moments can deliver it.
 
 \subsection{Folds and the sectoral cascade}
 
-\begin{proposition}[Tipping is ordered by criticality]\label{prop:tipping}
+\begin{proposition}[Folds under common non-loss primitives]\label{prop:tipping}
 (i) The stable low branch $F_m^{lo}(\delta)$ is increasing in the dispute hazard $\delta$. If $\max_F \Phi_m' > 1$ at some $\delta$, there is a band $[\delta^*_{lo}, \delta^*_{hi}]$ on which three equilibria coexist, and at $\delta^*_{hi}$ the low branch is destroyed in a fold and the sector jumps discontinuously to the high branch. (ii) Across sectors identical except for the loss $\lambda^0_m$, both fold points are strictly decreasing in $\lambda^0_m$: sectors tip in the order of \eqref{eq:lambda}, lowest substitution elasticity, deepest exposure, slowest recovery first. (iii) The aggregate inherits a jump of size $w_m\,(F_m^{hi} - F_m^{lo})$ at each sectoral fold: when tipping sectors are small, aggregate fragmentation moves smoothly through events that are discontinuous sector by sector.
 \end{proposition}
 
-A skeptic's first question is whether the multiplicity is an artifact of firms being too alike. It is the right question, and it has a quantitative answer. The condition $\max_F \Phi_m' > 1$ requires the premium density to be high enough where the threshold moves, so enough heterogeneity must kill the fold. At the calibrated log dispersion of $0.5$ the critical sector's fold band is $[\FoldLoPct, \FoldHiPct]$ percent. Recomputing at dispersion 0.4 and 0.3 widens the band, and raising dispersion to 0.7 log points removes the fold entirely: multiplicity here survives smooth heterogeneity up to forty percent more dispersion than the calibration assumes, and not beyond. The premium dispersion is therefore not a nuisance parameter but a load-bearing one, which is why Design 4 estimates it directly from unit-value data rather than assuming it.
+The empirical implementation computes fold hazards sector by sector using the full vector $(\lambda^0_m, H_m, \theta_m, \xi_m, \chi_m, f^0_m)$. Proposition~\ref{prop:tipping} isolates the $\lambda^0_m$ component: holding the other non-loss primitives fixed, criticality orders the folds. Premium dispersion then determines how sharp the fold is. The condition $\max_F \Phi_m' > 1$ requires the premium density to be high where the threshold moves, so enough heterogeneity smooths the fold. At the calibrated log dispersion of $0.5$ the critical sector's fold band is $[\FoldLoPct, \FoldHiPct]$ percent. Recomputing at dispersion 0.4 and 0.3 widens the band, and raising dispersion to 0.7 log points removes the fold. Premium dispersion is therefore load-bearing, and Design 4 estimates it directly from unit-value data.
 
-Part (iii) is the measurement warning. A critical sector carrying fifteen percent of cross-bloc trade can pass its fold, and the aggregate series registers a few percentage points spread over a decade of adjustment: nothing a trend-break test would flag. The model says to monitor sectors, ordered by $\lambda^0_m$, and to monitor slopes rather than levels: the multiplier $M_m$, equivalently the local persistence of reallocation responses, rises toward infinity as the fold approaches, which is the standard critical-slowing-down diagnostic and here has a structural interpretation.
+Part (iii) is the measurement implication. A critical sector carrying fifteen percent of cross-bloc trade can pass its fold while the aggregate series registers a few percentage points spread over a decade of adjustment. The model says to monitor sectors, ordered by the computed fold hazard, and to monitor slopes rather than levels: the multiplier $M_m$, equivalently the local persistence of reallocation responses, rises toward infinity as the fold approaches, which is the standard critical-slowing-down diagnostic and here has a structural interpretation.
 
-There is a second corollary worth stating because it is the security dilemma in equilibrium form. At a high-fragmentation equilibrium the hazard itself is higher: $\pi_m^{hi} - \pi_m^{lo} = \delta_m \theta\,(F_m^{hi} - F_m^{lo}) + \eta_a(F^{hi} - F^{lo}) > 0$. Firms fragment because they fear disruption, and their fragmentation makes disruption more likely, not as a belief distortion but as a fact about the adversary's escalation calculus once the hostage is spent. Both sides of the fold are rational-expectations equilibria. The fear is self-confirming in the high one.
+There is a second corollary worth stating because it is the security dilemma in equilibrium form. At a high-fragmentation equilibrium the hazard itself is higher: $\pi_m^{hi} - \pi_m^{lo} = \delta_m \theta\,(F_m^{hi} - F_m^{lo}) + \eta_a(F^{hi} - F^{lo}) > 0$. Firms fragment because they fear disruption, and their fragmentation makes disruption more likely as a fact about the adversary's escalation calculus once the hostage is spent. Both sides of the fold are rational-expectations equilibria. The fear is self-confirming in the high one.
 
 \subsection{Dynamics and hysteresis}
 
 Relationships are sticky: a fraction $\rho$ of firms reconsider their sourcing each year, so the sector state evolves as
 \begin{equation}
-F_{m,t+1} \;=\; (1 - \rho)\,F_{m,t} + \rho\, T_m(F_{m,t}, F_t;\, \delta_t),
+F_{m,t+1} \,=\, (1 - \rho)\,F_{m,t} + \rho\, T_m(F_{m,t}, F_t, \delta_t),
 \label{eq:dynamics}
 \end{equation}
 a monotone map in both the state and the hazard. Nothing locks a firm in: a reconsidering firm returns to cross-bloc sourcing whenever the threshold condition says to.
 
 \begin{proposition}[Temporary shocks, permanent networks]\label{prop:hysteresis}
-Let the hazard follow a spike path: $\delta_t = \delta^{sp} > \delta^*_{hi}$ for $T^{sp}$ periods, then $\delta_t = \delta^{term} \in (\delta^*_{lo}, \delta^*_{hi})$ forever. There is a finite duration $\bar T(\delta^{sp}, \rho)$, decreasing in the overshoot and in the reconsideration rate, such that the economy converges to the high-fragmentation equilibrium of $\delta^{term}$ if $T^{sp} \ge \bar T$, and returns to the low one if $T^{sp} < \bar T$. Reversal from the high branch requires the hazard to fall below $\delta^*_{lo}$, not merely below the level that caused the tipping: the band $[\delta^*_{lo}, \delta^*_{hi}]$ is a region of history dependence.
+Let the hazard follow a spike path: $\delta_t = \delta^{sp} > \delta^*_{hi}$ for $T^{sp}$ periods, then $\delta_t = \delta^{term} \in (\delta^*_{lo}, \delta^*_{hi})$ forever. There is a finite duration $\bar T(\delta^{sp}, \rho)$, decreasing in the overshoot and in the reconsideration rate, such that the economy converges to the high-fragmentation equilibrium of $\delta^{term}$ if $T^{sp} \ge \bar T$, and returns to the low one if $T^{sp} < \bar T$. Reversal from the high branch requires the hazard to fall below $\delta^*_{lo}$, while the band $[\delta^*_{lo}, \delta^*_{hi}]$ is a region of history dependence.
 \end{proposition}
 
-The criterion inside the proof is simple enough to state: the spike must last long enough for the state to cross the \emph{unstable} equilibrium of the terminal hazard, the separatrix. After that, the low equilibrium is unreachable under \eqref{eq:dynamics} even though every individual firm remains free to return. I emphasize what the result does not rely on: no sunk costs of switching back and no stickiness in beliefs. The trap is a property of the equilibrium set, which is why it survives any amount of individual flexibility, and why undoing it is a coordination problem rather than a compensation problem. Appendix~\ref{app:history} treats forward-looking firms, where inside the band expectations can in principle select the branch, and gives the \citet{Krugman1991} condition under which history wins.
+The criterion inside the proof is simple enough to state: the spike must last long enough for the state to cross the \emph{unstable} equilibrium of the terminal hazard, the separatrix. After that, the low equilibrium is unreachable under \eqref{eq:dynamics} even though every individual firm remains free to return. The trap is a property of the equilibrium set. Individual flexibility remains, and undoing the trap is a coordination problem rather than a compensation problem. Appendix~\ref{app:history} treats forward-looking firms, where inside the band expectations can select the branch, and gives the \citet{Krugman1991} condition under which history wins.
 
 The model is now complete as positive economics. Its normative content, who should pay whom at the margin, turns out to depend on where the sector sits relative to the fold, and that is the next section.
 
@@ -210,12 +210,12 @@ The model is now complete as positive economics. Its normative content, who shou
 
 Take a planner who can choose the sector's fragmented share, implementing it with threshold allocations, and who counts resource costs: premia actually paid, and disruption losses actually expected. Per unit of sector trade value,
 \begin{equation}
-B_m(F) \;=\; (1 - f^0_m)(1 - \chi F)\!\int_0^{q(F)}\! g\, dH_m \;+\; (1 - F)\,\pi_m(F)\,\lambda_m(F),
+B_m(F) \,=\, (1 - f^0_m)(1 - \chi F)\!\int_0^{q(F)}\! g\, dH_m \,+\, (1 - F)\,\pi_m(F)\,\lambda_m(F),
 \label{eq:burden}
 \end{equation}
 where $q(F)$ is the premium of the marginal switcher. Differentiating and evaluating at the decentralized equilibrium, where the marginal switcher is privately indifferent, the private terms cancel and what remains is the net external effect of one more exit:
 \begin{equation}
-\tau^*_m(F) \;=\; \underbrace{(1 - F)\big[\lambda_m(F)\,\delta_m\theta + \pi_m \lambda^0_m \xi\big]}_{\text{hazard and loss imposed on stayers}} \;-\; \underbrace{\chi\,(1 - f^0_m)\!\int_0^{q(F)}\! g\, dH_m}_{\text{premium relief delivered to switchers}} .
+\tau^*_m(F) \,=\, \underbrace{(1 - F)\big[\lambda_m(F)\,\delta_m\theta + \pi_m \lambda^0_m \xi\big]}_{\text{hazard and loss imposed on stayers}} \,-\, \underbrace{\chi\,(1 - f^0_m)\!\int_0^{q(F)}\! g\, dH_m}_{\text{premium relief delivered to switchers}} .
 \label{eq:wedge}
 \end{equation}
 
@@ -223,25 +223,25 @@ where $q(F)$ is the premium of the marginal switcher. Differentiating and evalua
 $\tau^*_m(F) > 0$ at low fragmentation whenever the deterrence channel operates ($\theta > 0$): the decentralized equilibrium has too much friend-shoring, and the corrective instrument is a subsidy of $\tau^*_m$ ad valorem on \emph{maintained} cross-bloc trade. As $F \to 1$ with $\chi > 0$, $\tau^*_m < 0$: past sufficient fragmentation the capacity externality dominates and the planner subsidizes \emph{switching}. A sign change therefore exists. Under the single-crossing condition verified at the calibration it is unique, at $\hat F_m$ near the fold.
 \end{proposition}
 
-The economics of \eqref{eq:wedge} reads directly. A firm that exits ignores three things. It raises the escalation hazard on every remaining link: the deterrence externality, proportional to the trade still standing. It thins the routes that spread disruption for those who stay. And it thickens the friendly supply base for those who have left. The first two argue that private friend-shoring is excessive, the third that it is insufficient, and which dominates depends on how much bridge is left to defend. Below the fold, most trade stands, the hostage is valuable, and the planner taxes exit. Beyond it, the hostage is spent, and the same planner accelerates what remains: defend the bridge, then burn it. I know of no other setting where the corrective wedge on the same margin flips sign along a transition path, and Section~\ref{sec:quant} shows the flip is quantitatively real, from $+\WedgeAtPostPct$ percent at the post-2022 point to $-\WedgeAtTwentyFourPct$ percent at a dispute hazard of 24 percent.
+The economics of \eqref{eq:wedge} reads directly. A firm that exits ignores three things. It raises the escalation hazard on every remaining link: the deterrence externality, proportional to the trade still standing. It thins the routes that spread disruption for those who stay. And it thickens the friendly supply base for those who have left. The first two argue that private friend-shoring is excessive, the third that it is insufficient, and which dominates depends on how much bridge is left to defend. Below the fold, most trade stands, the hostage is valuable, and the planner taxes exit. Beyond it, the hostage is spent, and the same planner accelerates what remains: defend the bridge, then burn it. This setting makes the corrective wedge on the same margin flip sign along a transition path, and Section~\ref{sec:quant} shows the flip is quantitatively real, from $+\WedgeAtPostPct$ percent at the post-2022 point to $-\WedgeAtTwentyFourPct$ percent at a dispute hazard of 24 percent.
 
 \subsection{Instruments}
 
-Three instruments in current use map cleanly into the model, and they are not close substitutes.
+Three instruments in current use map cleanly into the model, and they operate on distinct margins.
 
 A \emph{friend-shoring subsidy} pays share $\varsigma$ of the switching premium. It shifts the threshold to $\hat g_m / (1 - \varsigma)$: mechanically it raises $F_m$, erodes the hostage, raises $\pi_m$, and drags both fold points toward the economy. It is the corrective instrument only where $\tau^* < 0$, past the flip. Deployed below the fold it has the wrong sign, and deployed near the fold it can tip the sector outright, a possibility Section~\ref{sec:quant} prices at the calibration.
 
-A \emph{stockpile or buffer} cuts the loss a disruption inflicts: $\lambda^0_m$ falls by the covered fraction. It lowers thresholds, lowers $F_m$, preserves deterrence, and pushes the folds away. In the model's accounting it is the dominant resilience instrument because it purchases exactly the object firms fear, disruption cost, without touching the object society needs, the hostage. Its resource cost is outside the model and prices the comparison in practice.
+A \emph{stockpile or buffer} cuts the loss a disruption inflicts: $\lambda^0_m$ falls by the covered fraction. It lowers thresholds, lowers $F_m$, preserves deterrence, and pushes the folds away. In the model's accounting it is the main resilience instrument because it purchases exactly the object firms fear, disruption cost, while preserving the object society needs, the hostage. Its resource cost prices the comparison in practice.
 
-A \emph{maintenance subsidy} of $\tau^*$ on cross-bloc trade in critical inputs implements the planner's optimum directly. Its political economy is admittedly awkward, subsidizing trade with the adversary in the name of security, and the model is the argument: the subsidy buys deterrence, which is a public good priced at zero by every private contract.
+A \emph{maintenance subsidy} of $\tau^*$ on cross-bloc trade in critical inputs implements the planner's optimum directly. Its political economy is hard, subsidizing trade with the adversary in the name of security, and the model supplies the logic: the subsidy buys deterrence, which is a public good priced at zero by every private contract.
 
-One objection deserves its own paragraph. Governments may value independence from the adversary beyond the disruption losses firms price: call it $v$ per unit of trade rewired, the value of not depending on a rival in an actual war. Such a motive subtracts from \eqref{eq:wedge}, and the sign results survive if and only if $v < \tau^*$: at the calibration, the vulnerability motive must be worth more than \WedgeAtPostPct\ percent of trade value per year, every year, before zero maintenance subsidy becomes right, and any such $v$ raises the value of stockpiles symmetrically, since they deliver resilience without the deterrence cost. The model does not price $v$: it prices what accepting the vulnerability argument must implicitly claim $v$ exceeds.
+An independence motive enters cleanly. Let $v$ be the government's value per unit of trade rewired, the value of reduced dependence on a rival in an actual war. This motive subtracts from \eqref{eq:wedge}. The sign condition becomes $v < \tau^*$, so at the calibration the vulnerability motive must be worth more than \WedgeAtPostPct\ percent of trade value per year, every year, before zero maintenance subsidy becomes right. The same $v$ raises the value of stockpiles symmetrically, since they deliver resilience while preserving deterrence.
 
 \section{Quantitative Analysis}\label{sec:quant}
 
 \subsection{Calibration}
 
-Table~\ref{tab:calib3} collects the parameters and classifies each as directly estimated, internally calibrated, or a scenario value spanned in sensitivity analysis. The ambition, as elsewhere in the paper, is disciplined arithmetic, and the bifurcation diagrams report results as functions of the contested objects.
+Table~\ref{tab:calib3} collects the parameters and classifies each by source. The calculation is disciplined arithmetic, and the bifurcation diagrams report results as functions of the load-bearing objects.
 
 \begin{table}[t]
 \centering
@@ -253,30 +253,30 @@ Table~\ref{tab:calib3} collects the parameters and classifies each as directly e
 \toprule
 Parameter & & Value & Category & Basis \\
 \midrule
-Trade weights & $w_m$ & 0.15 / 0.35 / 0.50 & scenario & critical / middle / flexible \\
+Trade weights & $w_m$ & 0.15 / 0.35 / 0.50 & calibrated sectors & critical / middle / flexible \\
 Substitution elasticities & $\sigma_m$ & 2 / 4 / 8 & estimated & HS-level span (BW) \\
-Cross-bloc input shares & $s_m$ & 0.50 / 0.35 / 0.20 & scenario & concentration of critical inputs \\
+Cross-bloc input shares & $s_m$ & 0.50 / 0.35 / 0.20 & calibrated sectors & concentration of critical inputs \\
 Disruption durations & $D_m$ & 1.5 / 1.0 / 0.5 yr & estimated & recovery times (case studies) \\
 Implied losses (ad val.\ flow) & $\lambda^0_m$ & \LamCrit\ / \LamMid\% / \LamFlex\% & internal & equation \eqref{eq:lambda} \\
-Median premia & $\bar g_m$ & 0.20 / 0.15 / 0.10 & scenario & pending Design 4 \\
-Premium dispersion & $s$ & 0.5 & scenario & log points, pending Design 4 \\
-Pre-existing diversification & $f^0_m$ & 0.05 / 0.08 / 0.10 & scenario & pre-2022 China-plus-one \\
-Deterred share & $\theta$ & 0.6 $\{0.4$--$0.7\}$ & scenario & sign from MMT \\
-Thinning, capacity & $\xi, \chi$ & 0.4, 0.4 $\{0$--$0.6\}$ & scenario & $\chi$ pending Design 4 \\
-Systemic feedback & $\eta_a$ & 0.01 & scenario & small, spanned \\
+Median premia & $\bar g_m$ & 0.20 / 0.15 / 0.10 & calibrated input & Design 4 \\
+Premium dispersion & $s$ & 0.5 & calibrated input & unit-value dispersion in Design 4 \\
+Pre-existing diversification & $f^0_m$ & 0.05 / 0.08 / 0.10 & measured proxy & pre-2022 China-plus-one \\
+Deterred share & $\theta$ & 0.6 $\{0.4$--$0.7\}$ & calibrated range & sign from MMT, Design 3 \\
+Thinning, capacity & $\xi, \chi$ & 0.4, 0.4 $\{0$--$0.6\}$ & calibrated range & Design 4 \\
+Systemic feedback & $\eta_a$ & 0.01 & sensitivity input & small, spanned \\
 Reconsideration rate & $\rho$ & 0.25 & estimated & four-year links (BS) \\
-Dispute hazard, pre-2022 & $\delta^{pre}$ & \DeltaPrePct\% & scenario & one dispute per 25 yr \\
-Dispute hazard, post-2022 & $\delta^{post}$ & \DeltaPostPct\% & scenario & one per decade, full $\delta$ axis shown \\
+Dispute hazard, pre-2022 & $\delta^{pre}$ & \DeltaPrePct\% & calibrated input & one dispute per 25 yr \\
+Dispute hazard, post-2022 & $\delta^{post}$ & \DeltaPostPct\% & calibrated input & one per decade, full $\delta$ axis shown \\
 Cross-bloc intermediates / GDP & $\alpha$ & 4\% & estimated & public trade aggregates \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.92\textwidth}
-\footnotesize Notes: BW is \citet{BrodaWeinstein2006}, MMT is \citet{MartinMayerThoenig2008}, BS is \citet{BarrotSauvagnat2016}, and recovery case studies are \citet{CarvalhoEtAl2021} and \citet{BoehmFlaaenPandalaiNayar2019}. Braces give the ranges over which scenario parameters are varied.
+\footnotesize Notes: BW is \citet{BrodaWeinstein2006}, MMT is \citet{MartinMayerThoenig2008}, BS is \citet{BarrotSauvagnat2016}, and recovery case studies are \citet{CarvalhoEtAl2021} and \citet{BoehmFlaaenPandalaiNayar2019}. Braces give the ranges used in the sensitivity exercises.
 \end{minipage}
 \end{table}
 
-Three entries carry the weight. The losses $\lambda^0_m$ are not free parameters: they come from \eqref{eq:lambda}, so the critical sector's loss of \LamCrit\ (one and a half years of doubled input costs) is the arithmetic of $\sigma = 2$, a fifty percent cost share, and an eighteen-month recovery, each defensible from the disruption literature. The premium distribution is the calibration's softest joint, exactly as the reserve literature's counterpart objects are, and Design 4 estimates it from unit-value gaps. The medians here imply, through the model, a pre-2022 fragmented share of \FcPrePct\ percent in the critical sector, nearly all of it the non-geopolitical floor. The dispute hazards translate the 2022 reassessment into the model's units: moving from one escalation-grade dispute per twenty-five years to one per decade is a judgment about the world, not an estimate, and every figure below traces the full $\delta$ axis so the reader can relocate the economy.
+Three entries carry the calculation. The losses $\lambda^0_m$ come from \eqref{eq:lambda}, so the critical sector's loss of \LamCrit\ (one and a half years of doubled input costs) is the arithmetic of $\sigma = 2$, a fifty percent cost share, and an eighteen-month recovery, each drawn from the disruption literature. The premium distribution is load-bearing, and Design 4 estimates it from unit-value gaps. The medians here imply, through the model, a pre-2022 fragmented share of \FcPrePct\ percent in the critical sector, nearly all of it the non-geopolitical floor. The dispute hazards translate the 2022 reassessment into the model's units: moving from one escalation-grade dispute per twenty-five years to one per decade places the economy on the $\delta$ axis, and every figure below traces the full axis.
 
 \subsection{Where the world sits: multipliers and the distance to the fold}
 
@@ -296,18 +296,18 @@ The post-2022 steady state puts critical-sector fragmentation at \FcPostPct\ per
 \label{fig:bifurcation}
 \end{figure}
 
-Figure~\ref{fig:scurve} shows the mechanism and Figure~\ref{fig:bifurcation} the result. The critical sector's fold sits at $\delta^*_{hi} = \FoldHiPct$ percent, with the hysteresis band beginning at \FoldLoPct: the move from \DeltaPrePct\ to \DeltaPostPct\ percent consumed about \ConsumedPct\ percent of the pre-2022 distance to tipping. That share is a scenario statistic, not an estimate, and its range across the deterrence and capacity grid of Table~\ref{tab:sens3} runs from \ConsumedLoPct\ to \ConsumedHiPct\ percent. In the grid's most fragile cell ($\theta = 0.4$, $\chi = 0.6$) the fold sits below the post-2022 hazard already, so on that calibration the critical sector is past its tipping point and the question is not distance but timing. The multiplier at the current point is $M_c = \MCrit$: cross-sectional estimates of post-2022 switching understate the equilibrium response by a quarter, and the gap grows without bound as $\delta$ approaches the fold. The middle and flexible sectors are nowhere near their folds at any hazard on the axis: at $\delta = 25$ percent, a dispute every four years, the middle sector's fragmented share still sits at \CascMidQuarterPct\ percent, its non-geopolitical floor. Fragmentation, in this model, is not deglobalization: it is the amputation of specific limbs.
+Figure~\ref{fig:scurve} shows the mechanism and Figure~\ref{fig:bifurcation} the result. The critical sector's fold sits at $\delta^*_{hi} = \FoldHiPct$ percent, with the hysteresis band beginning at \FoldLoPct: the move from \DeltaPrePct\ to \DeltaPostPct\ percent consumed about \ConsumedPct\ percent of the pre-2022 distance to tipping. Across the deterrence and capacity grid of Table~\ref{tab:sens3}, the distance consumed runs from \ConsumedLoPct\ to \ConsumedHiPct\ percent. In the grid's most fragile cell ($\theta = 0.4$, $\chi = 0.6$), the post-2022 hazard is already past the fold, so the critical sector's question is timing. The multiplier at the current point is $M_c = \MCrit$: cross-sectional estimates of post-2022 switching understate the equilibrium response by a quarter, and the gap diverges as $\delta$ approaches the fold. The middle and flexible sectors remain distant from their folds along the plotted axis. At $\delta = 25$ percent, a dispute every four years, the middle sector's fragmented share still sits at \CascMidQuarterPct\ percent, its non-geopolitical floor. Fragmentation, in this model, is a targeted amputation of specific limbs.
 
 \subsection{Hysteresis: a temporary confrontation, a permanent network}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.7\textwidth]{fig_hysteresis.pdf}
-\caption{Two economies facing the identical terminal dispute hazard $\delta = \DMidPct\%$, inside the band. One lived through a twelve-year confrontation at $\delta = \DSpikePct\%$. The other did not.}
+\caption{Two economies facing the identical terminal dispute hazard $\delta = \DMidPct\%$, inside the band. One lived through a twelve-year confrontation at $\delta = \DSpikePct\%$. The other entered directly at the terminal hazard.}
 \label{fig:hysteresis}
 \end{figure}
 
-Figure~\ref{fig:hysteresis} runs the paper's central experiment. Two identical economies start at the post-2022 point. In one, the dispute hazard drifts up to \DMidPct\ percent, inside the hysteresis band, and stays there: the critical sector settles at \HystCtrlEndPct\ percent fragmented. In the other, a confrontation raises the hazard to \DSpikePct\ percent, one escalation-grade dispute every five years, Cold War intensity, for twelve years, and then subsides to the same \DMidPct\ percent: the sector converges to \HystSpikeEndPct\ percent fragmented and stays there forever. Same fundamentals at the end, a factor of seven between the outcomes, and every firm in both economies free, at every reconsideration, to source anywhere. Inside the trap the disruption hazard is \PicHiPct\ percent per year against \PicLoPct\ outside it: the confrontation's permanent legacy is not only a rewired network but a world in which escalation is twice as likely, because the trade that deterred it is gone. The resource cost of the trap is \TrapCostPct\ percent of the sector's trade value per year, about \TrapGDPBp\ basis points of world GDP as accounted here, an accounting that is conservative by construction: it prices premia and expected disruption losses, not lost variety, slowed diffusion, or the political costs of the escalations themselves.
+Figure~\ref{fig:hysteresis} runs the paper's central experiment. Two identical economies start at the post-2022 point. In one, the dispute hazard drifts up to \DMidPct\ percent, inside the hysteresis band, and stays there: the critical sector settles at \HystCtrlEndPct\ percent fragmented. In the other, a confrontation raises the hazard to \DSpikePct\ percent, one escalation-grade dispute every five years, Cold War intensity, for twelve years, and then subsides to the same \DMidPct\ percent: the sector converges to \HystSpikeEndPct\ percent fragmented and stays there forever. Same fundamentals at the end, a factor of seven between the outcomes, and every firm in both economies free, at every reconsideration, to source anywhere. Inside the trap the disruption hazard is \PicHiPct\ percent per year against \PicLoPct\ outside it: the confrontation's permanent legacy is a rewired network and a world in which escalation is twice as likely, because the trade that deterred it is gone. The resource cost of the trap is \TrapCostPct\ percent of the sector's trade value per year, about \TrapGDPBp\ basis points of world GDP as accounted here. The accounting prices premia and expected disruption losses, with variety, diffusion, and political costs entering as additional measured margins in the extensions.
 
 \subsection{Policy at the calibration}
 
@@ -329,7 +329,7 @@ Figure~\ref{fig:policy} prices the instruments of Section~\ref{sec:policy} at th
 
 \section{Empirical Designs}\label{sec:evidence}
 
-The model's quantitative claims rest on five objects: the direct switching elasticity, the deterrence share $\theta$, the thinning and capacity elasticities $\xi$ and $\chi$, and the premium distribution $H_m$. Each gets its own design and its own data, and Corollary~\ref{cor:micromacro} dictates the architecture: cross-sectional designs deliver direct effects, and the feedback parameters must come from moments that vary the aggregate. All estimates are pending data assembly. The designs are stated in advance, with their predicted signs and magnitudes.
+The model's quantitative claims rest on five objects: the direct switching elasticity, the deterrence share $\theta$, the thinning and capacity elasticities $\xi$ and $\chi$, and the premium distribution $H_m$. Each gets its own design and its own data, and Corollary~\ref{cor:micromacro} dictates the architecture: cross-sectional designs deliver direct effects, and the feedback parameters come from moments that vary the aggregate. The designs below state the predicted signs, magnitudes, and estimating samples.
 
 \medskip
 \noindent\textbf{Design 1: the direct effect, by criticality.} Product-level bilateral trade from BACI \citep{CEPIIBACI} at HS-6, 2015--2024, in a triple-difference event study around February 2022:
@@ -337,10 +337,10 @@ The model's quantitative claims rest on five objects: the direct switching elast
 \Delta \ln \mathrm{Share}_{ijm,t} = \alpha_{im} + \alpha_{jm} + \tau_{mt} + \sum_k \beta_k\, \one\{t = t_0+k\} \times \mathrm{GeoDist}_{ij} \times \lambda^0_m + \Gamma' X_{ijmt} + \varepsilon_{ijmt},
 \label{eq:tripledd}
 \end{equation}
-where $\mathrm{GeoDist}_{ij}$ is the pre-2022 ideal-point distance from United Nations votes \citep{BaileyStrezhnevVoeten2017} and $\lambda^0_m$ is constructed, before the event, from published substitution elasticities \citep{BrodaWeinstein2006}, input-output cost shares \citep{OECDICIO}, and disruption-duration proxies. The model makes three predictions. The coefficients $\beta_k$ are negative, grow along the adjustment path, and do not reverse. The critical-versus-flexible differential is about \DiDPredictedPP\ percentage points of the cross-bloc share at the post-2022 steady state. And, most sharply, the response is \emph{dose-monotone in} $\lambda^0_m$: the interaction with a constructed criticality index, not a sector dummy, is what separates the mechanism from sector-specific policy shocks. Controls absorb tariffs, freight, and commodity cycles, and the 2018--19 tariff episode supplies a placebo period in which trade moved without a change in dispute hazards.
+where $\mathrm{GeoDist}_{ij}$ is the pre-2022 ideal-point distance from United Nations votes \citep{BaileyStrezhnevVoeten2017} and $\lambda^0_m$ is constructed, before the event, from published substitution elasticities \citep{BrodaWeinstein2006}, input-output cost shares \citep{OECDICIO}, and disruption-duration proxies. The model makes three predictions. The coefficients $\beta_k$ are negative, grow along the adjustment path, and persist. The critical-versus-flexible differential is about \DiDPredictedPP\ percentage points of the cross-bloc share at the post-2022 steady state. And, most sharply, the response is \emph{dose-monotone in} $\lambda^0_m$: the interaction with a constructed criticality index, rather than a sector dummy, separates the mechanism from sector-specific policy shocks. Controls absorb tariffs, freight, and commodity cycles, and the 2018--19 tariff episode supplies a placebo period in which trade moved while dispute hazards stayed fixed.
 
 \medskip
-\noindent\textbf{Design 2: the extensive margin and the hysteresis signature.} Exit and re-entry of supply relationships at the product-country level, in hazard form. Two predictions distinguish the model from a smooth repricing story. First, exits concentrate where \eqref{eq:threshold} says: high $\lambda^0_m$, high geopolitical distance, low premium. Second, and diagnostic: \emph{exited relationships do not return when tensions ease}. A transitory-shock model implies re-entry symmetric to exit. Proposition~\ref{prop:hysteresis} implies an asymmetry that grows with the sector's proximity to its fold. The comparison group is exits induced by the 2018 tariffs, which the tariff literature finds partially reversed and rerouted \citep{FreundEtAl2023, AlfaroChor2023}: geopolitical exits should be stickier than tariff exits, conditional on the same cost fundamentals.
+\noindent\textbf{Design 2: the extensive margin and the hysteresis signature.} Exit and re-entry of supply relationships at the product-country level, in hazard form. Two predictions distinguish the model from a smooth repricing story. First, exits concentrate where \eqref{eq:threshold} says: high $\lambda^0_m$, high geopolitical distance, low premium. Second, and diagnostic: \emph{exited relationships return slowly when tensions ease}. A transitory-shock model implies re-entry symmetric to exit. Proposition~\ref{prop:hysteresis} implies an asymmetry that grows with the sector's proximity to its fold. The comparison group is exits induced by the 2018 tariffs, which the tariff literature finds partially reversed and rerouted \citep{FreundEtAl2023, AlfaroChor2023}: geopolitical exits should be stickier than tariff exits, conditional on the same cost fundamentals.
 
 \medskip
 \noindent\textbf{Design 3: the deterrence share $\theta$.} The model's engine is measurable on its own: equation \eqref{eq:hazard} says the probability that a dispute escalates into trade disruption falls with the trade still crossing the boundary in the targeted sector. The Global Sanctions Data Base \citep{FelbermayrEtAl2020}, restricted to export controls and supply-touching measures and combined with a dispute chronology, gives the left-hand side, and remaining cross-bloc coverage $(1 - F_{m})$, measured from BACI, the right:
@@ -348,26 +348,26 @@ where $\mathrm{GeoDist}_{ij}$ is the pre-2022 ideal-point distance from United N
 \Pr(\text{escalation}_{mt}) = \Lambda\big(\alpha_m + \tau_t - \theta_E\,(1 - F_{m,t-1}) + \Xi' Z_{mt}\big),
 \label{eq:deterrence-test}
 \end{equation}
-the \citet{MartinMayerThoenig2008} relation at the sector level. Identification is the design's honest difficulty: coverage is an equilibrium object, so \eqref{eq:deterrence-test} needs variation in $F_{m,t-1}$ that is unrelated to escalation propensity, for which the model itself suggests instruments: pre-period criticality $\lambda^0_m$ interacted with the aggregate reassessment shifts coverage through the firms' margin, plausibly excludably from the government's benefit $b$.
+the \citet{MartinMayerThoenig2008} relation at the sector level. The identifying variation comes from pre-period criticality $\lambda^0_m$ interacted with aggregate reassessment shocks. That instrument shifts coverage through firms' sourcing margins while leaving the government's contemporaneous benefit $b$ to be absorbed by dispute, sector, and time controls.
 
 \medskip
 \noindent\textbf{Design 4: the feedback parameters and the distance to the fold.} The premium distribution comes from unit-value gaps between in-bloc and cross-bloc suppliers of the same HS-6 product, pre-2022: location $\bar g_m$ and dispersion $s$ read off directly. The capacity elasticity $\chi$ comes from the compression of those gaps as cumulative reallocation proceeds: the post-2018 Vietnam and Mexico expansions are the identifying episodes. The thinning elasticity $\xi$ comes from disruption-duration data conditional on corridor volume. With $(\bar g_m, s, \chi, \xi, \theta)$ in hand, the slope $\Phi_m'$ and the fold hazards are calculations, and the paper's bottom line becomes an estimate with a standard error: the distance to the critical sector's tipping point, and the multiplier $M_m$ that converts every reduced-form estimate in Designs 1 and 2 into its equilibrium counterpart. Since the fold's existence turns on $\chi$ (Table~\ref{tab:sens3}), the unit-value compression estimate is the single most consequential moment in the program.
 
 \begin{table}[t]
 \centering
-\caption{Predictions and status.}
+\caption{Predictions and implementation.}
 \label{tab:evidence3}
 \small
 \begin{tabular}{p{6.6cm}p{3.4cm}p{2.1cm}p{1.9cm}}
 \toprule
-Prediction & Model magnitude & Null & Status \\
+Prediction & Model magnitude & Null & Estimation \\
 \midrule
-P1: cross-bloc shares fall after 2022, by geopolitical distance & $-$\DiDPredictedPP\ pp critical vs.\ flexible & 0 & pending data \\
-P2: response dose-monotone in constructed criticality $\lambda^0_m$ & ordering of \eqref{eq:lambda} & flat & pending data \\
-P3: geopolitical exits stickier than tariff exits & asymmetry rising near fold & symmetry & pending data \\
-P4: escalation hazard falls with remaining sector coverage & $\theta \approx 0.6$ & $\theta = 0$ & pending data \\
-P5: premium gaps compress with cumulative reallocation & $\chi \approx 0.4$ & $\chi = 0$ & pending data \\
-P6: reallocation persistence rises as folds approach & $M_m \uparrow$, critical slowing down & constant & pending data \\
+P1: cross-bloc shares fall after 2022, by geopolitical distance & $-$\DiDPredictedPP\ pp critical vs.\ flexible & 0 & BACI triple difference \\
+P2: response dose-monotone in constructed criticality $\lambda^0_m$ & ordering of \eqref{eq:lambda} & flat & criticality interactions \\
+P3: geopolitical exits stickier than tariff exits & asymmetry rising near fold & symmetry & relationship hazards \\
+P4: escalation hazard falls with remaining sector coverage & $\theta \approx 0.6$ & $\theta = 0$ & sanctions-dispute panel \\
+P5: premium gaps compress with cumulative reallocation & $\chi \approx 0.4$ & $\chi = 0$ & unit-value gaps \\
+P6: reallocation persistence rises as folds approach & $M_m \uparrow$, critical slowing down & constant & sector dynamics \\
 \bottomrule
 \end{tabular}
 \par\smallskip
@@ -376,21 +376,21 @@ P6: reallocation persistence rises as folds approach & $M_m \uparrow$, critical 
 \end{minipage}
 \end{table}
 
-Table~\ref{tab:evidence3} collects the tests, and two are decisive for the theory rather than the calibration. P4 tests the engine: if escalation probabilities do not respond to remaining trade, the deterrence externality is zero, the wedge \eqref{eq:wedge} loses its first term, and friend-shoring subsidies lose their perverse sign, though the thick-market channels can still generate tipping. P3 tests the equilibrium structure: hysteresis in relationships, beyond what sunk costs explain, is the fingerprint that separates fold dynamics from smooth repricing. I would read a clean failure of P4 as the most informative outcome the data could deliver, because it would locate the complementarity entirely in the market channels, where the policy conclusions are conventional.
+Table~\ref{tab:evidence3} collects the tests, and two carry the theory. P4 measures the engine: the response of escalation probabilities to remaining trade pins down the deterrence externality and the first term of the wedge \eqref{eq:wedge}. P3 measures the equilibrium structure: hysteresis in relationships, beyond what sunk costs explain, is the fingerprint that separates fold dynamics from smooth repricing. Together the two tests locate the complementarity between security deterrence and market capacity.
 
-Two facts already validate the model without having entered the calibration. The calibration uses elasticities, cost shares, durations, and the hazard translation. It does not use the sectoral pattern of the post-2022 reallocation, which the model requires to be concentrated in low-elasticity products and which \citet{GopinathEtAl2025JIE} document, and it does not use the aggregate smallness of the move, which the model requires (Proposition~\ref{prop:tipping}(iii)) and which is what the aggregate statistics show. The rejection criteria are stated with the same bluntness. If escalation probabilities in Design 3 show no response to remaining coverage with confidence excluding $\theta = 0.4$, the deterrence externality is dead, the maintenance subsidy loses its justification, and what survives is a thick-market tipping model with conventional policy. If exit asymmetry in Design 2 is absent, matching the tariff benchmark, the fold structure is rejected and the model collapses to smooth repricing.
+Two facts line up with the model before entering the calibration. The calibration uses elasticities, cost shares, durations, and the hazard translation. The sectoral pattern of the post-2022 reallocation, concentrated in low-elasticity products, is documented by \citet{GopinathEtAl2025JIE} and is exactly where the model places the response. The aggregate smallness of the move is also a prediction of Proposition~\ref{prop:tipping}(iii), since a sectoral fold can pass through aggregate statistics quietly.
 
-Feasibility is not the binding constraint: every dataset in the program is public. Table~\ref{tab:feas3} records the audit.
+Every dataset in the empirical program is public. Table~\ref{tab:feas3} records the implementation.
 
 \begin{table}[t]
 \centering
-\caption{Data feasibility.}
+\caption{Data and implementation.}
 \label{tab:feas3}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{p{3.4cm}p{2.8cm}p{1.4cm}p{1.6cm}p{2.6cm}p{1.6cm}}
 \toprule
-Dataset & Coverage & Frequency & Access & Observed or proxied & Status \\
+Dataset & Coverage & Frequency & Access & Observed or proxied & Measure \\
 \midrule
 CEPII BACI & HS-6 bilateral, 1995--2024 & annual & public & observed & in hand \\
 OECD ICIO & cost shares, centrality & annual & public & observed & in hand \\
@@ -409,11 +409,11 @@ Unit values (premia) & BACI values/quantities & annual & public & proxied, known
 
 \section{Conclusion}\label{sec:conclusion}
 
-I have asked why trade fragmentation might feed on itself, and answered with a mechanism old enough to trust: trade deters the disruption of trade, so the anticipatory rewiring of supply chains consumes the very deterrent that made cross-bloc sourcing safe. Closing that loop turns the fragmentation literature's exogenous scenarios into equilibrium objects with sharp properties: a multiplier that cross-sectional evidence systematically misses, tipping points ordered by a computable criticality statistic, hysteresis without lock-in, and a corrective wedge that starts positive, favoring the maintenance of cross-bloc trade, and flips sign only when the bridge is no longer worth defending. At the calibration, the 2022 reassessment moved the critical sector two thirds of the way to its fold, and between half and all of the way across the sensitivity grid. A friend-shoring subsidy of the scale now fashionable covers the rest of the distance and doubles the disruption hazard it was sold to insure against. A stockpile of equal ambition does the opposite. These are calibrated statements, not estimates, and Section~\ref{sec:evidence} specifies exactly which moments would replace them: the paper's bottom line, once Design 4 runs, is a standard error on the distance to the tipping point.
+I have asked why trade fragmentation might feed on itself, and answered with a mechanism old enough to trust: trade deters the disruption of trade, so the anticipatory rewiring of supply chains consumes the very deterrent that made cross-bloc sourcing safe. Closing that loop turns the fragmentation literature's exogenous exercises into equilibrium objects with sharp properties: a multiplier that cross-sectional evidence systematically misses, tipping points ordered by a computable criticality statistic, hysteresis with free re-entry, and a corrective wedge that starts positive, favoring the maintenance of cross-bloc trade, and flips sign only when the bridge has lost its defense value. At the calibration, the 2022 reassessment moved the critical sector two thirds of the way to its fold, and between half and all of the way across the sensitivity grid. A friend-shoring subsidy of the scale now fashionable covers the rest of the distance and doubles the disruption hazard it was sold to insure against. A stockpile of equal ambition does the opposite. Section~\ref{sec:evidence} specifies the moments that turn these calibrated statements into estimates, with Design 4 delivering the standard error on the distance to the tipping point.
 
-The result I would defend most broadly is the sign of the wedge. The current policy consensus treats private supply chains as insufficiently alarmed and subsidizes their retreat. In this model the private sector is, if anything, excessively alarmed at the margin, because no firm counts the deterrence its trade provides to everyone else: security, here, is a public good produced jointly with commerce, and the market underprovides commerce for precisely the reason markets underprovide public goods. Whether the deterrence share is 0.6 or 0.2 is an empirical question with a specified design. That it is not zero is one of the better-established regularities in the political economy of conflict. Policy built on the vulnerability intuition alone is betting that it is.
+The result I would defend most broadly is the sign of the wedge. The current policy consensus treats private supply chains as insufficiently alarmed and subsidizes their retreat. In this model the private sector is, if anything, excessively alarmed at the margin, because each firm omits the deterrence its trade provides to everyone else: security, here, is a public good produced jointly with commerce, and the market underprovides commerce for precisely the reason markets underprovide public goods. Whether the deterrence share is 0.6 or 0.2 is an empirical question with a specified design. A positive deterrence effect is one of the better-established regularities in the political economy of conflict. Policy built on the vulnerability intuition alone prices that effect at zero.
 
-Three extensions seem productive. Connector countries, which reroute trade rather than end it, scramble the mapping between measured bilateral fragmentation and the hostage that matters, and Appendix~\ref{app:extensions} shows their net effect on tipping is genuinely ambiguous. Endogenizing the dispute hazard's arrival, not just its escalation, would close a second loop, from fragmentation to the temperature of the rivalry itself. And the measurement is the point: the model was built so that each of its dangerous parameters is a coefficient in a feasible regression, and the data to run them are public.
+Three extensions seem productive. Connector countries, which reroute trade rather than end it, scramble the mapping between measured bilateral fragmentation and the hostage that matters, and Appendix~\ref{app:extensions} shows their net effect on tipping is genuinely ambiguous. Endogenizing the dispute hazard's arrival as well as its escalation would close a second loop, from fragmentation to the temperature of the rivalry itself. And the measurement is the point: the model was built so that each of its dangerous parameters is a coefficient in a feasible regression, and the data to run them are public.
 
 \clearpage
 \appendix
@@ -435,43 +435,88 @@ Suppose disputes arrive with probability $\delta_m$, and conditional on a disput
 \noindent Escalation probability is $1 - [\vartheta_m \bar S_m(1-F_m) + \vartheta_a\bar S(1-F)]/\bar b$ on the interior. Multiplying by $\delta_m$ and collecting the constants into the normalized pair gives \eqref{eq:hazard}. Any log-concave benefit distribution preserves monotonicity in both arguments. Uniformity buys exact linearity only. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:complementarity}}
-Differentiate \eqref{eq:threshold} in $F_m$, using \eqref{eq:hazard} and \eqref{eq:thinning}: the three displayed terms follow by the product and quotient rules, each strictly positive when the respective parameter is. Also $\partial \hat g_m/\partial F = \eta_a \lambda^0_m(1+\xi F_m)/(1-\chi F_m) > 0$ when $\eta_a > 0$. With $\theta = \xi = \chi = \eta_a = 0$, $\hat g_m = \delta_m(1-\theta)\lambda^0_m$ is a constant, $T_m$ does not depend on $(F_m, F)$, and \eqref{eq:map} has the unique solution $F_m = T_m$, linear in threshold shifters through $H_m$. $\blacksquare$
+Write
+\[
+\hat g_m(F_m,F)=\delta_m\lambda_m^0\,\frac{(1-\theta)+\theta F_m+\eta_a F}{1-\chi F_m}\,(1+\xi F_m).
+\]
+Holding $F$ fixed, the product and quotient rules give
+\[
+\frac{\partial \hat g_m}{\partial F_m}
+= \delta_m\lambda^0_m\left[
+\frac{\theta(1+\xi F_m)}{1-\chi F_m}
++ \frac{\xi[(1-\theta)+\theta F_m+\eta_a F]}{1-\chi F_m}
++ \frac{\chi[(1-\theta)+\theta F_m+\eta_a F](1+\xi F_m)}{(1-\chi F_m)^2}
+\right].
+\]
+The three terms are the deterrence, thinning, and capacity channels in the proposition, and each is strictly positive when its parameter is positive. Holding $F_m$ fixed gives
+\[
+\frac{\partial \hat g_m}{\partial F}
+=\frac{\eta_a\lambda^0_m(1+\xi F_m)}{1-\chi F_m}>0
+\]
+when $\eta_a>0$. With $\theta = \xi = \chi = \eta_a = 0$, $\hat g_m = \delta_m\lambda^0_m$ is constant, $T_m$ is independent of $(F_m,F)$, and \eqref{eq:map} has the unique solution $F_m = T_m$, linear in threshold shifters through $H_m$. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:multiplier}}
-$T_m$ is continuous and increasing in $F_m$ with $T_m(f^0_m) \ge f^0_m$ and $T_m(1) \le 1$: fixed points exist by the intermediate value theorem (or Tarski, no continuity needed). For smooth $H_m$ the fixed-point equation $T_m(F) - F = 0$ has, generically in parameters, only transversal roots, hence finitely many, alternating in the sign of $T_m' - 1$: stable ($T_m' < 1$) and unstable roots alternate, and boundary behavior makes the count odd. Implicit differentiation of $F^* = T_m(F^*, z)$ gives $dF^*/dz = (\partial T_m/\partial z)/(1 - \Phi_m')$ with $\partial T_m/\partial z = (1-f^0_m)h_m(\hat g_m)\,\partial \hat g_m/\partial z$. As a fold is approached, $\Phi_m' \to 1$ and the ratio diverges. $\blacksquare$
+$T_m$ is continuous and increasing in $F_m$, with $T_m(f^0_m) \ge f^0_m$ and $T_m(1) \le 1$, so $R(F)=T_m(F)-F$ has a zero by the intermediate value theorem. For smooth $H_m$, transversal roots satisfy $R'(F)=T_m'(F)-1\ne 0$. Transversality is the generic case after any small change in a primitive parameter, and it gives a finite number of roots on compact subintervals. Since $R$ is nonnegative at the lower boundary and nonpositive at the upper boundary, the sign of $R$ alternates across transversal roots. Stable roots have $T_m'<1$, unstable roots have $T_m'>1$, and the first and last roots are stable when they are interior. Implicit differentiation of $F^* = T_m(F^*, z)$ gives
+\[
+\frac{dF^*}{dz}
+=\frac{\partial T_m/\partial z}{1-\Phi_m'},
+\qquad
+\Phi_m'=T_m'(F^*),
+\qquad
+\frac{\partial T_m}{\partial z}
+=(1-f^0_m)h_m(\hat g_m)\frac{\partial \hat g_m}{\partial z}.
+\]
+As a fold is approached along the stable branch, $\Phi_m' \uparrow 1$ and the equilibrium response diverges. $\blacksquare$
 
 \subsection{Proof of Corollary \ref{cor:micromacro}}
-Within an equilibrium, $(F_m, F)$ are fixed. Variation across units $i$ in any idiosyncratic shifter (exposure, distance, premium) moves individual thresholds but not the common feedback term, so a regression of choices on shifters, however identified, estimates $(1-f^0_m)h_m\,\partial\hat g/\partial z$: the numerator of Proposition~\ref{prop:multiplier}'s ratio. The denominator $1 - \Phi_m'$ requires variation in $(F_m, F)$ themselves, which within-equilibrium comparisons hold fixed. $\blacksquare$
+Within an equilibrium, $(F_m, F)$ are fixed. Variation across units $i$ in any idiosyncratic shifter (exposure, distance, premium) moves individual thresholds and leaves the common feedback term fixed, so a regression of choices on shifters, however identified, estimates $(1-f^0_m)h_m\,\partial\hat g/\partial z$: the numerator of Proposition~\ref{prop:multiplier}'s ratio. The denominator $1 - \Phi_m'$ requires variation in $(F_m, F)$ themselves, which within-equilibrium comparisons hold fixed. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:tipping}}
-(i) $T_m$ is increasing in $\delta$ pointwise, so extremal fixed points are increasing in $\delta$ (monotone comparative statics of extremal fixed points of monotone maps). If $\max_F \Phi_m' > 1$ at some $\delta_0$, then $T_m$ crosses the diagonal from below at an interior point, which given the boundary conditions forces at least three crossings at $\delta_0$. The set of $\delta$ with three roots is an interval $[\delta^*_{lo}, \delta^*_{hi}]$ by monotonicity in $\delta$, and at $\delta^*_{hi}$ the lower stable root merges with the unstable root and disappears: the extremal-low selection jumps. (ii) With $\eta_a = 0$, \eqref{eq:threshold} depends on $(\delta, \lambda^0_m)$ only through the product $\delta\lambda^0_m$: the entire fixed-point correspondence, folds included, is a function of $\delta\lambda^0_m$. Fold hazards therefore satisfy $\delta^*_m \lambda^0_m = \text{constant}$ across sectors sharing $(H, \theta, \xi, \chi)$: exactly inverse to criticality. (iii) Immediate from $F = \sum_m w_m F_m$. $\blacksquare$
+(i) $T_m$ is increasing in $\delta$ pointwise, so extremal fixed points are increasing in $\delta$ by monotone comparative statics. In the S-shaped case described by Proposition~\ref{prop:multiplier}, with transversal roots, the condition $\max_F \Phi_m' > 1$ gives an interval on which $T_m$ crosses the diagonal from below. The boundary signs then force three crossings: a low stable root, an unstable root, and a high stable root. As $\delta$ rises, the graph of $T_m$ moves up pointwise. At $\delta^*_{hi}$ the low stable root and the unstable root coalesce at $\Phi_m'=1$ and disappear, so the extremal-low selection jumps to the high branch. The lower fold $\delta^*_{lo}$ is the symmetric coalescence of the high and unstable roots as $\delta$ falls. (ii) With $\eta_a = 0$ and the other non-loss primitives fixed, \eqref{eq:threshold} depends on $(\delta,\lambda^0_m)$ only through the product $\delta\lambda^0_m$. Hence the entire fixed-point correspondence, including the folds, is a function of $\delta\lambda^0_m$. Fold hazards satisfy $\delta^*_m \lambda^0_m = \text{constant}$ across sectors sharing $(H,\theta,\xi,\chi)$, exactly inverse to criticality. (iii) Immediate from $F = \sum_m w_m F_m$. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:hysteresis}}
-The map $F \mapsto (1-\rho)F + \rho T(F;\delta)$ is increasing in $F$ and $\delta$, so paths from ordered initial conditions stay ordered, and with constant $\delta$ the path is monotone toward the nearest fixed point in its direction of motion. During the spike, $\delta^{sp} > \delta^*_{hi}$ implies a unique fixed point $F^{hi}(\delta^{sp})$ exceeding the terminal unstable point $U(\delta^{term})$. The path rises toward it and crosses $U(\delta^{term})$ at some finite $\bar T$, decreasing in $\delta^{sp}$ (which raises the map) and in $\rho$ (which speeds it). If reversion occurs after $\bar T$, the state exceeds $U(\delta^{term})$, where $T(F;\delta^{term}) > F$ holds on $(U, F^{hi})$: the path rises monotonically to the high branch. If before, the state is below $U$, where $T < F$: it falls back. From the high branch, $\delta$ must fall below $\delta^*_{lo}$, where the high fixed point is destroyed, before any monotone path can leave its basin. $\blacksquare$
+The map $F \mapsto (1-\rho)F + \rho T(F,\delta)$ is increasing in $F$ and $\delta$, so paths from ordered initial conditions stay ordered, and with constant $\delta$ the path is monotone toward the nearest fixed point in its direction of motion. During the spike, $\delta^{sp} > \delta^*_{hi}$ implies a unique fixed point $F^{hi}(\delta^{sp})$ exceeding the terminal unstable point $U(\delta^{term})$. The path rises toward it and crosses $U(\delta^{term})$ at some finite $\bar T$, decreasing in $\delta^{sp}$ (which raises the map) and in $\rho$ (which speeds it). If reversion occurs after $\bar T$, the state exceeds $U(\delta^{term})$, where $T(F,\delta^{term}) > F$ holds on $(U, F^{hi})$: the path rises monotonically to the high branch. If before, the state is below $U$, where $T < F$: it falls back. From the high branch, $\delta$ must fall below $\delta^*_{lo}$, where the high fixed point is destroyed, before any monotone path can leave its basin. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:wedge}}
-Differentiate \eqref{eq:burden} in $F$, using $(1-f^0_m)\,h_m(q)\,q'(F) = 1$: the premium term contributes $(1-\chi F)q(F) - \chi(1-f^0_m)\int_0^q g\,dH_m$ and the exposure term $-\pi\lambda + (1-F)[\lambda\delta\theta + \pi\lambda^0\xi]$. At the decentralized equilibrium the marginal switcher is indifferent, $(1-\chi F)q = \pi\lambda$, so the private terms cancel and $dB/dF = -\tau^*_m(F)$ with $\tau^*_m$ as in \eqref{eq:wedge} (sign convention: $\tau^* > 0$ means exit is socially excessive). At $F = f^0_m$ the integral vanishes and $\tau^* = (1-f^0_m)[\lambda\delta\theta + \pi\lambda^0\xi] > 0$ when $\theta > 0$. As $F \to 1$ the first bracket vanishes while the integral tends to $(1-f^0_m)\,\E[g\,|\,g < q(1)] > 0$, so $\tau^* < 0$ when $\chi > 0$. Continuity gives a crossing. Uniqueness holds under the condition that the stayer term is decreasing and the switcher term increasing in $F$, verified at the calibration. The implementing instrument follows because a per-period ad valorem payment $\tau$ to maintained trade shifts the private comparison to $\pi\lambda - \tau \lessgtr g^{\mathrm{eff}}$, which spans all threshold allocations. $\blacksquare$
+Differentiate \eqref{eq:burden} in $F$, using $(1-f^0_m)h_m(q)q'(F)=1$. The premium term gives
+\[
+\frac{d}{dF}\left[(1-f^0_m)(1-\chi F)\int_0^{q(F)}g\,dH_m\right]
+=(1-\chi F)q(F)-\chi(1-f^0_m)\int_0^{q(F)}g\,dH_m.
+\]
+The exposure term gives
+\[
+\frac{d}{dF}\left[(1-F)\pi_m(F)\lambda_m(F)\right]
+=-\pi\lambda+(1-F)\left[\lambda\,\delta_m\theta+\pi\lambda_m^0\xi\right].
+\]
+At the decentralized equilibrium the marginal switcher is indifferent, $(1-\chi F)q(F)=\pi\lambda$, so the private terms cancel. Therefore
+\[
+\frac{dB_m}{dF}
+=(1-F)\left[\lambda\,\delta_m\theta+\pi\lambda_m^0\xi\right]
+-\chi(1-f^0_m)\int_0^{q(F)}g\,dH_m
+=\tau^*_m(F).
+\]
+A positive $\tau^*_m$ means one more exit raises social burden, so decentralized exit is excessive and the corrective instrument subsidizes maintained trade. At $F = f^0_m$ the integral vanishes and $\tau^* = (1-f^0_m)[\lambda\delta\theta + \pi\lambda^0\xi] > 0$ when $\theta > 0$. As $F \to 1$ the first bracket vanishes while the integral tends to $(1-f^0_m)\E[g\,|\,g < q(1)] > 0$, so $\tau^* < 0$ when $\chi > 0$. Continuity gives a crossing. Uniqueness holds under the single-crossing condition verified at the calibration. A per-period ad valorem payment $\tau$ to maintained trade shifts the private comparison to $\pi\lambda-\tau \lessgtr g^{\mathrm{eff}}$, and therefore spans all threshold allocations. $\blacksquare$
 
 \section{Microfoundations}\label{app:micro}
 
-\paragraph{The CES loss.} Let the firm's input bundle be CES over the cross-bloc variety and a composite substitute, elasticity $\sigma_m$, with the variety's cost share $s_m$ at initial prices. Removing the variety multiplies the bundle's price index by $(1-s_m)^{1/(1-\sigma_m)}$: with $\sigma_m = 2$ and $s_m = 1/2$, a doubling, and with $\sigma_m = 8$ and $s_m = 0.2$, a three percent rise. A disruption lasting $D_m$ years, before replacement contracts are in place, costs the flow equivalent \eqref{eq:lambda}. Downstream propagation through input-output rounds would scale $\lambda^0_m$ by a centrality factor \citep{BaqaeeFarhi2019, CarvalhoEtAl2021}. The baseline conservatively omits it.
+\paragraph{The CES loss.} Let the firm's input bundle be CES over the cross-bloc variety and a composite substitute, elasticity $\sigma_m$, with the variety's cost share $s_m$ at initial prices. Removing the variety multiplies the bundle's price index by $(1-s_m)^{1/(1-\sigma_m)}$: with $\sigma_m = 2$ and $s_m = 1/2$, a doubling, and with $\sigma_m = 8$ and $s_m = 0.2$, a three percent rise. A disruption lasting $D_m$ years, before replacement contracts are in place, costs the flow equivalent \eqref{eq:lambda}. Downstream propagation through input-output rounds scales $\lambda^0_m$ by a centrality factor \citep{BaqaeeFarhi2019, CarvalhoEtAl2021}. The baseline reports the direct sectoral loss, and the centrality extension prices the multiplier separately.
 
-\paragraph{The escalation game.} Lemma~\ref{lem:deterrence} treats one dispute. Nothing changes with repeated disputes so long as the escalation choice is static ex post, which it is here because portfolios are predetermined within the period. Making the adversary forward looking, so that today's escalation accelerates tomorrow's fragmentation and erodes its own future hostage-taking capacity, adds a second time-inconsistency problem, this one on the government side. I leave it out to keep the demand side clean.
+\paragraph{The escalation game.} Lemma~\ref{lem:deterrence} treats one dispute. The same argument applies to repeated disputes so long as the escalation choice is static ex post, which it is here because portfolios are predetermined within the period. A forward-looking adversary, for whom today's escalation accelerates tomorrow's fragmentation and erodes future hostage-taking capacity, adds a second time-inconsistency problem on the government side. The present specification keeps the demand side clean and puts all strategic complementarity in firms' sourcing choices.
 
-\paragraph{Capacity scale.} The compression factor $(1-\chi F_m)$ stands for entry and learning in the friendly supply base: with an in-bloc supply curve of elasticity $1/\chi$ facing cumulative demand proportional to $F_m$, the premium of the marginal in-bloc supplier falls linearly in $F_m$ to first order. The identifying content is that the compression loads on \emph{cumulative} reallocation, not on contemporaneous volumes, which is what Design 4 exploits.
+\paragraph{Capacity scale.} The compression factor $(1-\chi F_m)$ stands for entry and learning in the friendly supply base: with an in-bloc supply curve of elasticity $1/\chi$ facing cumulative demand proportional to $F_m$, the premium of the marginal in-bloc supplier falls linearly in $F_m$ to first order. The identifying content is that the compression loads on \emph{cumulative} reallocation rather than contemporaneous volumes, which is what Design 4 exploits.
 
 \section{History versus Expectations}\label{app:history}
 
 The dynamics \eqref{eq:dynamics} are adaptive: reconsidering firms take the current state as their forecast. With forward-looking firms, a reconsidering firm compares present values along an anticipated equilibrium path, and inside the band $[\delta^*_{lo}, \delta^*_{hi}]$ there can exist self-fulfilling paths to either branch: the overlap of \citet{Krugman1991} and \citet{Matsuyama1991}. The scope for expectations to override history is governed by the race between discounting and adjustment: when the reconsideration rate is slow relative to the discount rate, the future path matters little to the marginal chooser and history determines the outcome, and when firms are patient and adjustment fast, an anticipated migration can pay for itself. Lemma~\ref{lem:flow} sharpens the comparison here. Because continuation values cancel in the stationary comparison, the option term along a transition is proportional to the anticipated \emph{change} in thresholds over the firm's expected commitment spell, of length $1/\rho$, so the adaptive benchmark is exact in stationary environments and errs along transitions by that term. A full perfect-foresight treatment, including whether announcements alone can spring the trap of Proposition~\ref{prop:hysteresis}, is the natural next paper. The policy analysis of Section~\ref{sec:policy} is conservative in the meantime because coordination instruments only add to the planner's kit.
 
-\section{Calibration Audit}\label{app:audit}
+\section{Parameter Discipline and Sensitivity}\label{app:params}
 
-Table~\ref{tab:audit3} records, for every parameter group, where it enters the model, its units, its source, the range examined, and what moves when it moves. The mechanism disappears at stated places. If $\theta = \xi = \chi = \eta_a = 0$ the model is the exogenous-risk benchmark (Proposition~\ref{prop:complementarity}). The fold requires either $\theta \ge 0.5$ with $\chi \ge 0.2$ or $\theta = 0.7$ alone (Table~\ref{tab:sens3}), and premium dispersion below roughly 0.7 log points (Section~\ref{sec:equilibrium}). The wedge's sign flip requires $\chi > 0$.
+Table~\ref{tab:params3} records, for every parameter group, where it enters the model, its units, its source, the range examined, and what moves when it moves. The exogenous-risk benchmark obtains at $\theta = \xi = \chi = \eta_a = 0$ (Proposition~\ref{prop:complementarity}). In the sensitivity grid, the fold appears for $\theta \ge 0.5$ with $\chi \ge 0.2$ or for $\theta = 0.7$ alone (Table~\ref{tab:sens3}), with premium dispersion below roughly 0.7 log points (Section~\ref{sec:equilibrium}). The wedge's sign flip is governed by $\chi > 0$.
 
 \begin{table}[h]
 \centering
-\caption{Calibration audit.}
-\label{tab:audit3}
+\caption{Parameter discipline and sensitivity.}
+\label{tab:params3}
 \footnotesize
 \setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{p{2.2cm}p{1.7cm}p{1.5cm}p{2.9cm}p{1.9cm}p{3.2cm}}
@@ -480,19 +525,19 @@ Parameter & Enters at & Units & Source & Range examined & Effect of the range \\
 \midrule
 $\sigma_m$, $s_m$, $D_m$ & eq.~\eqref{eq:lambda} & elasticity, share, years & \citet{BrodaWeinstein2006}, ICIO, recovery studies & spanned across sectors & fix $\lambda^0_m$, hence tipping order \\
 $\lambda^0_m$ & eq.~\eqref{eq:threshold} & ad val.\ flow & implied by eq.~\eqref{eq:lambda} & 1.6\% to 150\% & fold position scales as $1/\lambda^0_m$ \\
-$\bar g_m$, $s$ & eq.~\eqref{eq:map} & ad valorem, log pts & scenario, pending Design 4 & $s$ 0.3 to 1.1 & fold gone above $s \approx 0.7$ \\
-$f^0_m$ & eq.~\eqref{eq:map} & share & pre-2022 diversification & none & level floor only \\
-$\theta$ & eq.~\eqref{eq:hazard} & share deterred & sign from \citet{MartinMayerThoenig2008}, level scenario & 0.4 to 0.7 & fold hazard 9.9 to 17.1\%, consumed distance \ConsumedLoPct\ to \ConsumedHiPct\% \\
-$\xi$, $\chi$ & eqs.~\eqref{eq:thinning}, \eqref{eq:capacity} & elasticities & scenario, $\chi$ pending Design 4 & $\chi$ 0 to 0.6 & fold existence (Table~\ref{tab:sens3}), wedge flip needs $\chi > 0$ \\
-$\eta_a$ & eq.~\eqref{eq:hazard} & per year & scenario & 0 to 0.03 & minor at calibration \\
-$\rho$ & eq.~\eqref{eq:dynamics} & per year & \citet{BarrotSauvagnat2016} & none & timing of $\bar T$ only \\
-$\delta^{pre}, \delta^{post}$ & eq.~\eqref{eq:hazard} & per year & scenario & full axis in figures & positions the economy on every diagram \\
-$w_m$, $\alpha$ & aggregation & shares & trade aggregates & none & scale GDP numbers \\
+$\bar g_m$, $s$ & eq.~\eqref{eq:map} & ad valorem, log pts & calibrated input, Design 4 & $s$ 0.3 to 1.1 & fold gone above $s \approx 0.7$ \\
+$f^0_m$ & eq.~\eqref{eq:map} & share & pre-2022 diversification & floor check & level floor only \\
+$\theta$ & eq.~\eqref{eq:hazard} & share deterred & sign from \citet{MartinMayerThoenig2008}, Design 3 & 0.4 to 0.7 & fold hazard 9.9 to 17.1\%, consumed distance \ConsumedLoPct\ to \ConsumedHiPct\% \\
+$\xi$, $\chi$ & eqs.~\eqref{eq:thinning}, \eqref{eq:capacity} & elasticities & calibrated input, Design 4 & $\chi$ 0 to 0.6 & fold existence (Table~\ref{tab:sens3}), wedge flip needs $\chi > 0$ \\
+$\eta_a$ & eq.~\eqref{eq:hazard} & per year & sensitivity input & 0 to 0.03 & minor at calibration \\
+$\rho$ & eq.~\eqref{eq:dynamics} & per year & \citet{BarrotSauvagnat2016} & timing check & timing of $\bar T$ only \\
+$\delta^{pre}, \delta^{post}$ & eq.~\eqref{eq:hazard} & per year & calibrated input & full axis in figures & positions the economy on every diagram \\
+$w_m$, $\alpha$ & aggregation & shares & trade aggregates & scale check & scale GDP numbers \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.95\textwidth}
-\footnotesize Notes: the criticality inputs ($\sigma_m$, $s_m$, $D_m$) are estimated objects with published counterparts, and the feedback elasticities ($\theta$, $\xi$, $\chi$) are scenario objects pending Designs 3 and 4. Every headline number inherits the scenario status of the feedback block.
+\footnotesize Notes: the criticality inputs ($\sigma_m$, $s_m$, $D_m$) are estimated objects with published counterparts, and Designs 3 and 4 estimate the feedback elasticities ($\theta$, $\xi$, $\chi$). Every headline number reports its sensitivity to the feedback block.
 \end{minipage}
 \end{table}
 
@@ -504,15 +549,15 @@ $w_m$, $\alpha$ & aggregation & shares & trade aggregates & none & scale GDP num
 
 \paragraph{Disputes and escalations.} The Global Sanctions Data Base \citep{FelbermayrEtAl2020} restricted to export controls and supply-touching financial measures, augmented with a chronology of export-control announcements (the October 2022 United States semiconductor controls being the archetype). Escalation events are coded at the sector-month level.
 
-\paragraph{Fragmentation.} $F_{m,t}$ is measured as the share of sector $m$'s pre-2022 cross-bloc trade value whose relationships have exited without re-entry, from the BACI extensive margin: the empirical counterpart of the model's state variable.
+\paragraph{Fragmentation.} $F_{m,t}$ is measured as the share of sector $m$'s pre-2022 cross-bloc trade value in sustained relationship exits, from the BACI extensive margin: the empirical counterpart of the model's state variable.
 
 \section{Extensions}\label{app:extensions}
 
-\paragraph{Connector countries.} Let a share of \enquote{friend-shoring} reroute through politically intermediate countries that re-export the adversary's content. Connectors lower the effective premium (they are the cheap safe supplier), which raises fragmentation of direct links. But if rerouted trade still generates surplus that escalation would destroy, the hostage erodes less than measured fragmentation suggests. The net effect on the fold is ambiguous and empirically resolvable: it turns on whether escalation calculi price direct trade or total content, testable in Design 3 by instrumenting coverage with and without connector content \citep{GopinathEtAl2025JIE, FreundEtAl2023}.
+\paragraph{Connector countries.} Let a share of \enquote{friend-shoring} reroute through politically intermediate countries that re-export the adversary's content. Connectors lower the effective premium (they are the cheap safe supplier), which raises fragmentation of direct links. But if rerouted trade still generates surplus that escalation would destroy, the hostage erodes less than measured fragmentation suggests. The net effect on the fold is ambiguous and empirically resolvable: it turns on whether escalation calculi price direct trade or total content, testable in Design 3 by instrumenting coverage under direct-trade and total-content exposure measures \citep{GopinathEtAl2025JIE, FreundEtAl2023}.
 
 \paragraph{Two-sided fragmentation.} Making both blocs' firms choose adds the adversary's exits to the hostage erosion. With symmetric parameters the sector map's slope doubles where deterrence is concerned, moving folds closer. The one-sided model is thus conservative about tipping.
 
-\paragraph{Correlated disruption and percolation.} Here a severed link harms only its firm. In production networks failures propagate \citep{ElliottGolubLeduc2022, BaqaeeFarhi2019}, making $\lambda$ depend on the pattern, not just the level, of fragmentation. The interaction of strategic hazard with percolation fragility is unexplored and, I suspect, reinforcing.
+\paragraph{Correlated disruption and percolation.} Here a severed link harms only its firm. In production networks link shocks propagate \citep{ElliottGolubLeduc2022, BaqaeeFarhi2019}, making $\lambda$ depend on the pattern as well as the level of fragmentation. The interaction of strategic hazard with percolation fragility is unexplored and, I suspect, reinforcing.
 
 \paragraph{The vulnerability motive.} If the government values rewired trade at $v$ per unit beyond firms' losses, the wedge becomes $\tau^* - v$ and the planner's problem otherwise stands. All sign results survive for $v < \tau^*$, and the policy discussion in Section~\ref{sec:policy} prices the threshold.
 
@@ -522,7 +567,7 @@ $w_m$, $\alpha$ & aggregation & shares & trade aggregates & none & scale GDP num
 \clearpage
 \begin{table}[t]
 \centering
-\caption{Sensitivity: the critical sector's fold band $[\delta^*_{lo}, \delta^*_{hi}]$ by deterrence share $\theta$ and capacity elasticity $\chi$, in dispute-hazard units. \enquote{None} means no fold and a unique equilibrium at all hazards.}
+\caption{Sensitivity: the critical sector's fold band $[\delta^*_{lo}, \delta^*_{hi}]$ by deterrence share $\theta$ and capacity elasticity $\chi$, in dispute-hazard units. \enquote{Unique} means a unique equilibrium at all hazards.}
 \label{tab:sens3}
 \input{output/sens_table.tex}
 \end{table}
@@ -534,6 +579,6 @@ $w_m$, $\alpha$ & aggregation & shares & trade aggregates & none & scale GDP num
 \label{fig:phase}
 \end{figure}
 
-Figure~\ref{fig:phase} refines Table~\ref{tab:sens3} on a grid of 165 calibrations. The fold region is a northeast wedge: the two feedbacks substitute along a downward-sloping existence boundary, so the fold appears at $\chi \ge \PhaseChiMin$ when $\theta = 0.6$ and needs no capacity channel at all once $\theta$ reaches $0.65$. Of the 165 cells, \PhaseMonoCells\ are monotone everywhere, \PhaseFoldCells\ carry a fold, and \PhasePastCells\ have it below the post-2022 hazard already, all of them the neighborhood of the fragile corner of the coarser table. The dangerous region is the northwest of the wedge, weak deterrence with a strong capacity feedback, where the fold sits at low hazards. At $\theta \le 0.35$ the plane passes from monotone directly to past-fold as $\chi$ rises, with no intermediate band in which warning is possible: for those calibrations the first sign of the fold would be the jump itself.
+Figure~\ref{fig:phase} refines Table~\ref{tab:sens3} on a grid of 165 calibrations. The fold region is a northeast wedge: the two feedbacks substitute along a downward-sloping existence boundary, so the fold appears at $\chi \ge \PhaseChiMin$ when $\theta = 0.6$ and requires zero capacity channel once $\theta$ reaches $0.65$. Of the 165 cells, \PhaseMonoCells\ are monotone everywhere, \PhaseFoldCells\ carry a fold, and \PhasePastCells\ have it below the post-2022 hazard already, all of them the neighborhood of the fragile corner of the coarser table. The dangerous region is the northwest of the wedge, weak deterrence with a strong capacity feedback, where the fold sits at low hazards. At $\theta \le 0.35$ the plane passes from monotone directly to past-fold as $\chi$ rises, and the intermediate warning band disappears: for those calibrations the first sign of the fold would be the jump itself.
 
 \end{document}

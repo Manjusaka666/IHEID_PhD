@@ -1,5 +1,5 @@
 # Phase diagram of the fold-driving (theta, chi) plane for the fragmentation
-# paper (referee cross-draft point 6.7). Reads output/phase_grid.csv (written by
+# paper. Reads output/phase_grid.csv (written by
 # code/phase_diagram.jl); writes output/fig_phase.pdf.
 #
 # Standalone companion to make_figures.R: base R only (no ggplot2), matching that
