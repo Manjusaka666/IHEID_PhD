@@ -1,0 +1,633 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global/global}
+  \entry{ArslanalpEichengreenSimpsonBell2022}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=AS}{%
+         family={Arslanalp},
+         familyi={A\bibinitperiod},
+         given={Serkan},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=EB}{%
+         family={Eichengreen},
+         familyi={E\bibinitperiod},
+         given={Barry},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=SBC}{%
+         family={Simpson-Bell},
+         familyi={S\bibinithyphendelim B\bibinitperiod},
+         given={Chima},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AS+1}
+    \strng{fullhash}{ASEBSBC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2022}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2022.103656
+    \endverb
+    \field{pages}{103656}
+    \field{title}{The Stealth Erosion of Dollar Dominance and the Rise of
+  Nontraditional Reserve Currencies}
+    \field{volume}{138}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2022}
+  \endentry
+
+  \entry{BaileyStrezhnevVoeten2017}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=BMA}{%
+         family={Bailey},
+         familyi={B\bibinitperiod},
+         given={Michael\bibnamedelima A.},
+         giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Strezhnev},
+         familyi={S\bibinitperiod},
+         given={Anton},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=VE}{%
+         family={Voeten},
+         familyi={V\bibinitperiod},
+         given={Erik},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BMA+1}
+    \strng{fullhash}{BMASAVE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1177/0022002715595700
+    \endverb
+    \field{number}{2}
+    \field{pages}{430\bibrangedash 456}
+    \field{title}{Estimating Dynamic State Preferences from United Nations
+  Voting Data}
+    \field{volume}{61}
+    \field{journaltitle}{Journal of Conflict Resolution}
+    \field{year}{2017}
+  \endentry
+
+  \entry{BarroGordon1983}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BRJ}{%
+         family={Barro},
+         familyi={B\bibinitperiod},
+         given={Robert\bibnamedelima J.},
+         giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=GDB}{%
+         family={Gordon},
+         familyi={G\bibinitperiod},
+         given={David\bibnamedelima B.},
+         giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BRJGDB1}
+    \strng{fullhash}{BRJGDB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1983}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1016/0304-3932(83)90051-X
+    \endverb
+    \field{number}{1}
+    \field{pages}{101\bibrangedash 121}
+    \field{title}{Rules, Discretion and Reputation in a Model of Monetary
+  Policy}
+    \field{volume}{12}
+    \field{journaltitle}{Journal of Monetary Economics}
+    \field{year}{1983}
+  \endentry
+
+  \entry{BianchiSosaPadilla2024JME}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BJ}{%
+         family={Bianchi},
+         familyi={B\bibinitperiod},
+         given={Javier},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SPC}{%
+         family={Sosa-Padilla},
+         familyi={S\bibinithyphendelim P\bibinitperiod},
+         given={C{\'e}sar},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BJSPC1}
+    \strng{fullhash}{BJSPC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2024}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1016/j.jmoneco.2023.10.011
+    \endverb
+    \field{pages}{62\bibrangedash 70}
+    \field{title}{On Wars, Sanctions, and Sovereign Default}
+    \field{volume}{141}
+    \field{journaltitle}{Journal of Monetary Economics}
+    \field{year}{2024}
+  \endentry
+
+  \entry{BianchiSosaPadilla2025EJ}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BJ}{%
+         family={Bianchi},
+         familyi={B\bibinitperiod},
+         given={Javier},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SPC}{%
+         family={Sosa-Padilla},
+         familyi={S\bibinithyphendelim P\bibinitperiod},
+         given={C{\'e}sar},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BJSPC1}
+    \strng{fullhash}{BJSPC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2025}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1093/ej/ueaf052
+    \endverb
+    \field{number}{672}
+    \field{pages}{2567\bibrangedash 2577}
+    \field{title}{International Sanctions and Dollar Dominance}
+    \field{volume}{135}
+    \field{journaltitle}{The Economic Journal}
+    \field{year}{2025}
+  \endentry
+
+  \entry{DuImSchreger2018}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=DW}{%
+         family={Du},
+         familyi={D\bibinitperiod},
+         given={Wenxin},
+         giveni={W\bibinitperiod},
+      }}%
+      {{hash=IJ}{%
+         family={Im},
+         familyi={I\bibinitperiod},
+         given={Joanne},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Schreger},
+         familyi={S\bibinitperiod},
+         given={Jesse},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{DW+1}
+    \strng{fullhash}{DWIJSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2018.01.001
+    \endverb
+    \field{pages}{167\bibrangedash 181}
+    \field{title}{The U.S. Treasury Premium}
+    \field{volume}{112}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2018}
+  \endentry
+
+  \entry{EichengreenMehlChitu2019}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=EB}{%
+         family={Eichengreen},
+         familyi={E\bibinitperiod},
+         given={Barry},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=MA}{%
+         family={Mehl},
+         familyi={M\bibinitperiod},
+         given={Arnaud},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=CL}{%
+         family={Chi{\c t}u},
+         familyi={C\bibinitperiod},
+         given={Livia},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{EB+1}
+    \strng{fullhash}{EBMACL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \verb{doi}
+    \verb 10.1093/epolic/eiz005
+    \endverb
+    \field{number}{98}
+    \field{pages}{315\bibrangedash 363}
+    \field{title}{Mars or Mercury? The Geopolitics of International Currency
+  Choice}
+    \field{volume}{34}
+    \field{journaltitle}{Economic Policy}
+    \field{year}{2019}
+  \endentry
+
+  \entry{FarhiMaggiori2018}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=FE}{%
+         family={Farhi},
+         familyi={F\bibinitperiod},
+         given={Emmanuel},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=MM}{%
+         family={Maggiori},
+         familyi={M\bibinitperiod},
+         given={Matteo},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FEMM1}
+    \strng{fullhash}{FEMM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1093/qje/qjx031
+    \endverb
+    \field{number}{1}
+    \field{pages}{295\bibrangedash 355}
+    \field{title}{A Model of the International Monetary System}
+    \field{volume}{133}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2018}
+  \endentry
+
+  \entry{FelbermayrEtAl2020}{article}{}{}
+    \name{author}{5}{}{%
+      {{hash=FG}{%
+         family={Felbermayr},
+         familyi={F\bibinitperiod},
+         given={Gabriel},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Kirilakha},
+         familyi={K\bibinitperiod},
+         given={Aleksandra},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SC}{%
+         family={Syropoulos},
+         familyi={S\bibinitperiod},
+         given={Constantinos},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=YE}{%
+         family={Yalcin},
+         familyi={Y\bibinitperiod},
+         given={Erdal},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=YYV}{%
+         family={Yotov},
+         familyi={Y\bibinitperiod},
+         given={Yoto\bibnamedelima V.},
+         giveni={Y\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FG+1}
+    \strng{fullhash}{FGKASCYEYYV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2020}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1016/j.euroecorev.2020.103561
+    \endverb
+    \field{pages}{103561}
+    \field{title}{The Global Sanctions Data Base}
+    \field{volume}{129}
+    \field{journaltitle}{European Economic Review}
+    \field{year}{2020}
+  \endentry
+
+  \entry{GopinathStein2021}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=GG}{%
+         family={Gopinath},
+         familyi={G\bibinitperiod},
+         given={Gita},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=SJC}{%
+         family={Stein},
+         familyi={S\bibinitperiod},
+         given={Jeremy\bibnamedelima C.},
+         giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GGSJC1}
+    \strng{fullhash}{GGSJC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2021}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \verb{doi}
+    \verb 10.1093/qje/qjaa036
+    \endverb
+    \field{number}{2}
+    \field{pages}{783\bibrangedash 830}
+    \field{title}{Banking, Trade, and the Making of a Dominant Currency}
+    \field{volume}{136}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2021}
+  \endentry
+
+  \entry{HeKrishnamurthyMilbradt2019}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=HZ}{%
+         family={He},
+         familyi={H\bibinitperiod},
+         given={Zhiguo},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Krishnamurthy},
+         familyi={K\bibinitperiod},
+         given={Arvind},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MK}{%
+         family={Milbradt},
+         familyi={M\bibinitperiod},
+         given={Konstantin},
+         giveni={K\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HZ+1}
+    \strng{fullhash}{HZKAMK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \verb{doi}
+    \verb 10.1257/aer.20160216
+    \endverb
+    \field{number}{4}
+    \field{pages}{1230\bibrangedash 1262}
+    \field{title}{A Model of Safe Asset Determination}
+    \field{volume}{109}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2019}
+  \endentry
+
+  \entry{IMFCOFER}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=I}{%
+         family={{International Monetary Fund}},
+         familyi={I\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{I1}
+    \strng{fullhash}{I1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{I}
+    \field{sortinithash}{I}
+    \field{howpublished}{IMF Data}
+    \field{title}{Currency Composition of Official Foreign Exchange Reserves
+  (COFER)}
+    \verb{url}
+    \verb https://data.imf.org/en/datasets/IMF.STA:COFER
+    \endverb
+    \field{year}{2026}
+  \endentry
+
+  \entry{JiangKrishnamurthyLustig2021}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=JZ}{%
+         family={Jiang},
+         familyi={J\bibinitperiod},
+         given={Zhengyang},
+         giveni={Z\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Krishnamurthy},
+         familyi={K\bibinitperiod},
+         given={Arvind},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=LH}{%
+         family={Lustig},
+         familyi={L\bibinitperiod},
+         given={Hanno},
+         giveni={H\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{JZ+1}
+    \strng{fullhash}{JZKALH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2021}
+    \field{labeldatesource}{}
+    \field{sortinit}{J}
+    \field{sortinithash}{J}
+    \verb{doi}
+    \verb 10.1111/jofi.13003
+    \endverb
+    \field{number}{3}
+    \field{pages}{1049\bibrangedash 1089}
+    \field{title}{Foreign Safe Asset Demand and the Dollar Exchange Rate}
+    \field{volume}{76}
+    \field{journaltitle}{The Journal of Finance}
+    \field{year}{2021}
+  \endentry
+
+  \entry{KrishnamurthyVissingJorgensen2012}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=KA}{%
+         family={Krishnamurthy},
+         familyi={K\bibinitperiod},
+         given={Arvind},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=VJA}{%
+         family={Vissing-Jorgensen},
+         familyi={V\bibinithyphendelim J\bibinitperiod},
+         given={Annette},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KAVJA1}
+    \strng{fullhash}{KAVJA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2012}
+    \field{labeldatesource}{}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \verb{doi}
+    \verb 10.1086/666526
+    \endverb
+    \field{number}{2}
+    \field{pages}{233\bibrangedash 267}
+    \field{title}{The Aggregate Demand for Treasury Debt}
+    \field{volume}{120}
+    \field{journaltitle}{Journal of Political Economy}
+    \field{year}{2012}
+  \endentry
+
+  \entry{KydlandPrescott1977}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=KFE}{%
+         family={Kydland},
+         familyi={K\bibinitperiod},
+         given={Finn\bibnamedelima E.},
+         giveni={F\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=PEC}{%
+         family={Prescott},
+         familyi={P\bibinitperiod},
+         given={Edward\bibnamedelima C.},
+         giveni={E\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KFEPEC1}
+    \strng{fullhash}{KFEPEC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1977}
+    \field{labeldatesource}{}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \verb{doi}
+    \verb 10.1086/260580
+    \endverb
+    \field{number}{3}
+    \field{pages}{473\bibrangedash 491}
+    \field{title}{Rules Rather than Discretion: The Inconsistency of Optimal
+  Plans}
+    \field{volume}{85}
+    \field{journaltitle}{Journal of Political Economy}
+    \field{year}{1977}
+  \endentry
+
+  \entry{BrookingsRussiaAssets2025}{misc}{}{}
+    \name{author}{3}{}{%
+      {{hash=RE}{%
+         family={Ribakova},
+         familyi={R\bibinitperiod},
+         given={Elina},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=HB}{%
+         family={Hilgenstock},
+         familyi={H\bibinitperiod},
+         given={Benjamin},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=WD}{%
+         family={Wessel},
+         familyi={W\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{RE+1}
+    \strng{fullhash}{REHBWD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2025}
+    \field{labeldatesource}{}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{howpublished}{Brookings Institution}
+    \field{title}{What is the Status of Russia's Frozen Sovereign Assets?}
+    \verb{url}
+    \verb https://www.brookings.edu/articles/what-is-the-status-of-russias-froz
+    \verb en-sovereign-assets/
+    \endverb
+    \field{year}{2025}
+  \endentry
+
+  \entry{WGC2024}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{World Gold Council}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2024}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{howpublished}{World Gold Council data release}
+    \field{title}{Gold Demand Trends}
+    \field{year}{2024}
+  \endentry
+\enddatalist
+\endinput

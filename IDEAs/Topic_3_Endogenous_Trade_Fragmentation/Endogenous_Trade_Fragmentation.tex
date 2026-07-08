@@ -1,0 +1,160 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage[backend=biber,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setstretch{1.08}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.7em}{}
+
+\addbibresource{Endogenous_Trade_Fragmentation.bib}
+
+\title{Endogenous Trade Fragmentation: A Top-level PhD Research Proposal}
+\author{Prepared as an independent proposal draft}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This standalone proposal (Original Topic 3) states a focused research question, positions it against verified literature, develops a tractable model, derives testable implications, and specifies an empirical design to validate or reject the mechanism. It is self-contained: the preamble is embedded in this file and the references are contained in the local BibTeX file only.
+\end{abstract}
+
+\paragraph{Source-integrity note.} References are restricted to publications, working papers, datasets, and institutional sources checked during preparation. Unverified claims are not used as established facts.
+
+\section{Endogenous Friend-shoring and the Tipping Point of Trade Fragmentation}
+
+\paragraph{One-sentence pitch.} Existing work often asks what fragmentation costs conditional on an imposed split. This project asks why fragmentation can become self-reinforcing: once enough firms friend-shore, cross-bloc supply relationships become less reliable and less valuable for everyone else.
+
+\subsection*{1. Research question and reviewer positioning}
+The question is:
+\begin{quote}
+Can geopolitical risk generate strategic complementarities in supplier choice, producing multiple equilibria and tipping points in the global trade network?
+\end{quote}
+This is a top-field question because it transforms geopolitical fragmentation from an exogenous scenario into an endogenous equilibrium outcome. Recent evidence shows that trade and investment linkages have shifted along geopolitical lines since Russia's invasion of Ukraine \citep{GopinathEtAl2025JIE}. \citet{FernandezVillaverdeMineyamaSong2024} construct a geopolitical fragmentation index and estimate negative macro effects. Quantitative decoupling exercises, including \citet{BaqaeeEtAl2024} and \citet{AttinasiBoeckelmannMeunier2023}, show that fragmentation can be costly, especially in the short run. These papers motivate the welfare stakes. The missing mechanism is endogenous network formation under geopolitical risk.
+
+A skeptical referee will ask whether ``friend-shoring'' is just a gravity residual. The paper must answer by deriving a structural supplier-choice margin and testing whether supplier switching is stronger in sectors where theory predicts it: low substitution, high input centrality, high cross-bloc exposure, and high geopolitical distance.
+
+\subsection*{2. Contribution relative to the literature}
+The project connects four strands. First, it builds on quantitative trade with input-output linkages and decoupling counterfactuals. Second, it uses recent evidence on geopolitical fragmentation from \citet{GopinathEtAl2025JIE} and \citet{FernandezVillaverdeMineyamaSong2024}. Third, it treats supply links as endogenous rather than fixed. Fourth, it creates a bridge to policy design: tariffs, subsidies, and strategic reserves are evaluated only after the network externality is measured.
+
+The intended contribution is a theorem and a measurement result. The theorem: geopolitical supply risk can create strategic complementarity in supplier choice. The measurement result: a structurally estimated risk elasticity can explain observed post-2022 supplier switching and quantify the distance to a fragmentation tipping point.
+
+\subsection*{3. Model}
+There are countries $i=1,\ldots,N$ and sectors $m=1,\ldots,M$. Firms in country $i$ produce using a CES aggregator of intermediate inputs from potential suppliers $j$:
+\begin{equation}
+X_{im}=\left(\sum_{j\in S_{im}} \omega_{ijm}^{1/\sigma_m} q_{ijm}^{(\sigma_m-1)/\sigma_m}\right)^{\sigma_m/(\sigma_m-1)},
+\end{equation}
+where $S_{im}$ is the chosen supplier set and $\sigma_m$ is the elasticity of substitution. Supplier $j$ has unit cost $c_{jm}$ and iceberg trade cost $\tau_{ijm}$. A link $ij$ is disrupted with probability
+\begin{equation}
+\pi_{ijm}(F_t)=\pi_0\exp\{\gamma d_{ij}+\eta F_t+\zeta_m Critical_m\}, \label{eq:disruption}
+\end{equation}
+where $d_{ij}$ is geopolitical distance, $F_t$ is aggregate cross-bloc fragmentation, and $Critical_m$ captures strategic input importance. The parameter $\eta$ is the feedback from aggregate fragmentation to link reliability.
+
+Expected effective unit cost for input $m$ is approximated by
+\begin{equation}
+\tilde c_{im}(S_{im};F_t)=\left[\sum_{j\in S_{im}} \left((1+\tau_{ijm})c_{jm}\right)^{1-\sigma_m}(1-\pi_{ijm}(F_t))\right]^{1/(1-\sigma_m)}+\kappa_m |S_{im}|. \label{eq:effective-cost}
+\end{equation}
+The firm chooses $S_{im}$ to minimize \eqref{eq:effective-cost}. Define a friend-shoring action $a_{ijm}=1$ if country $i$ excludes cross-bloc supplier $j$ from $S_{im}$ despite its cost advantage. Aggregate fragmentation is
+\begin{equation}
+F_t=\frac{\sum_{i,j,m} w_{ijm} a_{ijm}\one\{Bloc_i\neq Bloc_j\}}{\sum_{i,j,m}w_{ijm}\one\{Bloc_i\neq Bloc_j\}}. \label{eq:F}
+\end{equation}
+
+\subsection*{4. Theoretical mechanism}
+The payoff from friend-shoring is the avoided expected disruption loss minus the loss from higher production cost. Let
+\begin{equation}
+\Delta_{ijm}(F)=\underbrace{\pi_{ijm}(F)L_{ijm}(\sigma_m,\text{IO centrality})}_{\text{security benefit}}-\underbrace{CostGap_{ijm}}_{\text{efficiency cost}}. \label{eq:friend-gain}
+\end{equation}
+Friend-shoring occurs when $\Delta_{ijm}(F)>0$.
+
+\begin{proposition}[Strategic complementarity]
+If $\eta>0$ in \eqref{eq:disruption}, then $\partial \Delta_{ijm}(F)/\partial F>0$. Supplier exclusion is a strategic complement: the private incentive to friend-shore increases when aggregate fragmentation is higher.
+\end{proposition}
+
+\begin{proposition}[Multiple fragmentation equilibria]
+Let $BR(F)$ be the aggregate best-response fragmentation implied by \eqref{eq:friend-gain}. If $BR(F)$ is continuous, increasing, and crosses the 45-degree line more than once, the economy has multiple supplier-network equilibria. A low-fragmentation equilibrium and a high-fragmentation equilibrium can coexist.
+\end{proposition}
+
+\begin{proposition}[Sectoral tipping]
+Sectors with lower substitution elasticity $\sigma_m$, higher input-output centrality, and larger geopolitical distance $d_{ij}$ have lower tipping thresholds. Small geopolitical shocks can cause large supplier switching in those sectors while leaving high-substitution sectors nearly unchanged.
+\end{proposition}
+
+This gives the paper a clean empirical implication: if the mechanism is correct, fragmentation should be nonlinear and sectorally concentrated, not a uniform decline in globalization.
+
+\subsection*{5. Empirical design}
+\paragraph{Data.} Bilateral product-level trade comes from CEPII BACI, which provides harmonized bilateral trade flows for roughly 200 countries at the HS 6-digit level \citep{CEPIIBACI}. Input-output structure comes from OECD ICIO, which maps international flows of goods and services across countries and activities \citep{OECDICIO}. Geopolitical distance is measured using UN General Assembly ideal points from \citet{BaileyStrezhnevVoeten2017}. Fragmentation indices and macro controls come from \citet{FernandezVillaverdeMineyamaSong2024} and standard sources.
+
+\paragraph{Reduced-form test.} The first test studies whether trade shares shift away from geopolitically distant suppliers after fragmentation shocks:
+\begin{equation}
+\Delta \log Share_{ijmt}=\alpha_{im}+\alpha_{jm}+\tau_t+\beta\,Post_t\times GeoDist_{ij}\times Vulnerability_m+\Gamma'X_{ijmt}+\varepsilon_{ijmt}. \label{eq:trade-did}
+\end{equation}
+$Vulnerability_m$ is high for low-substitution, high-centrality, or strategically sensitive inputs. The model predicts $\beta<0$: after geopolitical shocks, high-vulnerability sectors should shift away from distant suppliers.
+
+\paragraph{Extensive-margin supplier switching.} Define $Entry_{ijmt}$ and $Exit_{ijmt}$ at the product-country level. Estimate hazard models for supplier exit:
+\begin{equation}
+\Pr(Exit_{ijmt}=1)=\Lambda\left(\alpha_{im}+\alpha_{jt}+\delta GeoDist_{ij}\times Shock_t\times Vulnerability_m+\Gamma'X_{ijmt}\right). \label{eq:exit}
+\end{equation}
+The extensive margin is essential because network fragmentation is not just lower volume; it is changed supplier sets.
+
+\paragraph{Structural estimation.} Estimate $(\gamma,\eta,\zeta_m)$ by matching observed supplier switching to the model's choice rule \eqref{eq:friend-gain}. The structural moment is the probability that a supplier is excluded despite a cost advantage:
+\begin{equation}
+\Pr(a_{ijm}=1)=\Pr\left[\pi_0\exp\{\gamma d_{ij}+\eta F_t+\zeta_m Critical_m\}L_{ijm}>CostGap_{ijm}\right].
+\end{equation}
+This directly maps theory to the data.
+
+\subsection*{6. Quantitative counterfactuals}
+Once the risk elasticity is estimated, the paper can simulate:
+\begin{enumerate}[label=(\roman*)]
+\item a no-fragmentation counterfactual with $\eta=0$;
+\item a moderate friend-shoring equilibrium after a permanent increase in $\pi_0$;
+\item a tipping-point scenario in which $F$ jumps from low to high equilibrium;
+\item targeted policy interventions that subsidize domestic capacity in only high-centrality sectors;
+\item connector-country equilibrium, where politically intermediate countries absorb rerouted trade.
+\end{enumerate}
+The welfare calculation should use changes in input costs and consumption-equivalent welfare, but the first version should avoid a full Ramsey problem. A referee will prefer one well-disciplined counterfactual to five speculative policy tools.
+
+\subsection*{7. Validation of theory by empirics}
+The model is validated if the following cross-equation restrictions hold:
+\begin{enumerate}[label=\textbf{V\arabic*.},leftmargin=*]
+\item The same $\gamma$ that explains supplier exit also explains trade-share declines along geopolitical distance.
+\item The estimated $\eta$ implies amplification: observed switching is larger when aggregate fragmentation is already high.
+\item Sectoral responses scale with $L_{ijm}$, proxied by low substitution elasticity and high IO centrality.
+\item Price increases are largest where the model predicts high efficiency costs from friend-shoring.
+\item Connector-country gains arise endogenously rather than being imposed as a residual category.
+\end{enumerate}
+
+\subsection*{8. Dissertation structure}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Chapter 1: Endogenous fragmentation.} Prove strategic complementarity and estimate supplier switching.
+\item \textbf{Chapter 2: Quantitative welfare.} Embed estimated risk wedges in a multi-country input-output trade model.
+\item \textbf{Chapter 3: Policy design.} Compare broad tariffs, targeted subsidies, and strategic reserves under estimated network risk.
+\end{enumerate}
+
+\subsection*{9. Reviewer stress test}
+The first danger is scale. A full Eaton-Kortum-input-output-network-Ramsey model is too large for a first paper. The correct first paper is the mechanism: endogenous supplier switching under geopolitical risk. The second danger is omitted variables: tariffs, transport costs, and COVID-era disruptions all affect trade. The empirical design therefore needs product-country fixed effects, supplier-time fixed effects, and explicit controls for tariffs and freight costs. The third danger is interpreting correlation as geopolitical causality. The strongest design uses high-frequency geopolitical shocks, variation in initial geopolitical distance, and sectoral vulnerability predicted by pre-period IO structure.
+
+\subsection*{10. Bottom line}
+This is one of the best proposals for a frontier trade/macro dissertation. Its novelty is not that fragmentation is costly; that is already known. Its novelty is an endogenous tipping mechanism that can be measured and disciplined with trade-network data.
+
+
+\newpage
+\printbibliography
+\end{document}

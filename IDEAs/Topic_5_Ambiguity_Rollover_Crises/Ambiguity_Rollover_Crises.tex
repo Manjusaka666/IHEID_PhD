@@ -1,0 +1,170 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage[backend=biber,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setstretch{1.08}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.7em}{}
+
+\addbibresource{Ambiguity_Rollover_Crises.bib}
+
+\title{Ambiguity and Sovereign Rollover Crises: A Top-level PhD Research Proposal}
+\author{Prepared as an independent proposal draft}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This standalone proposal (Original Topic 5) states a focused research question, positions it against verified literature, develops a tractable model, derives testable implications, and specifies an empirical design to validate or reject the mechanism. It is self-contained: the preamble is embedded in this file and the references are contained in the local BibTeX file only.
+\end{abstract}
+
+\paragraph{Source-integrity note.} References are restricted to publications, working papers, datasets, and institutional sources checked during preparation. Unverified claims are not used as established facts.
+
+\section{Ambiguity, Investor Base Composition, and Sovereign Rollover Crises}
+
+\paragraph{One-sentence pitch.} Rollover crises depend not only on fundamentals and information precision, but also on who holds the debt. This project studies how ambiguity-averse, price-sensitive investors shift the crisis threshold in a sovereign global game.
+
+\subsection*{1. Research question and reviewer positioning}
+The core question is:
+\begin{quote}
+How does ambiguity about public information quality, combined with changes in the investor base, affect sovereign rollover-crisis thresholds and the value of official information disclosure?
+\end{quote}
+The theoretical foundation is global games. \citet{MorrisShin2003} show how noisy private information can select a unique equilibrium in coordination games. \citet{MorrisShin2004} apply coordination risk to debt pricing. \citet{HeXiong2012} analyze dynamic debt runs with staggered creditors. \citet{Ui2025} adds strategic ambiguity and shows that ambiguous information can have different effects from low-quality information; in debt rollover applications, more ambiguous-quality news can trigger rollover crises because not rolling over is the safe action.
+
+The proposed contribution is to bring this logic into a sovereign-debt environment with a changing investor base. The paper is not simply ``global games plus sovereign debt.'' It adds a measurable state variable: the share of debt held by investors who are more ambiguity-averse, more leveraged, or more sensitive to mark-to-market losses. The comparative statics then connect theory to data.
+
+\subsection*{2. Contribution relative to the literature}
+The paper contributes in three ways. First, it develops a sovereign rollover game with heterogeneous ambiguity sets. Second, it maps investor-base composition into the aggregate rollover threshold. Third, it evaluates policy tools - IMF signals, fiscal transparency, and collective action clauses - through their effect on ambiguity rather than only through fundamentals.
+
+A top referee will ask whether ambiguity is observable. The answer is that the model does not require directly observing preferences. It requires proxies for ambiguity sensitivity and belief dispersion: CDS-implied volatility smiles, survey disagreement, bid-ask spreads, investor-base shares, mutual-fund flow sensitivity, and official-sector ownership. These objects do not perfectly identify ambiguity, but they allow disciplined tests of the model's comparative statics.
+
+\subsection*{3. Static rollover game}
+A sovereign has short-term debt $B$ due today. There is a continuum of creditors of measure one. Each creditor chooses $a_i\in\{0,1\}$, where $a_i=1$ means roll over and $a_i=0$ means run. The sovereign survives if the mass of runners is below a threshold depending on fundamental $\theta$:
+\begin{equation}
+\int_0^1 (1-a_i)di \leq \Lambda(\theta), \qquad \Lambda'(\theta)>0. \label{eq:survival}
+\end{equation}
+Higher $\theta$ means stronger fundamentals and a larger tolerable run.
+
+Creditor $i$ observes
+\begin{equation}
+x_i=\theta+\sigma_k \varepsilon_i,
+\end{equation}
+where $k$ indexes investor type. Type $k$ has ambiguity set $\mathcal P_k(x_i)$ over the posterior distribution of $\theta$ and others' actions. The payoff from rolling over is
+\begin{equation}
+u^R_i=\begin{cases}
+R_k-1, & \text{if the sovereign survives},\\
+\mathcal R_k-1, & \text{if the sovereign fails},
+\end{cases}
+\end{equation}
+with $R_k>1>\mathcal R_k$. The payoff from running is normalized to $0$. Under max-min preferences, type $k$ rolls over if
+\begin{equation}
+\min_{P\in\mathcal P_k(x_i)} E_P[u^R_i]\geq 0. \label{eq:maxmin}
+\end{equation}
+Let $P_k^{\max}(C\mid x_i)$ be the worst-case posterior probability of crisis. Condition \eqref{eq:maxmin} becomes
+\begin{equation}
+(1-P_k^{\max}(C\mid x_i))(R_k-1)+P_k^{\max}(C\mid x_i)(\mathcal R_k-1)\geq 0. \label{eq:rollover-condition}
+\end{equation}
+Equivalently, type $k$ rolls over when
+\begin{equation}
+P_k^{\max}(C\mid x_i)\leq \bar P_k\equiv \frac{R_k-1}{R_k-\mathcal R_k}. \label{eq:thresholdprob}
+\end{equation}
+Because $P_k^{\max}(C\mid x_i)$ is decreasing in $x_i$, there exists a cutoff $x_k^*$ such that type $k$ runs iff $x_i<x_k^*$.
+
+\subsection*{4. Investor base and equilibrium threshold}
+Let $\mu_{k,t}$ be the share of sovereign debt held by type $k$ investors. Given cutoffs $x_k^*$, the expected mass of runners at fundamental $\theta$ is
+\begin{equation}
+Run(\theta;\mu)=\sum_k \mu_k \Phi\left(\frac{x_k^*-\theta}{\sigma_k}\right). \label{eq:aggregate-run}
+\end{equation}
+The crisis threshold $\theta^*$ solves
+\begin{equation}
+Run(\theta^*;\mu)=\Lambda(\theta^*). \label{eq:crisis-threshold}
+\end{equation}
+
+\begin{proposition}[Ambiguity raises the run cutoff]
+If a larger ambiguity set raises the worst-case crisis probability $P_k^{\max}(C\mid x)$ for every signal $x$, then the rollover cutoff $x_k^*$ rises. Ambiguity-averse creditors run at stronger private signals.
+\end{proposition}
+
+\begin{proposition}[Investor-base fragility]
+If type $A$ has a higher run cutoff than type $B$, then increasing $\mu_A$ raises the aggregate crisis threshold $\theta^*$ whenever the left-hand side of \eqref{eq:crisis-threshold} crosses the survival capacity from above.
+\end{proposition}
+
+\begin{proposition}[Non-monotone value of public information]
+A public signal that reduces ambiguity can lower crisis risk, but a public signal that is precise about bad fundamentals can raise crisis risk. Therefore the welfare effect of transparency depends on whether the policy primarily reduces ambiguity or reveals adverse fundamentals.
+\end{proposition}
+
+The third proposition is important. It prevents a naive policy conclusion that all disclosure is always good.
+
+\subsection*{5. Dynamic extension}
+The dynamic model adds debt maturity and investor-base evolution:
+\begin{equation}
+B_{t+1}=\mathcal B(B_t,r_t,PrimaryBalance_t), \qquad \mu_{t+1}=\mathcal M(\mu_t,QT_t,Flows_t,Returns_t). \label{eq:dynamic-investor-base}
+\end{equation}
+The sovereign spread satisfies
+\begin{equation}
+spread_t=\Pi(\theta_t,B_t,\mu_t,Ambiguity_t,GlobalRisk_t). \label{eq:spread-ambiguity}
+\end{equation}
+This dynamic block is deliberately parsimonious. The goal is not a full DSGE model; it is a tractable map from investor composition to rollover fragility.
+
+\subsection*{6. Empirical design}
+\paragraph{Data.} The empirical work uses sovereign bond and CDS spreads, CDS option-implied volatility when available, sovereign auction data, investor-base data from BIS/IMF/national debt-management offices, official-sector purchase and QT episodes, IMF Article IV and program dates, ratings announcements, and macro controls.
+
+\paragraph{Reduced-form test 1: investor base and spread sensitivity.}
+\begin{equation}
+\Delta spread_{i,t}=\alpha_i+\tau_t+\beta\,AmbiguityProxy_{i,t}\times FragileInvestorShare_{i,t}+\Gamma'X_{i,t}+\varepsilon_{i,t}. \label{eq:ambig-panel}
+\end{equation}
+The model predicts $\beta>0$: ambiguity matters more when the marginal investor is more likely to run.
+
+\paragraph{Reduced-form test 2: public signals.} Around IMF Article IV releases, IMF program news, or major fiscal announcements, estimate
+\begin{equation}
+\Delta spread_{i,t+h}=\alpha_i+\tau_t+\sum_h \beta_h Signal_{i,t}\times AmbiguityProxy_{i,t-1}+\Gamma'X_{i,t-1}+u_{i,t+h}. \label{eq:signal-lp}
+\end{equation}
+If the signal mainly reduces ambiguity, spreads should fall more for high-ambiguity countries. If the signal reveals bad fundamentals, the sign may reverse. The paper must classify signals carefully rather than pool all announcements.
+
+\paragraph{Structural validation.} Estimate the model by matching: (i) spread jumps around public signals; (ii) changes in rollover auction tails; (iii) the relationship between investor-base composition and spread volatility; and (iv) crisis episodes where rollover pressure materializes. The key mapping is from observed $\mu_k$ and ambiguity proxies to the implied crisis threshold $\theta^*$.
+
+\subsection*{7. Falsifiable predictions}
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=*]
+\item Spreads react more to bad public news when fragile investor share is high.
+\item Ambiguity-reducing official communication lowers spreads most when prior ambiguity is high and fundamentals are not too weak.
+\item Quantitative tightening or official-sector exit raises rollover fragility when it shifts debt toward more price-sensitive investors.
+\item Collective action clauses reduce crisis probability more in high-ambiguity environments because they change the payoff from running.
+\item CDS-option smiles and forecast dispersion should predict future spread jumps even after controlling for debt, growth, ratings, and VIX.
+\end{enumerate}
+
+\subsection*{8. Dissertation structure}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Chapter 1: Theory.} Solve the heterogeneous-ambiguity global game and characterize investor-base comparative statics.
+\item \textbf{Chapter 2: Empirics.} Estimate how investor-base composition changes the sensitivity of sovereign spreads to ambiguity and public signals.
+\item \textbf{Chapter 3: Policy.} Evaluate IMF communication, fiscal transparency, and CAC design as ambiguity-management tools.
+\end{enumerate}
+
+\subsection*{9. Reviewer stress test}
+The first risk is that ambiguity is not cleanly identified. The paper should be honest: it tests comparative statics using proxies, not revealed preference at the individual-investor level. The second risk is theoretical novelty. To be more than an application of \citet{Ui2025}, the paper must make investor-base composition central and empirically disciplined. The third risk is data availability for creditor composition. The best starting sample is sovereigns with detailed debt-management-office data and liquid CDS markets, not the widest possible emerging-market panel.
+
+\subsection*{10. Bottom line}
+This is the most theoretically elegant proposal. It is high-risk because the proofs must be clean and the ambiguity proxies must be credible. If successful, it offers a rigorous bridge between global games, sovereign debt markets, and current policy concerns about the changing marginal holder of government debt.
+
+
+\newpage
+\printbibliography
+\end{document}

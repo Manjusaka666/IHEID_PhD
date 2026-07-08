@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Ambiguity_Rollover_Crises_Paper.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: Ambiguity_Rollover_Crises_Paper-blx.bib
+Database file #2: Ambiguity_Rollover_Crises_Paper.bib
+Biblatex version: 3.21
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 20 entries,
+            6402 wiz_defined-function locations,
+            1358 strings with 12094 characters,
+and the built_in function-call counts, 127839 in all, are:
+= -- 9397
+> -- 2117
+< -- 573
++ -- 3118
+- -- 802
+* -- 9712
+:= -- 13490
+add.period$ -- 0
+call.type$ -- 20
+change.case$ -- 281
+chr.to.int$ -- 44
+cite$ -- 38
+duplicate$ -- 12996
+empty$ -- 11827
+format.name$ -- 1199
+if$ -- 26538
+int.to.chr$ -- 0
+int.to.str$ -- 47
+missing$ -- 0
+newline$ -- 624
+num.names$ -- 878
+pop$ -- 6610
+preamble$ -- 1
+purify$ -- 361
+quote$ -- 0
+skip$ -- 3623
+stack$ -- 0
+substring$ -- 17092
+swap$ -- 3037
+text.length$ -- 534
+text.prefix$ -- 19
+top$ -- 1
+type$ -- 658
+warning$ -- 0
+while$ -- 1597
+width$ -- 0
+write$ -- 605

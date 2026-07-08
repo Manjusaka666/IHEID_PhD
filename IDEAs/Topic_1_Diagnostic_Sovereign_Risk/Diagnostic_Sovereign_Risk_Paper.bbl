@@ -1,0 +1,801 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global/global}
+  \entry{AguiarEtAl2016}{incollection}{}{}
+    \name{author}{4}{}{%
+      {{hash=AM}{%
+         family={Aguiar},
+         familyi={A\bibinitperiod},
+         given={Mark},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=CS}{%
+         family={Chatterjee},
+         familyi={C\bibinitperiod},
+         given={Satyajit},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CH}{%
+         family={Cole},
+         familyi={C\bibinitperiod},
+         given={Harold},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=SZ}{%
+         family={Stangebye},
+         familyi={S\bibinitperiod},
+         given={Zachary},
+         giveni={Z\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=TJB}{%
+         family={Taylor},
+         familyi={T\bibinitperiod},
+         given={John\bibnamedelima B.},
+         giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=UH}{%
+         family={Uhlig},
+         familyi={U\bibinitperiod},
+         given={Harald},
+         giveni={H\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Elsevier}%
+    }
+    \strng{namehash}{AM+1}
+    \strng{fullhash}{AMCSCHSZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{booktitle}{Handbook of Macroeconomics}
+    \verb{doi}
+    \verb 10.1016/bs.hesmac.2016.04.005
+    \endverb
+    \field{pages}{1697\bibrangedash 1755}
+    \field{title}{Quantitative Models of Sovereign Debt Crises}
+    \field{volume}{2}
+    \field{year}{2016}
+  \endentry
+
+  \entry{AguiarGopinath2006}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=AM}{%
+         family={Aguiar},
+         familyi={A\bibinitperiod},
+         given={Mark},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=GG}{%
+         family={Gopinath},
+         familyi={G\bibinitperiod},
+         given={Gita},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AMGG1}
+    \strng{fullhash}{AMGG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2005.05.005
+    \endverb
+    \field{number}{1}
+    \field{pages}{64\bibrangedash 83}
+    \field{title}{Defaultable Debt, Interest Rates and the Current Account}
+    \field{volume}{69}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2006}
+  \endentry
+
+  \entry{Arellano2008}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=AC}{%
+         family={Arellano},
+         familyi={A\bibinitperiod},
+         given={Cristina},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AC1}
+    \strng{fullhash}{AC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \verb{doi}
+    \verb 10.1257/aer.98.3.690
+    \endverb
+    \field{number}{3}
+    \field{pages}{690\bibrangedash 712}
+    \field{title}{Default Risk and Income Fluctuations in Emerging Economies}
+    \field{volume}{98}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2008}
+  \endentry
+
+  \entry{BordaloGennaioliMaShleifer2020}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=BP}{%
+         family={Bordalo},
+         familyi={B\bibinitperiod},
+         given={Pedro},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=GN}{%
+         family={Gennaioli},
+         familyi={G\bibinitperiod},
+         given={Nicola},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=MY}{%
+         family={Ma},
+         familyi={M\bibinitperiod},
+         given={Yueran},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Shleifer},
+         familyi={S\bibinitperiod},
+         given={Andrei},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BP+1}
+    \strng{fullhash}{BPGNMYSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2020}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1257/aer.20181219
+    \endverb
+    \field{number}{9}
+    \field{pages}{2748\bibrangedash 2782}
+    \field{title}{Overreaction in Macroeconomic Expectations}
+    \field{volume}{110}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2020}
+  \endentry
+
+  \entry{BordaloEtAl2022JEP}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=BP}{%
+         family={Bordalo},
+         familyi={B\bibinitperiod},
+         given={Pedro},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=GN}{%
+         family={Gennaioli},
+         familyi={G\bibinitperiod},
+         given={Nicola},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=MY}{%
+         family={Ma},
+         familyi={M\bibinitperiod},
+         given={Yueran},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Shleifer},
+         familyi={S\bibinitperiod},
+         given={Andrei},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BP+1}
+    \strng{fullhash}{BPGNMYSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2022}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1257/jep.36.3.223
+    \endverb
+    \field{number}{3}
+    \field{pages}{223\bibrangedash 244}
+    \field{title}{Overreaction and Diagnostic Expectations in Macroeconomics}
+    \field{volume}{36}
+    \field{journaltitle}{Journal of Economic Perspectives}
+    \field{year}{2022}
+  \endentry
+
+  \entry{BordaloGennaioliShleifer2018}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=BP}{%
+         family={Bordalo},
+         familyi={B\bibinitperiod},
+         given={Pedro},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=GN}{%
+         family={Gennaioli},
+         familyi={G\bibinitperiod},
+         given={Nicola},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Shleifer},
+         familyi={S\bibinitperiod},
+         given={Andrei},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BP+1}
+    \strng{fullhash}{BPGNSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1111/jofi.12586
+    \endverb
+    \field{number}{1}
+    \field{pages}{199\bibrangedash 227}
+    \field{title}{Diagnostic Expectations and Credit Cycles}
+    \field{volume}{73}
+    \field{journaltitle}{The Journal of Finance}
+    \field{year}{2018}
+  \endentry
+
+  \entry{ChatterjeeEyigungor2012}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=CS}{%
+         family={Chatterjee},
+         familyi={C\bibinitperiod},
+         given={Satyajit},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=EB}{%
+         family={Eyigungor},
+         familyi={E\bibinitperiod},
+         given={Burcu},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CSEB1}
+    \strng{fullhash}{CSEB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2012}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1257/aer.102.6.2674
+    \endverb
+    \field{number}{6}
+    \field{pages}{2674\bibrangedash 2699}
+    \field{title}{Maturity, Indebtedness, and Default Risk}
+    \field{volume}{102}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2012}
+  \endentry
+
+  \entry{CoibionGorodnichenko2015}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=CO}{%
+         family={Coibion},
+         familyi={C\bibinitperiod},
+         given={Olivier},
+         giveni={O\bibinitperiod},
+      }}%
+      {{hash=GY}{%
+         family={Gorodnichenko},
+         familyi={G\bibinitperiod},
+         given={Yuriy},
+         giveni={Y\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{COGY1}
+    \strng{fullhash}{COGY1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1257/aer.20110306
+    \endverb
+    \field{number}{8}
+    \field{pages}{2644\bibrangedash 2678}
+    \field{title}{Information Rigidity and the Expectations Formation Process:
+  A Simple Framework and New Facts}
+    \field{volume}{105}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2015}
+  \endentry
+
+  \entry{ColeKehoe2000}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=CHL}{%
+         family={Cole},
+         familyi={C\bibinitperiod},
+         given={Harold\bibnamedelima L.},
+         giveni={H\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=KTJ}{%
+         family={Kehoe},
+         familyi={K\bibinitperiod},
+         given={Timothy\bibnamedelima J.},
+         giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CHLKTJ1}
+    \strng{fullhash}{CHLKTJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2000}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1111/1467-937X.00124
+    \endverb
+    \field{number}{1}
+    \field{pages}{91\bibrangedash 116}
+    \field{title}{Self-Fulfilling Debt Crises}
+    \field{volume}{67}
+    \field{journaltitle}{The Review of Economic Studies}
+    \field{year}{2000}
+  \endentry
+
+  \entry{CrucesTrebesch2013}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=CJJ}{%
+         family={Cruces},
+         familyi={C\bibinitperiod},
+         given={Juan\bibnamedelima J.},
+         giveni={J\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=TC}{%
+         family={Trebesch},
+         familyi={T\bibinitperiod},
+         given={Christoph},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CJJTC1}
+    \strng{fullhash}{CJJTC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2013}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1257/mac.5.3.85
+    \endverb
+    \field{number}{3}
+    \field{pages}{85\bibrangedash 117}
+    \field{title}{Sovereign Defaults: The Price of Haircuts}
+    \field{volume}{5}
+    \field{journaltitle}{American Economic Journal: Macroeconomics}
+    \field{year}{2013}
+  \endentry
+
+  \entry{EatonGersovitz1981}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=EJ}{%
+         family={Eaton},
+         familyi={E\bibinitperiod},
+         given={Jonathan},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=GM}{%
+         family={Gersovitz},
+         familyi={G\bibinitperiod},
+         given={Mark},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{EJGM1}
+    \strng{fullhash}{EJGM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1981}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \verb{doi}
+    \verb 10.2307/2296886
+    \endverb
+    \field{number}{2}
+    \field{pages}{289\bibrangedash 309}
+    \field{title}{Debt with Potential Repudiation: Theoretical and Empirical
+  Analysis}
+    \field{volume}{48}
+    \field{journaltitle}{The Review of Economic Studies}
+    \field{year}{1981}
+  \endentry
+
+  \entry{GennaioliShleifer2018}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=GN}{%
+         family={Gennaioli},
+         familyi={G\bibinitperiod},
+         given={Nicola},
+         giveni={N\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Shleifer},
+         familyi={S\bibinitperiod},
+         given={Andrei},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{GNSA1}
+    \strng{fullhash}{GNSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{A Crisis of Beliefs: Investor Psychology and Financial
+  Fragility}
+    \list{location}{1}{%
+      {Princeton, NJ}%
+    }
+    \field{year}{2018}
+  \endentry
+
+  \entry{GreenwoodHanson2013}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=GR}{%
+         family={Greenwood},
+         familyi={G\bibinitperiod},
+         given={Robin},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=HSG}{%
+         family={Hanson},
+         familyi={H\bibinitperiod},
+         given={Samuel\bibnamedelima G.},
+         giveni={S\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GRHSG1}
+    \strng{fullhash}{GRHSG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2013}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \verb{doi}
+    \verb 10.1093/rfs/hht016
+    \endverb
+    \field{number}{6}
+    \field{pages}{1483\bibrangedash 1525}
+    \field{title}{Issuer Quality and Corporate Bond Returns}
+    \field{volume}{26}
+    \field{journaltitle}{The Review of Financial Studies}
+    \field{year}{2013}
+  \endentry
+
+  \entry{HatchondoMartinez2009}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=HJC}{%
+         family={Hatchondo},
+         familyi={H\bibinitperiod},
+         given={Juan\bibnamedelima Carlos},
+         giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=ML}{%
+         family={Martinez},
+         familyi={M\bibinitperiod},
+         given={Leonardo},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HJCML1}
+    \strng{fullhash}{HJCML1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2009}
+    \field{labeldatesource}{}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2009.07.002
+    \endverb
+    \field{number}{1}
+    \field{pages}{117\bibrangedash 125}
+    \field{title}{Long-Duration Bonds and Sovereign Defaults}
+    \field{volume}{79}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2009}
+  \endentry
+
+  \entry{LongstaffEtAl2011}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=LFA}{%
+         family={Longstaff},
+         familyi={L\bibinitperiod},
+         given={Francis\bibnamedelima A.},
+         giveni={F\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=PJ}{%
+         family={Pan},
+         familyi={P\bibinitperiod},
+         given={Jun},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=PLH}{%
+         family={Pedersen},
+         familyi={P\bibinitperiod},
+         given={Lasse\bibnamedelima H.},
+         giveni={L\bibinitperiod\bibinitdelim H\bibinitperiod},
+      }}%
+      {{hash=SKJ}{%
+         family={Singleton},
+         familyi={S\bibinitperiod},
+         given={Kenneth\bibnamedelima J.},
+         giveni={K\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LFA+1}
+    \strng{fullhash}{LFAPJPLHSKJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2011}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \verb{doi}
+    \verb 10.1257/mac.3.2.75
+    \endverb
+    \field{number}{2}
+    \field{pages}{75\bibrangedash 103}
+    \field{title}{How Sovereign Is Sovereign Credit Risk?}
+    \field{volume}{3}
+    \field{journaltitle}{American Economic Journal: Macroeconomics}
+    \field{year}{2011}
+  \endentry
+
+  \entry{LopezSalidoSteinZakrajsek2017}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=LSD}{%
+         family={L{\'o}pez-Salido},
+         familyi={L\bibinithyphendelim S\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=SJC}{%
+         family={Stein},
+         familyi={S\bibinitperiod},
+         given={Jeremy\bibnamedelima C.},
+         giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+      {{hash=ZE}{%
+         family={Zakraj{\v s}ek},
+         familyi={Z\bibinitperiod},
+         given={Egon},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LSD+1}
+    \strng{fullhash}{LSDSJCZE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \verb{doi}
+    \verb 10.1093/qje/qjx014
+    \endverb
+    \field{number}{3}
+    \field{pages}{1373\bibrangedash 1426}
+    \field{title}{Credit-Market Sentiment and the Business Cycle}
+    \field{volume}{132}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2017}
+  \endentry
+
+  \entry{LorenzoniWerning2019}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=LG}{%
+         family={Lorenzoni},
+         familyi={L\bibinitperiod},
+         given={Guido},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=WI}{%
+         family={Werning},
+         familyi={W\bibinitperiod},
+         given={Iv{\'a}n},
+         giveni={I\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LGWI1}
+    \strng{fullhash}{LGWI1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \verb{doi}
+    \verb 10.1257/aer.20141766
+    \endverb
+    \field{number}{9}
+    \field{pages}{3229\bibrangedash 3263}
+    \field{title}{Slow Moving Debt Crises}
+    \field{volume}{109}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2019}
+  \endentry
+
+  \entry{MendozaYue2012}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=MEG}{%
+         family={Mendoza},
+         familyi={M\bibinitperiod},
+         given={Enrique\bibnamedelima G.},
+         giveni={E\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=YVZ}{%
+         family={Yue},
+         familyi={Y\bibinitperiod},
+         given={Vivian\bibnamedelima Z.},
+         giveni={V\bibinitperiod\bibinitdelim Z\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MEGYVZ1}
+    \strng{fullhash}{MEGYVZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2012}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \verb{doi}
+    \verb 10.1093/qje/qjs009
+    \endverb
+    \field{number}{2}
+    \field{pages}{889\bibrangedash 946}
+    \field{title}{A General Equilibrium Model of Sovereign Default and Business
+  Cycles}
+    \field{volume}{127}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2012}
+  \endentry
+
+  \entry{ReinhartRogoff2009}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=RCM}{%
+         family={Reinhart},
+         familyi={R\bibinitperiod},
+         given={Carmen\bibnamedelima M.},
+         giveni={C\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=RKS}{%
+         family={Rogoff},
+         familyi={R\bibinitperiod},
+         given={Kenneth\bibnamedelima S.},
+         giveni={K\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{RCMRKS1}
+    \strng{fullhash}{RCMRKS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2009}
+    \field{labeldatesource}{}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{This Time Is Different: Eight Centuries of Financial Folly}
+    \list{location}{1}{%
+      {Princeton, NJ}%
+    }
+    \field{year}{2009}
+  \endentry
+
+  \entry{Tauchen1986}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=TG}{%
+         family={Tauchen},
+         familyi={T\bibinitperiod},
+         given={George},
+         giveni={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TG1}
+    \strng{fullhash}{TG1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1986}
+    \field{labeldatesource}{}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \verb{doi}
+    \verb 10.1016/0165-1765(86)90168-0
+    \endverb
+    \field{number}{2}
+    \field{pages}{177\bibrangedash 181}
+    \field{title}{Finite State Markov-Chain Approximations to Univariate and
+  Vector Autoregressions}
+    \field{volume}{20}
+    \field{journaltitle}{Economics Letters}
+    \field{year}{1986}
+  \endentry
+
+  \entry{UribeYue2006}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=UM}{%
+         family={Uribe},
+         familyi={U\bibinitperiod},
+         given={Mart{\'i}n},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=YVZ}{%
+         family={Yue},
+         familyi={Y\bibinitperiod},
+         given={Vivian\bibnamedelima Z.},
+         giveni={V\bibinitperiod\bibinitdelim Z\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{UMYVZ1}
+    \strng{fullhash}{UMYVZ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{labeldatesource}{}
+    \field{sortinit}{U}
+    \field{sortinithash}{U}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2005.04.003
+    \endverb
+    \field{number}{1}
+    \field{pages}{6\bibrangedash 36}
+    \field{title}{Country Spreads and Emerging Countries: Who Drives Whom?}
+    \field{volume}{69}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2006}
+  \endentry
+\enddatalist
+\endinput

@@ -1,0 +1,176 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage[backend=biber,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setstretch{1.08}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.7em}{}
+
+\addbibresource{Narrative_Sovereign_Spreads.bib}
+
+\title{Narrative Sovereign Spreads: A Top-level PhD Research Proposal}
+\author{Prepared as an independent proposal draft}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This standalone proposal (Original Topic 7) states a focused research question, positions it against verified literature, develops a tractable model, derives testable implications, and specifies an empirical design to validate or reject the mechanism. It is self-contained: the preamble is embedded in this file and the references are contained in the local BibTeX file only.
+\end{abstract}
+
+\paragraph{Source-integrity note.} References are restricted to publications, working papers, datasets, and institutional sources checked during preparation. Unverified claims are not used as established facts.
+
+\section{Narrative Contagion at the Sovereign Default Boundary}
+
+\paragraph{One-sentence pitch.} Narratives should not be modeled as magic shocks. This project studies when contagious debt narratives have real pricing effects: only when fundamentals are close enough to the sovereign-default boundary for beliefs to affect rollover and debt dynamics.
+
+\subsection*{1. Research question and reviewer positioning}
+The research question is:
+\begin{quote}
+Can contagious sovereign-debt narratives move spreads after controlling for fundamentals, and are their effects concentrated near the default boundary where beliefs have real consequences?
+\end{quote}
+This wording is intentionally narrow. A weak version of the topic would ask whether Twitter predicts spreads. That is not enough for a top economics paper. The strong version embeds narratives in a sovereign-risk model and derives when narratives matter.
+
+The narrative-economics literature motivates the mechanism. \citet{Shiller2017} argues that narratives can spread epidemiologically and affect economic behavior. \citet{FlynnSastry2024} formalize narratives as contagious beliefs in a business-cycle model. \citet{AndreEtAl2026} provide survey evidence on macroeconomic narratives and how agents explain macro outcomes. In sovereign markets, \citet{DergiadesEtAl2015} show that social-media and web-search information is related to GIIPS sovereign spreads. The proposed contribution is to move from prediction to structure: narratives matter through the default boundary and the feedback from spreads to fundamentals.
+
+\subsection*{2. Contribution relative to the literature}
+The paper connects narrative economics, sovereign default, and high-frequency text data. Its novelty is a boundary condition: narratives should have negligible effects for clearly safe sovereigns and for already-distressed sovereigns where fundamentals dominate. They should matter most in the intermediate region where a change in perceived default probability changes funding costs enough to affect future fundamentals.
+
+This boundary logic is the defense against a skeptical referee. The paper is not claiming that social media can arbitrarily create crises. It is claiming that contagious narratives can coordinate beliefs when fundamentals are near a nonlinear threshold.
+
+\subsection*{3. Model}
+Let $\theta_t$ be a sovereign fundamental, increasing in fiscal capacity and decreasing in debt-service stress. A pessimistic debt narrative has prevalence $n_t\in[0,1]$ among marginal investors. Its law of motion is
+\begin{equation}
+n_{t+1}-n_t=\beta(\theta_t,A_t)n_t(1-n_t)-\gamma I_t n_t+\alpha News_t+\varepsilon^n_{t+1}, \label{eq:narrative-law}
+\end{equation}
+where $A_t$ is the platform or media amplification environment, $I_t$ is fiscal transparency or official information, $\beta$ is contagion, and $\gamma$ is narrative decay. Contagion is stronger when fundamentals are weak but not hopeless:
+\begin{equation}
+\beta(\theta,A)=A\cdot \bar\beta\cdot \exp\left[-\frac{(\theta-\bar\theta)^2}{2\sigma_\theta^2}\right]. \label{eq:beta-boundary}
+\end{equation}
+This bell-shaped specification means narratives spread most near the salient default boundary $\bar\theta$.
+
+Investors price one-period sovereign debt. Rational default probability is $p(\theta_t,b_t)$. Narrative-infected investors use
+\begin{equation}
+\widehat p_t=p(\theta_t,b_t)+\xi n_t \cdot \omega(\theta_t,b_t), \label{eq:narrative-belief}
+\end{equation}
+where $\omega$ is highest near the default boundary. If the mass of narrative-exposed investors is $n_t$, the bond price is approximately
+\begin{equation}
+q_t=\frac{1}{R^*}\left[1-p(\theta_t,b_t)-\xi n_t\omega(\theta_t,b_t)\right]. \label{eq:narrative-price}
+\end{equation}
+The spread is
+\begin{equation}
+spread_t=-\log(R^*q_t). \label{eq:narrative-spread}
+\end{equation}
+Fundamentals evolve according to
+\begin{equation}
+\theta_{t+1}=\rho\theta_t-\chi spread_t+\eta'X_t+\varepsilon^\theta_{t+1}, \label{eq:fundamental-feedback}
+\end{equation}
+where higher spreads worsen fiscal capacity through debt-service costs, rollover risk, and domestic financial stress.
+
+\subsection*{4. Tipping condition}
+Linearize \eqref{eq:narrative-law}--\eqref{eq:fundamental-feedback} around a steady state $(n^*,\theta^*)$. The feedback from narratives to future narratives is
+\begin{equation}
+\frac{\partial n_{t+2}}{\partial n_t}
+\approx \underbrace{\frac{\partial n_{t+1}}{\partial n_t}}_{\text{direct contagion}}
++\underbrace{\frac{\partial n_{t+2}}{\partial \theta_{t+1}}\frac{\partial \theta_{t+1}}{\partial spread_t}\frac{\partial spread_t}{\partial n_t}}_{\text{pricing-fundamental feedback}}. \label{eq:tipping}
+\end{equation}
+A narrative crisis is possible when the absolute value of this multiplier exceeds one.
+
+\begin{proposition}[Boundary amplification]
+Narrative shocks have the largest spread effect when $\omega(\theta,b)$ and $\beta(\theta,A)$ are high. If both functions are small far from the default boundary, narrative shocks have limited pricing effects for very safe or already-distressed sovereigns.
+\end{proposition}
+
+\begin{proposition}[Transparency as decay]
+An increase in fiscal transparency $I_t$ lowers narrative persistence through $\gamma I_t n_t$. Transparency reduces crisis probability most when the system is near but below the tipping condition in \eqref{eq:tipping}.
+\end{proposition}
+
+\begin{proposition}[Counter-narrative policy]
+Official communication can be modeled as a signal that reduces $\xi$ or raises $\gamma$. It is effective only if it breaks the narrative multiplier before spreads have materially worsened fundamentals.
+\end{proposition}
+
+\subsection*{5. Measurement of narratives}
+The empirical object is not sentiment in general. It is a sovereign-debt narrative: a claim connecting fiscal policy, debt sustainability, default, IMF intervention, capital controls, or currency collapse. The measurement procedure has four layers:
+\begin{enumerate}[label=(\roman*)]
+\item collect country-day text from financial news, Factiva/LexisNexis, GDELT, and platform data where legally available;
+\item classify text into narrative categories using a transparent dictionary plus supervised financial-language models;
+\item validate classifications with hand-labeled samples and inter-rater reliability;
+\item construct $Narrative_{i,t}$ as prevalence, growth rate, and contagion intensity of pessimistic sovereign-debt narratives.
+\end{enumerate}
+The paper should report all prompts, dictionaries, labels, and validation statistics. Without transparent measurement, this project will not survive serious review.
+
+\subsection*{6. Empirical design}
+\paragraph{Baseline local projection.}
+\begin{equation}
+\Delta spread_{i,t+h}=\alpha_i+\tau_t+\beta_h Narrative_{i,t}+\delta_h Narrative_{i,t}\times Boundary_{i,t-1}+\Gamma_h'X_{i,t-1}+u_{i,t+h}. \label{eq:narrative-lp}
+\end{equation}
+$Boundary_{i,t-1}$ is high when debt, reserves, growth, rating outlook, and market access imply proximity to the default boundary. The key prediction is $\delta_h>0$: narratives move spreads primarily near the boundary.
+
+\paragraph{Event studies.} Use episodes with sharp narrative shocks and observable spread responses: sovereign fiscal announcements, IMF program news, rating-watch announcements, failed debt auctions, and major official communications. The event-study specification is
+\begin{equation}
+spread_{i,\tau}=\alpha_i+\sum_{k=-K}^{K}\beta_k\one\{\tau=k\}\times NarrativeShock_i+\Gamma'X_{i,\tau}+\varepsilon_{i,\tau}. \label{eq:event}
+\end{equation}
+The event design must distinguish narrative shocks from fundamental news. The best events are those where fundamental content can be measured separately, such as scheduled fiscal releases with forecast surprises.
+
+\paragraph{Instrumental variation.} A cautious IV strategy can use exogenous changes in narrative transmission that are plausibly unrelated to a country's same-day fundamentals, interacted with pre-determined country exposure to the platform or language. Candidates include platform outages, major algorithmic changes, or exogenous attention crowd-out events. The first stage is
+\begin{equation}
+Narrative_{i,t}=\alpha_i+\tau_t+\pi\,TransmissionShock_t\times Exposure_i+\Gamma'X_{i,t}+v_{i,t}. \label{eq:firststage}
+\end{equation}
+This design should be treated as complementary, not as the sole identification strategy, because exclusion restrictions in social-media settings are fragile.
+
+\subsection*{7. Structural validation}
+The model is validated if one estimated set of parameters $(\beta,\gamma,\xi,\chi)$ can match:
+\begin{enumerate}[label=(\roman*)]
+\item narrative persistence after shocks;
+\item spread response to narrative prevalence;
+\item stronger effects near the default boundary;
+\item faster decay after high-transparency official communication;
+\item nonlinear crisis episodes where spreads and narratives reinforce each other.
+\end{enumerate}
+The structural estimation can use simulated method of moments. The key moments are not average correlations; they are state-dependent multipliers.
+
+\subsection*{8. Falsifiable predictions}
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=*]
+\item Pessimistic debt narratives predict spread increases only for countries near the model-implied default boundary.
+\item Narrative effects decay faster after credible fiscal transparency or IMF communication.
+\item Narrative shocks have larger effects when investor attention is high and market liquidity is low.
+\item Text-based narrative measures should predict changes in survey beliefs or analyst reports, not only market prices.
+\item If fundamentals are far from the boundary, narrative measures may forecast attention but should not materially move spreads.
+\end{enumerate}
+
+\subsection*{9. Dissertation structure}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Chapter 1: Theory.} Build a sovereign-risk model with narrative contagion and prove boundary amplification.
+\item \textbf{Chapter 2: Measurement and causality.} Construct validated sovereign-debt narrative indices and estimate state-dependent spread effects.
+\item \textbf{Chapter 3: Policy.} Evaluate fiscal transparency, IMF communication, and counter-narrative interventions as tools for reducing narrative persistence.
+\end{enumerate}
+
+\subsection*{10. Reviewer stress test}
+This is the highest-variance proposal. The biggest risk is reverse causality: spreads may cause narratives rather than narratives causing spreads. The design must therefore use event timing, scheduled announcements, lag structures, and transmission shocks, not just predictive regressions. The second risk is black-box NLP. The classification method must be transparent and replicable. The third risk is exaggeration. The paper should never claim that tweets alone bankrupt a sovereign. It should claim that narratives amplify fragility near a default boundary.
+
+\subsection*{11. Bottom line}
+This topic has high upside but should not be the first job-market paper unless the data and identification are unusually strong. Its best role is as a third chapter connected to a broader dissertation on beliefs and sovereign risk.
+
+
+\newpage
+\printbibliography
+\end{document}

@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Sanctions_Risk_Dollar_Convenience_Paper.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: Sanctions_Risk_Dollar_Convenience_Paper-blx.bib
+Database file #2: Sanctions_Risk_Dollar_Convenience_Paper.bib
+Biblatex version: 3.21
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 18 entries,
+            6402 wiz_defined-function locations,
+            1339 strings with 12423 characters,
+and the built_in function-call counts, 135807 in all, are:
+= -- 10509
+> -- 1999
+< -- 488
++ -- 3713
+- -- 851
+* -- 10674
+:= -- 15424
+add.period$ -- 0
+call.type$ -- 18
+change.case$ -- 184
+chr.to.int$ -- 44
+cite$ -- 34
+duplicate$ -- 13903
+empty$ -- 12048
+format.name$ -- 1215
+if$ -- 27559
+int.to.chr$ -- 0
+int.to.str$ -- 36
+missing$ -- 0
+newline$ -- 627
+num.names$ -- 703
+pop$ -- 6175
+preamble$ -- 1
+purify$ -- 275
+quote$ -- 0
+skip$ -- 3116
+stack$ -- 0
+substring$ -- 19776
+swap$ -- 2818
+text.length$ -- 532
+text.prefix$ -- 17
+top$ -- 1
+type$ -- 600
+warning$ -- 0
+while$ -- 1857
+width$ -- 0
+write$ -- 610

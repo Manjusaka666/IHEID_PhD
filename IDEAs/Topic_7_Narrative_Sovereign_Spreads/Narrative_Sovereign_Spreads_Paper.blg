@@ -1,0 +1,65 @@
+This is BibTeX, Version 0.99e (TeX Live 2026)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: Narrative_Sovereign_Spreads_Paper.aux
+The style file: biblatex.bst
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Database file #1: Narrative_Sovereign_Spreads_Paper-blx.bib
+Database file #2: Narrative_Sovereign_Spreads_Paper.bib
+Biblatex version: 3.21
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+You've used 21 entries,
+            6402 wiz_defined-function locations,
+            1350 strings with 12285 characters,
+and the built_in function-call counts, 170196 in all, are:
+= -- 13549
+> -- 2423
+< -- 657
++ -- 4661
+- -- 977
+* -- 13318
+:= -- 19258
+add.period$ -- 0
+call.type$ -- 21
+change.case$ -- 291
+chr.to.int$ -- 44
+cite$ -- 40
+duplicate$ -- 17117
+empty$ -- 14985
+format.name$ -- 1447
+if$ -- 34646
+int.to.chr$ -- 0
+int.to.str$ -- 42
+missing$ -- 0
+newline$ -- 717
+num.names$ -- 898
+pop$ -- 7310
+preamble$ -- 1
+purify$ -- 401
+quote$ -- 0
+skip$ -- 3880
+stack$ -- 0
+substring$ -- 25786
+swap$ -- 3421
+text.length$ -- 635
+text.prefix$ -- 20
+top$ -- 1
+type$ -- 692
+warning$ -- 0
+while$ -- 2261
+width$ -- 0
+write$ -- 697

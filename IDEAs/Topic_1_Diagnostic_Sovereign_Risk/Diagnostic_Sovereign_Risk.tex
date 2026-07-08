@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array,longtable}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage{hyperref}
+\usepackage[backend=biber,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{titlesec}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setstretch{1.08}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{assumption}{Assumption}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\titleformat{\section}{\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.7em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{0.7em}{}
+
+\addbibresource{Diagnostic_Sovereign_Risk.bib}
+
+\title{Diagnostic Sovereign Risk: A Top-level PhD Research Proposal}
+\author{Prepared as an independent proposal draft}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+This standalone proposal (Original Topic 1) states a focused research question, positions it against verified literature, develops a tractable model, derives testable implications, and specifies an empirical design to validate or reject the mechanism. It is self-contained: the preamble is embedded in this file and the references are contained in the local BibTeX file only.
+\end{abstract}
+
+\paragraph{Source-integrity note.} References are restricted to publications, working papers, datasets, and institutional sources checked during preparation. Unverified claims are not used as established facts.
+
+\section{Diagnostic Sovereign Risk: Non-rational Creditors and History-dependent Default Regions}
+
+\paragraph{One-sentence pitch.} Standard sovereign-default models make spreads a function of current fundamentals and promised debt. This project asks whether diagnostic, overreacting creditors make sovereign risk explicitly history-dependent: the same debt-income pair can be priced differently after good news than after bad news.
+
+\subsection*{1. Research question and reviewer positioning}
+The canonical quantitative sovereign default literature, from \citet{EatonGersovitz1981} to \citet{Arellano2008} and \citet{ChatterjeeEyigungor2012}, explains spreads through endogenous default incentives under incomplete markets. It has a powerful nonlinearity: default is more attractive in low-income states, and bond prices internalize this state-contingent repayment probability. Yet in the workhorse model, conditional beliefs are rational and pinned down by the true law of motion for fundamentals. The proposed paper changes only one primitive - creditors' belief formation - and studies the consequences of this change inside the standard default apparatus.
+
+The motivation is not that ``investors are irrational'' in a loose sense. The discipline comes from the diagnostic-expectations framework of \citet{BordaloGennaioliShleifer2018} and \citet{BordaloGennaioliMaShleifer2020}, where agents overweight states that become more representative after news. This framework is attractive for a top-field paper because it is forward-looking, structural, and empirically measurable using forecast revisions as in \citet{CoibionGorodnichenko2015}. The central question is therefore narrow and falsifiable:
+\begin{quote}
+Do diagnostic expectations shift sovereign default regions, borrowing policies, and fiscal-rule welfare relative to rational expectations, and are these shifts visible in survey expectations and sovereign-spread dynamics?
+\end{quote}
+
+A skeptical referee will ask: why is this not merely another way to raise spread volatility? The answer must be: the model generates a new state variable - the direction of recent news - and therefore new conditional predictions. If two countries have the same debt and output but different forecast-revision histories, their spreads, borrowing, and crisis probability should differ.
+
+\subsection*{2. Contribution relative to the literature}
+The paper sits at the intersection of three literatures. First, it uses the quantitative sovereign-default structure of \citet{Arellano2008} and long-duration extensions such as \citet{ChatterjeeEyigungor2012}. Second, it uses the diagnostic-expectations theory in \citet{BordaloGennaioliShleifer2018}, the macro evidence in \citet{BordaloGennaioliMaShleifer2020}, and the broader case for diagnostic macro expectations in \citet{BordaloEtAl2022JEP}. Third, it uses survey-forecast identification through forecast-error/forecast-revision regressions in \citet{CoibionGorodnichenko2015}.
+
+The intended contribution is not to reject rational expectations in general. It is to show how a specific, measured departure from rational expectations alters the default set and the pricing kernel in a canonical sovereign-default environment. The paper should be judged by three standards: (i) whether the belief distortion has external discipline from survey forecasts; (ii) whether the model produces moments that are difficult for the rational-expectations benchmark; and (iii) whether the model implies a distinct policy prescription, especially about fiscal rules after good-news booms.
+
+\subsection*{3. Model}
+Time is discrete. A small open economy receives stochastic income $y_t$ and issues one-period defaultable debt $b_{t+1} \geq 0$ to competitive risk-neutral foreign lenders with risk-free gross return $R^*=1+r^*$. Income follows
+\begin{equation}
+\log y_{t+1}=\mu+\rho \log y_t+\varepsilon_{t+1},\qquad \varepsilon_{t+1}\sim N(0,\sigma_y^2).
+\end{equation}
+The sovereign chooses whether to repay or default. Let $h_t=\log y_{t-1}$ and $x_t=\log y_t$. Under rational expectations the conditional density is $p(x'\mid x)$. Under diagnostic expectations creditors use
+\begin{equation}
+\widehat p_{\theta}(x'\mid x,h)=\frac{p(x'\mid x)\left[\frac{p(x'\mid x)}{p(x'\mid h)}\right]^{\theta}}{\int p(z\mid x)\left[\frac{p(z\mid x)}{p(z\mid h)}\right]^{\theta}dz},\qquad \theta\geq 0. \label{eq:diagnostic-density}
+\end{equation}
+The parameter $\theta$ governs the strength of overreaction. When $\theta=0$, the model collapses to rational expectations.
+
+\begin{lemma}[Gaussian diagnostic tilt]
+If $x'\mid x\sim N(m_x,\sigma_y^2)$ and $x'\mid h\sim N(m_h,\sigma_y^2)$, with $m_x=\mu+\rho x$ and $m_h=\mu+\rho h$, then the density in \eqref{eq:diagnostic-density} is Gaussian with the same variance $\sigma_y^2$ and mean
+\begin{equation}
+\widehat{\E}_{\theta}[x_{t+1}\mid x_t,h_t]=(1+\theta)m_x-\theta m_h
+=\mu+\rho x_t+\theta\rho(x_t-h_t). \label{eq:diagnostic-mean}
+\end{equation}
+\end{lemma}
+Equation \eqref{eq:diagnostic-mean} is the key economic object: after good news, $x_t-h_t>0$, creditors extrapolate the improvement; after bad news, they extrapolate deterioration.
+
+The sovereign's value is
+\begin{equation}
+V(b,x,h)=\max\{V^R(b,x,h),V^D(x,h)\}.
+\end{equation}
+Repayment value is
+\begin{equation}
+V^R(b,x,h)=\max_{b'\in \mathcal B} \left\{u(c)+\beta \E\left[V(b',x',x)\mid x\right]\right\}, \label{eq:repay}
+\end{equation}
+subject to
+\begin{equation}
+ c=y+q(b',x,h)b'-b.
+\end{equation}
+The sovereign itself may be modeled as rational about $p(x'\mid x)$ in the baseline, so that the behavioral distortion resides with market pricing. A robustness exercise lets the government also use diagnostic beliefs. Default value is
+\begin{equation}
+V^D(x,h)=u(y^{D}(x))+\beta\E\left[\lambda V(0,x',x)+(1-\lambda)V^D(x',x)\mid x\right],
+\end{equation}
+where $y^D(x)$ is output under exclusion and $\lambda$ is re-entry probability.
+
+Competitive lenders price debt using diagnostic beliefs:
+\begin{equation}
+q(b',x,h)=\frac{1}{R^*}\widehat{\E}_{\theta}\left[1-d(b',x',x)\mid x,h\right], \label{eq:price}
+\end{equation}
+where $d(b',x',x)=1$ if default is chosen next period. Hence $q$ depends not only on $(b',x)$ but also on $h$. This is the formal source of history dependence.
+
+\subsection*{4. Main theoretical results to prove}
+The paper should not oversell a theorem before it is proved. The proposal targets the following results under standard monotonicity and single-crossing conditions on $u$, $y^D$, and the income process.
+
+\begin{proposition}[History-dependent prices]
+Fix debt $b'$ and current income $x$. If $x-h$ rises, the diagnostic distribution first-order stochastically shifts toward higher income states. If the default indicator $d(b',x',x)$ is weakly decreasing in $x'$, then $q(b',x,h)$ is weakly increasing in $x-h$.
+\end{proposition}
+
+\begin{proposition}[Boom borrowing and bust fragility]
+Suppose the repayment value has increasing differences in $(q,b')$ and the default threshold is decreasing in the continuation value of market access. Then, relative to rational expectations, diagnostic pricing raises borrowing after good-news sequences and lowers market access after bad-news sequences. The model can therefore generate endogenous boom-bust cycles without disaster-risk shocks.
+\end{proposition}
+
+\begin{proposition}[Fiscal-rule ranking]
+A debt limit that is redundant under rational expectations can bind after a diagnostic good-news sequence. Its welfare value is higher when $\theta$ is high because it prevents the sovereign from exploiting temporarily inflated diagnostic prices.
+\end{proposition}
+
+The third proposition is the policy edge of the paper. It gives the topic a reason to exist beyond moment matching.
+
+\subsection*{5. Empirical design}
+\paragraph{Data.} The baseline panel will use emerging-market sovereign spreads from JP Morgan EMBI Global or Bloomberg, macro fundamentals from IMF WEO/IFS and World Bank WDI, ratings and VIX controls, and survey expectations from Consensus Economics or Survey of Professional Forecasters when available. The object that matters for identification is not merely forecast levels but forecast revisions and subsequent forecast errors.
+
+\paragraph{Step 1: estimate diagnostic overreaction.} For country $i$, forecast horizon $h$, and forecaster or consensus panel $j$, estimate the Coibion-Gorodnichenko style regression
+\begin{equation}
+FE_{i,j,t+h}=\alpha_i+\tau_t+\beta_h Rev_{i,j,t}^{(h)}+\Gamma'X_{i,t}+u_{i,j,t+h}, \label{eq:CG}
+\end{equation}
+where $FE$ is realized growth minus forecasted growth and $Rev$ is the forecast revision. Under the diagnostic formulation, individual forecasts should display overreaction, so the sign of $\beta_h$ should be consistent with predictable reversal after revisions. Estimates of $\beta_h$ discipline $\theta$ rather than allowing it to be a free spread-volatility parameter.
+
+\paragraph{Step 2: reduced-form spread tests.} The reduced-form panel equation is
+\begin{equation}
+\Delta spread_{i,t}=\alpha_i+\tau_t+\delta_1 Rev_{i,t}+\delta_2 LevelForecast_{i,t}+\delta_3 Debt_{i,t}+\delta_4 VIX_t+\varepsilon_{i,t}. \label{eq:spread-panel}
+\end{equation}
+The model predicts that, conditional on current fundamentals and forecast levels, forecast revisions have an independent effect on spreads. Moreover, the effect should be asymmetric: negative revisions should raise spreads more than positive revisions lower them when the country is near the default boundary.
+
+\paragraph{Step 3: structural validation.} The model is solved by value-function iteration on $(b,x,h)$. Parameters not tied to beliefs follow the sovereign-default literature. The belief parameter $\theta$ is estimated from \eqref{eq:CG}; remaining parameters are estimated by simulated method of moments. Targeted moments are:
+\begin{enumerate}[label=(\roman*)]
+\item mean, volatility, skewness, and autocorrelation of spreads;
+\item spread-output and spread-forecast-revision correlations;
+\item borrowing following sequences of positive revisions;
+\item default frequency and debt at default;
+\item impulse responses of spreads to positive and negative growth-news shocks.
+\end{enumerate}
+The empirical validation is tight: the same $\theta$ that explains survey overreaction must help explain spread dynamics.
+
+\subsection*{6. Falsifiable predictions}
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=*]
+\item Conditional on debt, output, ratings, and global risk, spreads are lower after positive forecast revisions and higher after negative revisions.
+\item The spread response to revisions is stronger for high-debt countries and countries with short maturity.
+\item Countries experiencing a sequence of positive revisions borrow more than the rational-expectations model predicts.
+\item Fiscal rules that bind in good-news states generate larger welfare gains when measured diagnostic overreaction is high.
+\item If survey overreaction is absent for a country, the diagnostic model should not improve spread moments for that country.
+\end{enumerate}
+
+\subsection*{7. Dissertation structure}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{Chapter 1: Theory.} Prove history-dependent pricing and characterize default regions under diagnostic expectations.
+\item \textbf{Chapter 2: Quantitative model.} Estimate $\theta$ from survey data, solve the model, and compare it with the rational-expectations benchmark.
+\item \textbf{Chapter 3: Policy.} Study debt limits, structural balance rules, and countercyclical borrowing caps under diagnostic pricing.
+\end{enumerate}
+
+\subsection*{8. Reviewer stress test}
+The main threat is that the paper becomes a one-parameter volatility fix. The defense is to estimate $\theta$ outside the spread model and test revision-history predictions that the rational-expectations model does not produce. A second threat is computational: adding $h$ expands the state space. This is manageable because $h$ is a low-dimensional sufficient statistic for the diagnostic tilt. A third threat is external validity: if survey expectations are only available for a subset of emerging markets, the paper should begin with the subset where forecasts are clean rather than overextend the sample.
+
+\subsection*{9. Bottom line}
+This is the strongest of the five proposals as a first PhD paper. It has a clear frontier, a disciplined behavioral mechanism, a canonical benchmark, and a falsifiable new state variable. If executed rigorously, it can speak simultaneously to sovereign debt, behavioral macro, and fiscal policy.
+
+
+\newpage
+\printbibliography
+\end{document}

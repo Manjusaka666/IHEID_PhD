@@ -1,0 +1,1039 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global/global}
+  \entry{AiyarEtAl2023}{report}{}{}
+    \name{author}{13}{}{%
+      {{hash=AS}{%
+         family={Aiyar},
+         familyi={A\bibinitperiod},
+         given={Shekhar},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=CJ}{%
+         family={Chen},
+         familyi={C\bibinitperiod},
+         given={Jiaqian},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=EC}{%
+         family={Ebeke},
+         familyi={E\bibinitperiod},
+         given={Christian},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=GSR}{%
+         family={Garcia-Saltos},
+         familyi={G\bibinithyphendelim S\bibinitperiod},
+         given={Roberto},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=GT}{%
+         family={Gudmundsson},
+         familyi={G\bibinitperiod},
+         given={Tryggvi},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=IA}{%
+         family={Ilyina},
+         familyi={I\bibinitperiod},
+         given={Anna},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Kangur},
+         familyi={K\bibinitperiod},
+         given={Alvar},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=KT}{%
+         family={Kunaratskul},
+         familyi={K\bibinitperiod},
+         given={Tansaya},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=RS}{%
+         family={Rodriguez},
+         familyi={R\bibinitperiod},
+         given={Sergio},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=RM}{%
+         family={Ruta},
+         familyi={R\bibinitperiod},
+         given={Michele},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=ST}{%
+         family={Schulze},
+         familyi={S\bibinitperiod},
+         given={Tatjana},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SG}{%
+         family={Soderberg},
+         familyi={S\bibinitperiod},
+         given={Gabriel},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=TJ}{%
+         family={Trevino},
+         familyi={T\bibinitperiod},
+         given={Juan},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AS+1}
+    \strng{fullhash}{ASCJECGSRGTIAKAKTRSRMSTSGTJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{number}{SDN/2023/001}
+    \field{title}{Geo-Economic Fragmentation and the Future of Multilateralism}
+    \list{institution}{1}{%
+      {International Monetary Fund}%
+    }
+    \field{type}{Staff Discussion Note}
+    \field{year}{2023}
+  \endentry
+
+  \entry{AlfaroChor2023}{report}{}{}
+    \name{author}{2}{}{%
+      {{hash=AL}{%
+         family={Alfaro},
+         familyi={A\bibinitperiod},
+         given={Laura},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=CD}{%
+         family={Chor},
+         familyi={C\bibinitperiod},
+         given={Davin},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{ALCD1}
+    \strng{fullhash}{ALCD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \verb{doi}
+    \verb 10.3386/w31661
+    \endverb
+    \field{number}{31661}
+    \field{title}{Global Supply Chains: The Looming ``Great Reallocation''}
+    \list{institution}{1}{%
+      {National Bureau of Economic Research}%
+    }
+    \field{type}{Working Paper}
+    \field{year}{2023}
+  \endentry
+
+  \entry{AttinasiBoeckelmannMeunier2023}{report}{}{}
+    \name{author}{3}{}{%
+      {{hash=AMG}{%
+         family={Attinasi},
+         familyi={A\bibinitperiod},
+         given={Maria\bibnamedelima Grazia},
+         giveni={M\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=BL}{%
+         family={Boeckelmann},
+         familyi={B\bibinitperiod},
+         given={Lukas},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=MB}{%
+         family={Meunier},
+         familyi={M\bibinitperiod},
+         given={Baptiste},
+         giveni={B\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{AMG+1}
+    \strng{fullhash}{AMGBLMB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{number}{2839}
+    \field{title}{The Economic Costs of Supply Chain Decoupling}
+    \list{institution}{1}{%
+      {European Central Bank}%
+    }
+    \field{type}{Working Paper Series}
+    \field{year}{2023}
+  \endentry
+
+  \entry{BaileyStrezhnevVoeten2017}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=BMA}{%
+         family={Bailey},
+         familyi={B\bibinitperiod},
+         given={Michael\bibnamedelima A.},
+         giveni={M\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+      {{hash=SA}{%
+         family={Strezhnev},
+         familyi={S\bibinitperiod},
+         given={Anton},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=VE}{%
+         family={Voeten},
+         familyi={V\bibinitperiod},
+         given={Erik},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BMA+1}
+    \strng{fullhash}{BMASAVE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2017}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1177/0022002715595700
+    \endverb
+    \field{number}{2}
+    \field{pages}{430\bibrangedash 456}
+    \field{title}{Estimating Dynamic State Preferences from United Nations
+  Voting Data}
+    \field{volume}{61}
+    \field{journaltitle}{Journal of Conflict Resolution}
+    \field{year}{2017}
+  \endentry
+
+  \entry{BaqaeeEtAl2024}{report}{}{}
+    \name{author}{7}{}{%
+      {{hash=BD}{%
+         family={Baqaee},
+         familyi={B\bibinitperiod},
+         given={David},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=HJ}{%
+         family={Hinz},
+         familyi={H\bibinitperiod},
+         given={Julian},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MB}{%
+         family={Moll},
+         familyi={M\bibinitperiod},
+         given={Benjamin},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=SM}{%
+         family={Schularick},
+         familyi={S\bibinitperiod},
+         given={Moritz},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=TF}{%
+         family={Teti},
+         familyi={T\bibinitperiod},
+         given={Feodora},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=WJ}{%
+         family={Wanner},
+         familyi={W\bibinitperiod},
+         given={Joschka},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=YS}{%
+         family={Yang},
+         familyi={Y\bibinitperiod},
+         given={Shu},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BD+1}
+    \strng{fullhash}{BDHJMBSMTFWJYS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2024}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{number}{170}
+    \field{title}{What If? The Effects of a Hard Decoupling from China on the
+  German Economy}
+    \list{institution}{1}{%
+      {Kiel Institute for the World Economy}%
+    }
+    \field{type}{Kiel Policy Brief}
+    \field{year}{2024}
+  \endentry
+
+  \entry{BaqaeeFarhi2019}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BDR}{%
+         family={Baqaee},
+         familyi={B\bibinitperiod},
+         given={David\bibnamedelima Rezza},
+         giveni={D\bibinitperiod\bibinitdelim R\bibinitperiod},
+      }}%
+      {{hash=FE}{%
+         family={Farhi},
+         familyi={F\bibinitperiod},
+         given={Emmanuel},
+         giveni={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BDRFE1}
+    \strng{fullhash}{BDRFE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.3982/ECTA15202
+    \endverb
+    \field{number}{4}
+    \field{pages}{1155\bibrangedash 1203}
+    \field{title}{The Macroeconomic Impact of Microeconomic Shocks: Beyond
+  Hulten's Theorem}
+    \field{volume}{87}
+    \field{journaltitle}{Econometrica}
+    \field{year}{2019}
+  \endentry
+
+  \entry{BarrotSauvagnat2016}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BJN}{%
+         family={Barrot},
+         familyi={B\bibinitperiod},
+         given={Jean-No{\"e}l},
+         giveni={J\bibinithyphendelim N\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Sauvagnat},
+         familyi={S\bibinitperiod},
+         given={Julien},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BJNSJ1}
+    \strng{fullhash}{BJNSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1093/qje/qjw018
+    \endverb
+    \field{number}{3}
+    \field{pages}{1543\bibrangedash 1592}
+    \field{title}{Input Specificity and the Propagation of Idiosyncratic Shocks
+  in Production Networks}
+    \field{volume}{131}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2016}
+  \endentry
+
+  \entry{BoehmFlaaenPandalaiNayar2019}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=BCE}{%
+         family={Boehm},
+         familyi={B\bibinitperiod},
+         given={Christoph\bibnamedelima E.},
+         giveni={C\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=FA}{%
+         family={Flaaen},
+         familyi={F\bibinitperiod},
+         given={Aaron},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=PNN}{%
+         family={Pandalai-Nayar},
+         familyi={P\bibinithyphendelim N\bibinitperiod},
+         given={Nitya},
+         giveni={N\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BCE+1}
+    \strng{fullhash}{BCEFAPNN1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1162/rest_a_00750
+    \endverb
+    \field{number}{1}
+    \field{pages}{60\bibrangedash 75}
+    \field{title}{Input Linkages and the Transmission of Shocks: Firm-Level
+  Evidence from the 2011 T\=ohoku Earthquake}
+    \field{volume}{101}
+    \field{journaltitle}{The Review of Economics and Statistics}
+    \field{year}{2019}
+  \endentry
+
+  \entry{BrodaWeinstein2006}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BC}{%
+         family={Broda},
+         familyi={B\bibinitperiod},
+         given={Christian},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=WDE}{%
+         family={Weinstein},
+         familyi={W\bibinitperiod},
+         given={David\bibnamedelima E.},
+         giveni={D\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BCWDE1}
+    \strng{fullhash}{BCWDE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \verb{doi}
+    \verb 10.1162/qjec.2006.121.2.541
+    \endverb
+    \field{number}{2}
+    \field{pages}{541\bibrangedash 585}
+    \field{title}{Globalization and the Gains from Variety}
+    \field{volume}{121}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2006}
+  \endentry
+
+  \entry{CarvalhoEtAl2021}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=CVM}{%
+         family={Carvalho},
+         familyi={C\bibinitperiod},
+         given={Vasco\bibnamedelima M.},
+         giveni={V\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=NM}{%
+         family={Nirei},
+         familyi={N\bibinitperiod},
+         given={Makoto},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=SYU}{%
+         family={Saito},
+         familyi={S\bibinitperiod},
+         given={Yukiko\bibnamedelima U.},
+         giveni={Y\bibinitperiod\bibinitdelim U\bibinitperiod},
+      }}%
+      {{hash=TSA}{%
+         family={Tahbaz-Salehi},
+         familyi={T\bibinithyphendelim S\bibinitperiod},
+         given={Alireza},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CVM+1}
+    \strng{fullhash}{CVMNMSYUTSA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2021}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.1093/qje/qjaa044
+    \endverb
+    \field{number}{2}
+    \field{pages}{1255\bibrangedash 1321}
+    \field{title}{Supply Chain Disruptions: Evidence from the Great East Japan
+  Earthquake}
+    \field{volume}{136}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{2021}
+  \endentry
+
+  \entry{CEPIIBACI}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=C}{%
+         family={{CEPII}},
+         familyi={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{C1}
+    \strng{fullhash}{C1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{howpublished}{CEPII Data}
+    \field{title}{BACI: International Trade Database at the Product Level}
+    \verb{url}
+    \verb https://www.cepii.fr/CEPII/en/bdd_modele/bdd_modele_item.asp?id=37
+    \endverb
+    \field{year}{2026}
+  \endentry
+
+  \entry{ClaytonMaggioriSchreger2023}{report}{}{}
+    \name{author}{3}{}{%
+      {{hash=CC}{%
+         family={Clayton},
+         familyi={C\bibinitperiod},
+         given={Christopher},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=MM}{%
+         family={Maggiori},
+         familyi={M\bibinitperiod},
+         given={Matteo},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Schreger},
+         familyi={S\bibinitperiod},
+         given={Jesse},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CC+1}
+    \strng{fullhash}{CCMMSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.3386/w31852
+    \endverb
+    \field{number}{31852}
+    \field{title}{A Framework for Geoeconomics}
+    \list{institution}{1}{%
+      {National Bureau of Economic Research}%
+    }
+    \field{type}{Working Paper}
+    \field{year}{2023}
+  \endentry
+
+  \entry{CooperJohn1988}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=CR}{%
+         family={Cooper},
+         familyi={C\bibinitperiod},
+         given={Russell},
+         giveni={R\bibinitperiod},
+      }}%
+      {{hash=JA}{%
+         family={John},
+         familyi={J\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{CRJA1}
+    \strng{fullhash}{CRJA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1988}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \verb{doi}
+    \verb 10.2307/1885539
+    \endverb
+    \field{number}{3}
+    \field{pages}{441\bibrangedash 463}
+    \field{title}{Coordinating Coordination Failures in Keynesian Models}
+    \field{volume}{103}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{1988}
+  \endentry
+
+  \entry{ElliottGolubLeduc2022}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=EM}{%
+         family={Elliott},
+         familyi={E\bibinitperiod},
+         given={Matthew},
+         giveni={M\bibinitperiod},
+      }}%
+      {{hash=GB}{%
+         family={Golub},
+         familyi={G\bibinitperiod},
+         given={Benjamin},
+         giveni={B\bibinitperiod},
+      }}%
+      {{hash=LMV}{%
+         family={Leduc},
+         familyi={L\bibinitperiod},
+         given={Matthew\bibnamedelima V.},
+         giveni={M\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{EM+1}
+    \strng{fullhash}{EMGBLMV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2022}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \verb{doi}
+    \verb 10.1257/aer.20210220
+    \endverb
+    \field{number}{8}
+    \field{pages}{2701\bibrangedash 2747}
+    \field{title}{Supply Network Formation and Fragility}
+    \field{volume}{112}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{2022}
+  \endentry
+
+  \entry{FarrellNewman2019}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=FH}{%
+         family={Farrell},
+         familyi={F\bibinitperiod},
+         given={Henry},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=NAL}{%
+         family={Newman},
+         familyi={N\bibinitperiod},
+         given={Abraham\bibnamedelima L.},
+         giveni={A\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FHNAL1}
+    \strng{fullhash}{FHNAL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2019}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1162/isec_a_00351
+    \endverb
+    \field{number}{1}
+    \field{pages}{42\bibrangedash 79}
+    \field{title}{Weaponized Interdependence: How Global Economic Networks
+  Shape State Coercion}
+    \field{volume}{44}
+    \field{journaltitle}{International Security}
+    \field{year}{2019}
+  \endentry
+
+  \entry{FelbermayrEtAl2020}{article}{}{}
+    \name{author}{5}{}{%
+      {{hash=FG}{%
+         family={Felbermayr},
+         familyi={F\bibinitperiod},
+         given={Gabriel},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=KA}{%
+         family={Kirilakha},
+         familyi={K\bibinitperiod},
+         given={Aleksandra},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SC}{%
+         family={Syropoulos},
+         familyi={S\bibinitperiod},
+         given={Constantinos},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=YE}{%
+         family={Yalcin},
+         familyi={Y\bibinitperiod},
+         given={Erdal},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=YYV}{%
+         family={Yotov},
+         familyi={Y\bibinitperiod},
+         given={Yoto\bibnamedelima V.},
+         giveni={Y\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FG+1}
+    \strng{fullhash}{FGKASCYEYYV1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2020}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.1016/j.euroecorev.2020.103561
+    \endverb
+    \field{pages}{103561}
+    \field{title}{The Global Sanctions Data Base}
+    \field{volume}{129}
+    \field{journaltitle}{European Economic Review}
+    \field{year}{2020}
+  \endentry
+
+  \entry{FernandezVillaverdeMineyamaSong2024}{report}{}{}
+    \name{author}{3}{}{%
+      {{hash=FVJ}{%
+         family={Fern{\'a}ndez-Villaverde},
+         familyi={F\bibinithyphendelim V\bibinitperiod},
+         given={Jes{\'u}s},
+         giveni={J\bibinitperiod},
+      }}%
+      {{hash=MT}{%
+         family={Mineyama},
+         familyi={M\bibinitperiod},
+         given={Tomohide},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=SD}{%
+         family={Song},
+         familyi={S\bibinitperiod},
+         given={Dongho},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FVJ+1}
+    \strng{fullhash}{FVJMTSD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2024}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \verb{doi}
+    \verb 10.3386/w32638
+    \endverb
+    \field{number}{32638}
+    \field{title}{Are We Fragmented Yet? Measuring Geopolitical Fragmentation
+  and Its Causal Effects}
+    \list{institution}{1}{%
+      {National Bureau of Economic Research}%
+    }
+    \field{type}{Working Paper}
+    \field{year}{2024}
+  \endentry
+
+  \entry{FreundEtAl2023}{report}{}{}
+    \name{author}{4}{}{%
+      {{hash=FC}{%
+         family={Freund},
+         familyi={F\bibinitperiod},
+         given={Caroline},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=MA}{%
+         family={Mattoo},
+         familyi={M\bibinitperiod},
+         given={Aaditya},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=MA}{%
+         family={Mulabdic},
+         familyi={M\bibinitperiod},
+         given={Alen},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=RM}{%
+         family={Ruta},
+         familyi={R\bibinitperiod},
+         given={Michele},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FC+1}
+    \strng{fullhash}{FCMAMARM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{number}{10593}
+    \field{title}{Is US Trade Policy Reshaping Global Supply Chains?}
+    \list{institution}{1}{%
+      {World Bank}%
+    }
+    \field{type}{Policy Research Working Paper}
+    \field{year}{2023}
+  \endentry
+
+  \entry{GopinathEtAl2025JIE}{article}{}{}
+    \name{author}{4}{}{%
+      {{hash=GG}{%
+         family={Gopinath},
+         familyi={G\bibinitperiod},
+         given={Gita},
+         giveni={G\bibinitperiod},
+      }}%
+      {{hash=GPO}{%
+         family={Gourinchas},
+         familyi={G\bibinitperiod},
+         given={Pierre-Olivier},
+         giveni={P\bibinithyphendelim O\bibinitperiod},
+      }}%
+      {{hash=PAF}{%
+         family={Presbitero},
+         familyi={P\bibinitperiod},
+         given={Andrea\bibnamedelima F.},
+         giveni={A\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+      {{hash=TP}{%
+         family={Topalova},
+         familyi={T\bibinitperiod},
+         given={Petia},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GG+1}
+    \strng{fullhash}{GGGPOPAFTP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2025}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \verb{doi}
+    \verb 10.1016/j.jinteco.2024.104042
+    \endverb
+    \field{pages}{104042}
+    \field{title}{Changing Global Linkages: A New Cold War?}
+    \field{volume}{153}
+    \field{journaltitle}{Journal of International Economics}
+    \field{year}{2025}
+  \endentry
+
+  \entry{GrossmanHelpmanLhuillier2023}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=GGM}{%
+         family={Grossman},
+         familyi={G\bibinitperiod},
+         given={Gene\bibnamedelima M.},
+         giveni={G\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=HE}{%
+         family={Helpman},
+         familyi={H\bibinitperiod},
+         given={Elhanan},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=LH}{%
+         family={Lhuillier},
+         familyi={L\bibinitperiod},
+         given={Hugo},
+         giveni={H\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GGM+1}
+    \strng{fullhash}{GGMHELH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2023}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \verb{doi}
+    \verb 10.1086/725173
+    \endverb
+    \field{number}{12}
+    \field{pages}{3462\bibrangedash 3496}
+    \field{title}{Supply Chain Resilience: Should Policy Promote International
+  Diversification or Reshoring?}
+    \field{volume}{131}
+    \field{journaltitle}{Journal of Political Economy}
+    \field{year}{2023}
+  \endentry
+
+  \entry{JacksonNei2015}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=JMO}{%
+         family={Jackson},
+         familyi={J\bibinitperiod},
+         given={Matthew\bibnamedelima O.},
+         giveni={M\bibinitperiod\bibinitdelim O\bibinitperiod},
+      }}%
+      {{hash=NS}{%
+         family={Nei},
+         familyi={N\bibinitperiod},
+         given={Stephen},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{JMONS1}
+    \strng{fullhash}{JMONS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{labeldatesource}{}
+    \field{sortinit}{J}
+    \field{sortinithash}{J}
+    \verb{doi}
+    \verb 10.1073/pnas.1520970112
+    \endverb
+    \field{number}{50}
+    \field{pages}{15277\bibrangedash 15284}
+    \field{title}{Networks of Military Alliances, Wars, and International
+  Trade}
+    \field{volume}{112}
+    \field{journaltitle}{Proceedings of the National Academy of Sciences}
+    \field{year}{2015}
+  \endentry
+
+  \entry{Krugman1991}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=KP}{%
+         family={Krugman},
+         familyi={K\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KP1}
+    \strng{fullhash}{KP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1991}
+    \field{labeldatesource}{}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \verb{doi}
+    \verb 10.2307/2937950
+    \endverb
+    \field{number}{2}
+    \field{pages}{651\bibrangedash 667}
+    \field{title}{History versus Expectations}
+    \field{volume}{106}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{1991}
+  \endentry
+
+  \entry{MartinMayerThoenig2008}{article}{}{}
+    \name{author}{3}{}{%
+      {{hash=MP}{%
+         family={Martin},
+         familyi={M\bibinitperiod},
+         given={Philippe},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=MT}{%
+         family={Mayer},
+         familyi={M\bibinitperiod},
+         given={Thierry},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=TM}{%
+         family={Thoenig},
+         familyi={T\bibinitperiod},
+         given={Mathias},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MP+1}
+    \strng{fullhash}{MPMTTM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \verb{doi}
+    \verb 10.1111/j.1467-937X.2008.00492.x
+    \endverb
+    \field{number}{3}
+    \field{pages}{865\bibrangedash 900}
+    \field{title}{Make Trade Not War?}
+    \field{volume}{75}
+    \field{journaltitle}{The Review of Economic Studies}
+    \field{year}{2008}
+  \endentry
+
+  \entry{Matsuyama1991}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=MK}{%
+         family={Matsuyama},
+         familyi={M\bibinitperiod},
+         given={Kiminori},
+         giveni={K\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MK1}
+    \strng{fullhash}{MK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1991}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \verb{doi}
+    \verb 10.2307/2937949
+    \endverb
+    \field{number}{2}
+    \field{pages}{617\bibrangedash 650}
+    \field{title}{Increasing Returns, Industrialization, and Indeterminacy of
+  Equilibrium}
+    \field{volume}{106}
+    \field{journaltitle}{The Quarterly Journal of Economics}
+    \field{year}{1991}
+  \endentry
+
+  \entry{OECDICIO}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=O}{%
+         family={{OECD}},
+         familyi={O\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{O1}
+    \strng{fullhash}{O1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{O}
+    \field{sortinithash}{O}
+    \field{howpublished}{OECD Data}
+    \field{title}{Inter-Country Input-Output Tables}
+    \verb{url}
+    \verb https://www.oecd.org/en/data/datasets/inter-country-input-output-tabl
+    \verb es.html
+    \endverb
+    \field{year}{2026}
+  \endentry
+\enddatalist
+\endinput

@@ -1,0 +1,532 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs,array}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{microtype}
+\usepackage{csquotes}
+\usepackage[backend=bibtex,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\setstretch{1.15}
+\captionsetup{font=small,labelfont=bf}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{assumption}{Assumption}
+\newtheorem{remark}{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+\addbibresource{Sanctions_Risk_Dollar_Convenience_Paper.bib}
+\graphicspath{{output/}}
+\input{output/quant_numbers.tex}
+\input{output/breakeven_numbers.tex}
+
+\title{Sanctions Risk and Dollar Convenience\thanks{First draft: July 2026. Preliminary and incomplete. Comments welcome. Estimates requiring restricted or yet-unassembled data (country-level reserve currency composition, the sanctions-salience index) are marked as pending throughout. Every number in the text is either documented in a cited source or an output of the model solved here. Replication code in Julia and R accompanies the draft.}}
+\author{[Author]}
+\date{July 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Financial sanctions are powerful because the dollar system is large, and every use of them teaches reserve holders that dollar safety is state contingent. I model sanctions risk as exactly that lesson: a state-contingent haircut on the liquidity value of dollar reserves, priced into portfolios that also earn a convenience yield increasing in the size of the dollar network. The model is linear-quadratic, a local approximation around the observed reserve equilibrium, and solves in closed form. Three results organize it. Exposure to sanctions is priced cross-sectionally like a tax on convenience, and the cross-section identifies only the direct demand response: the network multiplier that governs aggregate erosion cancels from country comparisons, so micro estimates understate macro consequences by a factor the paper derives. Adjustment costs turn a one-time reassessment of freezing risk into a decade of slow drift, which is what reserve data look like. And the hegemon's sanctions choice is time inconsistent in the sense of Kydland and Prescott: portfolios price the \emph{rule}, the ex post decision takes portfolios as given, so discretion weaponizes maximally. In scenarios anchored to the 2022 freeze of Russian reserves, a single use costs the hegemon about \DPrivSingleBN\ billion dollars a year in seigniorage, but the weapon's value turns negative once the expected breadth of use passes a threshold near \PBEbase\ percent at the baseline, between \PBEgamLow\ and \PBEgamHigh\ percent across the stakes examined. The financial weapon is cheap to fire once and, in every scenario computed here, a losing trade to make routine.
+\end{abstract}
+
+\medskip
+\noindent\textit{JEL codes}: F31, F33, F51, E42, G15.\\
+\noindent\textit{Keywords}: financial sanctions, reserve currencies, convenience yield, network externalities, time inconsistency.
+
+\section{Introduction}\label{sec:intro}
+
+In the last days of February 2022 the United States and its allies froze roughly \$300 billion of assets belonging to the central bank of Russia: about half of that country's reserves, and the first such action ever taken against a central bank of the Group of Twenty \citep{BrookingsRussiaAssets2025}. The freeze required no ships and no soldiers. It worked because Russia, like nearly every country, held its safe assets inside the currencies and custodial systems of a small group of Western jurisdictions. The power of the instrument comes from the size of the dollar network. The question of this paper is what exercising that power costs its owner.
+
+The cost, if there is one, operates through a belief. A reserve manager in a country not allied with the United States watched February 2022 and learned that the safety of dollar assets is state contingent: safe in most states of the world, inaccessible in the state where his government collides with Washington. Nothing about the yield on Treasuries changed that week, and nothing about their default risk. What changed was the probability each holder attaches to being able to use them when they are most needed. That probability times the expected haircut is a wedge, denominated in the same units as the convenience yield that makes reserve assets worth holding at a premium in the first place \citep{KrishnamurthyVissingJorgensen2012}. This paper prices the wedge, traces it through the network externality that sustains a dominant currency, and asks how a hegemon that understands the whole chain should use, or decline to use, the financial weapon.
+
+I make three claims, each with a closed-form expression behind it. The first is about the cross section. In the model, countries choose the dollar share of reserves balancing convenience against diversification costs, and sanctions risk enters as an expected loss rate that subtracts directly from convenience. Exposed countries therefore hold fewer dollars, and the difference between exposed and aligned portfolios measures the wedge divided by the marginal diversification cost, with the network externality canceling entirely: the network raises or lowers every country's holdings alike (Proposition~\ref{prop:pricing}). The cancellation has a sharp econometric meaning. Cross-sectional designs of the kind the empirical literature runs, and that Section~\ref{sec:evidence} specifies, identify the \emph{direct} response only. The aggregate consequence of a sanctions shock is larger by a multiplier $m = 1/(1 - \ell_1/\kappa)$, where $\ell_1$ is the slope of convenience in network size and $\kappa$ the diversification cost, and no comparison across countries can recover $m$ (Corollary~\ref{cor:micromacro}). Micro estimates of de-dollarization understate the macro erosion by construction, not by accident.
+
+The second claim is about dynamics. Reserve portfolios adjust slowly, and the shock in question is not a flow but a reassessment: a permanent revision of the probability that dollar assets can be frozen. A permanent revision under adjustment costs and network feedback delivers a specific shape: a small initial move followed by a long drift to a permanently lower plateau. At the calibrated three-year half-life, the model's response to the 2022 reassessment is a decline in the aggregate dollar share of \DNSinglePP\ percentage points spread over roughly a decade (Proposition~\ref{prop:dynamics}). That shape is what the reserve data have looked like for two decades: \citet{ArslanalpEichengreenSimpsonBell2022} document the dollar's share of allocated reserves drifting from 71 percent in 1999 to 59 percent in 2021, not collapsing but eroding, and record central-bank gold purchases followed 2022 \citep{WGC2024}. The model gives that drift an equilibrium interpretation and a forecast.
+
+The third claim is the paper's center. The hegemon's problem has the structure of \citet{KydlandPrescott1977}. What erodes the network is not the sanction itself, which strikes one country, but the \emph{anticipation} of sanctions, which reprices every exposed country's portfolio. Anticipation is a function of the rule, and portfolios are set before any particular crisis arrives, so when a crisis does arrive the ex post cost of sanctioning hard is nil and the geopolitical benefit is whole. Discretion therefore weaponizes at maximal intensity, exactly as the discretionary central banker of \citet{BarroGordon1983} inflates: beliefs are priced in, and the marginal deviation is free. The Ramsey hegemon, choosing the rule itself, trades geopolitical benefit against the capitalized erosion of what the literature calls exorbitant privilege, and chooses restraint (Proposition~\ref{prop:bias}). At the baseline calibration the discretionary intensity is $1$ and the Ramsey intensity is \SRBase. The value of commitment is \CommitPVBase\ billion dollars in present value, and it rises steeply as geopolitical stakes fall or the network elasticity rises. The discretion benchmark takes within-crisis beliefs as given, and I do not leave the point there: Section~\ref{sec:reputation} computes when reputation substitutes for commitment. The Ramsey rule is self-enforcing if the hegemon discounts the future at less than \RateRepBase\ percent a year, a thin margin above the four percent the calibration assumes, and one the model says erodes with the network itself.
+
+The quantitative message is a Laffer curve in the breadth of use. One 2022-scale freeze, expected to recur only against the occasional pariah, costs the hegemon about \DPrivSingleBN\ billion dollars a year in seigniorage flow: real, but second order beside any serious geopolitical stake. Let the expected breadth of application rise, so that reserve managers in half the world price a meaningful probability of being next, and the calculus reverses: at a breadth of \PRoutine\ percent the dollar share of reserves falls to \NPostRoutine\ percent, exposed countries exit the dollar entirely, and the seigniorage loss reaches \DPrivRoutineBN\ billion a year, an order of magnitude above the expected geopolitical gain. The break-even breadth is \PBEbase\ percent at the baseline calibration, and it is a scenario object, not an estimate: Section~\ref{sec:quant} reports how it moves with every unidentified input, from \PBEgamLow\ percent at small stakes to \PBEgamHigh\ percent at the largest examined. What survives the whole band is the shape. The financial weapon is cheap to fire once and a losing trade to make routine. This, I will argue, is the economics underneath the policy intuition that sanctions \enquote{spend} the currency's dominance.
+
+The paper builds directly on two bodies of work. \citet{BianchiSosaPadilla2024JME} and \citet{BianchiSosaPadilla2025EJ} put sanctions into quantitative sovereign-debt models and establish the anticipation channel I exploit: expected reserve freezes act as a tax on dollar holdings and reduce the dollar's convenience value for exposed sovereigns. \citet{GopinathStein2021}, \citet{FarhiMaggiori2018}, and \citet{HeKrishnamurthyMilbradt2019} supply the other blade: dominance is an equilibrium of complementary choices, so demand withdrawals compound. My contribution is to close the loop between them: the hegemon's policy rule determines the wedge, the wedge determines the network, and the network determines the value of the rule, which delivers the time-inconsistency result, the multiplier arithmetic connecting micro estimates to macro erosion, and a calibrated answer to how much weaponization the system can bear. On the empirical side, the convenience-yield measurements of \citet{KrishnamurthyVissingJorgensen2012}, \citet{DuImSchreger2018}, and \citet{JiangKrishnamurthyLustig2021} give the model its units, and \citet{EichengreenMehlChitu2019} show reserve composition responds to security alignments, which is the cross-sectional force here. The designs of Section~\ref{sec:evidence} use the sanctions catalog of \citet{FelbermayrEtAl2020}, the alignment measures of \citet{BaileyStrezhnevVoeten2017}, and COFER and Treasury-holdings data \citep{IMFCOFER} to estimate the model's two elasticities.
+
+I should say plainly what the paper does not claim. It does not predict the end of dollar dominance: at observed breadth of use the model predicts erosion of a few percentage points, which is what the data show. It does not microfound the network term. The linear convenience function is a local approximation around the observed equilibrium, and results that depend on its global shape, the corner where exposed countries exit entirely above all, are labeled scenarios where they appear. It does not model the target country's response, for which see \citet{BianchiSosaPadilla2024JME}. And its geopolitical benefit function is frankly reduced form: the model prices what sanctions cost, and lets the reader supply what a given confrontation is worth.
+
+My plan is as follows. Section~\ref{sec:static} sets out the static model and the pricing and multiplier results. Section~\ref{sec:dynamics} adds adjustment costs and derives the transition. Section~\ref{sec:hegemon} poses the hegemon's problem and establishes the weaponization bias. Section~\ref{sec:quant} calibrates to the 2022 episode and reports the quantitative results. Section~\ref{sec:evidence} specifies the empirical designs and their status. Section~\ref{sec:conclusion} concludes. Proofs and extensions are in the appendix.
+
+\section{Reserves, Convenience, and the Sanctions Wedge}\label{sec:static}
+
+A word first on the status of the results. Propositions~\ref{prop:pricing} through \ref{prop:bias} are exact within the linear-quadratic structure: theorems about the approximation, not about the world. The linear convenience function should be read as a first-order approximation to the network complementarity around the observed reserve equilibrium, and I flag at each point which conclusions need only the sign of the slope (the direction of the multiplier, the micro-macro gap, the existence of the weaponization bias) and which need the functional form (every closed-form magnitude, and the corner behavior of the routine-use scenario). The quantitative section is calibrated arithmetic under scenario assumptions labeled there.
+
+\subsection{Environment}
+
+There is a continuum of countries $i \in [0,1]$ and a dominant-currency issuer, the hegemon. Each period, country $i$ allocates its reserves between dollar assets, in share $a_i \in [0,1]$, and an outside reserve asset: gold, or any other store of value beyond the hegemon's legal reach. Dollar assets pay a financial return spread $\bar r$ over the outside asset (zero in the baseline calibration) and deliver liquidity services
+\begin{equation}
+\ell(N) = \ell_0 + \ell_1 N, \qquad \ell_1 \ge 0, \qquad N = \int_0^1 a_i \, di,
+\label{eq:ell}
+\end{equation}
+where $N$ is the aggregate dollar share: the size of the dollar network. The dependence of $\ell$ on $N$ is the reduced form of the complementarities that the dominant-currency literature microfounds, deeper markets and invoicing that matches the reserve asset \citep{GopinathStein2021, FarhiMaggiori2018, HeKrishnamurthyMilbradt2019}. I keep it linear for two reasons. The results are then exact, and measurement can hope to discipline a slope where it cannot discipline a curvature: the empirical designs of Section~\ref{sec:evidence} deliver at most a local semi-elasticity. The cost is that the multiplier below is a constant rather than a function of the state, and the global phenomena that curvature can generate, tipping and multiplicity, are confined to the corner regime of Appendix~\ref{app:corners}. Around the observed equilibrium, linearity is the first-order approximation to any smooth $\ell(N)$, so the local comparative statics are general. The routine-use scenario of Section~\ref{sec:quant}, which moves the system far from that point, is not, and is labeled accordingly.
+
+Sanctions enter as an expected loss rate. Country $i$ has exposure $z_i \in \{0, 1\}$: a mass $\mu$ of \emph{exposed} countries ($z_i = 1$) lies outside the hegemon's security orbit, and a mass $1 - \mu$ of \emph{aligned} countries ($z_i = 0$) inside it. With probability $\omega$ each period a geopolitical crisis arrives, and the hegemon's rule assigns sanction intensity $\bar s \in [0,1]$. Conditional on a crisis, a given exposed country is the target with probability $p$, and a sanctioned country loses access to a fraction $\phi$ of its dollar reserves. The expected loss rate an exposed country prices is therefore
+\begin{equation}
+\hat\pi \;=\; \omega\, \bar s\, p\, \phi ,
+\label{eq:pihat}
+\end{equation}
+and the object $z_i \hat\pi$ is what I will call the \emph{sanctions wedge}: a state-contingent haircut on the liquidity value of dollar reserves, measured in annual return units, exactly the anticipation channel of \citet{BianchiSosaPadilla2025EJ}. Only the product matters for demand. Countries price the wedge $\hat\pi$, not its factors, so the demand block asks measurement to deliver one number, and the decomposition into arrival, intensity, breadth, and severity is bookkeeping until the hegemon's problem, where $\omega$ and $\bar s$ enter separately.
+
+Country $i$'s per-period objective over its reserve share is quadratic:
+\begin{equation}
+u_i(a, a_{-1}) \;=\; a\big(\bar r + \ell(N) - z_i \hat\pi\big) \;-\; \frac{\kappa}{2}a^2 \;-\; \frac{\nu}{2}(a - a_{-1})^2 .
+\label{eq:payoff}
+\end{equation}
+The term $\kappa$ prices the costs of concentration: currency mismatch with the country's own liabilities and trade, and the diversification and political costs of visibly holding the hegemon's paper. The term $\nu$ prices adjustment: reserve managers move in decades, not quarters, because transactions are large relative to markets and mandates are conservative. Set $\nu = 0$ for now. Section~\ref{sec:dynamics} restores it.
+
+\subsection{Pricing the weapon}
+
+With $\nu = 0$ the problem is static, and the interior first-order condition gives the policy
+\begin{equation}
+a_i \;=\; \frac{\bar r + \ell(N) - z_i \hat\pi}{\kappa}.
+\label{eq:foc}
+\end{equation}
+
+\begin{proposition}[The sanctions wedge is priced like a tax on convenience]\label{prop:pricing}
+At any interior equilibrium: (i) the dollar share of an exposed country falls one-for-one with $\hat\pi$ scaled by $1/\kappa$, holding $N$ fixed. (ii) The equilibrium difference between aligned and exposed portfolios is
+\[
+a_A - a_E \;=\; \frac{\hat\pi}{\kappa},
+\]
+independent of the network term $\ell(N)$. (iii) The effective convenience yield earned by an exposed country is $\ell(N) - \hat\pi$: sanctions risk and liquidity services are the same object with opposite signs.
+\end{proposition}
+
+Part (iii) is worth pausing on, because it disciplines everything that follows. The convenience yield is measured in basis points \citep{KrishnamurthyVissingJorgensen2012, DuImSchreger2018}, and equation \eqref{eq:pihat} expresses the whole apparatus of geopolitics in the same basis points. A reserve freeze expected to strike a given country with two percent probability per crisis, in crises that arrive once every twenty years, taking half the portfolio, is a wedge of $0.05 \times 0.02 \times 0.5 = 5$ basis points: seven percent of the convenience yield, gone. The model's empirical content is that this number, and not some diffuse notion of geopolitical distance, is what should move portfolios.
+
+\subsection{The network multiplier}
+
+Aggregating \eqref{eq:foc} over countries and solving for $N$:
+\begin{equation}
+N \;=\; \frac{\bar r + \ell_0 - \mu \hat\pi}{\kappa - \ell_1},
+\qquad\text{so}\qquad
+\frac{dN}{d\hat\pi} \;=\; -\,\frac{\mu}{\kappa}\, m,
+\quad
+m \equiv \frac{1}{1 - \ell_1/\kappa}.
+\label{eq:Nss}
+\end{equation}
+
+\begin{proposition}[Multiplier and uniqueness]\label{prop:multiplier}
+If $\ell_1 < \kappa$, the interior equilibrium exists and is unique, and reserve choices are strategic complements: a sanctions-risk shock that lowers exposed demand directly by $\mu\hat\pi/\kappa$ lowers the aggregate network by $m$ times that amount, $m > 1$ whenever $\ell_1 > 0$. If $\ell_1 \ge \kappa$, complementarities are strong enough that interior equilibrium fails and the dollar's share is determined by corners: dominance becomes a coordination outcome.
+\end{proposition}
+
+The condition $\ell_1 < \kappa$ is the interesting empirical regime, and everything quantitative below stays inside it. Appendix~\ref{app:corners} treats the corner regime, where the model inherits the multiplicity emphasized by \citet{FarhiMaggiori2018} and \citet{HeKrishnamurthyMilbradt2019}. Inside the interior regime the multiplier does one more thing, and it matters for how the empirical literature should read its own estimates.
+
+\begin{corollary}[Micro is not macro]\label{cor:micromacro}
+The cross-sectional difference $a_A - a_E = \hat\pi/\kappa$ identifies $\kappa$ but contains no information about $\ell_1$: the network term is a common level shifter that differences out. The aggregate response \eqref{eq:Nss} is $m$ times the direct response. Hence any difference-in-differences estimate of de-dollarization after a sanctions event, however well identified, understates the aggregate equilibrium effect by exactly the factor $m$, and no cross-sectional design can estimate $m$.
+\end{corollary}
+
+The corollary is the missing-intercept problem in a form sharp enough to use: the cross section pins the direct elasticity, and only aggregate objects, the drift of $N$ itself or the movement of convenience yields, can pin the multiplier. The empirical designs of Section~\ref{sec:evidence} are organized around exactly this division of labor. There is also a fingerprint that separates the network channel from every confound that operates through exposure: \emph{aligned} countries, who face no change in their own sanctions risk, reduce dollar holdings too, by $\ell_1 \Delta N / \kappa$, purely because convenience fell. A de-dollarization story built on exposure alone predicts zero for the aligned. The network model does not.
+
+What the static model cannot say is how fast any of this happens, and the pace turns out to carry the identification. That is the next section.
+
+\section{Dynamics: Reassessment and Slow Erosion}\label{sec:dynamics}
+
+Restore the adjustment cost $\nu > 0$ and let countries discount at $\beta_c$. The first-order condition of the forward-looking problem is the Euler equation
+\begin{equation}
+\bar r + \ell(N_t) - z_i \hat\pi \;-\; \kappa a_{i,t} \;-\; \nu\,(a_{i,t} - a_{i,t-1}) \;+\; \beta_c \nu\,\big(\E_t a_{i,t+1} - a_{i,t}\big) \;=\; 0 .
+\label{eq:euler}
+\end{equation}
+Steady states are unchanged: the $\nu$ terms cancel, so \eqref{eq:foc}--\eqref{eq:Nss} still describe where the system settles. What $\nu$ governs is the road. Aggregating \eqref{eq:euler} gives a linear second-order difference equation in $N_t$, and differencing across types gives an autonomous equation for the gap $d_t = a_{E,t} - a_{A,t}$. Both solve by factoring a quadratic (Appendix~\ref{app:saddle}).
+
+\begin{proposition}[Saddle path]\label{prop:dynamics}
+Suppose $\ell_1 < \kappa$. After a permanent change in $\hat\pi$, the unique bounded perfect-foresight path satisfies
+\[
+N_t - N_\infty = \lambda_N \,(N_{t-1} - N_\infty), \qquad
+d_t - d_\infty = \lambda_d\,(d_{t-1} - d_\infty),
+\]
+where $\lambda_N \in (0,1)$ is the stable root of $\beta_c \nu \lambda^2 - \big(\kappa + (1+\beta_c)\nu - \ell_1\big)\lambda + \nu = 0$ and $\lambda_d$ solves the same equation with $\ell_1 = 0$. The aggregate is more persistent than the cross-section, $\lambda_N > \lambda_d$, and $\lambda_N$ is increasing in $\ell_1$: complementarity adds inertia as well as amplification.
+\end{proposition}
+
+Two remarks give the proposition its empirical teeth. First, the shock that matters is a \emph{reassessment}: February 2022 changed no cash flow, it changed $\hat\pi$, permanently, for every country watching. A permanent wedge revision plus Proposition~\ref{prop:dynamics} produces a small impact response followed by years of drift to a permanently lower plateau, which is precisely the \enquote{stealth erosion} shape of the COFER data \citep{ArslanalpEichengreenSimpsonBell2022}, and is unlike the sharp, mean-reverting portfolio swings that risk-off episodes produce. No reversal is the model's signature. Second, the ranking $\lambda_N > \lambda_d$ says the cross-sectional gap between exposed and aligned countries opens faster than the aggregate share falls, so a difference-in-differences design will find its effect early, while the aggregate consequence is still mostly in the future. The same estimate read as \enquote{the effect} of the sanction at the aggregate level is therefore doubly misleading: too small by the multiplier $m$, and too fast by $\lambda_N - \lambda_d$.
+
+Who, then, should fire such a weapon, and how often? The demand side is now complete, and the question moves to the hegemon.
+
+\section{The Hegemon and the Weaponization Bias}\label{sec:hegemon}
+
+\subsection{The hegemon's objective}
+
+The hegemon earns the convenience yield on the dollar reserves the world holds: foreign official investors accept a return lower by $\ell(N)$ than their outside opportunity, and that spread accrues to the issuer as cheap funding \citep{KrishnamurthyVissingJorgensen2012}. With $W$ denoting world reserves in dollars, the privilege flow is
+\begin{equation}
+\Omega(N) \;=\; \ell(N)\, N\, W ,
+\label{eq:privilege}
+\end{equation}
+increasing and convex in the network. Geopolitical crises arrive with probability $\omega$ per period. In a crisis the hegemon chooses sanction intensity $s \in [0,1]$ against the target and collects the net benefit
+\begin{equation}
+G(s) \;=\; \gamma\left(s - \tfrac{1}{2}s^2\right),
+\label{eq:G}
+\end{equation}
+where $\gamma$ scales the stakes and the functional form is a normalization: absent any concern for the network, the ex post optimum is full intensity, $s = 1$. Everything the model has to say about restraint will come from the network, not from assumed direct costs of sanctioning.
+
+The timing within a period is the natural one and does all the work: reserve portfolios are set first, on the basis of the anticipated rule $\bar s$ through the wedge \eqref{eq:pihat}, and the crisis, if any, is realized after. Today's sanction therefore cannot move today's portfolios. It moves tomorrow's only through what it teaches about the rule.
+
+\subsection{Discretion and the rule}
+
+Consider first the hegemon acting under discretion, choosing $s$ crisis by crisis. The result rests on one belief assumption, and I state it as such.
+
+\begin{assumption}[Markov beliefs]\label{ass:markov}
+Reserve managers' anticipated rule $\bar s$ is a function of fundamentals only: a single realized sanction, on or off the anticipated path, does not shift it.
+\end{assumption}
+
+Under Assumption~\ref{ass:markov} portfolios are predetermined and beliefs are unmoved at the moment $s$ is chosen, so the ex post problem is $\max_s G(s)$, whose solution is $s = 1$ regardless of $\gamma$. In equilibrium reserve managers anticipate exactly this: $\bar s_D = 1$, and the network prices maximal weaponization. This is the sanctions version of the inflation bias of \citet{KydlandPrescott1977} and \citet{BarroGordon1983}: the distortion is not that the hegemon fails to understand the erosion channel, but that the erosion is a function of the rule, and no single decision moves the rule. The assumption is not innocent. If each use of the weapon teaches the world something about the rule, the ex post marginal cost of sanctioning is no longer zero, and the right model is a repeated game. Section~\ref{sec:reputation} takes that seriously and shows the discretion benchmark survives as the relevant threat point.
+
+The Ramsey hegemon chooses the rule itself, internalizing $N(\bar s)$ from \eqref{eq:Nss}:
+\begin{equation}
+\max_{\bar s \in [0,1]} \;\; V(\bar s) \;=\; \Omega\big(N(\bar s)\big) + \omega\, G(\bar s).
+\label{eq:ramsey}
+\end{equation}
+
+\begin{proposition}[Weaponization bias]\label{prop:bias}
+Let $c \equiv \mu p \phi/(\kappa - \ell_1)$ and $\bar N_0 = (\bar r + \ell_0)/(\kappa - \ell_1)$. The Ramsey rule is
+\begin{equation}
+s_R \;=\; \frac{\gamma - cW(\ell_0 + 2\ell_1 \bar N_0)}{\gamma - 2\ell_1 \omega c^2 W}
+\label{eq:sR}
+\end{equation}
+clamped to $[0,1]$. Whenever exposure is priced at all ($\mu p \phi > 0$) and the privilege is valuable ($W > 0$), $s_R < s_D = 1$ strictly: discretion over-weaponizes. The bias $1 - s_R$ is decreasing in the stakes $\gamma$ and increasing in the breadth $p$, the freeze severity $\phi$, the exposed mass $\mu$, and the network multiplier $m$.
+\end{proposition}
+
+The comparative statics carry the policy content. The bias is worst when $\gamma$ is \emph{small}: for minor confrontations the Ramsey rule may prescribe no financial sanctions at all while discretion still delivers full intensity, because ex post the marginal deviation is always free. Discretion does not merely overshoot in great-power crises: it fails to reserve the weapon for them. That is a precise version of what the policy debate calls sanctions creep. Conversely, as $\gamma \to \infty$ the two rules converge: when the stakes dwarf the privilege, restraint has nothing to protect. And the dependence on $m$ delivers prediction P5 of the empirical section: the more elastic the network, the less a rational rule uses the weapon.
+
+\subsection{Reputation}\label{sec:reputation}
+
+A government that cannot commit can still hope for reputation, and because any careful reader will ask whether the time-inconsistency result is an artifact of Assumption~\ref{ass:markov}, the repeated game belongs in the body of the paper. Let beliefs follow a trigger rule: reserve managers price $\bar s = s_R$ so long as no crisis has seen intensity above $s_R$, and price $\bar s = 1$ forever after a deviation. Deviating in a crisis gains $G(1) - G(s_R) = \tfrac{\gamma}{2}(1 - s_R)^2$ once. Conformity preserves the flow gap $V(s_R) - V(1)$ from the next portfolio date on.
+
+\begin{proposition}[Reputation]\label{prop:reputation}
+In the interior regime, the trigger equilibrium sustains the Ramsey rule if and only if the hegemon's discount factor $\beta_H$ satisfies
+\begin{equation}
+\frac{\beta_H}{1 - \beta_H} \;\geq\; \frac{\gamma}{\omega\gamma - 2\ell_1\omega^2 c^2 W},
+\label{eq:reputation}
+\end{equation}
+with $c = \mu p \phi/(\kappa - \ell_1)$ as in Proposition~\ref{prop:bias}. The required patience falls with the crisis frequency $\omega$ and rises with the erosion term $2\ell_1\omega^2c^2W$: the larger the damage weaponization does to the network, the smaller the punishment the network can administer, so reputation weakens along the very path discretion generates.
+\end{proposition}
+
+The proof is in Appendix~\ref{app:proofs}. Two properties of \eqref{eq:reputation} do the interpretive work. Quantitatively, at the baseline calibration the threshold binds at a discount rate of \RateRepBase\ percent a year: at the four percent rate the calibration assumes, a sanctions doctrine is self-enforcing, but the margin is one percentage point of patience, not a comfortable one. Structurally, the erosion term in the denominator grows with the breadth of anticipated use, and at the routine-use scenario of Section~\ref{sec:quant} the interior condition fails outright (exposed countries sit at the corner and the punishment payoff loses its quadratic form), so the reputational mechanism cannot be evaluated there with these formulas, let alone relied on. Anticipated restraint is enforceable when little restraint is needed. When much is needed, the collateral is already spent. Discretion and commitment remain the two clean benchmarks, and the trigger threshold tells us which one the institutions should be measured against.
+
+\section{Quantitative Analysis}\label{sec:quant}
+
+\subsection{Calibration}
+
+The model's ambition is arithmetic, not curve fitting: every parameter is set to a documented magnitude or announced as a scenario, and Table~\ref{tab:calib2} classifies each entry as directly estimated, internally calibrated to a stated moment, externally fixed, or a scenario value. The classification matters because the paper's headline numbers inherit the status of their weakest input, and I flag that status wherever a headline number appears.
+
+\begin{table}[t]
+\centering
+\caption{Calibration (annual).}
+\label{tab:calib2}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lllll}
+\toprule
+Parameter & & Value & Category & Basis \\
+\midrule
+Convenience yield, pre-2022 & $\ell(N_0)$ & 73 bp & estimated & AAA--Treasury spread (KVJ) \\
+Dollar share, pre-2022 & $N_0$ & 0.59 & estimated & COFER \\
+Diversification cost & $\kappa$ & \KappaBP\ bp & internal & steady state: $\kappa = \ell(N_0)/N_0$ \\
+Network multiplier ($\ell_1$) & $m$ & 1.5 $\{1, 2.5\}$ & scenario & pending Design 2 \\
+Adjustment cost & $\nu$ & \NuVal & internal & 3-year aggregate half-life \\
+Country discount factor & $\beta_c$ & 0.96 & fixed & standard annual value \\
+Exposed mass (reserve-weighted) & $\mu$ & 0.5 $\{0.3, 0.7\}$ & scenario & non-coalition reserve share \\
+Crisis arrival & $\omega$ & 0.05 & scenario & one major freeze per two decades \\
+Freeze severity & $\phi$ & 0.5 $\{0.25, 0.75\}$ & estimated & Russia 2022: $\sim$\$300bn of \$630bn \\
+Breadth, single-use regime & $p$ & 0.02 & scenario & pending Design 1 \\
+World reserves & $W$ & \$\WReserves\ tn & estimated & IMF COFER \\
+Geopolitical stakes & $\gamma$ & \$\GammaBase bn $\{50\text{--}800\}$ & scenario & discussed in text \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.92\textwidth}
+\footnotesize Notes: KVJ is \citet{KrishnamurthyVissingJorgensen2012}. COFER shares follow the valuation adjustment of \citet{ArslanalpEichengreenSimpsonBell2022}. Braces give the ranges over which scenario parameters are varied.
+\end{minipage}
+\end{table}
+
+Four entries need defense. The diversification cost $\kappa$ is not free: with $\bar r$ normalized to zero, the pre-2022 equilibrium condition $\kappa N_0 = \ell(N_0)$ pins $\kappa$ at \KappaBP\ basis points, so the demand elasticity comes from the same two numbers, 73 basis points and 59 percent, that anchor the level. The exposed mass $\mu = 0.5$ is a scenario value anchored to an observable order of magnitude: countries outside the 2022 sanctioning coalition hold roughly half of world reserves (China alone holds about a quarter), and the break-even results are reported for $\mu$ from 0.3 to 0.7. The single-use breadth $p = 0.02$ encodes the belief of an exposed reserve manager that, conditional on a major crisis somewhere, his own country is the target with two percent probability. Through \eqref{eq:pihat} this makes the wedge $\hat\pi = \PiHatBP$ basis points and the direct exposed response $\hat\pi/\kappa = 4$ percentage points, which is the moment Design 1 will estimate and currently the calibration's softest joint: no judgment sets $p$ once that regression runs, because the wedge is the identified object and $p$ is read off it. The stakes $\gamma$ are the model's frankly reduced-form object. \$\GammaBase\ billion per crisis is the order of magnitude of the fiscal cost of the West's response to the 2022 war in its first year, and every policy result is reported for $\gamma$ from 50 to 800 because no design in this paper identifies it.
+
+\subsection{One freeze}
+
+Table~\ref{tab:ss2} reports steady states, and Figure~\ref{fig:transition} the transition, for the single-use regime: the world learns in 2022 that the rule is $\bar s = 1$ with breadth $p = 0.02$.
+
+\begin{table}[t]
+\centering
+\caption{Steady states: the price of the weapon by regime of use.}
+\label{tab:ss2}
+\begin{tabular}{lcccc}
+\toprule
+ & Pre-2022 & Single use & Soft restrictions & Routine use \\
+ & ($\hat\pi = 0$) & ($p = 0.02$) & ($\phi = 0.15$) & ($p = \PRoutine\%$) \\
+\midrule
+Dollar share $N$ (percent) & \NPre & \NPostSingle & 58.1 & \NPostRoutine \\
+\quad exposed $a_E$ & \NPre & \AEPostSingle & 57.5 & 0.0 \\
+\quad aligned $a_A$ & \NPre & \AAPostSingle & 58.7 & 47.2 \\
+Convenience yield (bp) & \CYPre & \CYPostSingle & 72.6 & \CYPostRoutine \\
+Privilege flow (\$bn/yr) & \PrivPre & \PrivPostSingle & 50.6 & \PrivPostRoutine \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.9\textwidth}
+\footnotesize Notes: baseline multiplier $m = 1.5$. \enquote{Routine use} sets the breadth $p$ to \PRoutine\ percent: exposed countries expect to be targeted with meaningful probability, and their dollar share hits the zero corner. All entries are model steady states under the true crisis frequency.
+\end{minipage}
+\end{table}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_transition.pdf}
+\caption{Transition after the 2022 reassessment (single-use regime, $\hat\pi$: $0 \to \PiHatBP$ bp). Aggregate dollar share and convenience yield, for network multipliers 1.0, 1.5, 2.5.}
+\label{fig:transition}
+\end{figure}
+
+The single freeze is cheap. The aggregate dollar share declines \DNSinglePP\ percentage points, spread over a decade at the three-year half-life. The convenience yield gives up \DCYSingleBP\ basis points, and the privilege flow falls by \$\DPrivSingleBN\ billion a year. Against any $\gamma$ in the hundreds of billions, this is a rounding error, and the model thus rationalizes the observed choice in 2022 without any appeal to shortsightedness. The multiplier matters even here: at $m = 2.5$ the same shock costs \DNHighPP\ points of network and \$\DPrivHighBN\ billion a year, and at $m = 1$, the pure-exposure benchmark, only \DNLowPP\ points. Figure~\ref{fig:spillover} shows the fingerprint that separates these worlds in data: aligned countries, facing no wedge of their own, cut holdings by \DAAPP\ percentage point at baseline and by nothing at $m = 1$.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.62\textwidth]{fig_spillover.pdf}
+\caption{The network fingerprint: exposed and aligned dollar shares after the reassessment, baseline multiplier. The dotted path is the aligned share when $\ell_1 = 0$: without the network externality, aligned countries do not move at all.}
+\label{fig:spillover}
+\end{figure}
+
+\subsection{The breadth Laffer curve}
+
+The arithmetic turns unforgiving in the breadth of use. Figure~\ref{fig:laffer} traces the hegemon's steady-state flow value as anticipated breadth $p$ rises with intensity fixed at the discretionary $\bar s = 1$. The curve crosses the full-restraint benchmark at $p = \PBEbase$ percent: once exposed reserve managers believe crises make \emph{them} targets with three-in-a-hundred probability, the weapon's expected geopolitical dividend no longer covers its seigniorage cost. By $p = \PRoutine$ percent, the regime I label routine use, exposed countries have left the dollar entirely, the network is down to \NPostRoutine\ percent, and the privilege flow has fallen by \$\DPrivRoutineBN\ billion a year, an order of magnitude above the expected geopolitical gain of $\omega\gamma/2 = \$5$ billion.
+
+The crossing point is a scenario object, and I report its sensitivity rather than defend its level. One factor at a time around the baseline: the break-even breadth runs from \PBEgamLow\ to \PBEgamHigh\ percent as the stakes $\gamma$ run from 50 to 800 billion, from \PBEmLow\ to \PBEmHigh\ percent as the multiplier runs from 1 to 2.5, from \PBEphiLow\ to \PBEphiHigh\ percent as the freeze severity runs from a quarter to three quarters of reserves, and from \PBEmuLow\ to \PBEmuHigh\ percent as the exposed mass runs from 0.3 to 0.7. Across the full grid of these calibrations the crossing lies anywhere from \PBELo\ to \PBEHi\ percent, with the stakes doing most of the work, and the stakes are the one input no design identifies. What is robust is not the number but the structure: the crossing exists, it sits at single-digit breadth for every stake below the largest examined, and beyond it the loss grows without offset as breadth rises. The boundary between occasional and routine use sits uncomfortably close to where discussion of secondary sanctions and asset seizure now lives, wherever in the single digits it falls.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_laffer.pdf}
+\caption{The breadth Laffer curve. Panel (a): hegemon flow value under weaponization ($\bar s = 1$) and full restraint, by anticipated breadth $p$. The kink is the exposed countries' corner. Panel (b): the Ramsey intensity by breadth.}
+\label{fig:laffer}
+\end{figure}
+
+\subsection{Rules against discretion}
+
+Figure~\ref{fig:bias} and the closed form \eqref{eq:sR} quantify Proposition~\ref{prop:bias}. At the baseline stakes of \$\GammaBase\ billion the Ramsey intensity is \SRBase\ against discretion's $1$. The flow value of commitment is \$\CommitFlowBase\ billion a year, or \$\CommitPVBase\ billion in present value at a four percent discount rate. Lower the stakes to \$50 billion and the Ramsey rule goes to \SRGamFifty: full restraint, while discretion still fires at unit intensity, and commitment is worth \$\CommitPVGamFifty\ billion. Raise the stakes to \$800 billion and the gap nearly closes ($s_R = \SRGamEightH$). Panel (b) shows the network-elasticity margin: at $m = 1$ the Ramsey intensity is \SRMOne, at $m = 3$ it is \SRMThree. Every step the rest of the world takes toward better outside assets, whether deeper nondollar markets or alternative payment rails, lowers the intensity a rational hegemon should choose, which is prediction P5 and, I would argue, the right frame for reading the current institutional race \citep{FarhiMaggiori2018, EichengreenMehlChitu2019}. The outside-asset counterfactual makes the point directly: cutting the diversification cost $\kappa$ by thirty percent, holding the shock fixed, deepens the erosion from \DNSinglePP\ to \DNOutsidePP\ percentage points and the privilege loss from \$\DPrivSingleBN\ to \$\DPrivOutsideBN\ billion a year.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig_bias.pdf}
+\caption{The weaponization bias. Panel (a): Ramsey intensity by geopolitical stakes $\gamma$ (log scale). Discretion is $1$ throughout. Panel (b): Ramsey intensity by network multiplier at $\gamma = \GammaBase$.}
+\label{fig:bias}
+\end{figure}
+
+The welfare arithmetic deserves a candid summary. In the single-use regime the numbers are small: a few billion a year against stakes in the hundreds of billions, and the model says so plainly. The economics becomes first order at the extensive margin of the \emph{regime}: between restraint and routine weaponization lies about \$35 billion a year of privilege, roughly a third of a percent of United States federal revenue, capitalizing to near a trillion dollars, and the time-inconsistency result says the system drifts toward the expensive regime one individually rational crisis at a time. Whether the data support the demand elasticities this arithmetic assumes is the next section's business.
+
+\section{Empirical Designs}\label{sec:evidence}
+
+The model turns on two elasticities: the direct demand response $1/\kappa$ and the network slope $\ell_1$. Corollary~\ref{cor:micromacro} dictates the division of labor: the cross section can only ever deliver the first, aggregate prices the second. I specify one design for each, the structural mapping that combines them, and the falsification tests. Estimates requiring restricted or yet-unassembled data are marked pending. The designs are stated in advance, with their predicted signs and magnitudes.
+
+\medskip
+\noindent\textbf{Design 1: the direct wedge, from the cross section.} Country-level foreign official holdings of United States Treasuries (TIC data, monthly) around February 2022, in an event-study difference-in-differences:
+\begin{equation}
+\Delta \mathrm{Share}_{i,t} \;=\; \alpha_i + \tau_t + \textstyle\sum_k \beta_k\, z_i \times \one\{t = t_0 + k\} + \Gamma' X_{i,t} + \varepsilon_{i,t},
+\label{eq:did}
+\end{equation}
+with exposure $z_i$ measured continuously as the ideal-point distance from the sanctioning coalition in United Nations votes \citep{BaileyStrezhnevVoeten2017}, and $X$ absorbing trade shares, commodity terms, ratings, and valuation effects. The model makes three predictions, not one. The long-run differential is $-\hat\pi/\kappa$, calibrated at $-4$ percentage points, and estimating it \emph{replaces} the calibration's softest assumption. The event-study path approaches that plateau at the cross-sectional rate $\lambda_d$, half-life \HalfLifeD\ years, with no reversal: transitory risk-off confounds mean revert, a reassessment does not. And the response should be dose-monotone in $z_i$. The known hazards are custodial bias in TIC (holdings booked in Belgium or Ireland obscure the beneficial owner) and the mixing of official with private holdings. Gold accumulation, for which country-level data are public and which the model treats as the outside asset, supplies a complementary left-hand side, and its post-2022 record levels \citep{WGC2024} are at least consistent with the mechanism.
+
+\medskip
+\noindent\textbf{Design 2: the network slope, from prices.} The convenience yield is observable: the Treasury--agency or Treasury--AAA spread of \citet{KrishnamurthyVissingJorgensen2012}, the cross-currency Treasury premium of \citet{DuImSchreger2018}, the basis of \citet{JiangKrishnamurthyLustig2021}. Let $\mathrm{Sal}_t$ be a salience index of \emph{financial} sanctions: announcements from the Global Sanctions Data Base \citep{FelbermayrEtAl2020} restricted to asset freezes and payment restrictions, weighted by target reserves, interacted with news intensity. The specification
+\begin{equation}
+CY_t \;=\; \rho\, CY_{t-1} + \delta\, \mathrm{Sal}_t + \Xi' Z_t + u_t
+\label{eq:cyreg}
+\end{equation}
+tests $\delta < 0$ against the null that sanctions salience is irrelevant once global risk and monetary policy ($Z_t$) are controlled. I flag the power problem honestly: the baseline model puts the \emph{cumulative} convenience-yield effect of the 2022 reassessment at \DCYSingleBP\ basis points, small against the volatility of these spreads, so single-event tests are weak. Two sharper versions: the dollar-specific premium relative to other safe currencies (differencing out global safe-asset demand), and regime-sized episodes, of which secondary-sanctions expansions are the natural sample. Given $\kappa$ from Design 1, any estimate of the aggregate semi-elasticity here converts directly into $\ell_1$ and hence the multiplier $m$.
+
+\medskip
+\noindent\textbf{Design 3: structure and counterfactuals.} The mapping is exactly identified: the Design-1 plateau gives $\kappa$, its adjustment path gives $\nu$, Design 2 gives $\ell_1$, and the pre-2022 levels give $\ell_0$ and $\bar r$. With those five numbers, every object in Sections~\ref{sec:hegemon}--\ref{sec:quant}, the multiplier, the Laffer curve, the Ramsey rule, the value of commitment, is a calculation, not a fit. What no design identifies is $\gamma$: the stakes are the policymaker's input, and the paper's Figure~\ref{fig:bias} is deliberately presented as a menu over $\gamma$ rather than a point estimate.
+
+\begin{table}[t]
+\centering
+\caption{Predictions and status.}
+\label{tab:evidence2}
+\begin{tabular}{p{6.4cm}p{3.1cm}p{2.2cm}p{2.2cm}}
+\toprule
+Prediction & Model magnitude & Null & Status \\
+\midrule
+P1: exposed countries cut dollar holdings after freeze events & $-4$ pp long run & 0 & pending data \\
+P2: response monotone in geopolitical distance & dose-response in $z_i$ & flat & pending data \\
+P3: financial, not trade, sanctions move reserves & 0 for trade events & equal & pending data \\
+P4: convenience yield falls with financial-sanctions salience & $-\DCYSingleBP$ bp cumulative & 0 & pending data \\
+P5: aligned countries also reduce (network fingerprint) & $-\DAAPP$ pp & 0 if $\ell_1 = 0$ & pending data \\
+No-reversal: responses are permanent, unlike risk-off swings & $\lambda_d = $ \HalfLifeD-yr half-life, no rebound & mean reversion & pending data \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: magnitudes at baseline calibration ($m = 1.5$, $p = 0.02$). Data requirements: TIC country-level holdings, IMF COFER, GSDB, UN ideal points, convenience-yield series, World Gold Council central-bank purchases.
+\end{minipage}
+\end{table}
+
+Table~\ref{tab:evidence2} collects the tests. Two are decisive for the theory rather than the calibration. P3 separates the accessibility wedge from geopolitics at large: an exposed country's reserves should respond to asset freezes and payment restrictions, which change $\hat\pi$, and not to trade sanctions of comparable salience, which do not. P5 separates the network model from a pure exposure story: if aligned countries never move, $\ell_1 = 0$, the multiplier is one, and the hegemon's problem loses most of its bite. I would regard a clean zero on P5 as the most informative failure the data could deliver.
+
+Two moments already validate the model without having been used to calibrate it. The calibration uses three numbers: the convenience-yield level, the pre-2022 dollar share, and the three-year half-life. It does not use the record central-bank gold purchases after 2022, which the model requires as the outside-asset counterpart of any dollar decline and which occurred \citep{WGC2024}, and it does not use the shape of the COFER drift, which the model requires to be gradual and reversal-free and which it has been for two decades \citep{ArslanalpEichengreenSimpsonBell2022}. Neither observation is an estimate of the model's elasticities. Both could have come out the other way.
+
+The rejection criteria are explicit. If the Design-1 differential for exposed countries is zero or positive within three years of a 2022-scale freeze, with the confidence to exclude the calibrated $-4$ percentage points, the wedge is not priced and the paper's demand block fails. If the differential appears but aligned countries show no movement and the aggregate decline matches the exposed response one-for-one, then $\ell_1 = 0$: the pricing result survives as a portfolio fact, and the multiplier, the weaponization bias magnitudes, and the Laffer curve all lose their force. The theory is built so that these two regressions can kill it in two distinct ways.
+
+Feasibility is a fair question for designs labeled pending, and Table~\ref{tab:feas2} answers it source by source. The binding constraint is not access but attribution: every dataset is public, and the one object the model wants most, country-level reserve composition, is exactly what COFER anonymizes, so Design 1 runs on TIC holdings and the disclosed-composition subsample rather than on the ideal series.
+
+\begin{table}[t]
+\centering
+\caption{Data feasibility.}
+\label{tab:feas2}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{3.2cm}p{2.6cm}p{1.5cm}p{1.6cm}p{2.6cm}p{1.7cm}}
+\toprule
+Dataset & Coverage & Frequency & Access & Observed or proxied & Status \\
+\midrule
+IMF COFER & aggregate shares, 1999-- & quarterly & public & observed (aggregate only) & in hand \\
+TIC official holdings & by country, monthly, custodial bias & monthly & public & proxy for beneficial ownership & in hand \\
+Disclosed CB composition & subsample of central banks & annual & public reports & observed, selected sample & to assemble \\
+WGC gold purchases & by country & quarterly & public & observed & in hand \\
+GSDB sanctions catalog & 1950--2022 & episode & public (academic) & observed & in hand \\
+UN ideal points & all members, 1946-- & annual & public & observed & in hand \\
+Convenience-yield series & US, G10 & monthly & replicable & observed & in hand \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: \enquote{to assemble} marks the one input requiring new collection. The salience index of Design 2 is built from GSDB events and news intensity, both public.
+\end{minipage}
+\end{table}
+
+\section{Conclusion}\label{sec:conclusion}
+
+I have priced a belief: the belief, taught by events, that dollar safety is state contingent. Treated as a haircut on the convenience yield and passed through a network of complementary portfolio choices, that belief delivers closed-form answers to the questions the sanctions debate argues about in prose. How much de-dollarization did 2022 cause? A few percentage points, spread over a decade, which is what the data show and, the model insists, an underestimate of the aggregate consequence by exactly the network multiplier that cross-country comparisons cannot see. How much did it cost the hegemon? A few billion dollars a year: cheap, and rationally chosen, against any serious geopolitical stake. The cliff sits at the breadth of use. Once exposure spreads from pariahs to a meaningful fraction of reserve holders, near three percent target probability in the baseline arithmetic and lower wherever the stakes are smaller, the weapon's value goes negative, and by the time use is routine the system has surrendered a third of a percent of federal revenue in perpetuity.
+
+The deepest result is the oldest one. The hegemon's problem is Kydland and Prescott's: the erosion is caused by the rule, the decision is taken crisis by crisis, and so discretion weaponizes maximally even when a rule would counsel restraint, most severely when the stakes are small. The practical reading is that a sanctions \emph{doctrine}, a public, constraining statement of when the financial weapon will and will not be used, is not diplomatic decoration: it is the same commitment technology that monetary policy spent half a century learning to build, protecting an asset of the same fiscal magnitude. The forces that would sustain such a doctrine reputationally are weakened by the very erosion it is meant to prevent, which is why the institutional question deserves more than the two benchmarks computed here.
+
+Three extensions seem to me the productive ones. Endogenizing the outside asset, so that competitors invest in their own networks and the multiplier becomes a moving target: the race is presumably on. Adding the target's response, along the default margin of \citet{BianchiSosaPadilla2024JME}, which turns the weapon's cost partly into credit losses for the hegemon's own financial system. And the measurement this draft specifies but does not contain: the direct wedge from the 2022 cross section and the network slope from convenience yields. The model stands or falls on whether five basis points of accessibility risk move portfolios the way seventy-three basis points of convenience do, in the opposite direction. That is a question data can answer.
+
+\clearpage
+\appendix
+\renewcommand{\theequation}{\thesection.\arabic{equation}}
+\numberwithin{equation}{section}
+
+\section{Proofs}\label{app:proofs}
+
+\subsection{Proof of Proposition \ref{prop:pricing}}
+The objective \eqref{eq:payoff} with $\nu = 0$ is strictly concave in $a$. The interior first-order condition is $\bar r + \ell(N) - z_i\hat\pi - \kappa a = 0$, giving \eqref{eq:foc}. Part (i) is $\partial a_i/\partial \hat\pi = -z_i/\kappa$ at fixed $N$. Part (ii): subtract the exposed from the aligned policy at the common equilibrium $N$. Part (iii): rewrite the exposed country's condition as $\kappa a_E = \bar r + [\ell(N) - \hat\pi]$: the country behaves exactly as an unexposed country facing convenience $\ell(N) - \hat\pi$. $\blacksquare$
+
+\subsection{Proof of Proposition \ref{prop:multiplier}}
+Define the aggregate best response $B(N) = [\bar r + \ell_0 + \ell_1 N - \mu\hat\pi]/\kappa$, the mean of \eqref{eq:foc}. $B$ is affine with slope $\ell_1/\kappa$. If $\ell_1 < \kappa$ the slope is below one, $B$ has a unique fixed point, and it is given by \eqref{eq:Nss}. Complementarity is $\partial a_i/\partial N = \ell_1/\kappa > 0$. Total differentiation of the fixed point in $\hat\pi$ gives $dN/d\hat\pi = -(\mu/\kappa)/(1 - \ell_1/\kappa)$, which is the direct effect times $m$. If $\ell_1 \geq \kappa$ the affine map has slope $\geq 1$ and either no interior fixed point or a continuum, and equilibria then lie at corners of the type space (Appendix~\ref{app:corners}). $\blacksquare$
+
+\subsection{Proof of Corollary \ref{cor:micromacro}}
+From \eqref{eq:foc}, $a_A - a_E = \hat\pi/\kappa$ at any $N$: the term $\ell(N)$ is common to both types and differences out, so no function of cross-sectional differences depends on $\ell_1$. The aggregate statement is Proposition~\ref{prop:multiplier}. $\blacksquare$
+
+\subsection{Proof of Proposition \ref{prop:dynamics}}
+Averaging \eqref{eq:euler} over countries and collecting terms gives
+\[
+\beta_c\nu\, N_{t+1} - \big(\kappa + (1+\beta_c)\nu - \ell_1\big) N_t + \nu N_{t-1} = -(\bar r + \ell_0 - \mu\hat\pi),
+\]
+and subtracting the aligned from the exposed equation gives the same recursion for $d_t$ with $\ell_1 = 0$ and forcing $\hat\pi$ (the network term is common and cancels). Let $P(\lambda) = \beta_c\nu\lambda^2 - B\lambda + \nu$ with $B = \kappa + (1+\beta_c)\nu - \ell_1$. Then $P(0) = \nu > 0$ and $P(1) = \beta_c\nu - B + \nu = \ell_1 - \kappa < 0$, so the roots are real, positive, and straddle one: there is exactly one stable root $\lambda \in (0,1)$, and the unique bounded solution given the predetermined initial condition is the stated first-order recursion (the constant solves to the new steady state). The stable root
+\[
+\lambda = \frac{B - \sqrt{B^2 - 4\beta_c \nu^2}}{2\beta_c\nu}
+\]
+is decreasing in $B$. Since $B$ is decreasing in $\ell_1$, $\lambda_N > \lambda_d$ and $\partial\lambda_N/\partial\ell_1 > 0$. $\blacksquare$
+
+\subsection{Proof of Proposition \ref{prop:bias}}
+Discretion: portfolios and beliefs are predetermined at the moment $s$ is chosen, so the ex post problem is $\max_{s} G(s)$ with $G' = \gamma(1-s) \geq 0$, giving $s_D = 1$. Consistency of beliefs closes the equilibrium at $\bar s = 1$. Ramsey: substitute $N(\bar s) = \bar N_0 - \omega c\,\bar s$ (from \eqref{eq:Nss} and \eqref{eq:pihat}, with $c = \mu p \phi/(\kappa - \ell_1)$) into \eqref{eq:ramsey}. $V$ is quadratic with $V''(\bar s) = 2\ell_1\omega^2c^2 W - \omega\gamma$, negative whenever $\gamma > 2\ell_1\omega c^2 W$ (maintained here, otherwise $s_R$ is at a corner). The first-order condition $\Omega'(N)\cdot(-\omega c) + \omega\gamma(1 - \bar s) = 0$ with $\Omega'(N) = (\ell_0 + 2\ell_1 N)W$ solves to \eqref{eq:sR}, which rearranges to
+\[
+1 - s_R \;=\; \frac{c\,W\big(\ell_0 + 2\ell_1 N(1)\big)}{\gamma - 2\ell_1\omega c^2 W} \;=\; \frac{c\,\Omega'\!\big(N(1)\big)}{\gamma - 2\ell_1\omega c^2 W} \;>\; 0
+\]
+whenever $c > 0$ and $W > 0$, since $N(1) > 0$ in the interior regime. The bias $1 - s_R$ is increasing in $c$ (hence in $\mu$, $p$, $\phi$, and in $m$ through $\kappa - \ell_1$) and decreasing in $\gamma$. Finally, the value of commitment is the quadratic vertex gap
+\[
+V(s_R) - V(1) \;=\; \tfrac{1}{2}\big(\omega\gamma - 2\ell_1\omega^2c^2W\big)\,(1 - s_R)^2 \;>\; 0. \qquad\blacksquare
+\]
+
+\subsection{Proof of Proposition \ref{prop:reputation}}
+Sustainability of the trigger profile requires the one-time deviation gain not to exceed the discounted value of conformity:
+\[
+\frac{\beta_H}{1 - \beta_H}\,\big[V(s_R) - V(1)\big] \;\geq\; G(1) - G(s_R) \;=\; \frac{\gamma}{2}(1 - s_R)^2 .
+\]
+By the vertex formula in the proof of Proposition~\ref{prop:bias}, $V(s_R) - V(1) = \tfrac{1}{2}(\omega\gamma - 2\ell_1\omega^2c^2W)(1 - s_R)^2$. The factor $(1-s_R)^2/2$ cancels from both sides, leaving \eqref{eq:reputation}. The right side of \eqref{eq:reputation} is decreasing in $\omega$ and increasing in $\ell_1 c^2 W$, which delivers the stated comparative statics. The derivation requires the interior concavity condition $\omega\gamma > 2\ell_1\omega^2c^2W$ of Proposition~\ref{prop:bias}. When it fails, as it does at routine breadth where exposed countries reach the corner, the quadratic value formula is invalid and the threshold is undefined. $\blacksquare$
+
+\section{The Saddle Path and the $\nu$ Calibration}\label{app:saddle}
+
+The characteristic quadratic of Proposition~\ref{prop:dynamics} can be inverted for the adjustment cost that delivers a target persistence: setting $P(\lambda) = 0$ and solving for $\nu$,
+\[
+\nu \;=\; \frac{(\kappa - \ell_1)\,\lambda}{(1 - \lambda)(1 - \beta_c\lambda)},
+\]
+so a three-year aggregate half-life ($\lambda = 2^{-1/3}$) pins $\nu = \NuVal$ at the baseline $(\kappa, \ell_1)$. The full transition in levels is recovered from the pair $(N_t, d_t)$ by $a_{A,t} = N_t - \mu d_t$ and $a_{E,t} = a_{A,t} + d_t$. Because the two recursions are driven by different roots, the model makes a joint prediction about timing: the exposed-aligned gap (root $\lambda_d$, half-life \HalfLifeD\ years) closes on its plateau faster than the aggregate share (root $\lambda_N$, half-life \HalfLife\ years), which Design 1 and the COFER aggregate can check against each other.
+
+\section{Corners and Tipping}\label{app:corners}
+
+With two types and common $\kappa$, the aggregate best response remains piecewise affine when corner constraints bind, with slope $\ell_1/\kappa$ times the interior fraction. Since this never exceeds $\ell_1/\kappa < 1$, uniqueness survives corners in the baseline model, and the routine-use steady state of Table~\ref{tab:ss2}, in which exposed countries sit at $a_E = 0$, is the unique equilibrium there. Multiplicity requires the aggregate response to cross the diagonal from below somewhere, which needs either $\ell_1 > \kappa$ over a range, or heterogeneity in $\kappa_i$ concentrated enough that mass exits in waves. In that regime the model inherits the coordination economics of \citet{FarhiMaggiori2018} and \citet{HeKrishnamurthyMilbradt2019}: a sanctions shock can tip the system between a dollar equilibrium and a fragmented one, and the erosion becomes discontinuous in $\hat\pi$ rather than smooth. I flag the possibility and keep the paper in the interior regime, where every claim is a formula. The empirical multiplier from Designs 1 and 2 is exactly the statistic that says how far from the tipping boundary the world sits.
+
+\section{Calibration Audit}\label{app:audit}
+
+Table~\ref{tab:audit2} records, for every parameter, where it enters the model, its units, the source or the moment that pins it, the range examined, and what moves when it moves. The mechanism disappears at exactly three places, and it is worth stating them. If $\ell_1 = 0$ the pricing result survives as a portfolio fact but the multiplier is one, the aligned fingerprint vanishes, and the weaponization bias loses most of its magnitude. If the wedge components satisfy $\mu p \phi \to 0$ there is nothing to price and every result is a zero. And as $\gamma \to \infty$ the Ramsey and discretionary rules converge, so the commitment problem, though still formally present, is worth nothing. The sensitivity ranges below are the same ones behind the break-even band of Section~\ref{sec:quant}.
+
+\begin{table}[h]
+\centering
+\caption{Calibration audit.}
+\label{tab:audit2}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{p{1.9cm}p{1.7cm}p{1.6cm}p{3.1cm}p{1.9cm}p{3.2cm}}
+\toprule
+Parameter & Enters at & Units & Source or moment & Range examined & Effect of the range \\
+\midrule
+$\ell(N_0)$ = 73 bp & eq.~\eqref{eq:ell} & bp per year & \citet{KrishnamurthyVissingJorgensen2012} & none (anchor) & privilege flow scales one-for-one \\
+$N_0$ = 0.59 & eq.~\eqref{eq:Nss} & share & COFER 2021 & none (anchor) & pins $\kappa$ with $\ell(N_0)$ \\
+$\kappa$ = \KappaBP\ bp & eq.~\eqref{eq:foc} & bp per share & implied, $\kappa = \ell(N_0)/N_0$ & $-30$\% (outside-asset case) & erosion \DNSinglePP\ $\to$ \DNOutsidePP\ pp \\
+$m$ ($\ell_1$) = 1.5 & eq.~\eqref{eq:Nss} & unitless & scenario, pending Design 2 & 1 to 2.5 & erosion \DNLowPP--\DNHighPP\ pp, break-even \PBEmLow--\PBEmHigh\% \\
+$\nu$ = \NuVal & eq.~\eqref{eq:euler} & utility & 3-year aggregate half-life & none & timing only, steady states unaffected \\
+$\beta_c$ = 0.96 & eq.~\eqref{eq:euler} & annual & externally fixed & none & negligible near 1 \\
+$\mu$ = 0.5 & eq.~\eqref{eq:Nss} & reserve share & scenario, non-coalition share & 0.3 to 0.7 & break-even \PBEmuLow--\PBEmuHigh\% \\
+$\omega$ = 0.05 & eq.~\eqref{eq:pihat} & per year & scenario & none directly & wedge and $G$ scale linearly \\
+$\phi$ = 0.5 & eq.~\eqref{eq:pihat} & share frozen & Russia 2022 & 0.25 to 0.75 & break-even \PBEphiLow--\PBEphiHigh\% \\
+$p$ = 0.02 & eq.~\eqref{eq:pihat} & probability & scenario, pending Design 1 & 0 to 0.30 (Laffer) & entire Section~\ref{sec:quant} \\
+$W$ = \$12 tn & eq.~\eqref{eq:privilege} & USD & COFER & none (anchor) & dollar magnitudes scale one-for-one \\
+$\gamma$ = \$200 bn & eq.~\eqref{eq:G} & USD per crisis & scenario & 50 to 800 & $s_R$ \SRGamFifty--\SRGamEightH, break-even \PBEgamLow--\PBEgamHigh\% \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.95\textwidth}
+\footnotesize Notes: \enquote{anchor} marks directly estimated quantities whose measurement error passes into the implied parameters rather than being examined separately. Only the product $\omega \bar s p \phi$ enters demand, so the one-way rows for $\omega$, $p$, and $\phi$ are three cuts of the same wedge experiment.
+\end{minipage}
+\end{table}
+
+\section{Data Appendix}\label{app:data}
+
+\paragraph{Reserve composition.} IMF COFER, quarterly, currency shares of allocated reserves \citep{IMFCOFER}. The dollar share was 71 percent in 1999 and 59 percent in 2021 \citep{ArslanalpEichengreenSimpsonBell2022}. Shares are valuation-adjusted with fixed-weight currency returns before any use as a quantity series. COFER is anonymous at the country level, so country attribution uses the subsample of central banks that publish composition, plus TIC.
+
+\paragraph{Country-level holdings.} United States Treasury International Capital (TIC) system: foreign official holdings of long-term Treasuries by country, monthly. Known custodial distortions (Belgium, Luxembourg, Ireland, the Caribbean centers) are handled by aggregating custodial hubs to a rest-of-world category and by robustness to dropping them. Gold: country-level central-bank purchases from World Gold Council releases \citep{WGC2024}.
+
+\paragraph{Sanctions.} The Global Sanctions Data Base \citep{FelbermayrEtAl2020}, restricted to financial sanctions, further to measures touching central-bank assets or payment infrastructure, for the salience index. Trade-only sanction episodes form the P3 placebo set. The 2022 freeze magnitudes are from \citet{BrookingsRussiaAssets2025}.
+
+\paragraph{Alignment.} Ideal-point distances from \citet{BaileyStrezhnevVoeten2017}, updated through the sample. The exposure measure is the pre-2022 average distance from the G7 mean, so that exposure is predetermined at the event.
+
+\paragraph{Convenience yields.} The \citet{KrishnamurthyVissingJorgensen2012} AAA--Treasury spread, the \citet{DuImSchreger2018} Treasury premium (five-year, G10 average and by currency), and the \citet{JiangKrishnamurthyLustig2021} Treasury basis. Global controls: VIX, term premia, and Federal Reserve balance-sheet variables.
+
+\section{Extensions}\label{app:extensions}
+
+\paragraph{Endogenous outside asset.} Let the outside asset's issuer invest to raise its own network quality, lowering $\kappa$ over time. The outside-asset counterfactual of Section~\ref{sec:quant} is the comparative static: each step down in $\kappa$ raises the erosion per use and lowers the Ramsey intensity. A full dynamic treatment makes $\kappa_t$ a state in the hegemon's problem and turns the model into a duopoly of networks, the race sketched by \citet{FarhiMaggiori2018}.
+
+\paragraph{The target's margin.} Freezing a sovereign's reserves degrades its crisis insurance and can push it toward default, imposing credit losses on the hegemon's own financial system. \citet{BianchiSosaPadilla2024JME} model the margin. In the present notation those losses subtract from $G$, reducing $\gamma$ and, by Proposition~\ref{prop:bias}, widening the gap between discretion and any rule a planner would choose.
+
+\paragraph{Continuous exposure.} With $z_i$ distributed on $[0,1]$, every result survives with $\mu$ replaced by $\bar z = \int z_i\,di$. The cross-sectional prediction sharpens to a dose-response, $\partial a_i/\partial z_i = -\hat\pi/\kappa$, testable as the P2 monotonicity in Design 1.
+
+\clearpage
+\printbibliography
+
+\end{document}
