@@ -1,14 +1,11 @@
 # Information-block sensitivity for the ambiguity rollover model.
 #
-# The information block (sigx, sigy) is calibrated from precision targets. This
-# script verifies the uniqueness condition ALP/sqrt(BET) < sqrt(2*pi) across
-# the full precision region and reports how the headline distrust premium moves
-# across that region.
+# The information block is a scenario grid. This script verifies the
+# uniqueness condition ALP/sqrt(BET) < sqrt(2*pi) and reports how the model
+# outputs move across the grid.
 #
-# The primitives below (constants, ncdf/npdf/nquant, pbar, tstar, crisisP,
-# spread_bp) are copied from solve_model.jl so the reproduced baseline matches
-# the main calibration exactly. solve_model.jl runs main() unguarded, so the
-# shared primitives are repeated here instead of included.
+# Shared primitives are imported from solve_model.jl. Its main guard prevents
+# the baseline output routine from running on import.
 #
 # WHAT IS HELD FIXED ACROSS THE GRID. solve_model.jl treats the public-signal
 # LEVELS as the state: YCALM = 1.10 and YSTRESS = 0.95 are fixed constants, and
@@ -20,54 +17,10 @@
 #
 # Run:  julia --project=. info_sens.jl    Output: ../output/info_numbers.tex
 
-using SpecialFunctions: erf, erfinv
 using Printf
+include("solve_model.jl")
 
-const OUTDIR = joinpath(@__DIR__, "..", "output")
-
-ncdf(z) = 0.5 * (1.0 + erf(z / sqrt(2.0)))
-npdf(z) = exp(-0.5 * z^2) / sqrt(2.0 * pi)
-nquant(p) = sqrt(2.0) * erfinv(2.0 * p - 1.0)
-
-# ---------------------------------------------------------------- calibration
-# (copied verbatim from solve_model.jl)
-const R    = 1.04      # promised gross return on rolled debt
-const REC  = 0.60      # recovery in default (Cruces-Trebesch ~40% haircut)
-const KAP  = 0.08      # exit cost of running (fire-sale discount)
-const SIGX = 0.15      # private signal noise  -> BET = 1/SIGX^2
-const SIGY = 1.0 / 3.0 # public signal noise   -> ALP = 1/SIGY^2
-const DELF = 0.08      # fragile-type ambiguity radius (official-revision scale)
-const DELS = 0.0       # stable-type ambiguity radius
-const MU0  = 0.40      # fragile share of the maturing debt (Arslanalp-Tsuda scale)
-const YCALM   = 1.10   # public signal, calm
-const YSTRESS = 0.95   # public signal, stress
-
-const BET = 1.0 / SIGX^2
-const ALP = 1.0 / SIGY^2
-
-const UNIQ_BOUND = sqrt(2.0 * pi)   # selection appears when ALP/sqrt(BET) >= this
-
-pbar(R_, rec, kap) = (R_ - (1.0 - kap)) / (R_ - rec)
-
-"Threshold t* by bisection. del = (del_S, del_F); pb = rollover hurdle."
-function tstar(mu, y; delF = DELF, delS = DELS, alp = ALP, bet = BET,
-               pb = pbar(R, REC, KAP))
-    zb = nquant(pb)
-    g(t) = (alp * (t - y) - zb * sqrt(alp + bet)) / sqrt(bet)
-    shiftF = (alp / sqrt(bet)) * delF
-    shiftS = (alp / sqrt(bet)) * delS
-    rhs(t) = (1.0 - mu) * ncdf(g(t) + shiftS) + mu * ncdf(g(t) + shiftF)
-    lo, hi = 0.0, 1.0
-    for _ in 1:200
-        mid = 0.5 * (lo + hi)
-        (rhs(mid) - mid > 0.0) ? (lo = mid) : (hi = mid)
-    end
-    0.5 * (lo + hi)
-end
-
-"Crisis probability and spread (bp) at threshold t given public signal y."
-crisisP(t, y; alp = ALP) = ncdf((t - y) * sqrt(alp))
-spread_bp(P; rec = REC) = P * (1.0 - rec) / (1.0 - P * (1.0 - rec)) * 1e4
+const UNIQ_BOUND = sqrt(2.0 * pi)
 
 # ------------------------------------------------ premium at one precision cell
 # Distrust premium (bp) = ambiguity spread (delF = DELF) minus Bayesian spread
@@ -98,7 +51,7 @@ base_premC  = premium_bp(YCALM)
 base_premS  = premium_bp(YSTRESS)
 base_scalm  = scalm_bp()
 
-println("BASELINE reproduction:")
+println("BASELINE SCENARIO reproduction:")
 @printf("  alp/sqrt(bet) = %.4f  (rounds to %.2f, published 1.35)\n", base_ratio, round(base_ratio, digits = 2))
 @printf("  uniq bound    = %.4f  (rounds to %.2f, published 2.51)\n", base_bound, round(base_bound, digits = 2))
 @printf("  calm premium  = %.3f bp (rounds to %d, published 18)\n", base_premC, round(Int, base_premC))

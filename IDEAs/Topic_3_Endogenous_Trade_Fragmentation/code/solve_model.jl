@@ -16,6 +16,7 @@
 
 using JSON
 using SpecialFunctions: erf
+using LinearAlgebra
 
 const OUTDIR = joinpath(@__DIR__, "..", "output")
 mkpath(OUTDIR)
@@ -68,6 +69,53 @@ function ghat(Fm, F, m, del, pol)
 end
 
 fmap(Fm, F, m, del, pol) = F0NG[m] + (1.0 - F0NG[m]) * Hcdf(ghat(Fm, F, m, del, pol), m)
+
+"Partial derivatives of the sector best response with respect to its own
+state, the aggregate state, and the dispute hazard."
+function response_partials(Fm, F, m, del, pol)
+    pi_m = pim(Fm, F, m, del)
+    lam_m = lamm(Fm, m, pol)
+    net = pi_m * lam_m - pol.tau
+    net <= 0 && return (own = 0.0, aggregate = 0.0, shock = 0.0)
+    denominator = (1 - CHI * Fm) * (1 - pol.subs)
+    dlam_own = LAM0[m] * pol.lscale * XI
+    dden_own = -CHI * (1 - pol.subs)
+    dnet_own = del * THETA * lam_m + pi_m * dlam_own
+    dnet_aggregate = ETAA * lam_m
+    dnet_shock = (1 - THETA * (1 - Fm)) * lam_m
+    dghat_own = (dnet_own * denominator - net * dden_own) / denominator^2
+    density_scale = (1 - F0NG[m]) * Hpdf(ghat(Fm, F, m, del, pol), m)
+    (own = density_scale * dghat_own,
+     aggregate = density_scale * dnet_aggregate / denominator,
+     shock = density_scale * dnet_shock / denominator)
+end
+
+"Jacobian of the full vector best response T(F) at a supplied state."
+function equilibrium_jacobian(Fm, del, pol)
+    F = sum(W_M .* Fm)
+    J = zeros(length(Fm), length(Fm))
+    for m in eachindex(Fm)
+        partials = response_partials(Fm[m], F, m, del, pol)
+        J[m, :] .= partials.aggregate .* W_M
+        J[m, m] += partials.own
+    end
+    J
+end
+
+"Local comparative statics for a common change in the dispute hazard."
+function vector_multiplier(Fm, del, pol)
+    F = sum(W_M .* Fm)
+    direct = [response_partials(Fm[m], F, m, del, pol).shock for m in eachindex(Fm)]
+    J = equilibrium_jacobian(Fm, del, pol)
+    total = (I - J) \ direct
+    J_without_systemic = Diagonal(diag(J) .-
+        [response_partials(Fm[m], F, m, del, pol).aggregate * W_M[m]
+         for m in eachindex(Fm)])
+    own_channel = (I - J_without_systemic) \ direct
+    radius = maximum(abs.(eigvals(J)))
+    (J = J, direct = direct, total = total, own_channel = own_channel,
+     cross_spillover = total - own_channel, spectral_radius = radius)
+end
 
 # ---------------------------------------------------- sector/aggregate solvers
 "Fixed point of sector m given aggregate F, by damped iteration from Fm0."
@@ -123,6 +171,60 @@ function equilibria(del, pol)
         push!(out, (Fc = r, slope = slope, stable = slope < 1.0))
     end
     out
+end
+
+fold_residual(Fc, del, pol) =
+    Fc - fmap(Fc, agg_given_Fc(Fc, del, pol), 1, del, pol)
+
+function fold_derivatives(Fc, del, pol; hF = 1e-5, hD = 1e-5)
+    residual(f, d) = fold_residual(f, d, pol)
+    r0 = residual(Fc, del)
+    rF = (residual(Fc + hF, del) - residual(Fc - hF, del)) / (2hF)
+    rD = (residual(Fc, del + hD) - residual(Fc, del - hD)) / (2hD)
+    rFF = (residual(Fc + hF, del) - 2r0 + residual(Fc - hF, del)) / hF^2
+    rFD = (
+        residual(Fc + hF, del + hD) - residual(Fc + hF, del - hD) -
+        residual(Fc - hF, del + hD) + residual(Fc - hF, del - hD)
+    ) / (4hF * hD)
+    (residual = r0, rF = rF, rD = rD, rFF = rFF, rFD = rFD)
+end
+
+"Refine a fold by solving R(F, delta) = 0 and R_F(F, delta) = 0."
+function refine_fold(Fc0, del0, pol)
+    x = [Fc0, del0]
+    for _ in 1:30
+        derivatives = fold_derivatives(x[1], x[2], pol)
+        system = [derivatives.residual, derivatives.rF]
+        maximum(abs.(system)) < 1e-10 && break
+        jacobian = [derivatives.rF derivatives.rD;
+                    derivatives.rFF derivatives.rFD]
+        step = jacobian \ system
+        candidate = x - step
+        candidate[1] = clamp(candidate[1], F0NG[1] + 1e-6, 1 - 1e-6)
+        candidate[2] = clamp(candidate[2], 1e-4, 0.5)
+        old_norm = maximum(abs.(system))
+        for _ in 1:12
+            new_derivatives = fold_derivatives(candidate[1], candidate[2], pol)
+            new_norm = maximum(abs.([new_derivatives.residual, new_derivatives.rF]))
+            new_norm < old_norm && break
+            candidate = 0.5 .* (candidate .+ x)
+        end
+        x = candidate
+    end
+    derivatives = fold_derivatives(x[1], x[2], pol)
+    (F = x[1], delta = x[2], residual = derivatives.residual,
+     slope_residual = derivatives.rF, curvature = derivatives.rFF,
+     transversality = derivatives.rD)
+end
+
+function refined_fold_pair(bif, pol)
+    first_roots = sort([e.Fc for e in equilibria(bif.band[1], pol)])
+    last_roots = sort([e.Fc for e in equilibria(bif.band[2], pol)])
+    length(first_roots) >= 3 || throw(ErrorException("lower fold bracket lacks three roots"))
+    length(last_roots) >= 3 || throw(ErrorException("upper fold bracket lacks three roots"))
+    lower = refine_fold(sum(first_roots[2:3]) / 2, bif.band[1], pol)
+    upper = refine_fold(sum(last_roots[1:2]) / 2, bif.band[2], pol)
+    (lower = lower, upper = upper)
 end
 
 "Full-economy steady state started from initial conditions (history selects
@@ -262,35 +364,43 @@ function main()
                        "pic0" => DELTA_PRE * (1 - THETA * (1 - pre.Fm[1]))),
         "post" => Dict("Fm" => post.Fm, "F" => post.F, "pic" => post.pic))
 
-    # multipliers: equilibrium vs direct (fixed-F) response to a small d-delta
+    # multipliers: full vector response and a finite-difference validation
     eps = 1e-4
     postp = steady(DELTA_POST + eps, NOPOL; init = post.Fm)
-    equil_dF = (postp.Fm[1] - post.Fm[1]) / eps
-    gh = ghat(post.Fm[1], post.F, 1, DELTA_POST, NOPOL)
-    direct_dF = (1 - F0NG[1]) * Hpdf(gh, 1) *
-                (1 - THETA * (1 - post.Fm[1])) * lamm(post.Fm[1], 1, NOPOL) /
-                ((1 - CHI * post.Fm[1]))
-    # aggregate multiplier
-    aggp = (postp.F - post.F) / eps
-    direct_agg = sum((1 - F0NG[m]) *
-                     Hpdf(ghat(post.Fm[m], post.F, m, DELTA_POST, NOPOL), m) *
-                     (1 - THETA * (1 - post.Fm[m])) * lamm(post.Fm[m], m, NOPOL) /
-                     (1 - CHI * post.Fm[m]) * W_M[m] for m in 1:3)
+    local_response = vector_multiplier(post.Fm, DELTA_POST, NOPOL)
+    finite_difference = (postp.Fm - post.Fm) / eps
+    direct_agg = sum(W_M .* local_response.direct)
+    total_agg = sum(W_M .* local_response.total)
     results["multiplier"] = Dict(
-        "crit_equil" => equil_dF, "crit_direct" => direct_dF,
-        "M_crit" => equil_dF / direct_dF,
-        "agg_equil" => aggp, "agg_direct" => direct_agg,
-        "M_agg" => aggp / direct_agg)
+        "jacobian" => local_response.J,
+        "spectral_radius" => local_response.spectral_radius,
+        "direct_sector" => local_response.direct,
+        "total_sector" => local_response.total,
+        "own_channel_sector" => local_response.own_channel,
+        "cross_spillover_sector" => local_response.cross_spillover,
+        "finite_difference_sector" => finite_difference,
+        "crit_equil" => local_response.total[1],
+        "crit_direct" => local_response.direct[1],
+        "M_crit" => local_response.total[1] / local_response.direct[1],
+        "agg_equil" => total_agg, "agg_direct" => direct_agg,
+        "M_agg" => total_agg / direct_agg)
 
     # bifurcation and fold band (baseline and policies)
     bif = bifurcation(NOPOL)
+    refined_folds = refined_fold_pair(bif, NOPOL)
     results["bifurcation"] = Dict(
         "delta" => bif.dgrid, "low" => bif.low, "mid" => bif.mid,
-        "high" => bif.high, "band_lo" => bif.band[1], "band_hi" => bif.band[2])
+        "high" => bif.high,
+        "band_lo" => refined_folds.lower.delta,
+        "band_hi" => refined_folds.upper.delta,
+        "fold_lower" => Dict(string(k) => v for (k, v) in pairs(refined_folds.lower)),
+        "fold_upper" => Dict(string(k) => v for (k, v) in pairs(refined_folds.upper)))
     # distance consumed by the 2022 reassessment
     results["distance"] = Dict(
-        "fold_hi" => bif.band[2], "fold_lo" => bif.band[1],
-        "consumed" => (DELTA_POST - DELTA_PRE) / (bif.band[2] - DELTA_PRE))
+        "fold_hi" => refined_folds.upper.delta,
+        "fold_lo" => refined_folds.lower.delta,
+        "consumed" => (DELTA_POST - DELTA_PRE) /
+                      (refined_folds.upper.delta - DELTA_PRE))
 
     # sector cascade: stable low-branch f_m over delta (from low history)
     dg2 = collect(0.02:0.002:0.30)
@@ -394,8 +504,10 @@ function main()
     println("pre:  Fc=", round(pre.Fm[1], digits=4), "  F=", round(pre.F, digits=4))
     println("post: Fc=", round(post.Fm[1], digits=4), "  F=", round(post.F, digits=4),
             "  pic=", round(post.pic, digits=4))
-    println("fold band: ", bif.band, "  M_crit=", round(equil_dF/direct_dF, digits=2),
-            "  M_agg=", round(aggp/direct_agg, digits=2))
+    println("fold band: ", bif.band,
+            "  spectral radius=", round(local_response.spectral_radius, digits=3),
+            "  M_crit=", round(local_response.total[1] / local_response.direct[1], digits=2),
+            "  M_agg=", round(total_agg / direct_agg, digits=2))
     println("trap cost (sector value/yr): ", round(Bhi-Blo, digits=4),
             "  wedge taus: ", [round(t, digits=4) for t in wedge["tau"]])
 end
@@ -430,4 +542,6 @@ function fold_sens(th, ch)
         Dict("band_lo" => minimum(multi), "band_hi" => maximum(multi))
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end

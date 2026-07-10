@@ -14,10 +14,12 @@
 \usepackage[backend=bibtex,style=authoryear,natbib=true,maxcitenames=2,maxbibnames=99]{biblatex}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+\Urlmuskip=0mu plus 1mu\relax
 \setstretch{1.15}
 \captionsetup{font=small,labelfont=bf}
 
 \newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 \newtheorem{assumption}{Assumption}
@@ -36,7 +38,7 @@
 \input{output/quant_numbers.tex}
 \input{output/chi_numbers.tex}
 
-\title{Narrative Contagion at the\\ Sovereign Default Boundary\thanks{Revised draft: July 2026. The empirical sections specify the text, forecast, and sovereign-pricing data used for estimation. Every number in the text is either documented in a cited source or an output of the model solved here. Replication code in Julia and R accompanies the draft.}}
+\title{Narrative Contagion at the\\ Sovereign Default Boundary}
 \author{[Author]}
 \date{July 2026}
 
@@ -44,7 +46,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent Stories about sovereign default spread from investor to investor, and sometimes they move spreads. I put a contagious pessimistic narrative into a sovereign debt-pricing model with a default boundary and a feedback from borrowing costs to fundamentals. The pricing side is a theorem from one primitive: because default probability is an S-curve in fundamentals, a story that shifts perceived fundamentals is priced in proportion to the curve's local slope. The contagion side rests on one stated behavioral assumption, that stories spread when they are worth acting on, under which the contagion rate inherits the same hump. The state space splits into three derived regions: an immune region where the story dies regardless of seeding, a febrile zone where it goes viral and is priced but self-limits, and a critical zone where the narrative-spread-fundamentals loop moves the default boundary toward the sovereign. In a calibration anchored to sovereign haircut and spread magnitudes, a story at ten percent prevalence is worth \RelPeakTen\ basis points at the boundary and \RelSafeTen\ off it, and a seeded outbreak adds up to \WedgePeak\ percentage points to the two-year default hazard at the baseline feedback, \WedgeChiLo\ to \WedgeChiHi\ across the gross-financing-need band, all inside the zone. Policy divides sharply: deleting three quarters of the story's carriers buys about six weeks, transparency dampens, and a credible spread cap sterilizes the epidemic itself, at \DelayCost\ percentage points of default probability per year of delay.
+\noindent A fixed pessimistic belief distortion has little price relevance for a safe sovereign or for one that already prices default. It matters near the default boundary. This paper places that observation in a sovereign pricing model with narrative diffusion and debt-service feedback. The primitive belief gap is exactly single-peaked. The equilibrium price effect is single-peaked under a derivative restriction on the feedback multiplier, and the restriction holds on the reported scenario grid. Narrative adoption follows from an attention-cost rule in which investors adopt when decision value exceeds an idiosyncratic cost. The prevalence process is continuous in time and the annual pricing model is mapped exactly into monthly simulation. A state-space measurement equation separates media coverage from latent investor prevalence. In the quantitative scenario, ten percentage points of latent prevalence raise the spread by as much as \RelPeakTen\ basis points, and seeding raises the two-year default probability by at most \WedgePeak\ percentage points. These are scenario outputs. A binding cap sets the marginal narrative effect on the modelled bond to zero. It does not eliminate the narrative or its effects on other markets.
 \end{abstract}
 
 \medskip
@@ -53,37 +55,46 @@
 
 \section{Introduction}\label{sec:intro}
 
-On July 26, 2012, the president of the European Central Bank told a London investment conference that the ECB was ready to do \enquote{whatever it takes to preserve the euro.} No facility existed. The Outright Monetary Transactions program the speech foreshadowed was announced only in September and has never bought a bond. Yet two-year Italian and Spanish yields fell by roughly two percentage points around the OMT announcements \citep{AltavillaEtAl2016}, with the declines concentrated in default and redenomination premia rather than expected rates \citep{KrishnamurthyEtAl2018}. Three sentences repriced two of the largest bond markets in the world. The same three sentences, spoken in 2006 about the same two sovereigns, belonged to a different state of the boundary.
+On July 26, 2012, the president of the European Central Bank stated that the ECB was ready to do whatever was necessary within its mandate to preserve the euro. The Outright Monetary Transactions program was announced in September and was never activated. Research attributes a large fall in Italian and Spanish short yields to the OMT announcements \citep{AltavillaEtAl2016}. The intervention also changed redenomination insurance and the expected policy regime \citep{KrishnamurthyEtAl2018}. It was not a pure communication shock.
 
-This paper is about when words and the stories they carry can move sovereign spreads, and it derives the answer from the default boundary. The narrative-economics program of \citet{Shiller2017} models stories as epidemics: beliefs that pass from person to person with a reproduction rate and a recovery rate. Applied to sovereign debt, the discipline is the default boundary. Stories about default are priced, and spread, where default is genuinely in play. The pricing half is a theorem from one primitive. The contagion half rests on one behavioral assumption and a numbered rival that the data separate.
+This paper asks when a portable pessimistic claim can move a sovereign spread. The answer comes from the default boundary. Narrative economics supplies the diffusion idea \citep{Shiller2017,FlynnSastry2024}. Sovereign pricing supplies the state dependence. The new object is the interaction between a default-probability curve and a measurable media-diffusion process.
 
-The primitive is the shape of the default probability. A sovereign defaults when fundamentals cross a threshold, so its one-year default probability is an S-curve in current fundamentals: flat near zero for safe sovereigns, flat near one for condemned ones, steep in between. A narrative, in this model, is a portable pessimistic belief: investors who carry the story price the bond as if fundamentals were worse by a fixed amount $\xi$: the books are cooked, the union will break. The story's effect on the spread is then proportional to the probability the extra pessimism changes the default assessment, which is the S-curve's local slope: a hump that peaks where default hangs in the balance and vanishes in both tails. That is the pricing theorem. The contagion half follows from asking why anyone repeats a story. Following the fitness logic of \citet{FlynnSastry2024}, investors adopt a story when it is worth acting on, and a story about default is worth acting on exactly when it moves valuations: the adoption rate, and hence the epidemic reproduction number $R_0(\theta)$, inherits the same hump. Assumption~\ref{ass:adoption} states that adoption rule, and Section~\ref{sec:evidence} separates it from the rival rule in which adoption tracks perceived mispricing. One measurable object, the local sensitivity of spreads to fundamentals news, governs where stories are priced, where they spread, and, through the feedback from spreads to debt service, where they push the sovereign into default.
+The direct belief gap is $G(z)=\Phi(z+\Delta)-\Phi(z)$. It is the probability mass between the ordinary and pessimistic default thresholds. This gap has one peak at $z=-\Delta/2$ and vanishes in both tails. The equilibrium effect multiplies $G$ by the spread-feedback term. A bounded multiplier does not preserve single-peakedness by itself. Proposition~\ref{prop:eqhump} states a derivative condition that does, and the quantitative scenario verifies that condition on its state space.
 
-The theory delivers three regions. Where $R_0 < 1$, seeding a story produces a fizzle: prevalence decays geometrically and the pricing effect is the seed times the hump, a few basis points for safe sovereigns. Where $R_0 > 1$, a seed becomes an outbreak: prevalence converges to an endemic level and spreads carry a narrative premium for as long as fundamentals stay in the zone, viral, priced, and self-limiting. In an inner critical region, the loop closes: the outbreak raises spreads, spreads drain fundamentals through debt service, worse fundamentals raise both the story's price impact and its contagion rate, and the default basin shifts toward the sovereign. The geometry inverts the usual metaphor: the story moves the cliff. In the calibrated model, a sovereign at spread \SZoneBase\ basis points survives on the unseeded path and, seeded with a two percent prevalence, defaults at month \ZoneDefMonth: a slow narrative crisis, in the sense of \citet{LorenzoniWerning2019}, whose engine is epidemiology rather than equilibrium selection.
+Adoption has a costly-attention foundation. An investor transmits the narrative when its decision value exceeds an idiosyncratic cost. The resulting adoption probability is the cost distribution evaluated at the price relevance of the narrative. This assumption is testable against a competing rule based on perceived mispricing. Media coverage measures diffusion across outlets. It is linked to latent investor prevalence by a measurement equation rather than equated with it.
+
+When $R_0<1$, a small seed decays. When $R_0>1$, it grows while fundamentals remain in the susceptible interval. Debt-service feedback can then change the fundamentals path. The instantaneous lower zero-drift root rises with prevalence under a local slope condition. This root is not automatically the basin boundary of the full system. The quantitative section therefore reports the vector field and the seeded path. In that scenario the seeded path crosses zero capacity in month \ZoneDefMonth, while the matched unseeded path survives.
 
 The quantitative claims are asymmetric. Narratives in this model move prices much more than they move defaults. At the hump's peak, ten percentage points of prevalence are worth \RelPeakTen\ basis points of spread, and a full outbreak generates an excess spread that reaches \PeakExcess\ basis points before the end: magnitudes in the range of the fundamentals-unexplained spread components documented for the euro periphery by \citet{DeGrauweJi2013}. The same outbreak adds up to \WedgePeak\ percentage points to the two-year default hazard at the baseline feedback, a band of \WedgeChiLo\ to \WedgeChiHi\ across the range of gross financing needs that disciplines the feedback parameter, all inside the zone. For a safe sovereign the addition is \WedgeSafe\ percentage points. A story taxes vulnerable sovereigns heavily while it circulates, and occasionally, in a narrow band of fundamentals, finishes one off.
 
-The policy analysis divides interventions by what they do to the epidemic, and the division is sharp enough to be the paper's practical contribution. Counter-speech that deletes carriers, takedowns and official denials, buys time against a supercritical story: prevalence regrows at rate $\gamma(R_0 - 1)$, so removing three quarters of carriers postpones the outbreak by $\ln 4 / [\gamma(R_0 - 1)]$, about six weeks at the calibration's zone center. Transparency, modeled as a faster abandonment rate for stories contradicted by verifiable data, is genuine prophylaxis: it shrinks the susceptible zone from both ends and cuts the hazard wedge from \WedgePeak\ to \WedgeTransp\ percentage points. A credible spread cap, the whatever-it-takes instrument, breaks the link from prevalence to price, removes the story's decision-relevance, and starves the contagion itself: the wedge falls to \WedgeCap. The cap makes the story pointless. Its cost is time-sensitive, however, because the feedback loop runs while policy deliberates: at the calibration, each year of delay in introducing the cap costs \DelayCost\ percentage points of default probability, \DelayChiLo\ to \DelayChiHi\ across the financing-need band. July 2012 arrived roughly thirty months after Greek spreads first signaled the zone. The model prices that interval.
+The policy experiments change carriers, abandonment, or the modelled spread. One-time removal delays a supercritical outbreak under the local constant-rate approximation. Faster abandonment lowers the reproduction number. A binding cap sets the marginal narrative effect on the capped bond to zero. Other market and political channels remain outside the model. The timing costs reported below are conditional on the scenario parameters.
 
-The paper links three literatures. From narrative economics it takes the epidemiological structure \citep{Shiller2017, KermackMcKendrick1927} and the fitness microfoundation \citep{FlynnSastry2024}, and gives the program what survey evidence says it needs, a setting where narratives are decision-relevant \citep{AndreEtAl2026}: here they are priced, and their prevalence and reproduction rate are estimable from text. From sovereign-debt theory it takes the default boundary and the service feedback \citep{EatonGersovitz1981, Arellano2008, Calvo1988, LorenzoniWerning2019}, and offers a mechanism for belief-driven crises in a unique period-by-period equilibrium. The belief object is a measurable epidemic rather than an unobservable selection device: closer in spirit to the sentiments of \citet{AngeletosLaO2013}, but with dynamics and a data counterpart. From the text-as-data literature \citep{GentzkowKellyTaddy2019, BakerBloomDavis2016, BybeeEtAl2020} it takes measurement tools, and returns a theory of which text objects should price: prevalence and reproduction of specific default narratives, with the boundary interaction supplying the identification.
+The model combines the narrative diffusion framework of \citet{FlynnSastry2024} with the sovereign default boundary and debt-service feedback \citep{Calvo1988,LorenzoniWerning2019}. Text methods supply the observable media process \citep{GentzkowKellyTaddy2019}. The contribution is the default-boundary prediction and its separation of primitive from equilibrium state dependence.
 
-The empirical strategy follows the theory's discipline. The behavioral core, that investors adopt stories in proportion to their observed price relevance, is tested against the rival rule in which adoption tracks perceived mispricing. The two rules separate under a credible cap. Causality is pursued with scheduled-release timing, cross-border story spillovers, and the theory's built-in placebo, outbreaks in immune countries.
-
-My plan is as follows. Section~\ref{sec:model} sets out the pricing and contagion blocks. Section~\ref{sec:boundary} derives the hump, the zone, and the three regions. Section~\ref{sec:policy} analyzes deletion, transparency, and the cap. Section~\ref{sec:quant} reports calibrated magnitudes. Section~\ref{sec:evidence} specifies measurement and empirical designs. Section~\ref{sec:conclusion} concludes. Proofs and extensions are in the appendix.
+The empirical design uses GDELT as the public media core and licensed full text for historical validation. Scheduled fiscal releases discipline timing. Boundary proximity is predetermined and estimated from the lagged response of spreads to fundamental surprises. OMT is treated as a compound event rather than an instrument for narrative removal.
 
 \section{A Sovereign, Its Creditors, and a Story}\label{sec:model}
 
-The analytical structure is simple. The pricing results, Lemma~\ref{lem:pricing} and Proposition~\ref{prop:hump}, are theorems from the threshold-default primitive alone. The contagion and policy results, Propositions~\ref{prop:zone} through \ref{prop:policy}, are theorems under Assumption~\ref{ass:adoption}. Section~\ref{sec:quant} attaches magnitudes to the fundamentals, payoff, and epidemic blocks, and Section~\ref{sec:evidence} maps the epidemic parameters to text moments.
+The threshold-default primitive delivers the direct pricing hump. Equilibrium single-peakedness requires a derivative restriction on the feedback term. Contagion results also require the costly-attention adoption assumption. Global default paths require phase conditions beyond the local comparative statics.
 
 \subsection{Fundamentals, default, and pricing}
 
-Time is monthly, and pricing horizons are annual. A sovereign's fundamentals $\theta_t$ measure its debt-service capacity: the distance, in units of annual resources, between what the government can mobilize and what its obligations require. Fundamentals mean-revert and are drained by borrowing costs:
+Time is monthly and the pricing horizon is one year. A sovereign's fundamentals $\theta_t$ measure debt-service capacity in units of annual resources. Fundamentals mean-revert and are drained by borrowing costs:
 \begin{equation}
 \theta_{t+1} = \rho_m \theta_t + (1 - \rho_m)\bar\theta - \chi_m s_t + \varepsilon_{t+1},
 \qquad \varepsilon \sim N(0, \sigma_m^2),
 \label{eq:theta-law}
 \end{equation}
-where $s_t$ is the spread on the sovereign's debt and $\chi_m$ converts a year of elevated refinancing costs into lost capacity: the debt-service feedback of \citet{Calvo1988} and \citet{LorenzoniWerning2019}. Default occurs when capacity is exhausted, $\theta_t < 0$. At annual horizon, with annualized parameters $(\rho, \sigma, \chi)$, the default probability perceived by an investor who believes fundamentals are $\theta$ is
+where $s_t$ is an annualized spread. Default is absorbing once $\theta_t<0$. The monthly coefficients aggregate exactly to the annual law under a constant spread:
+\begin{equation}
+\rho_m=\rho^{1/12},
+\qquad
+\sigma_m=\sigma\sqrt{\frac{1-\rho_m^2}{1-\rho^2}},
+\qquad
+\chi_m=\chi\frac{1-\rho_m}{1-\rho}.
+\label{eq:aggregation}
+\end{equation}
+Thus twelve monthly innovations have variance $\sigma^2$, and twelve monthly spread charges cumulate to $\chi s$ after persistence is accounted for. At the annual horizon, the perceived default probability is
 \begin{equation}
 p(\theta, s) = \Phi\!\left( z(\theta, s) \right),
 \qquad
@@ -105,90 +116,123 @@ If $(1-\mathcal{R})\chi / (\sigma\sqrt{2\pi}) < 1$, the map $s \mapsto (1-\mathc
 \[
 M(\theta, n) = \Big[ 1 - (1-\mathcal{R})\,\tfrac{\chi}{\sigma}\big((1-n)\phi(z^*) + n\,\phi(z^* + \Delta)\big) \Big]^{-1} \,\ge\, 1,
 \]
-which peaks at the boundary and equals \MultPeak\ at its calibrated maximum. If the feedback crosses the contraction frontier, an interval of fundamentals admits multiple pricing equilibria: the \citet{Calvo1988} regime, mapped in Appendix~\ref{app:pricing}.
+which reaches \MultPeak\ at the scenario maximum. If the feedback crosses the contraction frontier, multiple pricing fixed points can arise.
 \end{lemma}
 
-The calibration sits inside the uniqueness region with a maximal loop gain of \GainMax. The narrative moves a well-defined price in a unique equilibrium, which makes its prevalence a regressor rather than a sunspot.
+The scenario sits inside the uniqueness region with maximal loop gain \GainMax.
 
 \subsection{The contagion block}
 
-Prevalence evolves by the logic of \citet{KermackMcKendrick1927}: carriers meet susceptibles and transmit, and carriers abandon the story at rate $\gamma$:
+Prevalence follows a continuous-time adoption process:
 \begin{equation}
-n_{t+1} - n_t = \beta(\theta_t, n_t)\, n_t (1 - n_t) - \gamma\, n_t.
+\dot n_t=\beta(\theta_t,n_t)n_t(1-n_t)-\gamma n_t.
 \label{eq:sir}
 \end{equation}
-The economics is in $\beta$, and here the paper departs from specification toward microfoundation. A story is transmitted when a susceptible investor who hears it decides it is worth adopting, and an investor whose business is prices adopts a story in proportion to what it does to prices.
+This vector field leaves $[0,1]$ invariant whenever $\beta$ and $\gamma$ are nonnegative. The monthly simulation applies the exact logistic flow over one month while holding the current rates fixed.
 
-\begin{assumption}[Decision-relevant adoption]\label{ass:adoption}
-Upon meeting a carrier, a susceptible investor adopts the story with probability $h(v)$, where $v = \partial s^* / \partial n$ is the story's observed price relevance, $h$ is increasing, and $h(0) = 0$: zero price relevance gives zero adoption. Meetings occur at rate $\bar m A$, where $A$ indexes the amplification environment: the reach and velocity of the media that carry financial stories. Hence $\beta(\theta, n) = \bar m A\, h\big(v(\theta, n)\big)$.
+\begin{assumption}[Costly attention and adoption]\label{ass:adoption}
+Upon encountering a carrier, investor $i$ draws an adoption cost $c_i$ from a distribution $H_c$ on the nonnegative real line. Adoption occurs when
+\[
+c_i\leq\lambda\left|\frac{\partial s^*(\theta,n)}{\partial n}\right|.
+\]
+The distribution has no mass at zero and has a strictly positive density on its interior. Encounters occur at rate $\bar m A$. Hence
+\[
+\beta(\theta,n)=\bar m A H_c\!\left(\lambda\left|\frac{\partial s^*(\theta,n)}{\partial n}\right|\right).
+\]
 \end{assumption}
 
-The assumption is the fitness principle of \citet{FlynnSastry2024} specialized to traders: narratives survive when they organize action, and in a bond market, action means repricing. Its main rival is adoption by \emph{perceived mispricing}, the gap between the market price and the infected valuation. The two rules agree everywhere except under a price peg, where relevance dies and mispricing survives, and Section~\ref{sec:policy} turns that disagreement into a test. Under Assumption~\ref{ass:adoption}, the story's epidemiology is pinned to its pricing: the reproduction number
+The inequality gives the reduced-form adoption function an attention-cost interpretation. It does not make the distorted belief rational. A competing hypothesis makes adoption depend on perceived mispricing rather than decision value. The two mechanisms need not respond alike when a policy caps one sovereign yield. Under Assumption~\ref{ass:adoption}, the reproduction number at zero prevalence is
 \begin{equation}
-R_0(\theta) = \frac{\beta(\theta, 0)}{\gamma} = \frac{\bar m A\, h\big(v(\theta, 0)\big)}{\gamma}
+R_0(\theta)=\frac{\bar m A H_c\!\left(\lambda v(\theta,0)\right)}{\gamma},
+\qquad v(\theta,n)=\frac{\partial s^*(\theta,n)}{\partial n}.
 \label{eq:r0}
 \end{equation}
-is large exactly where the story is worth money, and the question of where stories can go viral becomes the question of where beliefs are priced. That question has an exact answer, and it is the next section's business.
+The reproduction number is high where adoption value is high.
 
 \section{The Boundary Theorems}\label{sec:boundary}
 
 \subsection{Where stories are priced}
 
-\begin{proposition}[The pricing hump follows from the boundary]\label{prop:hump}
-The story's equilibrium price impact is
+\begin{theorem}[Primitive pricing hump]\label{prop:hump}
+Let $G(z)=\Phi(z+\Delta)-\Phi(z)$ for $\Delta>0$. The function $G$ is strictly increasing on $(-\infty,-\Delta/2)$, strictly decreasing on $(-\Delta/2,\infty)$, and converges to zero in both tails. Its unique maximum is $2\Phi(\Delta/2)-1$. Because $z^*(\theta,n)$ is strictly decreasing in $\theta$, the direct belief gap $G(z^*)$ is single-peaked in fundamentals.
+\end{theorem}
+
+The equilibrium price impact is
 \[
 \frac{\partial s^*}{\partial n} = (1 - \mathcal{R})\,\big[\Phi(z^* + \Delta) - \Phi(z^*)\big]\, M(\theta, n).
 \]
-(i) The belief gap $\Phi(z^* + \Delta) - \Phi(z^*)$ is the mass of the fundamentals density inside a window of width $\Delta$: it is log-concave and single-peaked in $z^*$, maximal where the marginal default assessment is even, $\bar p \approx 1/2$, and vanishing in both tails. (ii) Since $z^*(\theta)$ is strictly decreasing, the primitive price relevance is single-peaked in fundamentals, converging to zero both for safe sovereigns ($\theta \to \infty$) and for condemned ones ($z^* \to \infty$). (iii) The multiplier $M \in [1, \bar M]$ is generated by the same normal density. In the calibrated range $\Delta \le 2$, it preserves the single hump of the equilibrium impact and distorts its level only within the bounded factor $\bar M$.
+\begin{proposition}[Sufficient condition for an equilibrium hump]\label{prop:eqhump}
+Put $a=(1-\mathcal R)\chi/\sigma$ and $d(z,n)=(1-n)\phi(z)+n\phi(z+\Delta)$. Define
+\[
+Q(z,n)=\frac{G'(z)}{G(z)}+\frac{a d'(z,n)}{1-a d(z,n)}.
+\]
+On any index interval $\mathcal Z$, suppose $a d(z,n)<1$ and $\partial Q(z,n)/\partial z<0$. The equilibrium price impact has at most one interior peak on the corresponding fundamentals interval. It has exactly one peak if $Q$ takes both signs. In the quantitative scenario, the largest value of $\partial Q/\partial z$ on $z\in[-6,6]$ and $n\in[0,1]$ is \HumpMargin. The computed equilibrium effect is therefore single-peaked on the reported state space. In the omitted tails, $G$ is numerically negligible and $M$ converges to one.
 \end{proposition}
 
-The proposition converts the pricing discipline into a theorem: the story shifts perceived fundamentals by a fixed amount, and the hump follows from the S-curve alone. Safe sovereigns absorb the story with only \RelSafeTen\ basis points per ten percentage points of prevalence. Condemned sovereigns already price default. The action is in between, where ten points of prevalence are worth up to \RelPeakTen\ basis points, and where the doom-loop multiplier also peaks.
+The theorem concerns the direct belief gap. The proposition states the additional restriction required for equilibrium feedback to preserve one peak. Boundedness of the multiplier alone is not sufficient.
 
 \subsection{Where stories spread}
 
-Under Assumption~\ref{ass:adoption}, the adoption probability is an increasing function of the price impact, so the epidemiology is a monotone transform of Proposition~\ref{prop:hump}.
+Under Assumption~\ref{ass:adoption}, adoption is an increasing function of the equilibrium price impact. The interval result therefore uses Proposition~\ref{prop:eqhump}.
 
 \begin{proposition}[The susceptible zone]\label{prop:zone}
-(i) $R_0(\theta)$ is single-peaked in $\theta$ with vanishing tails. (ii) The susceptible zone $Z = \{\theta : R_0(\theta) \ge 1\}$ is therefore an interval $[\theta_L, \theta_H]$, nonempty if and only if amplification clears a threshold, $\bar m A\, h(v_{\max}) \ge \gamma$. (iii) The zone widens with amplification $A$, with the story's bite $\xi$, with loss given default $1 - \mathcal{R}$, and with the feedback $\chi$. It shrinks with the abandonment rate $\gamma$.
+Suppose Proposition~\ref{prop:eqhump} holds and $H_c$ is strictly increasing over the attained values. Then $R_0(\theta)$ is single-peaked with vanishing tails. The susceptible set $Z=\{\theta:R_0(\theta)\geq1\}$ is an interval. It is nonempty if and only if $\bar m A H_c(\lambda v_{\max})\geq\gamma$. A rise in $A$ expands every superlevel set. A rise in $\gamma$ contracts it. Other parameter changes alter the height and location of $v$, so endpoint monotonicity requires additional restrictions.
 \end{proposition}
 
-Two features of the zone carry the paper's macro-history content. First, its existence is an era-dependent fact: at the calibration, cutting amplification to a quarter of baseline, a crude stand-in for the pre-social-media information environment, shrinks the zone to a set of width \ZoneWidthPre\ in fundamentals units, effectively a point (Figure~\ref{fig:zone}). Supercritical \emph{investor-to-investor} contagion at business-relevant speed requires amplification, and the model makes the required threshold explicit. Second, the zone has a spread-space address: at baseline it maps to sovereigns trading between roughly \ZoneSpreadLo\ and \ZoneSpreadHi\ basis points (Figure~\ref{fig:hump}b), which is where the euro periphery lived from 2010 to 2012 and where narrative measurement should concentrate its power.
+In the scenario, reducing amplification to one quarter of baseline shrinks the susceptible interval to width \ZoneWidthPre\ in capacity units. At baseline the interval maps into spreads between \ZoneSpreadLo\ and \ZoneSpreadHi\ basis points. These are model coordinates, not estimated historical boundaries.
 
-\begin{corollary}[One statistic]\label{cor:stat}
-Price impact, contagion, and amplification are increasing transforms of a single local object, the belief-gap mass $\Phi(z^* + \Delta) - \Phi(z^*)$, itself proportional (for modest $\xi$) to the density $\phi(z^*)$ that governs the sensitivity of spreads to fundamentals news. A country-time measure of that sensitivity, the local slope of spreads in news, is therefore a sufficient statistic for boundary proximity: the model instructs empirical work to interact narrative measures with it, rather than with debt ratios or ratings directly.
+\begin{corollary}[Boundary proxy]\label{cor:stat}
+For small $\Delta$, the direct belief gap satisfies $G(z)=\Delta\phi(z)+O(\Delta^2)$. The lagged local sensitivity of spreads to scheduled fundamental surprises is therefore a model-based proxy for boundary proximity. It is not a sufficient statistic once the multiplier, narrative bite, or recovery varies across countries.
 \end{corollary}
 
-\subsection{Three regions, and how a story becomes a crisis}
+\subsection{From local drift to global paths}
 
-Combining the blocks, the state $(\theta_t, n_t)$ moves through a plane whose geometry the propositions have already drawn. Outside the zone, seeds decay at rate $\gamma(1 - R_0) > 0$, and the cumulative spread effect is bounded by the seed times the hump. Inside the zone, seeds grow logistically toward the endemic level $n^\infty = 1 - \gamma/\beta$, and spreads carry a narrative premium for as long as fundamentals remain febrile. Whether the premium becomes a crisis depends on the feedback.
+The state $(\theta_t,n_t)$ moves through a plane. At zero prevalence, a small seed initially decays where $R_0<1$ and grows where $R_0>1$. When $\beta$ is constant, the positive steady state is $1-\gamma/\beta$. In the model $\beta$ varies with both state variables, so global behavior must be read from the nullclines and vector field.
 
-\begin{proposition}[The moving cliff]\label{prop:cliff}
-Let $D(\theta, n) = (1-\rho_m)(\bar\theta - \theta) - \chi_m s^*(\theta, n)$ be the deterministic drift of fundamentals. (i) The baseline basin boundary $\hat\theta(0)$, below which drift is negative along the deterministic path, rises with prevalence: $\hat\theta(n)$ is increasing, because $s^*$ is increasing in $n$. (ii) There is therefore a critical interval $(\hat\theta(0), \hat\theta(n^\infty))$ of initial fundamentals at which the sovereign survives along the unseeded path and defaults along the seeded path, whenever the zone and the interval intersect. The intersection is nonempty at the calibration. (iii) Within the critical interval the crisis is slow: the outbreak must first build prevalence and then drain fundamentals, so default arrives with a lag governed by $\gamma(R_0 - 1)$ and $\chi_m$ rather than by a jump.
+\begin{proposition}[Instantaneous drift boundary]\label{prop:cliff}
+Let
+\[
+D(\theta,n)=(1-\rho_m)(\bar\theta-\theta)-\chi_m s^*(\theta,n).
+\]
+Suppose that for each $n$ in an interval $N$, the equation $D(\theta,n)=0$ has a lower root $\hat\theta(n)>0$ with $D_\theta(\hat\theta(n),n)>0$. Then $\hat\theta$ is continuously differentiable and
+\[
+\hat\theta'(n)=\frac{\chi_m s_n^*(\hat\theta(n),n)}{D_\theta(\hat\theta(n),n)}>0.
+\]
+This root is the instantaneous lower drift boundary for the scalar fundamentals equation when $n$ is held fixed. It is not by itself the basin boundary of the two-dimensional system.
 \end{proposition}
 
-Part (i) is the geometry worth remembering: prevalence moves the cliff toward the sovereign. Part (iii) connects the mechanism to the crisis phenomenology it is meant to explain. Narrative crises in this model are months in which prevalence and spreads rise while fundamentals erode, visible in text data the whole way down: the slow-moving crises of \citet{LorenzoniWerning2019}, with an epidemic where their perfect foresight was. In the calibrated exhibit of Section~\ref{sec:quant}, a sovereign seeded at two percent prevalence crosses the boundary at month \ZoneDefMonth. Its unseeded twin, facing identical fundamentals, survives indefinitely.
+Different seeded and unseeded outcomes require global phase restrictions. A forward-invariant default region must have $D\leq-d<0$. The seeded path must enter that region while the unseeded path remains in a safe invariant set. Under these conditions the seeded path reaches default in finite time and the unseeded path does not. Figure~\ref{fig:phase} reports the nullclines and vector field for the scenario. Figure~\ref{fig:outbreak} reports the simulated path. The seeded path crosses zero capacity in month \ZoneDefMonth. This is a scenario path result, not a consequence of root monotonicity alone.
 
-\section{Policy: Deletion, Transparency, and the Cap}\label{sec:policy}
+\section{Policy Experiments}\label{sec:policy}
 
-An intervention against a narrative can remove carriers, speed abandonment, or destroy the story's relevance. The three have different mathematics, and the differences are the policy content of the paper.
-
-\begin{proposition}[The counter-narrative trilemma]\label{prop:policy}
-(i) \emph{Deletion is postponement.} A one-shot removal of a fraction $f$ of carriers, with $R_0(\theta) > 1$ along the path, delays the endemic outbreak by approximately $\ln\!\big(\tfrac{1}{1-f}\big) / \big[\gamma(R_0 - 1)\big]$: at the calibrated zone center, deleting three quarters of carriers buys $1.5$ months. (ii) \emph{Transparency is prophylaxis.} Raising the abandonment rate $\gamma$, by making the story cheaper to check against verifiable data, scales $R_0$ down everywhere: it shrinks the zone from both ends, lowers the endemic level, and cuts the crisis wedge. (iii) \emph{A credible cap is sterilization.} A facility that pegs the spread at $\bar s$ whenever the market would exceed it sets $\partial s^*/\partial n = 0$ wherever it binds. Under Assumption~\ref{ass:adoption} adoption stops, $R_0$ falls below one, and the epidemic dies. The cap also severs the feedback $\chi s$, so it removes the critical region even for stories already endemic.
+\begin{proposition}[Policy effects within the model]\label{prop:policy}
+If $R_0>1$ is constant while prevalence remains near zero, removal of a fraction $f$ delays return to the original prevalence by
+\[
+\frac{\log[1/(1-f)]}{\gamma(R_0-1)}.
+\]
+A rise in $\gamma$ lowers $R_0$ pointwise and lowers the endemic prevalence wherever $\beta$ is constant. A perfectly credible cap on the modelled bond sets $\partial s^*/\partial n=0$ wherever it binds. Under Assumption~\ref{ass:adoption}, adoption through the modelled price-relevance channel then stops in that region. The cap also truncates the feedback from that bond spread to fundamentals.
 \end{proposition}
 
-Part (i) is the postponement formula. Against a supercritical story, removing carriers buys the logarithmic delay above and leaves the growth rate intact. Part (iii) is the model's reading of July 2012. The speech, and the OMT design behind it, functioned as a conditional peg on the object the redenomination story needed to move. Once price relevance disappeared, the story stopped being worth telling, and both prevalence and price collapsed. The required credibility is computable. If markets attach probability $c$ to activation, the story's price relevance in capped states is $1 - c$ times its uncapped value, and with adoption proportional to relevance the reproduction number scales the same way: sterilization requires $c \ge 1 - 1/R_0(\theta)$, which at the calibrated zone peak of $R_0 = \RZeroPeak$ means the facility must be believed with probability three quarters. A weaker peg leaves a residual wedge equal to the uncapped wedge scaled by surviving relevance. The instrument is time-sensitive because the feedback runs while institutions deliberate: the quantitative section prices delay at \DelayCost\ percentage points of two-year default probability per year.
+The cap result concerns one pricing channel. Narratives may still affect CDS, other maturities, auction quantities, capital flight, bank funding, or political choices. A policy backstop can also change expected recovery and the policy regime. OMT is therefore a compound intervention rather than a pure narrative experiment. The calculations below impose a cap on the modelled spread and hold other channels fixed.
 
-The disagreement between adoption rules introduced at Assumption~\ref{ass:adoption} becomes observable here. If adoption tracks price relevance, a credible cap collapses narrative \emph{volume}: text measures should fall after the announcement. If adoption tracks perceived mispricing, the story survives unpriced: volume persists while spreads sit at the cap. The distinction is measurable in post-OMT text, and Section~\ref{sec:evidence} registers it as a prediction.
+If adoption tracks decision value, a binding cap lowers media diffusion through this channel. If adoption tracks perceived mispricing, coverage can persist while the capped yield is stable. Post-OMT text can describe which pattern occurred. It cannot isolate this mechanism because OMT changed tail insurance, conditionality, and the expected policy regime.
 
 \section{Quantitative Magnitudes}\label{sec:quant}
 
-\subsection{Calibration}
+\subsection{Quantitative scenario}
 
-Table~\ref{tab:calib7} lists parameters. The fundamentals block sets annual persistence \RhoVal\ and innovation \SigVal, so the unconditional standard deviation of capacity is about $0.11$ against a long-run level of $0.15$: default, at the boundary $\theta = 0$, is a genuine tail event for a healthy sovereign and a live one inside the zone. Recovery of $0.60$ matches mean haircuts near 40 percent \citep{CrucesTrebesch2013}. The feedback $\chi$ is an accounting identity. Capacity is measured in annual resources, so a year of elevated spreads costs the sovereign the spread times the share of debt refinanced within the year, which is the gross financing need: $\chi$ equals the GFN ratio. High-debt GFN runs from ten percent of output in moderate cases to thirty at crisis levels, Italy and Greece in 2011, so the baseline $\chi = \ChiVal$ is the representative high-debt point and $[\ChiGFNLo, \ChiGFNHi]$ the examined band, with the headline numbers re-run at both ends below. The story's bite $\xi = \XiVal$ shifts perceived capacity by roughly half an innovation, a serious accusation. On the epidemic side, abandonment $\gamma = \GamVal$ per month gives an unforced story a three-month half-life, in the range of news-cycle persistence, and peak reproduction $R_0 = \RZeroPeak$ at baseline amplification is the model's amplification-era stand: Figure~\ref{fig:zone} shows the zone this opens and what remains of it at a quarter of the amplification. The seed, two percent of investor wealth, is the baseline viral event.
+Table~\ref{tab:calib7} lists the scenario inputs. Recovery is anchored to the sovereign haircut evidence in \citet{CrucesTrebesch2013}. The remaining values are not estimates. The annual parameters map into $\sigma_m=\SigMonth$ and $\chi_m=\ChiMonth$ through equation~\eqref{eq:aggregation}. The feedback parameter has the cash-flow decomposition
+\begin{equation}
+\chi_{it}=\mathrm{RefinancingShare}_{it}
+\times\mathrm{MarketRatePassThrough}_{it}
+\times\mathrm{FiscalCapacityConversion}_{it}.
+\label{eq:chi-map}
+\end{equation}
+The scenario value \ChiVal\ is examined over $[\ChiGFNLo,\ChiGFNHi]$. Empirical implementation would construct each factor from remaining maturity, the market-rate share of maturing debt, official-loan insulation, cash buffers, and the fiscal response. World Bank QPSD supplies public debt stocks and maturity fields for reporting countries \citep{WorldBankQPSD7}. Debt-office cash-flow schedules supply country detail. The narrative parameters determine scenario dynamics until they are estimated from media diffusion and belief responses.
 
 \begin{table}[t]
 \centering
-\caption{Calibration.}
+\caption{Quantitative scenario.}
 \label{tab:calib7}
 \footnotesize
 \setlength{\tabcolsep}{4pt}
@@ -196,21 +240,21 @@ Table~\ref{tab:calib7} lists parameters. The fundamentals block sets annual pers
 \toprule
 Parameter & & Value & Category & Basis \\
 \midrule
-Persistence (annual) & $\rho$ & \RhoVal & fixed & fundamentals half-life $\approx 6.6$ years \\
-Innovation sd (annual) & $\sigma$ & \SigVal & internal & unconditional sd $\approx 0.11$ \\
-Long-run capacity & $\bar\theta$ & 0.15 & internal & safe-sovereign spread $<$ 10 bp \\
-Recovery & $\mathcal{R}$ & 0.60 & estimated & haircuts $\approx 40\%$ (CT) \\
-Feedback & $\chi$ & \ChiVal & estimated & gross-financing-need arithmetic \\
-Story bite & $\xi$ & \XiVal & calibrated input & half an annual innovation, $\Delta = \ShiftVal$ \\
-Abandonment & $\gamma$ & \GamVal /mo & calibrated input & unforced story half-life $\approx$ 3 months \\
-Peak reproduction & $R_0$ & \RZeroPeak & calibrated input & amplification era, pre-era $= 1$ \\
-Seed & $n_0$ & \SeedVal & calibrated input & viral event \\
+Persistence (annual) & $\rho$ & \RhoVal & scenario & fundamentals persistence \\
+Innovation sd (annual) & $\sigma$ & \SigVal & scenario & capacity volatility \\
+Long-run capacity & $\bar\theta$ & 0.15 & scenario & capacity scale \\
+Recovery & $\mathcal{R}$ & 0.60 & external & haircut evidence \citep{CrucesTrebesch2013} \\
+Feedback & $\chi$ & \ChiVal & scenario & equation~\eqref{eq:chi-map} \\
+Story bite & $\xi$ & \XiVal & scenario & $\Delta=\ShiftVal$ \\
+Abandonment & $\gamma$ & \GamVal /mo & scenario & episode half-life target \\
+Peak reproduction & $R_0$ & \RZeroPeak & scenario & diffusion-rate target \\
+Seed & $n_0$ & \SeedVal & scenario & observed onset target \\
 Loop gain (max) & & \GainMax & implied & uniqueness margin, Lemma~\ref{lem:pricing} \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.9\textwidth}
-\footnotesize Notes: CT is \citet{CrucesTrebesch2013}. Categories: externally fixed, directly estimated, internally calibrated to a stated target, or calibrated input. Design 4 estimates the epidemic block $(\xi, \gamma, R_0, n_0)$ from text and spread moments.
+\footnotesize Notes: recovery is externally anchored. Every other non-implied entry is a scenario input. The empirical section defines the moments required for estimation.
 \end{minipage}
 \end{table}
 
@@ -218,34 +262,41 @@ Loop gain (max) & & \GainMax & implied & uniqueness margin, Lemma~\ref{lem:prici
 
 Figure~\ref{fig:hump} draws Proposition~\ref{prop:hump}: the price relevance of the story peaks at \RelPeakTen\ basis points per ten points of prevalence near the boundary and dies in both tails, and panel (b) places the susceptible zone in spread space, between \ZoneSpreadLo\ and \ZoneSpreadHi\ basis points. Figure~\ref{fig:zone} draws Proposition~\ref{prop:zone}: the baseline zone spans $[\ZoneLo, \ZoneHi]$ in fundamentals. At a quarter of baseline amplification the zone degenerates to a point, and at $1.5$ times baseline it reaches to $\theta = \ZoneHiAmp$.
 
-Figure~\ref{fig:outbreak} is the mechanism end to end, deterministically. Three sovereigns are seeded with the same two percent prevalence. The safe one ($\theta_0 = 0.15$) sheds the story within months, and its spread stays at baseline. The distressed one ($\theta_0 = 0.01$) defaults on fundamentals in four months. The zone sovereign ($\theta_0 = 0.06$, spread \SZoneBase\ basis points) is the exhibit: the unseeded path survives, while the seeded path builds prevalence to \PeakN\ percent, the spread grinds from \SZoneBase\ toward four thousand basis points, an excess over its twin that reaches \PeakExcess\ basis points, and capacity crosses zero at month \ZoneDefMonth. Forty-two months from seed to default is the phenomenology of 2010--2012.
+Figure~\ref{fig:outbreak} reports deterministic scenario paths from the same two percent seed. The safe case starts at $\theta_0=0.15$. The low-capacity case starts at $0.01$. The susceptible case starts at $0.06$ with spread \SZoneBase\ basis points. Its unseeded comparison survives. Its seeded path reaches peak prevalence \PeakN\ percent and a peak excess spread of \PeakExcess\ basis points before capacity crosses zero in month \ZoneDefMonth.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_hump.pdf}
-\caption{The derived hump. (a) Equilibrium price impact of the story, basis points per ten percentage points of prevalence. Shading marks the susceptible zone, and dots mark the three economies of Figure~\ref{fig:outbreak}. (b) The equilibrium spread schedule: the zone in spread space.}
+\caption{Scenario equilibrium price impact and spread schedule. Shading marks the susceptible interval. Dots mark the paths in Figure~\ref{fig:outbreak}.}
 \label{fig:hump}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\textwidth]{fig_zone.pdf}
-\caption{The narrative reproduction number $R_0(\theta)$ at three amplification levels. The susceptible zone is the superlevel set above one. At $A = 0.25$ it degenerates to a point.}
+\caption{The narrative reproduction number at alternative amplification values. The susceptible interval is the superlevel set above one.}
 \label{fig:zone}
 \end{figure}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_outbreak.pdf}
-\caption{One seed, three sovereigns: deterministic paths from a two percent seed. (a) prevalence, (b) spreads against the $n \equiv 0$ counterfactual (dashed), (c) fundamentals. The zone sovereign defaults at month \ZoneDefMonth. Its counterfactual survives.}
+\caption{Deterministic paths from a two percent seed. Dashed lines give the $n\equiv0$ comparison. The susceptible scenario crosses zero capacity at month \ZoneDefMonth.}
 \label{fig:outbreak}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.68\textwidth]{fig_phase.pdf}
+\caption{Deterministic phase field. The solid blue curve is the fundamentals nullcline and the dashed orange curve is the narrative nullcline. Arrows show the local vector field. The red curve is the seeded scenario path. A nullcline is a local zero-drift locus, not a global basin boundary.}
+\label{fig:phase}
 \end{figure}
 
 \subsection{The crisis wedge and the policy scorecard}
 
-Figure~\ref{fig:crisis} moves from exhibits to hazards: eight thousand simulated paths per starting point, seeded and unseeded, common shocks. The narrative wedge, the story's addition to the 24-month default probability, is hump-shaped in initial fundamentals: up to \WedgePeak\ percentage points at $\theta_0 = \WedgeArg$, \WedgeSafe\ points for a safe sovereign at $\theta_0 = 0.15$, and small near the boundary where both twins default. Panel (b) applies the policies: transparency ($\gamma$ up by half) cuts the peak wedge to \WedgeTransp\ points, and the 400 basis-point cap eliminates it (\WedgeCap), while separately relieving fundamentals default risk by \FundReliefCap\ points through the severed feedback. The cap is both narrative policy and debt policy, and the decomposition reports both margins. Figure~\ref{fig:timing} prices timing at the wedge peak: a cap available in month one holds the hazard to \PCapEarly\ percent, and delayed to month thirteen, \PCapLate. The unseeded benchmark is \PNoNarr\ and the untreated seeded path is \PNever. Delay costs \DelayCost\ points per year. One-shot deletion of three quarters of carriers, at its best timing, saves \CutSaveMax\ points: the postponement formula, drawn.
+Figure~\ref{fig:crisis} uses eight thousand common-random-number paths per starting point. The seeded minus unseeded default-probability difference reaches \WedgePeak\ percentage points at $\theta_0=\WedgeArg$. It is \WedgeSafe\ points at $\theta_0=0.15$. Raising $\gamma$ by half lowers the peak difference to \WedgeTransp\ points. The 400 basis point cap makes the modelled narrative wedge \WedgeCap\ in this scenario and also changes the unseeded fundamentals risk. Figure~\ref{fig:timing} reports conditional timing arithmetic. Moving cap availability from month one to month thirteen raises default probability from \PCapEarly\ to \PCapLate\ percent.
 
-Since $\chi$ carries a data range, the headline numbers are bands. Across the GFN band $[\ChiGFNLo, \ChiGFNHi]$, with identical shocks and the epidemic block held at its calibrated amplification, the peak wedge runs from \WedgeChiLo\ to \WedgeChiHi\ percentage points, the annual cost of cap delay from \DelayChiLo\ to \DelayChiHi\ points, and the peak price relevance from \RelPeakChiLo\ to \RelPeakChiHi\ basis points per ten points of prevalence. The zone survives at both ends, the wedge stays hump-shaped, and an earlier cap is better everywhere. Two ends of the band deserve their own sentences. At $\chi = \ChiGFNLo$ the loop is mild, the deterministic zone sovereign survives within the simulation horizon, and the story is a tax. At $\chi = \ChiGFNHi$ the maximal loop gain reaches \GainChiHi\ against the multiplicity bound of one: crisis-level financing needs put the pricing equilibrium at the edge of the \citet{Calvo1988} region, the deterministic default arrives at month twelve rather than \ZoneDefMonth, and selection becomes the relevant next object. The model's own arithmetic says that a sovereign with thirty percent gross financing needs is one where narrative effects and equilibrium selection meet.
+Across the feedback scenarios $[\ChiGFNLo,\ChiGFNHi]$, the peak two-year wedge ranges from \WedgeChiLo\ to \WedgeChiHi\ percentage points. Peak price relevance ranges from \RelPeakChiLo\ to \RelPeakChiHi\ basis points per ten percentage points of latent prevalence. At the upper value, the maximal loop gain is \GainChiHi. Results near one are sensitive to equilibrium selection and are reported as boundary diagnostics rather than stable quantitative predictions.
 
 \begin{figure}[t]
 \centering
@@ -263,29 +314,48 @@ Since $\chi$ carries a data range, the headline numbers are bands. Across the GF
 
 \section{Measurement and Empirical Designs}\label{sec:evidence}
 
-\subsection{Measuring an epidemic in text}
+\subsection{Text and the latent narrative state}
 
-The model's belief object is a specific, portable story with a prevalence and a reproduction rate, and both are estimable. The measurement protocol, specified fully in Appendix~\ref{app:data}, has four layers. First, the story universe: five sovereign-debt narrative categories, default and restructuring, bailout and IMF rescue, redenomination and exit, fiscal-sustainability collapse, and the bank-sovereign loop, defined by claim structure rather than keyword lists. Second, classification: country-day text from newswires, national press, and platform data where licensed, classified by a transparent dictionary layer plus a supervised language-model layer whose prompts, labels, and validation statistics are all reported. \citet{GentzkowKellyTaddy2019} supply the standards, and the policy-uncertainty index of \citet{BakerBloomDavis2016} the precedent for index construction from counts. Third, the epidemiological quantities: prevalence $\hat n_{i,t}$ as the reach-weighted share of country-$i$ financial coverage carrying the story, and reproduction $\hat R_{i,t}$ from the cascade structure, the rate at which the story jumps outlets and platforms, in the spirit of the news-structure decompositions of \citet{BybeeEtAl2020}. Fourth, validation: hand-labeled samples with inter-rater statistics, and the requirement, from \citet{AndreEtAl2026}, that text-based prevalence predict survey beliefs as well as prices.
+The public core corpus is GDELT 2.0 Global Knowledge Graph and Mentions data, which are downloadable and available through BigQuery \citep{GDELTData}. Factiva or LexisNexis provides licensed full-text validation for historical episodes. The design does not require private messages, investor chat logs, restricted social-platform archives, or wealth-weighted communication networks.
 
-The protocol maps text coverage into the model's wealth-weighted prevalence. The raw text object is reach-weighted coverage. The validation layer links that object to investor beliefs: reach-weighted coverage must predict surveyed crash beliefs, and the survey pass-through pins down the scale factor from coverage to the wealth share $n$ that enters the pricing equation.
+A narrative is a structured claim. It names an economic state, gives a causal explanation, implies a future sovereign outcome, and carries an action or policy implication. A high-recall dictionary screen selects candidates. A multilingual classifier assigns the structured label. The validation sample is manually double-coded under blinded assignment. The prompt, model version, label rules, and country-language error matrices are frozen before outcome analysis.
 
-\subsection{Four designs}
-
-\noindent\textbf{Design 1: the boundary interaction.} The workhorse is a state-dependent local projection,
+Text coverage is not investor wealth prevalence. The measurement equation is
 \begin{equation}
-\Delta s_{i,t+h} = \alpha_i + \tau_t + \beta_h\, \hat n_{i,t} + \delta_h\, \hat n_{i,t} \times B_{i,t-1} + \Gamma_h' X_{i,t-1} + u_{i,t+h},
+\mathrm{TextIndex}_{it}=a_i+\lambda_i n_{it}+e_{it},
+\qquad
+n_{i,t+1}=\mathcal T(n_{it},\theta_{it})+\eta_{it}.
+\label{eq:measurement7}
+\end{equation}
+A state-space implementation estimates the latent $n_{it}$ and the loading $\lambda_i$. A reduced-form implementation uses the text index as a proxy and does not convert coverage changes into percentage points of investor wealth. GDELT timestamps and source identifiers measure media diffusion across outlets. They do not measure person-to-person investor transmission.
+
+\subsection{Boundary interaction and release timing}
+
+The workhorse local projection is
+\begin{equation}
+\Delta s_{i,t+h}=\alpha_i+\tau_t+f_h(B_{i,t-1})N_{it}+\Gamma_h'X_{i,t-1}+u_{i,t+h},
 \label{eq:lp7}
 \end{equation}
-with $B_{i,t}$ the sufficient statistic of Corollary~\ref{cor:stat}: the rolling sensitivity of country $i$'s spread to common fundamentals news, estimated from scheduled-release windows rather than a debt ratio or rating. The model predicts $\beta_h \approx 0$ and $\delta_h > 0$: prevalence prices where the hump is high, with the profile of $\delta_h$ across $B$ bins tracing Figure~\ref{fig:hump}a. Global factors in the sense of \citet{LongstaffEtAl2011} enter $X$ and $\tau_t$. State-dependence is the theory's signature: reverse causality running uniformly from spreads to coverage produces a level relation, while the model predicts a hump.
+where $N_{it}$ is the measured text index or the filtered latent state. The function $f_h$ is estimated by bins or splines. The theory predicts a small effect in both tails and an interior peak. A linear interaction is not the primary specification.
 
-\medskip
-\noindent\textbf{Design 2: scheduled releases, surprise against take-up.} Scheduled fiscal releases separate information from its narrative echo: the surprise is the released number against consensus, and the take-up is the narrative prevalence response in the following 48 hours, orthogonalized on the surprise. The model predicts the take-up premium, the spread response to take-up beyond the surprise's direct effect, is concentrated inside the zone, and that identical surprises generate larger take-up where $R_0$ is higher: contagion does the marginal work.
+The boundary proxy $B_{i,t-1}$ is estimated before the narrative window. It is the lagged local sensitivity of spreads to scheduled fundamental surprises. An alternative is constructed from debt service, reserves, maturity structure, and primary-balance forecasts. Contemporaneous spreads are excluded from the proxy because they would create a mechanical narrative-by-spread interaction.
 
-\medskip
-\noindent\textbf{Design 3: imported stories.} Stories cross borders faster than fundamentals do. A crisis in country $j$ raises the global prevalence of the default story, and its arrival in country $i$'s discourse is predicted by pre-determined media, language, and investor-overlap exposure. Exposure-weighted foreign story shocks therefore instrument domestic prevalence, with real linkages, trade, bank claims, and common creditors controlled directly. The model's sharp prediction is about \emph{where} imported stories price: the same hump. Platform outages and algorithm changes supply auxiliary transmission shocks.
+For scheduled fiscal release $e$, estimate
+\begin{align}
+\mathrm{Takeup}_{ie}&=a_i+\tau_e+\pi_1\mathrm{Surprise}_{ie}
++\pi_2\mathrm{Surprise}_{ie}B_{i,e-1}+\varepsilon_{ie},
+\label{eq:takeup7}\\
+\Delta s_{ie}&=b_1\mathrm{Surprise}_{ie}+b_2\widehat\varepsilon_{ie}
++b_3\widehat\varepsilon_{ie}B_{i,e-1}+u_{ie}.
+\label{eq:release7}
+\end{align}
+Eurostat publishes dated calendars for government deficit and debt releases \citep{EurostatCalendar}. Residual take-up remains endogenous to unobserved news. The release design improves timing and conditioning. It does not create random narrative exposure.
 
-\medskip
-\noindent\textbf{Design 4: structural estimation and surveillance.} Simulated method of moments on $(\xi, \chi, A, \gamma)$, with moments chosen for state-dependence: the LP coefficients by boundary bin, outbreak persistence and final-size statistics, the text-spread lead-lag profile, and one event moment, the speed of prevalence collapse after the OMT announcements, which doubles as the test separating relevance-based from mispricing-based adoption (Proposition~\ref{prop:policy}). The estimated model then runs forward as surveillance: country-time estimates $\hat R_{0,i,t}$, an epidemiological early-warning object with a structural interpretation, validated against the 2010--2012 chronology held outside estimation.
+\subsection{Supportive variation and interpretation}
+
+Foreign media diffusion can be summarized by $N_{it}^{F}=\sum_{j\neq i}w_{ij,0}N_{jt}$ using predetermined language and media-overlap weights. Common investors, bank exposures, trade, and regional news threaten the exclusion restriction. This design is supportive unless those channels are directly absorbed and the remaining overlap shifts coverage without shifting repayment capacity.
+
+The OMT episode is an interrupted event study. It changed tail-risk insurance, conditionality, and the expected policy regime. It is useful for comparing narrative volume, diffusion speed, sovereign yields, and CDS around a major backstop. It is not a pure test of narrative deletion. Lead-lag local projections can test whether text tends to precede prices near the estimated boundary. Granger timing is a dynamic fingerprint, not causal identification.
 
 \begin{table}[t]
 \centering
@@ -297,53 +367,46 @@ with $B_{i,t}$ the sufficient statistic of Corollary~\ref{cor:stat}: the rolling
 \toprule
 Prediction & Model magnitude & Null & Estimation \\
 \midrule
-P1: prevalence prices spreads near the boundary, profile of $\delta_h$ traces the hump & \RelPeakTen\ vs \RelSafeTen\ bp per 10 pp & uniform pricing & local projections \\
-P2: outbreaks in immune countries move attention more than spreads & wedge \WedgeSafe\ pp & spreads move & placebo bins \\
-P3: identical fiscal surprises generate larger narrative take-up inside the zone & $R_0$: \RZeroPeak\ vs $<1$ & uniform take-up & release windows \\
-P4: a credible cap collapses narrative volume as well as price & Prop.~\ref{prop:policy}(iii) & volume persists & OMT text event \\
-P5: transparency reforms cut the pricing of narrative shocks & wedge \WedgePeak\ $\to$ \WedgeTransp\ pp & flat wedge & reform events \\
-P6: text leads spreads inside the zone, spreads lead text outside & lead-lag flip & one direction & panel VAR \\
+Narrative pricing is hump-shaped in predetermined boundary proximity & \RelPeakTen\ vs \RelSafeTen\ bp scenario & uniform effect & flexible local projections \\
+Scheduled surprises have stronger media take-up near the boundary & Proposition~\ref{prop:zone} & uniform take-up & release windows \\
+Residual take-up has state-dependent price effects & equations~\eqref{eq:takeup7} and \eqref{eq:release7} & no interaction & release windows \\
+Media diffusion and latent prevalence obey a measurement system & equation~\eqref{eq:measurement7} & direct equality & state space \\
+Backstop events change several channels jointly & cap scenario & pure deletion & interrupted event study \\
+Text-price timing changes across boundary bins & dynamic fingerprint & uniform timing & local projections \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:pred7} collects the tests. P2 supplies the placebo: stories can go viral about safe sovereigns too, and the model predicts those outbreaks to be loud in text and quiet in prices. P4 separates the behavioral core from its rival with a single historical event's text archive. P6 uses the model's own timing: spreads lead text outside the zone, where stories are commentary, and text leads spreads inside it, where stories are the marginal pricing factor. The flip is the evidence.
-
-Two of the six tests carry the model's discipline. Design 1 estimates the boundary interaction directly: prevalence should price zone sovereigns much more than safe sovereigns. P4 estimates the adoption rule: relevance-based adoption predicts a collapse in volume after a credible cap, while mispricing-based adoption predicts persistence. The remaining tests estimate magnitudes and dynamics.
-
-One held-out validation moment already exists. The fundamentals-unexplained spread components that \citet{DeGrauweJi2013} document for the euro periphery, several hundred basis points at the 2011 peak, sit inside the model's outbreak range: the calibrated excess spread reaches \PeakExcess\ basis points at the top of an outbreak, with Table~\ref{tab:calib7} chosen from haircut, feedback, and epidemic primitives. The 2010--2012 chronology plays the same role for Design 4 as an external validation path.
-
-Table~\ref{tab:feas7} documents the data implementation. The text pipeline is the project's main data investment: newswire archives supply the 2010--2012 core, platform text adds post-2010 transmission measures, and the pricing side uses standard sovereign panels.
+Table~\ref{tab:pred7} separates restrictions of the model from scenario magnitudes. Quantitative conversion of text coverage into investor prevalence requires estimation of $\lambda_i$. Without that step, the market regressions remain reduced form.
 
 \begin{table}[t]
 \centering
 \caption{Data and implementation.}
 \label{tab:feas7}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
+\scriptsize
+\setlength{\tabcolsep}{2.5pt}
 \begin{tabular}{p{3.4cm}p{2.9cm}p{1.4cm}p{1.8cm}p{2.4cm}p{1.6cm}}
 \toprule
-Dataset & Coverage & Frequency & Access & Observed or proxied & Implementation \\
+Dataset & Coverage & Freq. & Access & Status & Use \\
 \midrule
-Newswire and press text & Factiva/LexisNexis, 1995-- & daily & licensed & prevalence proxied by coverage & licensed archive \\
-GDELT event text & global, 2015-- & daily & public & coverage counts & in hand \\
-Platform text & where licensed, post-2010 & real time & restricted & coverage, partial archive & platform sample \\
+GDELT 2.0 GKG and Mentions \citep{GDELTData} & global, 2015-- & 15 min & public & media text & core diffusion panel \\
+Factiva or LexisNexis & historical press & daily & licensed & full text & historical validation \\
 Consensus forecasts & major sovereigns & monthly & licensed & observed & licensed panel \\
 Bond and CDS spreads & liquid sovereigns & daily & licensed & observed & licensed panel \\
-Fiscal-release calendars & national and Eurostat & event & public & observed & in hand \\
-Survey crash beliefs & \citet{AndreEtAl2026}-type & occasional & public & observed & in hand \\
-Media-reach weights & circulation, audience data & annual & public & observed & reach panel \\
+Fiscal releases \citep{EurostatCalendar} & EU and national & event & public & observed & surprise windows \\
+Public debt \citep{WorldBankQPSD7} & reporting economies & quarterly & public & observed & cash-flow inputs \\
+ECB Data Portal \citep{ECBDataPortal7} & euro area & daily & public & sovereign yields & market outcomes \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \section{Conclusion}\label{sec:conclusion}
 
-The narrative hypothesis in macroeconomics has suffered from explaining too much. This paper's contribution is a boundary: a model in which stories about sovereign default are priced and spread, and occasionally push the sovereign into crisis, inside a derived interval of fundamentals, and in which every step of that sentence is measurable. One primitive, the S-curve of default probability, generates the pricing hump, the contagion zone, and the doom-loop amplification as three faces of the same local statistic: where beliefs are priced, stories about beliefs are worth telling. The equilibrium is unique throughout, and the belief object is an epidemic with an estimable prevalence and reproduction number rather than a residual with a name.
+The default boundary gives a precise restriction on narrative pricing. A fixed pessimistic shift has a direct price effect equal to the normal probability mass between two default thresholds. That effect has one peak. Equilibrium feedback preserves one peak only under an additional derivative condition. The condition is stated analytically and verified on the quantitative state space.
 
-The quantitative lessons are asymmetric. Stories tax vulnerable sovereigns heavily, up to \RelPeakTen\ basis points per ten points of prevalence, thousands at outbreak peak, and change outcomes rarely: up to \WedgePeak\ percentage points of two-year default hazard, in a narrow band. The policy lessons rank interventions by their epidemiology: deletion postpones, transparency inoculates, and a credible cap sterilizes, at a price of \DelayCost\ percentage points per year of delay. The whatever-it-takes speech, on this reading, destroyed a story's reason to exist.
+Narrative adoption is tied to decision value through an attention-cost distribution. The prevalence equation is continuous in time. Media diffusion remains an observed proxy linked to latent investor prevalence through a measurement equation. These distinctions keep a text count from being interpreted as a wealth share without evidence.
 
-The empirical half delivers the classified story archive, the prevalence and reproduction series, and the estimated $(\xi, \chi, A, \gamma)$ that convert the calibrated magnitudes into measurements. The payoff extends beyond this paper: an epidemiological surveillance system for sovereign debt markets, tracking which stories are spreading, how fast, and whether the sovereign beneath them is standing in the crisis zone.
+The numerical results are scenarios. At the stated inputs, ten percentage points of latent prevalence can raise spreads by \RelPeakTen\ basis points near the boundary, and a seed can raise the two-year default probability by \WedgePeak\ percentage points. The phase portrait is needed to establish whether a local drift movement becomes a global default path. A spread cap removes the modeled marginal effect only where it binds. OMT changed several policy objects at once and cannot identify narrative deletion by itself.
 
 \clearpage
 \appendix
@@ -353,9 +416,15 @@ The empirical half delivers the classified story archive, the prevalence and rep
 \section{Proofs}\label{app:proofs}
 
 \subsection{Proof of Lemma \ref{lem:pricing}}
-Write $F(s) = (1-\mathcal{R})\bar p(\theta, s, n)$. Then $F'(s) = (1-\mathcal{R})\tfrac{\chi}{\sigma}\big[(1-n)\phi(z) + n\phi(z+\Delta)\big] \le (1-\mathcal{R})\tfrac{\chi}{\sigma}\phi(0) < 1$ under the stated condition, so $F$ maps $[0, 1-\mathcal{R}]$ into itself with slope uniformly below one: a contraction, with unique fixed point $s^*$. Monotonicity in $(\theta, n)$ follows from $\bar p$ increasing in $n$ (since $\Phi(z+\Delta) > \Phi(z)$) and decreasing in $\theta$, plus the contraction property. The multiplier is $1/(1 - F'(s^*))$ by the implicit function theorem. If instead $(1-\mathcal{R})\chi\phi(0)/\sigma > 1$, $F$ is S-shaped with slope exceeding one near $z^* = 0$, and an interval of $\theta$ admits three fixed points: Appendix~\ref{app:pricing}. A cap replaces $F$ by $\min(F, \bar s)$, preserving the contraction. $\blacksquare$
+Write $F(s)=(1-\mathcal R)\bar p(\theta,s,n)$. Then
+\[
+F'(s)=(1-\mathcal R)\frac{\chi}{\sigma}
+\big[(1-n)\phi(z)+n\phi(z+\Delta)\big]
+\leq\frac{(1-\mathcal R)\chi}{\sigma\sqrt{2\pi}}<1.
+\]
+The map sends $[0,1-\mathcal R]$ into itself and is a contraction. Monotonicity follows by implicit differentiation because the denominator $1-F'(s^*)$ is positive. The same differentiation gives the multiplier. A cap replaces $F$ by $\min\{F,\bar s\}$, which is Lipschitz with the same contraction modulus. Failure of the sufficient bound does not prove multiplicity. It permits it when the fixed-point map crosses the 45-degree line at the required tangencies. $\blacksquare$
 
-\subsection{Proof of Proposition \ref{prop:hump}}
+\subsection{Proof of Theorem \ref{prop:hump}}
 Let $G(z)=\Phi(z+\Delta)-\Phi(z)=\int_z^{z+\Delta}\phi(u)\,du$. Since $\phi'(u)=-u\phi(u)$,
 \[
 G'(z)=\phi(z+\Delta)-\phi(z).
@@ -364,32 +433,53 @@ For $\Delta>0$, equality $\phi(z+\Delta)=\phi(z)$ holds iff $(z+\Delta)^2=z^2$, 
 \[
 \frac{dz^*}{d\theta}=-\frac{\rho}{\sigma}\,M(\theta,n)<0,
 \]
-so the single-peaked profile in $z$ maps into a single-peaked profile in fundamentals. For the equilibrium impact, $1\le M\le \bar M=[1-(1-\mathcal{R})\chi\phi(0)/\sigma]^{-1}$, and $M\to 1$ in both tails because the normal density vanishes there. Hence $(1-\mathcal{R})G(z^*)M$ vanishes in both tails and stays within the bounded factor $\bar M$ of the primitive hump. The calibrated narrative shift has $\Delta=\ShiftVal$ and the sensitivity grid stays below two. On that region, $G$ and $M$ rise together on the left of the hump and fall together on the right, with the bridge contained in the concave part of the normal density. The product therefore has one peak at the boundary region shown in Figure~\ref{fig:hump}. $\blacksquare$
+so the single-peaked profile in $z$ maps into a single-peaked profile in fundamentals. At $z=-\Delta/2$, symmetry gives $G=2\Phi(\Delta/2)-1$. $\blacksquare$
+
+\subsection{Proof of Proposition \ref{prop:eqhump}}
+For fixed $n$, write the equilibrium price derivative as
+\[
+v(z,n)=(1-\mathcal R)\frac{G(z)}{1-a d(z,n)}.
+\]
+The contraction condition makes the denominator positive. Logarithmic differentiation gives
+\[
+\frac{\partial\log v(z,n)}{\partial z}=Q(z,n).
+\]
+If $Q_z<0$, the log derivative is strictly decreasing and has at most one zero. If it takes a positive and a negative value, that zero exists and is the unique maximum. Since $z^*(\theta,n)$ is strictly decreasing in $\theta$, the same uniqueness holds in fundamentals. The reported numerical margin evaluates the analytic derivative
+\[
+Q_z=(\log G)''+
+\frac{a\{d''(1-ad)+a(d')^2\}}{(1-ad)^2}
+\]
+on the stated grid. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:zone}}
-$R_0 = \bar m A\, h(v)/\gamma$ with $h$ increasing and $v$ single-peaked with vanishing tails (Proposition~\ref{prop:hump}): $R_0$ is single-peaked with vanishing tails, so its superlevel set at one is an interval, nonempty iff the peak clears one, which is the stated amplification threshold. Comparative statics: $A$ scales $R_0$, $\xi$ widens the window defining $G$, $1-\mathcal{R}$ and $\chi$ scale $v$ through the pricing equation and the multiplier, and $\gamma$ divides. Each moves $R_0$ monotonically at every $\theta$, so the superlevel interval moves as stated. $\blacksquare$
+Proposition~\ref{prop:eqhump} makes $v(\theta,0)$ single-peaked with zero tails. Strict monotonicity of $H_c$ preserves that ordering. Multiplication by $\bar mA/\gamma$ preserves it again. A continuous single-peaked function has interval superlevel sets. The set at level one is nonempty exactly when its maximum weakly exceeds one. Increasing $A$ raises the function pointwise and increasing $\gamma$ lowers it pointwise, which gives the set inclusions. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:cliff}}
-(i) $D(\theta, n)$ is strictly decreasing in $n$ because $s^*$ is strictly increasing in $n$ (Lemma~\ref{lem:pricing}) wherever $G > 0$. Define $\hat\theta(n) = \sup\{\theta : D(\theta, n) < 0\}$: since the set $\{D < 0\}$ expands with $n$, $\hat\theta$ is nondecreasing, strictly where the pricing hump is active. (ii) For $\theta_0 > \hat\theta(0)$ the unseeded deterministic path has $D > 0$ throughout and converges upward toward $\bar\theta$: survival. For seeded paths with $\theta_0$ in the zone, prevalence grows toward $n^\infty$, and once $n_t$ is large enough that $\hat\theta(n_t) > \theta_t$, drift turns negative and both $\theta_t$ and, through the hump, $R_0$ move adversely: the pair enters a trapping region and crosses the boundary in finite time. The set of $\theta_0$ for which this occurs is nonempty whenever $(\hat\theta(0), \hat\theta(n^\infty))$ meets the zone. At the calibration $\theta_0 = 0.06$ exhibits it. (iii) The default time decomposes into the outbreak's build time, of order $\ln(n^\dagger/n_0)/[\gamma(R_0-1)]$ for the prevalence $n^\dagger$ at which drift turns negative, plus the drain time $(\theta_0 - 0)/|\bar D|$: both are months-to-years for calibrated parameters, never a jump. $\blacksquare$
+The implicit function theorem applies at the lower root because $D_\theta>0$. Lemma~\ref{lem:pricing} gives $s_n^*>0$. Hence $D_n=-\chi_m s_n^*<0$ and
+\[
+\hat\theta'(n)=-\frac{D_n}{D_\theta}
+=\frac{\chi_m s_n^*}{D_\theta}>0.
+\]
+No statement about the global basin follows without restrictions on the second component of the vector field. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:policy}}
-(i) With $R_0 > 1$ roughly constant along the path, linearized prevalence grows as $n_{t} \approx n_{0}e^{gt}$, $g = \gamma(R_0 - 1)$, and a cut to $(1-f)n$ is undone when $e^{gt} = 1/(1-f)$. The logistic's later stages and final size depend only on $\beta, \gamma$: unchanged. (ii) $\gamma$ enters $R_0$ as a divisor: the superlevel set of the single-peaked $R_0$ shrinks from both ends, and $n^\infty = 1 - \gamma/\beta$ falls at every interior $\theta$. (iii) Where the cap binds, $s^*$ is locally constant in $n$, so $v = 0$, $h(0) = 0$, $\beta = 0 < \gamma$: prevalence decays at rate $\gamma$ regardless of $R_0$'s uncapped value. A cap at or below the zone's entry spread binds throughout the zone. The calibrated 400 bp cap leaves a sliver of the zone's upper edge unbound where $R_0$ barely exceeds one, and the measured crisis wedge there is zero (Figure~\ref{fig:crisis}b). Severing $\chi s$ above the cap also raises $D$, shrinking $\{D < 0\}$ and hence the critical region, for any prevalence path. $\blacksquare$
+Near zero prevalence with constant rates, $n(t)=n(0)\exp[(\beta-\gamma)t]+o(n(0))$. Since $\beta-\gamma=\gamma(R_0-1)$, a cut from $n$ to $(1-f)n$ is undone after the stated delay. Raising $\gamma$ lowers $R_0=\beta/\gamma$ and lowers $1-\gamma/\beta$ where $\beta>\gamma$ is fixed. Where a cap binds, the modelled spread is locally constant in $n$. Assumption~\ref{ass:adoption} then gives zero adoption through decision value. The remaining law is $\dot n=-\gamma n$. The fundamentals drift also replaces the uncapped spread with the cap. $\blacksquare$
 
 \section{The Pricing Block: Details and the Multiplicity Frontier}\label{app:pricing}
 
-\paragraph{Spread mapping.} Linear expected-loss pricing $s = (1-\mathcal{R})\bar p$ understates convexity at high $\bar p$. The exact zero-profit mapping $s = -\log(1 - \bar p(1-\mathcal{R}))$ steepens the hump and widens the zone, so the text's linear choice is conservative. Endogenizing the promised yield through an issuance requirement adds a second loop with the same sign.
+\paragraph{Spread mapping.} The baseline uses linear expected-loss pricing, $s=(1-\mathcal R)\bar p$. The alternative mapping $s=-\log[1-\bar p(1-\mathcal R)]$ is more convex at high default probability. It changes both the multiplier and the equilibrium-hump condition. No robustness claim for that mapping is used in the propositions.
 
-\paragraph{The Calvo frontier.} The uniqueness condition $(1-\mathcal{R})\chi\phi(0)/\sigma < 1$ defines a feedback frontier. At the calibration the maximal gain is \GainMax, and at the top of the GFN band ($\chi = \ChiGFNHi$) it reaches \GainChiHi: crisis-level financing needs sit at the frontier's edge while remaining below it. Past one, an interval of fundamentals carries three pricing equilibria, the static multiplicity of \citet{Calvo1988} studied quantitatively by \citet{AguiarEtAl2022}. Inside that region, a story can additionally coordinate jumps between equilibria. The present calibration stays in the unique region, where every narrative effect is attributable and measurable.
+\paragraph{The Calvo frontier.} The condition $(1-\mathcal R)\chi\phi(0)/\sigma<1$ is sufficient for contraction. The baseline scenario has maximal gain \GainMax. At $\chi=\ChiGFNHi$ it reaches \GainChiHi. Beyond the contraction region, uniqueness is no longer guaranteed and equilibrium selection must be specified \citep{Calvo1988,AguiarEtAl2022}.
 
 \paragraph{Wealth-weighted pricing.} Averaging beliefs by wealth presumes infected and susceptible investors hold with equal intensity. Letting the infected also shorten duration or exit produces an effective prevalence exceeding $n$ in the pricing equation and strengthens every result. The text uses the lower-intensity baseline.
 
 \section{Simulation Details}\label{app:sim}
 
-Monthly parameters derive from annual ones by $\rho_m = \rho^{1/12}$, $\sigma_m = \sigma/\sqrt{12}$, $\chi_m = \chi/12$. The pricing fixed point is solved by damped iteration to $10^{-12}$ on a $226 \times 51$ grid over $(\theta, n) \in [-0.10, 0.35] \times [0, 1]$, bilinearly interpolated in simulation. Monte Carlo experiments use 8{,}000 paths of 24 months with common random numbers across configurations, seed fixed. Default is absorbing at $\theta < 0$. Deterministic exhibits shut the fundamentals shock and freeze paths at the boundary. The one-shot deletion experiment removes 75 percent of prevalence in the stated month, and the cap experiment switches the pricing table from uncapped to capped from the stated month onward. All figures and every number in the text are generated by the accompanying Julia and R code from a single JSON of results.
+Monthly parameters use the exact aggregation in equation~\eqref{eq:aggregation}. The pricing fixed point is solved to $10^{-12}$ on a $226\times51$ grid over $(\theta,n)\in[-0.10,0.35]\times[0,1]$. Simulation uses bilinear interpolation. The continuous-time logistic prevalence equation is advanced by its exact one-month flow with current rates held fixed. Monte Carlo experiments use 8{,}000 paths of 24 months with common random numbers across configurations. Default is absorbing at $\theta<0$. Deterministic exhibits remove the fundamentals shock. Policy experiments switch the relevant law in the stated month. All figures and reported scenario values are generated from one JSON result file.
 
 \section{Parameter Discipline and Sensitivity}\label{app:params}
 
-Table~\ref{tab:params7} records where each parameter enters, its units, its source, the range examined, and what moves. Low amplification gives the pre-platform case in Proposition~\ref{prop:zone}(ii), where seeded stories fizzle. Setting $\chi = 0$ prices stories while removing the critical region of Proposition~\ref{prop:cliff}, so the default wedge is zero at every $\theta_0$. When the loop gain approaches one, selection becomes the relevant next object: the calibration sits at \GainMax\ against that bound.
+Table~\ref{tab:params7} records the role of each input. Setting $\chi=0$ removes the debt-service feedback while retaining direct narrative pricing. As loop gain approaches one, the contraction margin becomes the relevant sensitivity statistic.
 
 \begin{table}[h]
 \centering
@@ -401,35 +491,35 @@ Table~\ref{tab:params7} records where each parameter enters, its units, its sour
 \toprule
 Parameter & Enters at & Units & Source or moment & Range examined & Effect of the range \\
 \midrule
-$\rho$, $\sigma$ & eq.~\eqref{eq:pdef} & annual, capacity & half-life, unconditional sd & joint scale & scale $z$ and $\Delta$ jointly \\
-$\bar\theta$ = 0.15 & eq.~\eqref{eq:theta-law} & capacity & safe spread $<$ 10 bp & safe-tail anchor & anchors the safe tail \\
+$\rho$, $\sigma$ & eq.~\eqref{eq:pdef} & annual, capacity & scenario, data targets & joint scale & scale $z$ and $\Delta$ jointly \\
+$\bar\theta$ = 0.15 & eq.~\eqref{eq:theta-law} & capacity & scenario & safe-tail anchor & anchors the safe tail \\
 $\mathcal{R}$ = 0.60 & pricing & recovery rate & \citet{CrucesTrebesch2013} & recovery anchor & scales $s^*$ and the hump \\
-$\chi$ = \ChiVal & eqs.~\eqref{eq:theta-law}, \eqref{eq:pdef} & capacity per bp-year & GFN identity, IMF range & \ChiGFNLo\ to \ChiGFNHi & wedge \WedgeChiLo\ to \WedgeChiHi\ pp, gain \GainChiHi\ at the top, $\chi = 0$ removes the cliff \\
-$\xi$ = \XiVal & eq.~\eqref{eq:pbar} & capacity & calibrated input, half an innovation & via $\Delta$ & hump height and width \\
-$\gamma$ = \GamVal & eq.~\eqref{eq:sir} & per month & news-cycle half-life & $\times 1.5$ (transparency) & wedge \WedgePeak\ to \WedgeTransp\ pp \\
-$R_0$ peak = \RZeroPeak & eq.~\eqref{eq:r0} & unitless & calibrated input, amplification era & $A \in \{0.25, 1, 1.5\}$ & zone width \ZoneWidthPre\ to $[\ZoneLo, \ZoneHiAmp]$ \\
-$n_0$ = \SeedVal & initial condition & wealth share & calibrated input, viral event & timing experiments & delay formula only \\
+$\chi$ = \ChiVal & eq.~\eqref{eq:chi-map} & capacity per spread & scenario, cash-flow target & \ChiGFNLo\ to \ChiGFNHi & wedge \WedgeChiLo\ to \WedgeChiHi\ pp, gain \GainChiHi\ at the top \\
+$\xi$ = \XiVal & eq.~\eqref{eq:pbar} & capacity & scenario, belief target & via $\Delta$ & hump height and width \\
+$\gamma$ = \GamVal & eq.~\eqref{eq:sir} & per month & scenario, episode target & $\times 1.5$ & wedge \WedgePeak\ to \WedgeTransp\ pp \\
+$R_0$ peak = \RZeroPeak & eq.~\eqref{eq:r0} & unitless & scenario, diffusion target & $A\in\{0.25,1,1.5\}$ & zone width \ZoneWidthPre\ to $[\ZoneLo,\ZoneHiAmp]$ \\
+$n_0$ = \SeedVal & initial condition & latent share & scenario, onset target & timing experiments & delay formula only \\
 cap = 400 bp & policy & spread & OMT-scale instrument & month 1 to 13 & hazard \PCapEarly\ to \PCapLate\ percent \\
 loop gain & Lemma~\ref{lem:pricing} & unitless & implied & $2\chi$ crosses one & multiplicity, App.~\ref{app:pricing} \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.95\textwidth}
-\footnotesize Notes: the fundamentals and payoff blocks are fixed or estimated, and Design 4 estimates the epidemic block $(\xi, \chi, A, \gamma)$ from text and spread moments.
+\footnotesize Notes: recovery is externally anchored. The remaining non-implied values are scenario inputs. Estimation requires the data moments in Section~\ref{sec:evidence}.
 \end{minipage}
 \end{table}
 
 \section{Data and Measurement Protocol}\label{app:data}
 
-\paragraph{Sources.} Newswire and press text via Factiva/LexisNexis and GDELT, platform text where licensed, consensus forecasts for scheduled-release surprises, sovereign bond and CDS spreads at daily frequency, scheduled fiscal-release calendars, debt-management-office auction results, and media-reach weights from circulation and audience data.
+\paragraph{Sources.} GDELT 2.0 supplies the public media-diffusion core \citep{GDELTData}. Factiva or LexisNexis supplies licensed historical full text. Consensus forecasts measure scheduled-release surprises. Eurostat supplies dated deficit and debt releases \citep{EurostatCalendar}. World Bank QPSD and debt-office cash-flow schedules discipline the feedback block \citep{WorldBankQPSD7}.
 
-\paragraph{Classification.} Each document is classified into the five narrative categories by (i) a transparent dictionary layer requiring a sovereign-solvency claim structure, subject, verb class, and horizon, beyond keywords alone, and (ii) a supervised language-model layer trained on hand-labeled samples, with prompts, label definitions, training splits, and error matrices published in full. Inter-rater reliability on the hand-labeled core and out-of-sample precision/recall by category are reported alongside every index release.
+\paragraph{Classification.} A dictionary layer supplies high recall. A frozen multilingual classifier requires the structured claim defined in Section~\ref{sec:evidence}. A blinded, double-coded sample supplies inter-rater reliability and out-of-sample error rates by country and language.
 
-\paragraph{Construction.} Prevalence $\hat n_{i,t}$: reach-weighted share of country-$i$ sovereign-finance coverage carrying the category, smoothed at the weekly frequency the SIR block implies. Reproduction $\hat R_{i,t}$: cascade growth across outlets and platforms within story clusters, estimated by the standard epidemiological generation-interval method applied to first-appearance timestamps. Validation: correlation with survey-based crash beliefs where available \citep{AndreEtAl2026}, and the P2 placebo, prevalence spikes for safe sovereigns with near-zero price response.
+\paragraph{Construction.} The text index is the share of country-specific sovereign coverage carrying a classified narrative. Media diffusion uses first-appearance timestamps and new-outlet adoption within story clusters. Equation~\eqref{eq:measurement7} separates this observed index from latent investor prevalence. Survey beliefs can validate the loading where comparable questions exist \citep{AndreEtAl2026}.
 
 \section{Extensions}\label{app:ext}
 
-\paragraph{Cross-border story networks.} Let prevalence in country $i$ respond to a reach-weighted sum of foreign prevalences. Stories then comove across borders more than fundamentals do, generating correlated spread movements among zone countries that fundamentals-only models treat as common factors: a candidate microfoundation for the common factors of \citet{LongstaffEtAl2011}, and the structure behind Design 3.
+\paragraph{Cross-border story networks.} Let prevalence in country $i$ respond to a reach-weighted sum of foreign prevalences. This structure can generate correlated spread movements among susceptible countries and provides the model counterpart to the supportive foreign-diffusion design \citep{LongstaffEtAl2011}.
 
 \paragraph{Endogenous amplification.} Attention to sovereign stories rises with volatility, making $A$ procyclical: the zone widens exactly when fundamentals deteriorate, an accelerant with the same signature as a rising multiplier and a natural explanation for why crisis eras feel narrative-dense.
 

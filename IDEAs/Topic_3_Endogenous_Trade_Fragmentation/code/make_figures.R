@@ -130,6 +130,10 @@ dev.off()
 
 # -------------------------------------------------------------------- macros
 fmt <- function(x, d = 1) formatC(x, format = "f", digits = d)
+fmt_sci_tex <- function(x, d = 1) {
+  exponent <- floor(log10(abs(x)))
+  sprintf(paste0("%.", d, "f\\times10^{%d}"), x / 10^exponent, exponent)
+}
 cal <- r$calibration; ss <- r$ss; wf <- r$welfare; ds <- r$distance
 mu <- r$multiplier
 
@@ -149,6 +153,16 @@ lines_out <- c(
   sprintf("\\newcommand{\\FoldHiPct}{%s}", fmt(ds$fold_hi * 100, 1)),
   sprintf("\\newcommand{\\ConsumedPct}{%s}", fmt(ds$consumed * 100, 0)),
   sprintf("\\newcommand{\\MCrit}{%s}", fmt(mu$M_crit, 2)),
+  sprintf("\\newcommand{\\MAgg}{%s}", fmt(mu$M_agg, 2)),
+  sprintf("\\newcommand{\\SpectralRadius}{%s}", fmt(mu$spectral_radius, 3)),
+  sprintf("\\newcommand{\\MOwnCrit}{%s}", fmt(mu$own_channel_sector[1] / mu$direct_sector[1], 2)),
+  sprintf("\\newcommand{\\CrossAmplificationSharePct}{%s}",
+          fmt(mu$cross_spillover_sector[1] /
+              (mu$total_sector[1] - mu$direct_sector[1]) * 100, 1)),
+  sprintf("\\newcommand{\\DirectCritResponse}{%s}", fmt(mu$direct_sector[1], 3)),
+  sprintf("\\newcommand{\\TotalCritResponse}{%s}", fmt(mu$total_sector[1], 3)),
+  sprintf("\\newcommand{\\DirectMidResponse}{%s}", fmt_sci_tex(mu$direct_sector[2], 1)),
+  sprintf("\\newcommand{\\TotalMidResponse}{%s}", fmt_sci_tex(mu$total_sector[2], 1)),
   sprintf("\\newcommand{\\DMidPct}{%s}", fmt(r$hysteresis$d_mid * 100, 1)),
   sprintf("\\newcommand{\\DSpikePct}{%s}", fmt(r$hysteresis$d_spike * 100, 1)),
   sprintf("\\newcommand{\\HystCtrlEndPct}{%s}", fmt(tail(r$hysteresis$Fc_ctrl, 1) * 100, 0)),

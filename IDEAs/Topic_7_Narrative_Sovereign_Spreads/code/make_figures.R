@@ -149,6 +149,40 @@ legend("bottomright", bty = "n", lwd = 2.2, lty = c(1, 2), pch = c(16, 17),
        legend = c("spread cap from month k", "one-shot deletion of 75% of n at k"))
 dev.off()
 
+# ------------------------------------------------------------------- fig_phase
+ph <- r$phase
+pth <- ph$theta
+pn <- ph$n
+dth <- as.matrix(ph$dtheta)
+dn <- as.matrix(ph$dn)
+pdfopen("fig_phase.pdf", w = 6.8, h = 4.8)
+plot(NA, xlim = range(pth), ylim = range(pn),
+     xlab = expression("fundamentals  " * theta),
+     ylab = expression("narrative prevalence  " * n),
+     main = "deterministic phase field")
+contour(pth, pn, dth, levels = 0, add = TRUE, drawlabels = FALSE,
+        lwd = 2.2, col = col_blue)
+contour(pth, pn, dn, levels = 0, add = TRUE, drawlabels = FALSE,
+        lwd = 2.2, lty = 2, col = col_orange)
+for (i in seq(1, length(pth), by = 2)) {
+  for (j in seq(1, length(pn), by = 2)) {
+    vx <- dth[i, j]
+    vy <- dn[i, j]
+    norm <- sqrt((vx / 0.01)^2 + (vy / 0.05)^2)
+    if (is.finite(norm) && norm > 0) {
+      arrows(pth[i], pn[j], pth[i] + 0.006 * vx / (0.01 * norm),
+             pn[j] + 0.03 * vy / (0.05 * norm), length = 0.05,
+             col = grDevices::adjustcolor(col_gray, 0.65))
+    }
+  }
+}
+lines(p$zone$th, p$zone$n, lwd = 2.5, col = col_red)
+legend("topright", bty = "n", lwd = c(2.2, 2.2, 2.5),
+       lty = c(1, 2, 1), col = c(col_blue, col_orange, col_red),
+       legend = c(expression(dot(theta) == 0), expression(dot(n) == 0),
+                  "seeded scenario path"), cex = 0.85)
+dev.off()
+
 # -------------------------------------------------------------------- macros
 fmt <- function(x, d = 1) formatC(x, format = "f", digits = d)
 cal <- r$calibration
@@ -192,6 +226,9 @@ lines_out <- c(
   sprintf("\\newcommand{\\GamVal}{%s}", fmt(cal$gam, 2)),
   sprintf("\\newcommand{\\RZeroPeak}{%s}", fmt(cal$r0peak, 0)),
   sprintf("\\newcommand{\\SeedVal}{%s}", fmt(cal$n0, 2))
+  ,sprintf("\\newcommand{\\HumpMargin}{%s}", fmt(cal$hump_margin, 3))
+  ,sprintf("\\newcommand{\\SigMonth}{%s}", fmt(cal$sigm, 4))
+  ,sprintf("\\newcommand{\\ChiMonth}{%s}", fmt(cal$chim, 4))
 )
 writeLines(lines_out, file.path(out, "quant_numbers.tex"))
-cat("wrote", length(lines_out), "macros and 5 figures\n")
+cat("wrote", length(lines_out), "macros and 6 figures\n")

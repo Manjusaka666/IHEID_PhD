@@ -147,143 +147,6 @@
     \field{year}{2026}
   \endentry
 
-  \entry{AngeletosLaO2013}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=AGM}{%
-         family={Angeletos},
-         familyi={A\bibinitperiod},
-         given={George-Marios},
-         giveni={G\bibinithyphendelim M\bibinitperiod},
-      }}%
-      {{hash=LJ}{%
-         family={La'O},
-         familyi={L\bibinitperiod},
-         given={Jennifer},
-         giveni={J\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{AGMLJ1}
-    \strng{fullhash}{AGMLJ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2013}
-    \field{labeldatesource}{}
-    \field{sortinit}{A}
-    \field{sortinithash}{A}
-    \field{number}{2}
-    \field{pages}{739\bibrangedash 779}
-    \field{title}{Sentiments}
-    \field{volume}{81}
-    \field{journaltitle}{Econometrica}
-    \field{year}{2013}
-  \endentry
-
-  \entry{Arellano2008}{article}{}{}
-    \name{author}{1}{}{%
-      {{hash=AC}{%
-         family={Arellano},
-         familyi={A\bibinitperiod},
-         given={Cristina},
-         giveni={C\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{AC1}
-    \strng{fullhash}{AC1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2008}
-    \field{labeldatesource}{}
-    \field{sortinit}{A}
-    \field{sortinithash}{A}
-    \field{number}{3}
-    \field{pages}{690\bibrangedash 712}
-    \field{title}{Default Risk and Income Fluctuations in Emerging Economies}
-    \field{volume}{98}
-    \field{journaltitle}{American Economic Review}
-    \field{year}{2008}
-  \endentry
-
-  \entry{BakerBloomDavis2016}{article}{}{}
-    \name{author}{3}{}{%
-      {{hash=BSR}{%
-         family={Baker},
-         familyi={B\bibinitperiod},
-         given={Scott\bibnamedelima R.},
-         giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod},
-      }}%
-      {{hash=BN}{%
-         family={Bloom},
-         familyi={B\bibinitperiod},
-         given={Nicholas},
-         giveni={N\bibinitperiod},
-      }}%
-      {{hash=DSJ}{%
-         family={Davis},
-         familyi={D\bibinitperiod},
-         given={Steven\bibnamedelima J.},
-         giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{BSR+1}
-    \strng{fullhash}{BSRBNDSJ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2016}
-    \field{labeldatesource}{}
-    \field{sortinit}{B}
-    \field{sortinithash}{B}
-    \field{number}{4}
-    \field{pages}{1593\bibrangedash 1636}
-    \field{title}{Measuring Economic Policy Uncertainty}
-    \field{volume}{131}
-    \field{journaltitle}{Quarterly Journal of Economics}
-    \field{year}{2016}
-  \endentry
-
-  \entry{BybeeEtAl2020}{report}{}{}
-    \name{author}{4}{}{%
-      {{hash=BL}{%
-         family={Bybee},
-         familyi={B\bibinitperiod},
-         given={Leland},
-         giveni={L\bibinitperiod},
-      }}%
-      {{hash=KBT}{%
-         family={Kelly},
-         familyi={K\bibinitperiod},
-         given={Bryan\bibnamedelima T.},
-         giveni={B\bibinitperiod\bibinitdelim T\bibinitperiod},
-      }}%
-      {{hash=MA}{%
-         family={Manela},
-         familyi={M\bibinitperiod},
-         given={Asaf},
-         giveni={A\bibinitperiod},
-      }}%
-      {{hash=XD}{%
-         family={Xiu},
-         familyi={X\bibinitperiod},
-         given={Dacheng},
-         giveni={D\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{BL+1}
-    \strng{fullhash}{BLKBTMAXD1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2020}
-    \field{labeldatesource}{}
-    \field{sortinit}{B}
-    \field{sortinithash}{B}
-    \field{number}{26648}
-    \field{title}{The Structure of Economic News}
-    \list{institution}{1}{%
-      {National Bureau of Economic Research}%
-    }
-    \field{type}{Working Paper}
-    \field{year}{2020}
-  \endentry
-
   \entry{Calvo1988}{article}{}{}
     \name{author}{1}{}{%
       {{hash=CGA}{%
@@ -370,35 +233,54 @@
     \field{year}{2013}
   \endentry
 
-  \entry{EatonGersovitz1981}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=EJ}{%
-         family={Eaton},
+  \entry{ECBDataPortal7}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=E}{%
+         family={{European Central Bank}},
          familyi={E\bibinitperiod},
-         given={Jonathan},
-         giveni={J\bibinitperiod},
-      }}%
-      {{hash=GM}{%
-         family={Gersovitz},
-         familyi={G\bibinitperiod},
-         given={Mark},
-         giveni={M\bibinitperiod},
       }}%
     }
-    \strng{namehash}{EJGM1}
-    \strng{fullhash}{EJGM1}
+    \strng{namehash}{E1}
+    \strng{fullhash}{E1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{1981}
+    \field{labelyear}{2026}
     \field{labeldatesource}{}
     \field{sortinit}{E}
     \field{sortinithash}{E}
-    \field{number}{2}
-    \field{pages}{289\bibrangedash 309}
-    \field{title}{Debt with Potential Repudiation: Theoretical and Empirical Analysis}
-    \field{volume}{48}
-    \field{journaltitle}{Review of Economic Studies}
-    \field{year}{1981}
+    \field{title}{{ECB} Data Portal}
+    \verb{url}
+    \verb https://data.ecb.europa.eu/
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{EurostatCalendar}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=E}{%
+         family={{Eurostat}},
+         familyi={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{E2}
+    \strng{fullhash}{E2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{title}{Release Calendar for Euro Indicators}
+    \verb{url}
+    \verb https://ec.europa.eu/eurostat/news/euro-indicators/release-calendar
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
   \endentry
 
   \entry{FlynnSastry2024}{report}{}{}
@@ -436,6 +318,31 @@
     \field{year}{2024}
   \endentry
 
+  \entry{GDELTData}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={{GDELT Project}},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2015}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{{GDELT} 2.0: Global World in Realtime}
+    \verb{url}
+    \verb https://www.gdeltproject.org/
+    \endverb
+    \field{year}{2015}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
+  \endentry
+
   \entry{GentzkowKellyTaddy2019}{article}{}{}
     \name{author}{3}{}{%
       {{hash=GM}{%
@@ -471,37 +378,6 @@
     \field{volume}{57}
     \field{journaltitle}{Journal of Economic Literature}
     \field{year}{2019}
-  \endentry
-
-  \entry{KermackMcKendrick1927}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=KWO}{%
-         family={Kermack},
-         familyi={K\bibinitperiod},
-         given={William\bibnamedelima O.},
-         giveni={W\bibinitperiod\bibinitdelim O\bibinitperiod},
-      }}%
-      {{hash=MAG}{%
-         family={McKendrick},
-         familyi={M\bibinitperiod},
-         given={Anderson\bibnamedelima G.},
-         giveni={A\bibinitperiod\bibinitdelim G\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{KWOMAG1}
-    \strng{fullhash}{KWOMAG1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{1927}
-    \field{labeldatesource}{}
-    \field{sortinit}{K}
-    \field{sortinithash}{K}
-    \field{number}{772}
-    \field{pages}{700\bibrangedash 721}
-    \field{title}{A Contribution to the Mathematical Theory of Epidemics}
-    \field{volume}{115}
-    \field{journaltitle}{Proceedings of the Royal Society of London. Series A}
-    \field{year}{1927}
   \endentry
 
   \entry{KrishnamurthyEtAl2018}{article}{}{}
@@ -641,6 +517,31 @@
     \field{volume}{107}
     \field{journaltitle}{American Economic Review}
     \field{year}{2017}
+  \endentry
+
+  \entry{WorldBankQPSD7}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{World Bank}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Quarterly Public Sector Debt Statistics}
+    \verb{url}
+    \verb https://www.worldbank.org/en/programs/debt-statistics/qpsd/d1-d4
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
   \endentry
 \enddatalist
 \endinput
