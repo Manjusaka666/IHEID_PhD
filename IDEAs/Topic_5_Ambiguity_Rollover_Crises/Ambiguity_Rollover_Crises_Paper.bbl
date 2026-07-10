@@ -119,40 +119,6 @@
     \field{year}{2019}
   \endentry
 
-  \entry{CaballeroKrishnamurthy2008}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=CRJ}{%
-         family={Caballero},
-         familyi={C\bibinitperiod},
-         given={Ricardo\bibnamedelima J.},
-         giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
-      }}%
-      {{hash=KA}{%
-         family={Krishnamurthy},
-         familyi={K\bibinitperiod},
-         given={Arvind},
-         giveni={A\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{CRJKA1}
-    \strng{fullhash}{CRJKA1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2008}
-    \field{labeldatesource}{}
-    \field{sortinit}{C}
-    \field{sortinithash}{C}
-    \verb{doi}
-    \verb 10.1111/j.1540-6261.2008.01394.x
-    \endverb
-    \field{number}{5}
-    \field{pages}{2195\bibrangedash 2230}
-    \field{title}{Collective Risk Management in a Flight to Quality Episode}
-    \field{volume}{63}
-    \field{journaltitle}{The Journal of Finance}
-    \field{year}{2008}
-  \endentry
-
   \entry{Cady2004}{report}{}{}
     \name{author}{1}{}{%
       {{hash=CJ}{%
@@ -306,6 +272,60 @@
     \field{year}{2008}
   \endentry
 
+  \entry{ECBSHSSData}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=E}{%
+         family={{European Central Bank}},
+         familyi={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{E1}
+    \strng{fullhash}{E1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{1}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{title}{Securities Holdings Statistics by Sector}
+    \verb{url}
+    \verb https://data.ecb.europa.eu/data/publications/SHSS01_01/data-informati
+    \verb on
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{ECBSPFData}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=E}{%
+         family={{European Central Bank}},
+         familyi={E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{E1}
+    \strng{fullhash}{E1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{2}
+    \field{labeldatesource}{}
+    \field{sortinit}{E}
+    \field{sortinithash}{E}
+    \field{title}{Survey of Professional Forecasters: Individual Forecast Data}
+    \verb{url}
+    \verb https://www.ecb.europa.eu/stats/ecb_surveys/survey_of_professional_fo
+    \verb recasters/html/all_data.en.html
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
+  \endentry
+
   \entry{EC2010Greece}{report}{}{}
     \name{author}{1}{}{%
       {{hash=E}{%
@@ -313,8 +333,8 @@
          familyi={E\bibinitperiod},
       }}%
     }
-    \strng{namehash}{E1}
-    \strng{fullhash}{E1}
+    \strng{namehash}{E2}
+    \strng{fullhash}{E2}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
     \field{labelyear}{2010}
@@ -460,38 +480,29 @@
     \field{year}{2014}
   \endentry
 
-  \entry{MorrisShin2002}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=MS}{%
-         family={Morris},
-         familyi={M\bibinitperiod},
-         given={Stephen},
-         giveni={S\bibinitperiod},
-      }}%
-      {{hash=SHS}{%
-         family={Shin},
-         familyi={S\bibinitperiod},
-         given={Hyun\bibnamedelima Song},
-         giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod},
+  \entry{IMFWEOData}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=I}{%
+         family={{International Monetary Fund}},
+         familyi={I\bibinitperiod},
       }}%
     }
-    \strng{namehash}{MSSHS1}
-    \strng{fullhash}{MSSHS1}
+    \strng{namehash}{I1}
+    \strng{fullhash}{I1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2002}
+    \field{labelyear}{2026}
     \field{labeldatesource}{}
-    \field{sortinit}{M}
-    \field{sortinithash}{M}
-    \verb{doi}
-    \verb 10.1257/000282802762024610
+    \field{sortinit}{I}
+    \field{sortinithash}{I}
+    \field{title}{World Economic Outlook Database}
+    \verb{url}
+    \verb https://data.imf.org/en/datasets/IMF.RES:WEO
     \endverb
-    \field{number}{5}
-    \field{pages}{1521\bibrangedash 1534}
-    \field{title}{Social Value of Public Information}
-    \field{volume}{92}
-    \field{journaltitle}{American Economic Review}
-    \field{year}{2002}
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
   \endentry
 
   \entry{MorrisShin2003}{incollection}{}{}
@@ -619,6 +630,59 @@
     \field{volume}{149}
     \field{journaltitle}{Games and Economic Behavior}
     \field{year}{2025}
+  \endentry
+
+  \entry{WorldBankQEDS}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{World Bank}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{1}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Quarterly External Debt Statistics}
+    \verb{url}
+    \verb https://www.worldbank.org/en/programs/debt-statistics/qeds/gdds
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
+  \endentry
+
+  \entry{WorldBankQPSD}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=W}{%
+         family={{World Bank}},
+         familyi={W\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{W1}
+    \strng{fullhash}{W1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{2}
+    \field{labeldatesource}{}
+    \field{sortinit}{W}
+    \field{sortinithash}{W}
+    \field{title}{Quarterly Public Sector Debt}
+    \verb{url}
+    \verb https://www.worldbank.org/en/programs/debt-statistics/qpsd/cross-coun
+    \verb try-tables
+    \endverb
+    \field{year}{2026}
+    \field{urlday}{10}
+    \field{urlmonth}{07}
+    \field{urlyear}{2026}
   \endentry
 \enddatalist
 \endinput

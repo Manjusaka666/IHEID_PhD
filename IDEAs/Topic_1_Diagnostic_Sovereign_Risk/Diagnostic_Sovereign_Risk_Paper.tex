@@ -36,6 +36,11 @@
 \graphicspath{{output/}}
 \input{output/quant_numbers.tex}
 \input{output/robust_numbers.tex}
+\input{output/survey_mapping_numbers.tex}
+\IfFileExists{output/long_bond_numbers.tex}{\input{output/long_bond_numbers.tex}}{}
+\providecommand{\LongFPResidual}{$5\times10^{-8}$}
+\providecommand{\FPResidual}{$5\times10^{-8}$}
+\providecommand{\FPInitDiff}{$10^{-6}$}
 
 \title{Diagnostic Expectations and Sovereign Default\thanks{Revised draft: July 2026. The empirical sections specify the proprietary panels used for estimation (J.P.~Morgan EMBI spreads, Consensus Economics forecasts). Every number reported in the text is a documented fact, a published estimate, or an output of the model solved in this paper. Replication code in Julia and R accompanies the draft.}}
 \author{[Author]}
@@ -45,7 +50,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent The workhorse model of sovereign default prices debt as a function of current output and the stock of debt: conditional on the state, pricing is memoryless. I replace the lenders' rational expectations with diagnostic expectations, a disciplined model of overreaction to news, in an otherwise standard Eaton--Gersovitz economy. One new state variable appears: the direction of recent income news. The same debt and the same output are priced differently after good news than after bad, and expected bond returns are predictably low after booms. Default regions expand when optimism reverses. The overreaction parameter is identified from individual forecast-revision regressions rather than spreads, and the mapping from the Coibion--Gorodnichenko coefficient to the model is exact. I set $\theta = 0.5$, inside the published individual-forecast range, and specify the emerging-market forecast panel that estimates country-level $\theta_i$. At this value, a boom-reversal quarter carries a default hazard of \HazPeakDiag\ percent against \HazPeakRE\ percent under rational pricing on the identical income path, a gap that survives recalibrating the parameters outside beliefs to restore the observed default frequency. Whether fiscal rules are worth having turns on whose beliefs are distorted: a debt ceiling lowers sovereign welfare when only the market overreacts, and raises it when the government shares the market's beliefs.
+\noindent The workhorse model of sovereign default prices debt as a function of current output and debt. Conditional on that state, pricing is memoryless. I replace lenders' rational expectations with diagnostic expectations in an otherwise standard Eaton--Gersovitz economy. One pricing state appears, the direction of recent income news. The same debt and output command different prices after good and bad news. Expected bond returns are low after good news under the true probability law. Default regions expand when optimism reverses. I identify the overreaction parameter from forecast revisions, not from sovereign spreads. The analytic one-quarter mapping is a benchmark. A monthly simulation that reproduces annual fixed-event forecasts, calendar weights, and overlapping realizations delivers the mapping used in the quantitative model. At $\theta=0.5$ it produces a forecast-error coefficient of \SurveyBetaHalf\ and recovers the input parameter to numerical precision. The quantitative implementation uses five-year defaultable bonds and the published long-debt parameter block of \citet{ChatterjeeEyigungor2012}. Fiscal rules turn on whose beliefs are distorted. A debt ceiling lowers sovereign welfare when only the market overreacts and raises it when the government shares the market's beliefs.
 \end{abstract}
 
 \medskip
@@ -62,13 +67,13 @@ The workhorse theory of sovereign borrowing, from \citet{EatonGersovitz1981} thr
 
 This paper changes one primitive of that model and nothing else: the process by which creditors form beliefs. Creditors hold \emph{diagnostic expectations} in the sense of \citet{BordaloGennaioliShleifer2018}: after observing news, they overweight future states whose likelihood the news has raised. The distortion has a kernel of truth, since beliefs respond to genuine information and in the right direction. The strength of overreaction is governed by a single parameter $\theta \geq 0$, with rational expectations recovered exactly at $\theta = 0$. When log income follows a Gaussian autoregression, the diagnostic conditional distribution is Gaussian with the same variance and a mean shifted by $\theta \rho\,(x - h)$, where $x$ is current log income and $h$ is last period's (Lemma~\ref{lem:tilt}). Creditors who have just seen income rise expect the improvement to continue, and creditors who have just seen it fall expect further decline.
 
-The consequence is that one new state variable enters the pricing of sovereign debt: the direction of recent news, $\nu = x - h$. I put diagnostic creditors inside an otherwise standard one-period-bond default economy and establish three results. First, the equilibrium price schedule is history dependent: at fixed debt and fixed income, bond prices increase in $\nu$, strictly so wherever default risk is interior (Proposition~\ref{prop:history}). The rational model predicts a zero coefficient on news once debt and income are controlled for, and the diagnostic model predicts a positive one. That zero is the natural test of the theory. Second, expected bond returns under the true income process are predictably low after good news and predictably high after bad news (Proposition~\ref{prop:returns}), which is the sovereign analogue of the return predictability that credit-market sentiment generates in corporate bonds. Third, default regions are history dependent: debt that is safe after good news becomes default-inducing when the news reverses, so the model produces boom-bust credit cycles from ordinary shocks, outside disasters and sunspot runs (Proposition~\ref{prop:fragility}). Each result is a comparative static conditional on one regularity condition, monotone default in income, whose standing I discuss and verify at length below.
+The consequence is that one new state variable enters the pricing of sovereign debt: the direction of recent news, $\nu = x - h$. At fixed debt and fixed income, bond prices increase in $\nu$, strictly so wherever default risk is interior (Proposition~\ref{prop:history}). The rational model predicts a zero coefficient on news once debt and income are controlled for, and the diagnostic model predicts a positive one. That zero is the natural test of the theory. Expected bond returns under the true income process are predictably low after good news and predictably high after bad news (Proposition~\ref{prop:returns}). This is the sovereign analogue of the return predictability that credit-market sentiment generates in corporate bonds. Default regions also inherit history dependence. Debt that is safe after good news becomes default-inducing when the news reverses, so the model produces boom-bust credit cycles from ordinary shocks, outside disasters and sunspot runs (Proposition~\ref{prop:fragility}). These comparative statics require monotone default in income, the regularity condition examined below.
 
-The discipline of the exercise is that forecast data pin down $\theta$. Diagnostic expectations imply overreaction in individual forecasts: a forecaster who revises upward tends to be disappointed, so realized forecast errors are negatively related to forecast revisions, which is precisely what \citet{BordaloGennaioliMaShleifer2020} document across United States macroeconomic series in the framework of \citet{CoibionGorodnichenko2015}. In the model economy the mapping between the forecast-error-on-revision coefficient $\beta_{CG}$ and $\theta$ is exact (Proposition~\ref{prop:cg}): $\beta_{CG} = -\theta(1+\theta)/[(1+\theta)^2 + \theta^2\rho^2]$. Published estimates of overreaction put $\theta$ between roughly $0.5$ and $1$ \citep{BordaloGennaioliShleifer2018, BordaloGennaioliMaShleifer2020}. I take $\theta = 0.5$, which corresponds to $\beta_{CG} = \CGbetaHalf$, as the baseline, and I specify the forecast-revision regressions for emerging-market growth forecasts that would estimate $\theta$ country by country.
+The discipline of the exercise is that forecast data pin down $\theta$. Diagnostic expectations imply overreaction in individual forecasts. A forecaster who revises upward tends to be disappointed, so realized forecast errors are negatively related to forecast revisions. \citet{BordaloGennaioliMaShleifer2020} document this pattern across United States macroeconomic series in the framework of \citet{CoibionGorodnichenko2015}. Proposition~\ref{prop:cg} gives the exact coefficient for a one-quarter fixed target. Consensus forecasts are annual fixed-event objects observed monthly. I therefore simulate that timing and apply the same calendar conversion used on the data. At $\theta=0.5$, the simulated coefficient is \SurveyBetaHalf\ rather than the one-quarter value \CGbetaHalf. Inverting the simulated map returns \SurveyThetaRecovered. Published estimates place the corresponding degree of overreaction between roughly one-quarter and one \citep{BordaloGennaioliShleifer2018, BordaloGennaioliMaShleifer2020}. I take $\theta=0.5$ as the baseline and specify the forecast-revision regressions that estimate it country by country.
 
-Quantitatively, the belief distortion does a specific kind of work. I solve the model on the \citet{Arellano2008} calibration for Argentina, first changing only $\theta$ as a controlled comparative static, and then re-selecting the discount factor and the default cost with $\theta$ held at the baseline value, since a mechanism that changes default incentives calls for its own calibration. At $\theta = 0.5$, a one-standard-deviation piece of good news lowers the spread by \NewsBpDiagAbs\ basis points holding debt and output fixed, where the rational benchmark says the effect should be zero. The standard deviation of spreads rises by a factor of \SprSdRatio\ while the median spread \emph{falls} from \SprMedRE\ to \SprMedDiag\ percent: long calm spells punctuated by crises. The sharpest difference is dynamic. On the identical simulated income path, I locate every episode in which income rises for three or more consecutive quarters and then falls. In the quarter of the reversal the default hazard is \HazPeakDiag\ percent in the diagnostic economy and \HazPeakRE\ percent in the rational one. Same fundamentals, same shocks: the difference is entirely the pricing of beliefs, and it is the model's account of why defaults so often follow booms. The recalibrated economy tells the same story in more moderate numbers, a reversal-quarter hazard of \HazPeakRecalDiag\ percent against \HazPeakRecalRE, and I report both throughout.
+Quantitatively, I separate a mechanism experiment from estimation. The one-period model on the \citet{Arellano2008} calibration changes only $\theta$. At $\theta=0.5$, a one-standard-deviation piece of good news lowers the spread by \NewsBpDiagAbs\ basis points holding debt and output fixed. The rational benchmark gives zero. On an identical income path, the reversal-quarter default hazards are \HazPeakDiag\ percent and \HazPeakRE\ percent. The main implementation uses five-year bonds, coupons, and endogenous resale prices. It adopts the complete published parameter block of \citet{ChatterjeeEyigungor2012} for the controlled comparison. The estimated specification fixes $\theta$ from forecasts and selects the remaining calibrated parameters against debt, default, spread, return, and maturity moments in one simulated-moment criterion. Long debt adds dilution and capital gains without changing the paper's conditional news restriction.
 
-The policy question is then whether governments should bind themselves against belief-driven cycles, and here the model delivers an answer with an edge to it. Welfare depends on \emph{whose} expectations are diagnostic. If the government is rational while the market overreacts, debt limits make the sovereign worse off: the government is selling overpriced claims to optimists and repurchasing them cheap from pessimists, and a ceiling interferes with a trade that benefits it. If the government shares the market's beliefs, which is what survey evidence on official and professional forecasters suggests, the ranking reverses: a ceiling that binds after good-news sequences prevents borrowing the government avoids under the true distribution, and the welfare gain is increasing in $\theta$. I compute the full two-by-two of government and market beliefs. The lesson for the fiscal-rules debate is that rules are a commitment device against the government's own extrapolation rather than a repair of market mispricing.
+The policy question is then whether governments should bind themselves against belief-driven cycles, and here the model delivers an answer with an edge to it. Welfare depends on \emph{whose} expectations are diagnostic. If the government is rational while the market overreacts, debt limits make the sovereign worse off: the government is selling overpriced claims to optimists and repurchasing them cheap from pessimists, and a ceiling interferes with a trade that benefits it. If the government shares the market's beliefs, the ranking reverses: a ceiling that binds after good-news sequences prevents borrowing the government avoids under the true distribution, and the welfare gain is increasing in $\theta$. I compute the full two-by-two of government and market beliefs. The lesson for the fiscal-rules debate is that rules are a commitment device against the government's own extrapolation rather than a repair of market mispricing.
 
 The paper joins two literatures and takes one step beyond each. The quantitative sovereign default literature \citep{AguiarGopinath2006, Arellano2008, ChatterjeeEyigungor2012, MendozaYue2012, HatchondoMartinez2009}, surveyed in \citet{AguiarEtAl2016}, prices debt under rational expectations, and belief-driven crises enter it through equilibrium multiplicity, as in \citet{ColeKehoe2000} and \citet{LorenzoniWerning2019}. Multiplicity and overreaction are different theories with different footprints. A sunspot changes outcomes at fixed fundamentals. Diagnostic beliefs distort the response to genuine news in a fixed direction and by a measurable amount, and forecast data discipline that amount directly. The behavioral literature \citep{BordaloGennaioliShleifer2018, GennaioliShleifer2018, BordaloGennaioliMaShleifer2020, BordaloEtAl2022JEP} has established overreaction in forecasts and linked credit-market sentiment to reversals \citep{GreenwoodHanson2013, LopezSalidoSteinZakrajsek2017}. I put that evidence inside the default option that gives sovereign spreads their nonlinearity. The marriage is what produces the new content: history-dependent default regions and the whose-beliefs answer to the fiscal-rules question, objects generated jointly by diagnostic forecasts and the default option.
 
@@ -139,7 +144,7 @@ For the Gaussian autoregression \eqref{eq:ar1} the tilt takes a form that makes 
 Let $p(\cdot \mid x)$ be the $N(\rho x, \sigma_\varepsilon^2)$ density and $p(\cdot \mid h)$ the $N(\rho h, \sigma_\varepsilon^2)$ density. Then $\hat p_\theta(\cdot \mid x, h)$ is the $N\!\left(\rho x + \theta \rho (x - h),\, \sigma_\varepsilon^2\right)$ density.
 \end{lemma}
 
-The proof, a matter of completing a square, is in Appendix~\ref{app:proofs}. Three features deserve notice. The variance is undistorted: diagnostic creditors carry the same uncertainty and the wrong mean. The mean distortion is proportional to the news, $\nu \equiv x - h$: after a quarter in which log income rose, creditors expect the rise to continue beyond what persistence justifies. And the belief state is just the pair $(x, h)$, so the entire departure from rational expectations costs one state variable, and that variable is observable in the data as a growth realization or a forecast revision.
+The proof, a matter of completing a square, is in Appendix~\ref{app:proofs}. Diagnostic creditors carry the same conditional variance and the wrong mean. The mean distortion is proportional to the news, $\nu \equiv x - h$: after a quarter in which log income rose, creditors expect the rise to continue beyond what persistence justifies. The belief state is only the pair $(x, h)$, so the departure from rational expectations costs one state variable that is observable as a growth realization or a forecast revision.
 
 Two modeling choices require defense. First, how does competition leave the distortion in prices? The lenders in this model are the marginal pricers of emerging-market debt, and the overreaction I attribute to them is documented in the forecasts of exactly this population: professional analysts, individually, revise too far in the direction of news \citep{BordaloGennaioliMaShleifer2020, BordaloEtAl2022JEP}. Arbitraging a belief distortion in a defaultable bond requires taking large positions against it and bearing the default risk meanwhile, and the capital that does this is limited, as the long literature on credit-market sentiment attests \citep{GreenwoodHanson2013, LopezSalidoSteinZakrajsek2017}. I therefore let the price be set each period by risk-neutral diagnostic lenders, the exact behavioral counterpart of the rational risk-neutral pricing in the workhorse model. Second, whose beliefs are diagnostic? In the baseline the government is rational and the market overreacts, so that every pricing result isolates the market's distortion. The government's own beliefs matter for normative questions, and Section~\ref{sec:rules} treats the full two-by-two.
 
@@ -171,7 +176,13 @@ where $\Ehat_\theta$ integrates against $\hat p_\theta(\cdot \mid x, h)$. Equati
 A recursive equilibrium with diagnostic pricing is a value function $V$, policies $d$ and $b'(\cdot)$, and a price schedule $q$ such that (i) given $q$, the value and policies solve \eqref{eq:vmax}--\eqref{eq:vd}, and (ii) given $d$, the price satisfies \eqref{eq:price} for all $(b', x, h)$.
 \end{definition}
 
-This is a temporary-equilibrium concept: agents optimize given stated beliefs and markets clear, while the beliefs of one side are systematically wrong under the true measure. Existence follows from the same arguments as in the rational case, since $\hat p_\theta$ is a proper Markov kernel on the expanded state $(x,h)$ and the price operator maps the compact set $[0, 1/R]^{|\mathcal{B}| \times |\mathcal{X}|^2}$ into itself. I compute the equilibrium as the limit of the standard iteration, which is the selection used throughout the quantitative literature \citep{AguiarEtAl2016}. At $\theta = 0$, $h$ drops out of \eqref{eq:price} and the model is exactly \citet{Arellano2008}.
+This is a temporary-equilibrium concept: agents optimize given stated beliefs and markets clear, while the beliefs of one side are systematically wrong under the true measure. Compactness alone does not establish a fixed point because the deterministic policy can jump when two choices exchange rank. The finite economy has an existence result once mixed actions are admitted.
+
+\begin{proposition}[Finite-grid existence]\label{prop:existence}
+Let the income and debt grids be finite and let $0<\beta<1$. Extend utility below a positive consumption floor by its tangent at the floor, so current returns remain finite and continuous for every grid action and price. Then a stationary recursive equilibrium exists in mixed government policies. A computed deterministic fixed point whose repayment choices lie above the floor is an equilibrium of the original positive-consumption economy whenever its Bellman and zero-profit residuals are zero.
+\end{proposition}
+
+The proof in Appendix~\ref{app:proofs} applies Kakutani's theorem to prices and mixed stationary policies. It does not assert existence or uniqueness of a deterministic equilibrium. The reported deterministic fixed point has Bellman and price residuals below \FPResidual, and iteration from risk-free prices, zero prices, and the rational price schedule produces price arrays whose largest difference is \FPInitDiff. At $\theta = 0$, $h$ drops out of \eqref{eq:price} and the model is exactly \citet{Arellano2008}.
 
 The question the theory must answer is what the extra state variable does to prices, returns, and default sets. That is the next section.
 
@@ -187,7 +198,7 @@ Fix $x$. If $\nu_2 > \nu_1$ then $F_\theta(\cdot \mid x, h_2)$ first-order stoch
 In any equilibrium of Definition~\ref{def:eqm}, for every $(x, h)$: the repayment value $V^R(b, x, h)$ is nonincreasing in $b$, strictly decreasing wherever finite, $V^D(x)$ is independent of $b$, and the default set $\{ b \in \mathcal{B} : d(b, x, h) = 1 \}$ is an upper interval $\{ b \geq \underline b(x,h) \}$.
 \end{lemma}
 
-Lemma~\ref{lem:bmono} is unconditional: a larger inherited debt lowers consumption at every issuance choice and leaves the continuation problem unchanged, while the default value is independent of $b$. The proof is three lines in Appendix~\ref{app:proofs}. The income margin is the paper's single maintained regularity condition.
+Lemma~\ref{lem:bmono} is unconditional: a larger inherited debt lowers consumption at every issuance choice and leaves the continuation problem unchanged, while the default value is independent of $b$. The short proof is in Appendix~\ref{app:proofs}. The income margin is the paper's single maintained regularity condition.
 
 \begin{assumption}[Monotone default in income]\label{ass:monotone}
 The default policy $d(b, x, h)$ is nonincreasing in $x$ for fixed $(b, h)$.
@@ -196,17 +207,20 @@ The default policy $d(b, x, h)$ is nonincreasing in $x$ for fixed $(b, h)$.
 Assumption~\ref{ass:monotone} says default is a bad-times event. \citet{Arellano2008} proves it for i.i.d.\ income. With persistent income it is the maintained regularity condition of the quantitative literature even at $\theta = 0$, because repayment and default values both rise with income and their ranking is state dependent. The verification is systematic: the condition holds at every grid point of every computed equilibrium at $\theta \in \{0, 0.5\}$, it continues to hold when both grids are doubled ($n_x = 31$, $n_b = 400$), under a proportional default cost in place of the asymmetric one, and at every parameter vector visited by the recalibration search of Section~\ref{sec:quant}. Appendix~\ref{app:computation} reports the counts, and the small \MonoViolGDOnepct\ percent of columns at $\theta = 1$ are traceable to near-degenerate pricing at extreme states.
 
 \begin{proposition}[History-dependent prices]\label{prop:history}
-Under Assumption~\ref{ass:monotone}, the price schedule $q(b', x, h)$ is nondecreasing in $\nu$ for every $(b', x)$, and strictly increasing in $\nu$ at every $(b', x)$ where $\theta > 0$ and next-period default risk is interior.
+Under Assumption~\ref{ass:monotone}, the price schedule $q(b', x, h)$ is nondecreasing in $\nu$ for every $(b', x)$. It is strictly increasing between any two news values when $\theta>0$ and the repayment indicator differs on a set with positive diagnostic probability. Equivalently, strictness requires
+\[
+0<\widehat{\Prob}_\theta\{d(b',x',x)=0\mid x,h\}<1.
+\]
 \end{proposition}
 
 \begin{corollary}[The rational zero]\label{cor:zero}
-Conditional on $(b', x)$, prices and spreads are invariant to $\nu$ if and only if $\theta = 0$ (given interior default risk somewhere). In particular, in any panel regression of spreads on news within cells defined by debt and output, the rational model predicts a coefficient of exactly zero.
+If $\theta=0$, prices and spreads are invariant to $\nu$ conditional on $(b',x)$. If $\theta>0$, the price is strictly increasing in $\nu$ in every cell satisfying the interior-risk condition of Proposition~\ref{prop:history}. Thus the rational benchmark predicts a zero within-cell news coefficient, while the diagnostic model predicts a negative spread coefficient in interior-risk cells.
 \end{corollary}
 
 Proposition~\ref{prop:history} is the paper's pricing result and Corollary~\ref{cor:zero} its identification content. Debt and output are controls and the news is the treatment. The workhorse model supplies the sharp null. Spreads still move with growth under both hypotheses through $x$ itself. The diagnostic test lives entirely inside the conditional.
 
 \begin{proposition}[Predictable returns]\label{prop:returns}
-Let $R^e(b', x, h)$ denote the true-measure expected gross return on the bond in excess of $R$. Under Assumption~\ref{ass:monotone}, $R^e$ is nonincreasing in $\nu$, with $R^e = 0$ for all $\nu$ when $\theta = 0$, $R^e \leq 0$ for $\nu > 0$, and $R^e \geq 0$ for $\nu < 0$ when $\theta > 0$ (strictly where default risk is interior).
+Let $R^e(b', x, h)$ denote the true-measure expected gross return on a positive-price bond in excess of $R$. Under Assumption~\ref{ass:monotone}, $R^e$ is nonincreasing in $\nu$. It equals zero for every $\nu$ when $\theta=0$. When $\theta>0$, it is nonpositive for $\nu>0$ and nonnegative for $\nu<0$, with strict inequalities under the interior-risk condition of Proposition~\ref{prop:history}.
 \end{proposition}
 
 The mechanism is the one in equation \eqref{eq:returns-example}: after good news the lenders' repayment probability exceeds the true one, so they overpay. Proposition~\ref{prop:returns} turns the sentiment-reversal evidence from corporate credit \citep{GreenwoodHanson2013, LopezSalidoSteinZakrajsek2017} into a prediction for sovereign bonds, with the news direction as the conditioning variable.
@@ -215,7 +229,7 @@ The mechanism is the one in equation \eqref{eq:returns-example}: after good news
 Under Assumption~\ref{ass:monotone}, the repayment value $V^R(b, x, h)$ is nondecreasing in $\nu$ and $V^D(x)$ is independent of $\nu$. Hence the default set $D(x, h) = \{ b : d(b, x, h) = 1 \}$ is weakly decreasing in $\nu$: any debt level that triggers default after good news triggers it after bad news, and the implication is one-way.
 \end{proposition}
 
-Proposition~\ref{prop:fragility} is where the model earns the word \emph{cycle}. A sovereign that accumulated debt while $\nu > 0$, at prices that made the debt look cheap, faces a strictly larger default region the moment $\nu$ turns negative, at the same debt and the same income level. The mechanism is deterministic: the price schedule is a function, a correspondence is unnecessary, and sunspots are inactive, in contrast to \citet{ColeKehoe2000} and \citet{LorenzoniWerning2019}. The fragility is manufactured by the boom itself.
+Proposition~\ref{prop:fragility} is where the model earns the word \emph{cycle}. A sovereign that accumulated debt while $\nu>0$, at prices that made the debt look cheap, faces a weakly larger default region when $\nu$ turns negative at the same debt and income. The inclusion is strict only when the price change moves repayment value across default value for some debt. The mechanism does not require a sunspot, in contrast to \citet{ColeKehoe2000} and \citet{LorenzoniWerning2019}. The boom can create its own fragility.
 
 Borrowing behavior along the boom completes the account. Whether issuance rises with $\nu$ involves an income effect: better prices raise current consumption, which lowers the marginal utility that borrowing serves. In the two-period example the closed form \eqref{eq:bstar} settles the question, and in the computed equilibria of Section~\ref{sec:quant} issuance is increasing in $\nu$ throughout the relevant region. The result is a quantitative property of the computed economy.
 
@@ -232,7 +246,7 @@ Diagnostic expectations leave fingerprints in forecast data. Consider a forecast
 \end{equation}
 Under rational expectations $\beta_{CG} = 0$: revisions are part of the information set. Under information rigidity, consensus forecasts underreact and $\beta_{CG} > 0$, which is what \citet{CoibionGorodnichenko2015} find for consensus data. Under diagnostic expectations, individual forecasts overreact: an upward revision predicts disappointment, $\beta_{CG} < 0$, which is what \citet{BordaloGennaioliMaShleifer2020} find for individual professional forecasters across most United States macroeconomic series. The two findings coexist because averaging across forecasters with dispersed information pushes the consensus coefficient up. The individual-level coefficient is the one that identifies $\theta$, and individual-level data are therefore essential: a consensus-based estimate would confound overreaction with the mechanical underreaction of averages and could even reverse its sign.
 
-In the model economy the mapping from $\beta_{CG}$ to $\theta$ is exact.
+For a one-period fixed target at the model frequency, the mapping is analytic.
 
 \begin{proposition}[Measurement mapping]\label{prop:cg}
 Let $x_t$ follow \eqref{eq:ar1} and let one-period-ahead forecasts be diagnostic with parameter $\theta$, with revisions defined on the fixed target $x_{t+1}$. Then the population coefficient in \eqref{eq:cg} is
@@ -242,26 +256,31 @@ Let $x_t$ follow \eqref{eq:ar1} and let one-period-ahead forecasts be diagnostic
 \end{equation}
 \end{proposition}
 
-The derivation is in Appendix~\ref{app:proofs}. The function is zero at $\theta = 0$ and strictly decreasing, and it is bounded below, so any empirical $\beta_{CG} \in (-1/2, 0)$ inverts to a unique $\theta$. At the calibrated persistence $\rho = 0.945$, $\theta = 0.25$ gives $\beta_{CG} = \CGbetaQuarter$, $\theta = 0.5$ gives $\CGbetaHalf$, and $\theta = 1$ gives $\CGbetaOne$. Published individual-level estimates for output growth and related series cluster in the range that inverts to $\theta$ between one-quarter and one \citep{BordaloGennaioliMaShleifer2020}, and the credit-cycle estimates in \citet{BordaloGennaioliShleifer2018} put $\theta$ near $0.9$. I take $\theta = 0.5$ as the baseline, report $\theta \in \{0, 1\}$ throughout, and use the emerging-market forecast panel of the next subsection to deliver country-level $\theta_i$ for the spread tests.
+The derivation is in Appendix~\ref{app:proofs}. The function is zero at $\theta=0$ and strictly decreasing on the parameter region used here. It is the correct inversion only for a one-period fixed target sampled at the model frequency. At $\rho=0.945$, $\theta=0.25$ gives $\beta_{CG}=\CGbetaQuarter$, $\theta=0.5$ gives $\CGbetaHalf$, and $\theta=1$ gives $\CGbetaOne$. These values provide an analytic benchmark. They are not applied mechanically to annual fixed-event forecasts.
 
 \subsection{Design for emerging-market forecasts}\label{sec:emdesign}
 
 The estimates just cited are for the United States. The model is about emerging markets, and the discipline requires $\theta$ estimated from forecasts of the same economies whose bonds are being priced. I use $\theta = 0.5$ as the baseline value and build the measurement so that the same panel delivers country-level $\theta_i$ for the spread tests below.
 
-Consensus Economics has surveyed professional forecasters, bank by bank, on annual real GDP growth for most EMBI countries monthly since the early-to-mid 1990s. The forecasts are fixed-event (current and next calendar year). I convert them to a fixed twelve-month horizon by the standard weighting of the two events by months remaining, and I measure realized growth by first-release outturns to keep data revisions out of the forecast error. The estimating equation, at the forecaster ($j$), country ($i$), month ($t$) level,
+Consensus Economics surveys professional forecasters on current-year and next-year real GDP growth. These are fixed-event forecasts observed each month. Let $s_t$ be the number of months remaining in the current year. The fixed-horizon object is
+\[
+F^{12}_{i j t}=\frac{s_t}{12}F^{CY}_{i j t}
++\left(1-\frac{s_t}{12}\right)F^{NY}_{i j t}.
+\]
+The empirical revision is the month-to-month change in this object. The realized counterpart uses first-release annual growth and the same calendar weights. The estimating equation at the forecaster, country, and month level is
 \begin{equation}
 \mathrm{FE}_{i,j,t} \,=\, \alpha_i + \tau_t + \beta_{CG}\, \mathrm{Rev}_{i,j,t} + u_{i,j,t},
 \label{eq:cgpanel}
 \end{equation}
-with standard errors clustered by country and time, delivers a pooled $\beta_{CG}$. Running \eqref{eq:cgpanel} country by country delivers $\theta_i = \theta(\beta_{CG,i})$ by inversion of \eqref{eq:cgmap}, adjusting the mapping for the horizon and time aggregation as derived in Appendix~\ref{app:extensions}. Measurement error in reported forecasts attenuates $\mathrm{Rev}$ coefficients toward zero, and since the same forecast enters $\mathrm{FE}$ and $\mathrm{Rev}$ with opposite signs, classical noise biases $\beta_{CG}$ \emph{negative}. I instrument the revision with its own lag and with other forecasters' revisions. Overlapping fixed-event horizons induce moving-average errors, so the standard errors use the corresponding country-time clustering. The country-level $\theta_i$ then enters the spread test directly: countries with larger measured overreaction should have larger conditional news coefficients.
+with country and month effects. The coefficient is mapped to $\theta$ by simulation, not by \eqref{eq:cgmap}. I simulate the monthly income process for \SurveyMonths\ months, construct current-year and next-year forecasts at every survey date, apply the calendar conversion above, and estimate \eqref{eq:cgpanel}. At the baseline input $\theta=0.5$, the resulting population analogue is \SurveyBetaHalf. Numerical inversion returns \SurveyThetaRecovered, with error \SurveyRecoveryError. The map is strictly decreasing over $\theta\in[0,1]$ in the simulation. Appendix~\ref{app:computation} reports the algorithm and recovery grid.
 
-The payoff of the measurement is that forecasts discipline the quantitative model's belief parameter: $\theta$ comes from forecasts, everything else from \citet{Arellano2008}, and the spread implications are predictions rather than fits.
+Forecast reporting error enters the forecast error and the revision with opposite signs. It therefore creates a negative mechanical covariance. The baseline estimate instruments an individual's revision with the leave-one-out mean revision of other forecasters for the same country and month. A lagged individual revision is an additional instrument only after its serial correlation and exclusion restriction are reported. Overlapping targets generate serial correlation in the regression error. Inference clusters by country and month and reports a moving-block bootstrap by country. The country estimates $\theta_i$ enter the spread regressions without re-fitting them to bond prices.
 
 \section{Quantitative Analysis}\label{sec:quant}
 
-\subsection{Calibration and solution}
+\subsection{One-period benchmark and mechanism experiment}
 
-I solve the model on the quarterly calibration of \citet{Arellano2008} for Argentina, reproduced in Table~\ref{tab:calibration} with each parameter classified by source. The exercise proceeds in two steps. The first varies only the belief parameter $\theta \in \{0, 0.5, 1\}$ at fixed parameters outside beliefs, asking what a belief distortion in the published individual-forecast range does to a known benchmark. The second step, in Section~\ref{sec:recal}, re-selects $(\beta, \phi)$ with $\theta$ fixed at the baseline value and reports the resulting economy. Appendix~\ref{app:computation} contains the full parameter table (Table~\ref{tab:params}): equation location, units, source, sensitivity range, and the effect of each parameter on the headline numbers. The income process is discretized on a 21-state \citet{Tauchen1986} chain and debt on a 200-point grid. The equilibrium is computed by iterating the value function and the price schedule jointly to a tolerance of $5 \times 10^{-8}$, and the diagnostic kernel is rediscretized exactly as a mean-shifted Gaussian on the same grid (Lemma~\ref{lem:tilt}). A full solution takes seconds, since the belief state adds a single grid dimension to the pricing equation and leaves the government's continuation grid unchanged.
+The one-period model isolates the theorem's mechanism. I solve it on the quarterly calibration of \citet{Arellano2008} for Argentina, reproduced in Table~\ref{tab:calibration}. I hold every parameter outside beliefs fixed and vary $\theta\in\{0,0.5,1\}$. These are controlled comparative statics. They are not a fit of the diagnostic model. The income process is a 21-state \citet{Tauchen1986} chain and debt has 200 points. The value function and price schedule are iterated jointly to a tolerance of $5\times10^{-8}$. The diagnostic Gaussian is integrated on the same income grid. The fixed-point audit starts prices at the risk-free schedule, the zero schedule, and the rational equilibrium. The three solutions agree to less than \FPInitDiff, and the largest Bellman or pricing residual is \FPResidual.
 
 \begin{table}[t]
 \centering
@@ -287,6 +306,68 @@ Overreaction & $\theta$ & $\{0,\, 0.5,\, 1\}$ & published range & Section~\ref{s
 \footnotesize Notes: A08 is \citet{Arellano2008}. The category column records whether a parameter is externally fixed, directly estimated, internally calibrated, or set by the belief-measurement exercise. Parameters marked internally calibrated at $\theta = 0$ are re-selected at $\theta = 0.5$ in Section~\ref{sec:recal}. Table~\ref{tab:params} in Appendix~\ref{app:computation} reports units, equation locations, sensitivity ranges, and headline-result effects for every row.
 \end{minipage}
 \end{table}
+
+\subsection{Long-duration quantitative model}\label{sec:longquant}
+
+The main quantitative implementation replaces the one-quarter bond by the five-year random-maturity bond in Appendix~\ref{app:longbonds}. Table~\ref{tab:longcalibration} reports the parameter block. The maturity rate and coupon match Argentine bonds. The income process is estimated from Argentine output. The re-entry rate comes from observed exclusion spells. \citet{ChatterjeeEyigungor2012} selected $(\beta,d_0,d_1)$ jointly to match mean debt, the mean spread, and spread volatility. Moving this block together preserves its economic meaning.
+
+\begin{table}[t]
+\centering
+\caption{Long-duration calibration, quarterly}
+\label{tab:longcalibration}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{3.1cm}p{1.4cm}p{3.0cm}p{5.1cm}}
+\toprule
+Parameter & Value & Status & Source or target \\
+\midrule
+Risk aversion $\gamma$ & 2 & externally fixed & sovereign-default convention \\
+Discount factor $\beta$ & 0.95460 & jointly calibrated & debt and spread moments \\
+Default cost $d_0$ & $-0.18845$ & jointly calibrated & debt and spread moments \\
+Default cost $d_1$ & 0.24559 & jointly calibrated & debt and spread moments \\
+Income persistence $\rho$ & 0.948503 & estimated & Argentine real GDP \\
+Innovation s.d. $\sigma_\varepsilon$ & 0.027092 & estimated & Argentine real GDP \\
+Temporary shock s.d. $\sigma_m$ & 0.003 & \citet{ChatterjeeEyigungor2012} & common across belief specifications \\
+Maturity rate $\delta$ & 0.05 & externally fixed & five-year median maturity \\
+Quarterly coupon $z$ & 0.03 & externally fixed & 12 percent annual coupon \\
+Re-entry probability $\xi$ & 0.0385 & externally fixed & Argentine exclusion spells \\
+Risk-free rate $r^*$ & 0.01 & externally fixed & real three-month Treasury rate \\
+Overreaction $\theta$ & 0.5 & measured & monthly forecast revisions \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The first long-debt exercise holds the published parameter block fixed and changes only $\theta$. It measures the mechanism. The second fixes $\theta$ at its forecast estimate and minimizes
+\[
+Q(\psi)=\bigl[m(\psi)-m^{data}\bigr]'W
+\bigl[m(\psi)-m^{data}\bigr],
+\qquad \psi=(\beta,d_0,d_1),
+\]
+where $m$ contains the default frequency, mean spread, spread volatility, mean debt, debt service, and the spread correlation with output. Average maturity remains externally fixed. The reported weighting matrix is diagonal. Its entry for moment $j$ is $\max\{|m_j^{data}|,0.01\}^{-2}$. Mean spread, spread volatility, and debt provide the principal identification of the three calibrated parameters. Default frequency, debt service, and spread cyclicality discipline overidentifying fit. Bond-return predictability is reported as an untargeted validation moment because the matched EMBI total-return target is not among the calibration data.
+
+\IfFileExists{output/long_bond_numbers.tex}{
+\begin{table}[t]
+\centering
+\caption{Long-duration mechanism experiment}
+\label{tab:longmoments}
+\begin{tabular}{lcc}
+\toprule
+ & $\theta=0$ & $\theta=0.5$ \\
+\midrule
+Median annual spread, percent & \LongSpreadMedRE & \LongSpreadMedDiag \\
+Spread s.d., percent & & \LongSpreadSdDiag \\
+Defaults per 100 years & \LongDefRE & \LongDefDiag \\
+Mean debt to output, percent & & \LongDebtDiag \\
+Debt service to output, percent & & \LongDebtServiceDiag \\
+Within-cell news coefficient, bp per s.d. & 0 & $-\LongNewsBp$ \\
+Expected excess return after good news, bp & & \LongReturnGood \\
+Expected excess return after bad news, bp & & \LongReturnBad \\
+\bottomrule
+\end{tabular}
+\end{table}
+}{}
+
+Long debt changes the return object. A lender receives principal, coupon, and the resale price of the surviving claim. Under the true law, the expected excess return is low after good news because the diagnostic price embeds an upward-shifted income distribution. The same computation separates this belief component from duration-specific capital gains. The one-period results below remain useful because they isolate the theorem without dilution.
 
 \subsection{Prices and default sets}
 
@@ -336,11 +417,11 @@ Implied forecast-revision coefficient $\beta_{CG}$ & 0 & \CGbetaHalf & \CGbetaOn
 \end{minipage}
 \end{table}
 
-Three rows carry the message. The news coefficient is zero to machine precision at $\theta = 0$: this is Corollary~\ref{cor:zero} holding in the simulated data, and it bears emphasis that the zero requires nonparametric conditioning. A linear regression of spreads on news with linear debt and output controls yields $\NewsBpRELin$ basis points per standard deviation in the \emph{rational} economy, an artifact of the spread schedule's curvature loading on the news term. At $\theta = 0.5$ the same linear specification even gets the sign wrong, because good news shifts issuance along the schedule. Within cells, the diagnostic economy prices news at $\NewsBpDiag$ basis points per standard deviation and the rational economy at zero. The empirical work in Section~\ref{sec:evidence} inherits this lesson directly: the news test must condition on debt and output flexibly, or it tests nothing.
+The news coefficient is zero to machine precision at $\theta = 0$. This is Corollary~\ref{cor:zero} holding in the simulated data, and the zero requires nonparametric conditioning. A linear regression of spreads on news with linear debt and output controls yields $\NewsBpRELin$ basis points per standard deviation in the \emph{rational} economy, an artifact of the spread schedule's curvature loading on the news term. At $\theta = 0.5$ the same linear specification even gets the sign wrong, because good news shifts issuance along the schedule. Within cells, the diagnostic economy prices news at $\NewsBpDiag$ basis points per standard deviation and the rational economy at zero. The empirical work in Section~\ref{sec:evidence} inherits this lesson directly: the news test must condition on debt and output flexibly, or it tests nothing.
 
-Second, spread volatility. The workhorse model's known weakness with one-period debt is that spreads are too stable. Diagnostic pricing multiplies the standard deviation of spreads by roughly \SprSdRatio\ while \emph{lowering} the median spread from \SprMedRE\ to \SprMedDiag\ percent. The economy spends most of its time calm, with compressed spreads, and occasionally explodes: long quiet spells punctuated by crises is exactly the shape of emerging-market spread data, and it emerges here from Gaussian shocks alone, outside disasters and regime switches.
+The workhorse model's known weakness with one-period debt is that spreads are too stable. Diagnostic pricing multiplies the standard deviation of spreads by roughly \SprSdRatio\ while \emph{lowering} the median spread from \SprMedRE\ to \SprMedDiag\ percent. The economy spends most of its time calm, with compressed spreads, and occasionally explodes. Long quiet spells punctuated by crises emerge here from Gaussian shocks alone, outside disasters and regime switches.
 
-Third, defaults. The default frequency rises from \DefFreqRE\ to \DefFreqDiag\ per century, overshooting the 2--3 per century in Argentine data. I report this directly: the parameters outside beliefs were calibrated by \citet{Arellano2008} to hit the default frequency \emph{at} $\theta = 0$, so adding overreaction at fixed parameters raises it. Table~\ref{tab:moments} should therefore be read as comparative statics in $\theta$. Section~\ref{sec:recal} re-selects $(\beta, \phi)$ at the baseline value of $\theta$ and reports what survives, while the history-dependence results follow from Propositions~\ref{prop:history}--\ref{prop:fragility} at any parameter vector satisfying Assumption~\ref{ass:monotone}. The $\theta = 1$ column makes the fixed-parameter point in extreme form: at credit-cycle levels of overreaction the economy loses market access a quarter of the time, which is a warning in favor of re-estimating $\theta$ in each asset-class environment.
+The default frequency rises from \DefFreqRE\ to \DefFreqDiag\ per century, overshooting the 2--3 per century in Argentine data. I report this directly: the parameters outside beliefs were calibrated by \citet{Arellano2008} to hit the default frequency \emph{at} $\theta = 0$, so adding overreaction at fixed parameters raises it. Table~\ref{tab:moments} should therefore be read as comparative statics in $\theta$. Section~\ref{sec:recal} re-selects $(\beta, \phi)$ at the baseline value of $\theta$ and reports what survives, while the history-dependence results follow from Propositions~\ref{prop:history}--\ref{prop:fragility} at any parameter vector satisfying Assumption~\ref{ass:monotone}. The $\theta = 1$ column makes the fixed-parameter point in extreme form: at credit-cycle levels of overreaction the economy loses market access a quarter of the time, which is a warning in favor of re-estimating $\theta$ in each asset-class environment.
 
 \subsection{Booms that end}
 
@@ -355,13 +436,11 @@ The model's dynamic content is easiest to see in an event study, and the simulat
 
 The figure shows the whole belief cycle. Entering the episode, on the heels of whatever bad news preceded the boom, the diagnostic economy pays spreads several times the rational level: pessimism is extrapolated too. The boom then compresses diagnostic spreads \emph{below} the rational benchmark, quarter by quarter, while debt rises by \BoomDebtRiseDiag\ percent against \BoomDebtRiseRE\ percent in the rational economy: the diagnostic sovereign borrows into the optimism, as the two-period example said it rationally should. The difference arrives with the reversal. In the quarter the news turns, the default hazard reaches \HazPeakDiag\ percent in the diagnostic economy, while on the identical income paths the rational economy's hazard is \HazPeakRE\ percent. The mechanics are exactly Propositions~\ref{prop:history} and \ref{prop:fragility} in sequence: the boom priced debt into the fragility corridor, and the first negative realization swings the belief tilt from extrapolated improvement to extrapolated decline, collapsing the price schedule and expanding the default set while debt is at its peak. Defaults follow booms in this model through fragile pricing created by the boom itself.
 
-\subsection{Recalibration at the baseline value of $\theta$}\label{sec:recal}
+\subsection{Why two short-bond parameters do not constitute estimation}\label{sec:recal}
 
-Adding overreaction to the rational-belief calibration raised the default frequency to \DefFreqDiag\ per century, so the comparative statics leave one question standing: can the model fit the data with the belief distortion in place? I re-select the two parameters that \citet{Arellano2008} chose to hit default moments, the discount factor and the default cost, by grid search at $\theta = 0.5$, targeting a default frequency of 3 per century and debt service of 5.5 percent of output. The search selects $\beta = \BetaRecal$ and $\phi = \PhiRecal$: a more patient government and a harsher default cost. Both movements are the direction the mechanism dictates. Diagnostic pricing makes booms cheap to borrow into, so the discipline that restores observed default frequencies must come from the government's own patience and from the cost of walking away.
+A two-parameter exercise is useful as a diagnostic and nothing more. At $\theta=0.5$, selecting $(\beta,\phi)$ to match three defaults per century and debt service of 5.5 percent gives $\beta=\BetaRecal$ and $\phi=\PhiRecal$. It restores those two moments. It also compresses the median spread to \SprMedRecal\ percent. The exercise cannot match default frequency, debt, spread levels, spread volatility, maturity, and returns with two free numbers. I therefore do not call it a recalibration of the diagnostic economy.
 
-At the recalibrated parameters the economy defaults \DefFreqRecal\ times per century with mean debt service of \DebtYRecal\ percent of output: both targets are hit. The mechanism survives in more moderate magnitudes. The within-cell news coefficient is $-$\NewsBpRecalAbs\ basis points per standard deviation against an exact zero for the rational economy solved at the identical parameters, and the reversal-quarter default hazard is \HazPeakRecalDiag\ percent against \HazPeakRecalRE\ percent, a gap of the same order as in the unadjusted economy. The rational economy at the recalibrated parameters defaults \DefFreqRecalRE\ time per century. At parameters consistent with the observed default frequency under diagnostic pricing, the belief distortion accounts for roughly two thirds of defaults. Overreaction is the model's main engine of default.
-
-The same numbers point to the next quantitative margin. The recalibrated economy's spread levels are compressed (median \SprMedRecal\ percent), the familiar one-period-bond feature made sharper by the harsher default cost. Appendix~\ref{app:longbonds} sets up the long-duration recursion in which spread levels and dilution can be estimated jointly with the belief distortion. The exercise here establishes the first fact needed for that estimation: restoring the default frequency leaves the history dependence of prices and default sets intact.
+The diagnostic result that survives this deliberately narrow exercise is the conditional news effect. At the selected pair, the within-cell news coefficient is $-\NewsBpRecalAbs$ basis points per standard deviation and remains zero under rational pricing at the same parameters. The reversal-quarter hazards are \HazPeakRecalDiag\ percent and \HazPeakRecalRE\ percent. These figures show that the mechanism is not an artifact of the original short-bond parameter pair. Quantitative fit is assessed only in the long-duration simulated-moment exercise of Section~\ref{sec:longquant}.
 
 Whether actual sovereign spreads behave this way is the next question.
 
@@ -413,6 +492,8 @@ Table~\ref{tab:evidence} collects the designs. Suppose they pass, and news moves
 
 The instrument I study is the simplest one in the policy debate: a ceiling $\bar b$ on debt issuance, imposed permanently and known to all parties. For each ceiling on a grid I recompute the full equilibrium, price schedule included, and evaluate welfare as the value at zero debt and median income \emph{under the true income process}, converting differences to basis points of permanent consumption. Because Section~\ref{sec:example} taught that the answer turns on whose beliefs are distorted, I compute the complete two-by-two: government rational or diagnostic, market rational or diagnostic, with $\theta = 0.5$ wherever beliefs are diagnostic. A diagnostic government maximizes under its own tilted kernel (the Bellman equations are in Appendix~\ref{app:extensions}), and its welfare is then evaluated under the truth. Everything in this section is a numerical property of computed equilibria at the baseline calibration, conditional on that welfare criterion. Figure~\ref{fig:rule} plots the welfare gain of each ceiling in each cell, and Table~\ref{tab:rules} reports the best ceiling per cell.
 
+This criterion is sovereign welfare. Lender welfare is a different object. Competition makes expected profits zero under lenders' subjective law, not under the true law. I evaluate their true expected payoff from each issued bond and report the predictable excess returns separately. Global welfare would add sovereign utility, lender utility, output destroyed in default, and any international spillovers after placing them in common units. The baseline does not specify foreign marginal utility or spillovers, so it does not rank policies by global welfare. Every policy statement below concerns sovereign welfare under the true probability measure. A ceiling that benefits the sovereign may harm lenders, and the reverse may occur.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.78\textwidth]{fig_rule.pdf}
@@ -440,17 +521,17 @@ Government diagnostic & +\CEbestD\ bp & +\CEbestC\ bp \\
 
 The sign pattern is the result. When the government is rational, every ceiling hurts, and it hurts \emph{more} when the market is diagnostic (\CEworstB\ basis points at the tightest ceiling, against \CEworstA\ in the fully rational cell): the rational government was selling overpriced debt to optimists, and the rule takes the trade away. When the government is diagnostic, ceilings help. Facing a diagnostic market the best ceiling yields $+$\CEbestC\ basis points and cuts the default frequency from \DefFreqCellC\ to \DefFreqCellCopt\ per century. Facing a rational market it yields $+$\CEbestD. The gains are largest in the cell where the market is rational because there the government's extrapolation earns zero offsetting rents: rational lenders price the optimistic government's future behavior correctly, so its overborrowing (mean debt service \DebtYCellD\ percent of output, against \DebtYRE\ in the rational benchmark) is pure loss, and the rule claws much of it back. Note also the diagnostic-government economies confirm the boom-overborrowing channel the two-period example leaves to the dynamic model: with persistent income, a government that extrapolates good news borrows against an expected future that disappoints, which is precisely the borrowing a good-news-contingent constraint would target.
 
-The magnitudes are small, single basis points of permanent consumption, for the usual reason: in this class of models default's resource cost is modest and consumption smoothing is cheap. Two amplifications are built into the natural quantitative extension. Long-duration debt adds the dilution externality, which interacts with optimism because booms are exactly when dilution is cheapest (Appendix~\ref{app:extensions} sets up the recursion). Richer default costs of the \citet{MendozaYue2012} type scale every welfare number. The lesson itself is clean: \emph{under one-period debt, a benevolent government, and the computed equilibria at $\theta = 0.5$, a debt ceiling lowers sovereign welfare when the government prices the future correctly and raises it when the government extrapolates}. In this environment fiscal rules are a commitment device against the government's own extrapolation rather than a correction of market mispricing. The state variable the model identifies, the run of recent news, is observable in real time from forecast revisions, so a rule that tightens after sustained upward revisions is the natural state-contingent version of the flat ceiling studied here.
+The magnitudes are small, single basis points of permanent consumption, for the usual reason: in the one-period economy default's resource cost is modest and consumption smoothing is cheap. The long-duration calibration in Section~\ref{sec:quant} adds debt dilution to the positive analysis. A welfare exercise with long debt would add a second policy margin and is not needed for the sign result established here. The lesson itself is clean: \emph{under one-period debt, a benevolent government, and the computed equilibria at $\theta = 0.5$, a debt ceiling lowers sovereign welfare when the government prices the future correctly and raises it when the government extrapolates}. In this environment fiscal rules are a commitment device against the government's own extrapolation rather than a correction of market mispricing. The state variable the model identifies, the run of recent news, is observable in real time from forecast revisions, so a rule that tightens after sustained upward revisions is the natural state-contingent version of the flat ceiling studied here.
 
 \section{Conclusion}\label{sec:conclusion}
 
-I have taken the workhorse model of sovereign default and replaced one primitive: creditors who overreact to news in the disciplined sense of diagnostic expectations, with the degree of overreaction measured from forecast surveys rather than fitted to prices. The cost was one observable state variable. The return was a set of predictions the rational model rules out exactly. Prices depend on the direction of recent news conditional on fundamentals, and bond returns are predictably poor after good news. Default regions expand when optimism reverses, so defaults cluster after booms on income paths where rational pricing generates near-zero default risk, and spread volatility rises severalfold alongside calmer medians. The predictions survive re-selecting the parameters outside beliefs to restore the observed default frequency, and at that data-consistent calibration the belief distortion accounts for roughly two thirds of defaults. Each prediction comes with an estimating equation and a pre-stated magnitude. The panels that would confirm or refute them are named, and the theory is written so that a zero within-cell news coefficient would falsify it.
+I have taken the workhorse model of sovereign default and replaced one primitive, lenders' probability law. The degree of overreaction is measured from forecasts rather than fitted to bond prices. The cost is one observable pricing state. The return is a set of restrictions. Prices depend on recent news conditional on debt and output. True expected bond returns are low after good news. Default regions expand when optimism reverses. The one-period model establishes these results sharply. The long-duration implementation adds dilution, coupons, and capital gains and is the model used for quantitative fit. Each prediction has an estimating equation. The central empirical restriction is the within-cell news coefficient. A coefficient of zero after flexible conditioning on debt, output, expected growth, and fiscal news rejects the diagnostic channel in this environment.
 
-The normative lesson runs against a common intuition. It is tempting to argue that if markets misprice sovereign risk, governments should be insulated from the market's moods by fiscal rules. The model says nearly the reverse: a rational government profits from the market's moods, and rules bind usefully only when the government shares them. Since the same surveys that discipline $\theta$ show official and professional forecasters overreacting, that condition is likely met in practice, but the argument for rules is then about the state's own psychology, and the debate should be had on that ground.
+The normative lesson runs against a common intuition. It is tempting to argue that if markets misprice sovereign risk, governments should be insulated from the market's moods by fiscal rules. The model says nearly the reverse: a rational government profits from the market's moods, and rules bind usefully only when the government shares them. Whether official decision makers share private forecast errors is therefore a separate empirical question. If they do, the argument for rules is about the state's own psychology, and the debate should be had on that ground.
 
 The maintained environment is the sovereign-debt core used throughout the quantitative section. The government payoff is the planner payoff, lenders are risk neutral, and debt lasts one quarter. These choices make spreads map directly into default probabilities and make welfare comparisons consumption-equivalent values inside the Bellman system. The return tests in Section~\ref{sec:evidence} separate probability movements from risk premia in the data, while the extensions below show how government beliefs and long-duration bonds enter the same recursion.
 
-Three extensions complete the program. Long-duration bonds put diagnostic booms and dilution into the same state variable. Risk-averse lenders let forecast data separate time-varying risk premia from belief distortions. Country-level estimates of $\theta_i$ from the forecasters who price these bonds turn the belief parameter into a measured input. The model stands on that number, which is where a theory of beliefs ought to stand.
+Long-duration bonds put diagnostic booms and dilution into the same state variable. Risk-averse lenders would let forecast data separate time-varying risk premia from belief distortions. Country-level estimates of $\theta_i$ from the forecasters who price these bonds would turn the belief parameter into a measured input. The model stands on that number, which is where a theory of beliefs ought to stand.
 
 \clearpage
 \appendix
@@ -460,21 +541,68 @@ Three extensions complete the program. Long-duration bonds put diagnostic booms 
 \section{Proofs}\label{app:proofs}
 
 \subsection{Proof of Lemma \ref{lem:tilt}}
-Write $m_x = \rho x$ and $m_h = \rho h$. Up to factors independent of $x'$,
+Write $m_x=\rho x$ and $m_h=\rho h$. Substituting the two Gaussian densities into \eqref{eq:diagnostic} gives the unnormalized exponent
 \[
-\hat p_\theta(x' \mid x, h) \,\propto\, \exp\!\left\{ -\frac{(1+\theta)(x' - m_x)^2 - \theta (x' - m_h)^2}{2\sigma_\varepsilon^2} \right\}.
+ -\frac{(1+\theta)(x'-m_x)^2-\theta(x'-m_h)^2}{2\sigma_\varepsilon^2}.
 \]
-The coefficient on $x'^2$ in the numerator of the exponent is $(1+\theta) - \theta = 1$, so the variance is $\sigma_\varepsilon^2$. The coefficient on $-2x'$ is $(1+\theta) m_x - \theta m_h$, so the mean is
+Define $m_\theta=(1+\theta)m_x-\theta m_h$. Expanding both squares and collecting terms yields
 \[
-(1+\theta) m_x - \theta m_h \,=\, \rho x + \theta \rho\,(x - h),
+\begin{aligned}
+&(1+\theta)(x'-m_x)^2-\theta(x'-m_h)^2\\
+&\qquad=x'^2-2m_\theta x'+(1+\theta)m_x^2-\theta m_h^2\\
+&\qquad=(x'-m_\theta)^2+(1+\theta)m_x^2-\theta m_h^2-m_\theta^2.
+\end{aligned}
 \]
-and the density, being Gaussian in $x'$ with these two moments, is as claimed. $\blacksquare$
+The last three terms do not depend on $x'$, so the normalizing constant removes them. The normalized density is therefore
+\[
+\hat p_\theta(x'\mid x,h)
+=\frac{1}{\sqrt{2\pi\sigma_\varepsilon^2}}
+\exp\!\left[-\frac{(x'-m_\theta)^2}{2\sigma_\varepsilon^2}\right].
+\]
+Finally,
+\[
+m_\theta=(1+\theta)\rho x-\theta\rho h
+=\rho x+\theta\rho(x-h),
+\]
+which proves the stated mean and variance. $\blacksquare$
+
+\subsection{Proof of Proposition \ref{prop:existence}}
+Let $\mathcal S$ be the finite set of market-access and exclusion states. For each market-access state $s\in\mathcal S$, let $\mathcal A(s)$ contain default and every debt-grid choice. Utility below the consumption floor is extended by the tangent at the floor. This extension is finite, continuous, strictly increasing, and agrees with CRRA utility above the floor. The product of the mixed-action simplexes,
+\[
+\Sigma=\prod_{s\in\mathcal S}\Delta(\mathcal A(s)),
+\]
+is nonempty, compact, and convex. The price set
+\[
+\mathcal Q=[0,1/R]^{|\mathcal B||\mathcal X|^2}
+\]
+has the same three properties.
+
+Fix a price vector $q\in\mathcal Q$. The government's problem is a finite discounted Markov decision problem. Current utility is bounded on the finite action-state set, the transition matrix is stochastic, and $0<\beta<1$. Its Bellman operator is therefore a contraction in the sup norm with modulus $\beta$, so it has a unique value vector $V(q)$. Because every action value is a finite sum of continuous functions of $q$ and $V(q)$, the value vector is continuous in $q$. At each state, the set of optimal mixed actions is the simplex supported on the maximizing pure actions. The product correspondence $\Gamma(q)\subseteq\Sigma$ is consequently nonempty, compact, convex valued, and upper hemicontinuous.
+
+For a mixed stationary policy $\sigma\in\Sigma$, let $P(\sigma)\in\mathcal Q$ be the zero-profit price vector. Each component is $1/R$ times a finite sum of diagnostic transition probabilities multiplied by the next-state mixed repayment probability. The map $P$ is linear in $\sigma$ and hence continuous.
+
+Define the correspondence on $\mathcal Q\times\Sigma$ by
+\[
+\mathcal F(q,\sigma)=\{P(\sigma)\}\times\Gamma(q).
+\]
+Its domain is nonempty, compact, and convex. Its values are nonempty, compact, and convex. Continuity of $P$ and upper hemicontinuity of $\Gamma$ imply that $\mathcal F$ is upper hemicontinuous. Kakutani's fixed-point theorem therefore gives $(q^*,\sigma^*)\in\mathcal F(q^*,\sigma^*)$. The policy $\sigma^*$ is optimal at $q^*$ and $q^*$ satisfies zero profit under $\sigma^*$, which is a stationary recursive equilibrium in mixed policies. If a computed deterministic policy has zero Bellman and pricing residuals, its degenerate mixed representation satisfies the same two conditions in the extended economy. If every repayment choice gives consumption above the floor, the extension is never used at an optimal action. The deterministic fixed point then solves the original positive-consumption problem. $\blacksquare$
 
 \subsection{Proof of Lemma \ref{lem:fosd}}
 By Lemma~\ref{lem:tilt}, $F_\theta(\cdot \mid x, h_i)$ is the Gaussian cdf with variance $\sigma_\varepsilon^2$ and mean $\mu_i = \rho x + \theta \rho \nu_i$. For $\nu_2 > \nu_1$ and $\theta > 0$, $\mu_2 > \mu_1$, and a Gaussian family with common variance is strictly ordered by first-order stochastic dominance in its mean: $F(z - \mu)$ is decreasing in $\mu$ for every $z$. $\blacksquare$
 
 \subsection{Proof of Lemma \ref{lem:bmono}}
-Fix $(x, h)$ and $b_2 > b_1$ in $\mathcal{B}$. For any issuance $b'$, consumption at $b_2$ is $y + q(b', x, h)\,b' - b_2$, strictly below its value at $b_1$, and the continuation term in \eqref{eq:vr} is independent of inherited debt. With $u$ strictly increasing, every candidate value is weakly lower at $b_2$, strictly wherever consumption remains feasible, and the supremum over $b'$ inherits the ordering: $V^R(b_2, x, h) \leq V^R(b_1, x, h)$, strictly whenever $V^R(b_1, x, h)$ is finite. $V^D$ in \eqref{eq:vd} is independent of $b$. Hence $d = \one\{V^D > V^R\}$ is nondecreasing in $b$, and the default set is the upper interval $\{b \geq \underline b(x,h)\}$ with $\underline b(x,h)$ the smallest $b \in \mathcal{B}$ at which $V^D(x) > V^R(b, x, h)$. $\blacksquare$
+Fix $(x,h)$ and debt levels $b_2>b_1$ in $\mathcal B$. If repayment is feasible at $b_2$, compactness of $\mathcal B$ and continuity on the feasible set give a maximizing issuance choice $b_2'$. Consumption from that same choice at $b_1$ exceeds consumption at $b_2$ by $b_2-b_1>0$. The continuation value is unchanged because it depends on $b_2'$ and $(x,h)$ but not on inherited debt. Strict monotonicity of $u$ therefore gives
+\[
+\begin{aligned}
+V^R(b_1,x,h)
+&\geq u\big(y+q(b_2',x,h)b_2'-b_1\big)
+  +\beta\E[V(b_2',x',x)\mid x]\\
+&>u\big(y+q(b_2',x,h)b_2'-b_2\big)
+  +\beta\E[V(b_2',x',x)\mid x]\\
+&=V^R(b_2,x,h).
+\end{aligned}
+\]
+If repayment is infeasible at $b_2$, default is forced and the upper-set conclusion already holds at that debt. The default value in \eqref{eq:vd} is independent of inherited debt. Hence $d=\one\{V^D>V^R\}$ is nondecreasing in $b$, and the default set is an upper interval. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:history} and Corollary \ref{cor:zero}}
 Fix $(b', x)$ and write $g(x') = 1 - d(b', x', x)$, the repayment indicator next period. Under Assumption~\ref{ass:monotone}, $g$ is nondecreasing. From \eqref{eq:price}, $R\, q = \int g \, dF_\theta(\cdot \mid x, h)$. If $\nu_2 > \nu_1$, Lemma~\ref{lem:fosd} gives first-order dominance, and the expectation of a nondecreasing function is nondecreasing under first-order dominance. Hence $q$ is nondecreasing in $\nu$.
@@ -488,11 +616,11 @@ with $\mu(\nu) = \rho x + \theta\rho \nu$ strictly increasing in $\nu$. Since th
 For the corollary: at $\theta = 0$ the kernel $\hat p_0(\cdot \mid x, h) = p(\cdot \mid x)$ is independent of $h$, so $q$ is a function of $(b', x)$ alone and any statistic of $q$ computed within a $(b', x)$ cell has zero variation in $\nu$. Conversely, if $\theta > 0$ and default risk is interior at some $(b', x)$ visited with positive probability, the strict monotonicity just established makes the within-cell slope strictly negative for spreads (spreads are strictly decreasing transformations of $q$). $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:returns}}
-A lender pays $q(b', x, h)$ and receives $g(x') = 1 - d(b', x', x)$. The true-measure expected gross return is $\E_p[g \mid x] / q = R\, \E_p[g]/\E_{\hat p}[g]$, so
+A lender pays $q(b',x,h)>0$ and receives $g(x')=1-d(b',x',x)$. At fixed $(b',x)$, define $A=\E_p[g\mid x]$ and $B(\nu)=\E_{\hat p_\theta}[g\mid x,h]$. The true-measure expected excess gross return is
 \[
-R^e(b', x, h) \,=\, R\,\frac{\E_p[g] - \E_{\hat p}[g]}{\E_{\hat p}[g]}.
+R^e(\nu)=R\left(\frac{A}{B(\nu)}-1\right).
 \]
-At $\theta = 0$, $\hat p = p$ and $R^e = 0$ identically. For $\theta > 0$ and $\nu > 0$, $\hat p$ dominates $p$ in first order (Lemma~\ref{lem:fosd}, comparing means $\rho x + \theta\rho\nu > \rho x$), so $\E_{\hat p}[g] \geq \E_p[g]$ and $R^e \leq 0$. The inequality reverses for $\nu < 0$. Monotonicity in $\nu$ follows because the numerator is nonincreasing and the denominator positive and nondecreasing in $\nu$, both strictly where risk is interior by the argument in the previous proof. $\blacksquare$
+The quantity $A$ does not depend on $\nu$. Proposition~\ref{prop:history} implies that $B(\nu)$ is positive and nondecreasing on the positive-price domain. Thus, if $\nu_2>\nu_1$, then $A/B(\nu_2)\leq A/B(\nu_1)$, so $R^e$ is nonincreasing. At $\theta=0$, the diagnostic and true kernels coincide, which gives $A=B$ and $R^e=0$. If $\theta>0$ and $\nu>0$, the diagnostic kernel first-order stochastically dominates the true kernel. Since $g$ is nondecreasing, $B(\nu)\geq A$ and $R^e\leq0$. For $\nu<0$, the true kernel dominates the diagnostic kernel, so $B(\nu)\leq A$ and $R^e\geq0$. The inequalities are strict when the repayment indicator changes on a set with positive diagnostic probability. $\blacksquare$
 
 \subsection{Proof of Proposition \ref{prop:fragility}}
 Take the equilibrium price schedule $q$ and continuation value as given, and compare two histories $\nu_2 > \nu_1$ at the same $(b, x)$. For every candidate issuance $b' \geq 0$, consumption $y + q(b', x, h)b' - b$ is nondecreasing in $\nu$ by Proposition~\ref{prop:history}, and the continuation $\E[V(b', x', x) \mid x]$ is independent of $h$ because the government's expectation is rational and tomorrow's reference is today's $x$. Hence each candidate's objective in \eqref{eq:vr} is nondecreasing in $\nu$, and $V^R$, a pointwise supremum of nondecreasing functions of $\nu$, is nondecreasing in $\nu$. $V^D$ in \eqref{eq:vd} involves neither $b$ nor $h$. Therefore $d = \one\{V^D > V^R\}$ is nonincreasing in $\nu$, which is the set inclusion claimed. $\blacksquare$
@@ -515,7 +643,7 @@ The innovations are i.i.d., so
 \qquad
 \operatorname{Var}(\mathrm{Rev}_t) = \rho^2 \sigma_\varepsilon^2\big[(1+\theta)^2 + \theta^2\rho^2\big],
 \]
-and the ratio is \eqref{eq:cgmap}. The same algebra at horizon $k$ (forecasting $x_{t+k}$, revising between $t-1$ and $t$) gives $\mathrm{Rev} = \rho^k(1+\theta)\varepsilon_t - \theta\rho^{k+1}\varepsilon_{t-1}$ and $\mathrm{FE} = \sum_{j=1}^{k}\rho^{k-j}\varepsilon_{t+j} - \theta\rho^k\varepsilon_t$, hence the \emph{same} coefficient: the mapping is horizon invariant under this convention, which is convenient for fixed-event survey data. $\blacksquare$
+and the ratio is \eqref{eq:cgmap}. The same algebra at horizon $k$ for a fixed target $x_{t+k}$ gives $\mathrm{Rev}=\rho^k(1+\theta)\varepsilon_t-\theta\rho^{k+1}\varepsilon_{t-1}$ and $\mathrm{FE}=\sum_{j=1}^{k}\rho^{k-j}\varepsilon_{t+j}-\theta\rho^k\varepsilon_t$. The coefficient is horizon invariant for that fixed-target experiment. Annual fixed-event forecasts combine targets and calendar weights. They require the simulation mapping in Section~\ref{sec:emdesign}. $\blacksquare$
 
 \section{The Two-Period Example: Details}\label{app:example}
 
@@ -541,17 +669,25 @@ which is \emph{decreasing} in $\hat\pi$. Probability optimism makes repayment su
 
 \paragraph{Simulation.} 500{,}000 quarters after a 1{,}000-quarter burn-in, with the income path drawn once and reused across every configuration (common random numbers), so that cross-$\theta$ comparisons and the event study condition on identical fundamentals. Statistics condition on market access. Spreads are annualized from quarterly prices and winsorized at the 1st and 99th percentiles for means and standard deviations.
 
+\paragraph{Survey mapping.} The monthly validation uses \SurveyMonths\ simulated months. At each date the code constructs current-year and next-year annual-average growth forecasts, converts them to a rolling twelve-month forecast with the empirical calendar weights, and estimates the same forecast-error regression used on the data. The map is evaluated on a grid of $\theta$ values and inverted by monotone bisection. Inputs $\theta\in\{0,0.25,0.5,1\}$ are recovered within 0.02. At the baseline, the recovery error is \SurveyRecoveryError.
+
 \paragraph{Verification of Assumption \ref{ass:monotone} and grid robustness.} In the computed equilibria at $\theta \in \{0, 0.5\}$ income-monotonicity and the debt-monotonicity that Lemma~\ref{lem:bmono} guarantees hold across all grid combinations. At $\theta = 1$ a small fraction of grid columns shows a violation at extreme states with near-degenerate pricing: 0.02 percent at the baseline grids and \MonoViolGDOnepct\ percent at doubled grids. Doubling both grids ($n_x = 31$, $n_b = 400$) gives zero violations at $\theta \in \{0, 0.5\}$. Replacing the asymmetric default cost with a proportional cost $y^D = (1-\psi)y$ for $\psi \in \{0.02, 0.05\}$ gives zero violations. All thirty parameter vectors visited by the recalibration search, and the recalibrated final pair, satisfy both monotonicities at every grid point. The headline moments are also stable under grid doubling: at $\theta = 0.5$ the within-cell news coefficient moves from \NewsBpDiag\ to $-$\NewsBpDiagGD\ basis points per standard deviation, the default frequency from \DefFreqDiag\ to \DefFreqDiagGD\ per century, and the reversal-quarter hazard from \HazPeakDiag\ to \HazPeakDiagGD\ percent (\HazPeakRE\ to \HazPeakREGD\ for the rational economy), while the rational news coefficient remains zero (\NewsBpREGD). The winsorized spread standard deviation is visibly grid-sensitive (\SprSdDiag\ against \SprSdDiagGD\ percent), as it inherits the extreme spread tail. The volatility ratio to the rational economy remains far above one at both densities, and the paper's conclusions use the news coefficient, default frequency, and reversal hazard.
 
-\paragraph{Recalibration search.} The grid behind Section~\ref{sec:recal} spans $\beta \in \{0.945, 0.953, 0.961, 0.969, 0.977\}$ and $\phi \in \{0.880, 0.895, 0.910, 0.925, 0.945, 0.969\}$, thirty pairs, each solved at $\theta = 0.5$ and simulated for 200{,}000 quarters. The loss function weights the squared relative miss of the default-frequency target (3 per century) four to one against the debt-service target (5.5 percent of output). Across the grid the default frequency ranges from 1.0 to 14.2 per century and debt service from 0.8 to 17.1 percent, so the two targets pin the pair down sharply, and the selected $(\BetaRecal, \PhiRecal)$ is interior to the grid. Final statistics reported in the text use 500{,}000 quarters at the selected pair, for $\theta = 0.5$ and for the rational benchmark at identical parameters.
+\paragraph{Short-bond diagnostic grid.} The grid behind Section~\ref{sec:recal} is
+\[
+\beta\in\{0.945,0.953,0.961,0.969,0.977\},
+\qquad
+\phi\in\{0.880,0.895,0.910,0.925,0.945,0.969\}.
+\]
+Each pair is solved at $\theta=0.5$ and simulated for 200{,}000 quarters. The calculation asks whether two short-bond parameters can restore default frequency and debt service. It is not the estimation criterion used for the long-duration model.
 
 \begin{table}[t]
 \centering
 \caption{Parameter discipline and sensitivity.}
 \label{tab:params}
-\footnotesize
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{p{1.8cm}p{1.7cm}p{2.1cm}p{3.0cm}p{1.8cm}p{3.3cm}}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{p{1.8cm}p{1.8cm}p{2.0cm}p{2.8cm}p{1.9cm}p{3.0cm}}
 \toprule
 Parameter & Units, frequency & Category & Source or target (sample) & Range examined & Effect on headline results \\
 \midrule
@@ -626,19 +762,44 @@ with $W^D$ defined analogously under $p$, and all welfare statements in Section~
 
 \subsection{Long-duration bonds}\label{app:longbonds}
 
-With the \citet{ChatterjeeEyigungor2012} perpetuity (coupon $\kappa$, principal decay $\delta$), the lenders' valuation satisfies
+The quantitative model uses the random-maturity bond of \citet{ChatterjeeEyigungor2012}. A fraction $\delta$ of each unit matures each quarter. The remaining fraction pays coupon $z$ and survives. If $b$ is debt at the start of the quarter and $b'$ is debt after issuance, repayment consumption is
+\begin{equation}
+c=y+m-\bigl[\delta+(1-\delta)z\bigr]b
++q(b',x,h)\bigl[b'-(1-\delta)b\bigr].
+\label{eq:longbudget}
+\end{equation}
+The sovereign's repayment value is
 \[
-q(b', x, h) \,=\, \frac{1}{R}\, \Ehat_{\theta}\Big[ \big(1 - d(b', x', x)\big)\,\big(\kappa + (1-\delta)\, q\big(b''(b', x', x),\, x',\, x\big)\big) \,\Big|\, x, h \Big],
+V^R(b,x,h,m)=\max_{b'\in\mathcal B}
+\left\{u(c)+\beta Z(b',x)\right\},
 \]
-where $b''$ is the successor government's issuance policy. Two diagnostic forces now compound. Today's lenders tilt the distribution of $x'$. But the resale price inside the expectation is itself evaluated at the future belief state $(x', x)$, so optimistic lenders are optimistic about future \emph{sentiment} as well as future income. Booms therefore raise long-bond prices more than short-bond prices, and the dilution externality, the incumbent's incentive to issue against the value of legacy bonds, is cheapest to exercise exactly at peak optimism. I conjecture the interaction is quantitatively large. Computing it requires only adding the $h$ dimension to the standard long-bond algorithm, and it is the natural second chapter of this agenda.
+where
+\[
+Z(b',x)=\sum_{x'}P(x'\mid x)
+\int V(b',x',x,m')\,dG(m').
+\]
+The temporary shock has a truncated normal distribution. It is independent over time and has standard deviation $0.003$, the value in \citet{ChatterjeeEyigungor2012}. Default in the current quarter resets it to the lower support point. During exclusion it is again drawn from $G$. The code therefore keeps separate the integrated exclusion value and the value used in the current default comparison. Numerical stability comes from continuation in $\theta$ and damping of the fixed-point map. No economic parameter is altered to obtain convergence.
+
+Competitive lenders satisfy
+\[
+q(b',x,h)=\frac{1}{R}\Ehat_\theta\!\left[
+\bigl(1-d(b',x',x,m')\bigr)
+\left\{\delta+(1-\delta)\left[z+q\bigl(b''(b',x',x,m'),x',x\bigr)\right]\right\}
+\mathrel{\Big|}x,h\right].
+\]
+Thus the risk-free price is $[\delta+(1-\delta)z]/(\delta+r^*)$. Setting $\delta=1$ removes the resale term and reproduces the one-period price and default arrays point for point in the numerical test.
+
+The continuous shock is used as a computational regularization, as in the original paper. For every $(b,x,h)$, the algorithm recovers all thresholds at which the optimal debt choice changes. It integrates bond payoffs exactly over the associated probability masses. It integrates utility by twenty-node Gaussian quadrature within each fixed-policy interval. An adaptive quadrature calculation provides an independent accuracy check. The fixed-point objects are $Z$, the integrated exclusion value, and $q$. The value objects receive full Bellman updates, while prices use a damping weight of $0.99$. Continuation in $\theta$ is performed on a 12-node debt grid. The target solution at $\theta=0.5$ is then prolonged by linear interpolation to 50 debt nodes, where the original operator is resolved. The largest residual across the continuation, exclusion, and pricing equations is \LongFPResidual. Solutions started from the risk-free schedule and from the zero schedule agree in the low-resolution multiple-initialization audit. The one-period limit agrees exactly with the separate short-bond code. Deterministic-policy iteration cycles on some intermediate and finer debt grids because discrete choices switch at near ties. The finite-grid existence result allows mixing at such ties. I report the converged deterministic 50-node equilibrium and do not treat a failed deterministic iteration as an equilibrium.
+
+The economic parameter block is taken as a block from \citet{ChatterjeeEyigungor2012}. It sets $\delta=0.05$, $z=0.03$, $r^*=0.01$, the re-entry probability to $0.0385$, and $\beta=0.95460$. The persistent income process has $\rho=0.948503$ and innovation standard deviation $0.027092$. The default loss is $\max\{0,d_0y+d_1y^2\}$ with $d_0=-0.18845$ and $d_1=0.24559$. These values were jointly selected in that paper to match mean debt, the mean spread, and spread volatility. The belief exercise holds this block fixed and changes only $\theta$. This is the controlled long-debt mechanism comparison. The estimation exercise fixes $\theta$ from forecasts and minimizes the reported simulated-moment loss over $(\beta,d_0,d_1)$.
 
 \subsection{Reference-belief conventions}\label{app:conventions}
 
-The model's reference density is $p(\cdot \mid h)$, the kernel evaluated at yesterday's state, which keeps the belief state two-dimensional and Lemma~\ref{lem:tilt} exact. \citet{BordaloGennaioliMaShleifer2020} define the reference as the lagged forecast of the same target, giving the tilted mean $\rho x + \theta\rho(x - \rho h) = \rho x + \theta \rho \varepsilon_t$. The two means differ by $\theta\rho(1-\rho)h$, which is $O(\theta(1-\rho))$ and about five percent of the tilt at the calibrated persistence. Every result in Section~\ref{sec:theory} goes through under the alternative convention with $\nu$ redefined as the innovation $\varepsilon$, since the FOSD ordering in Lemma~\ref{lem:fosd} needs only a mean tilt that is increasing in news. Proposition~\ref{prop:cg} is stated under the survey convention, so the measurement side is already aligned, and the horizon invariance shown in its proof covers the fixed-event structure of the Consensus data after the conversion of Appendix~\ref{app:data}.
+The model's reference density is $p(\cdot\mid h)$, the kernel evaluated at yesterday's state, which keeps the belief state two-dimensional and Lemma~\ref{lem:tilt} exact. \citet{BordaloGennaioliMaShleifer2020} define the reference as the lagged forecast of the same target, giving the tilted mean $\rho x+\theta\rho(x-\rho h)=\rho x+\theta\rho\varepsilon_t$. The two means differ by $\theta\rho(1-\rho)h$, about five percent of the tilt at the calibrated persistence. Every result in Section~\ref{sec:theory} goes through under the alternative convention with $\nu$ redefined as the innovation $\varepsilon$. The FOSD ordering in Lemma~\ref{lem:fosd} needs only a mean tilt increasing in news. The fixed-target horizon result in Proposition~\ref{prop:cg} does not by itself cover annual fixed-event forecasts. Section~\ref{sec:emdesign} supplies that mapping by simulation.
 
 \subsection{Additional quantitative results}\label{app:addl}
 
-At $\theta = 1$ the economy defaults \DefFreqOne\ times per century and holds market access only \FracAccessOne\ percent of the time. Median spreads collapse to \SprMedOne\ percent because the sovereign borrows very little in normal times, while the winsorized standard deviation explodes. I read the $\theta = 1$ column as diagnostic of misspecification at fixed non-belief parameters rather than as a candidate description of the data, and it disciplines how far the survey estimates for other asset classes, such as the $\theta \approx 0.9$ of \citet{BordaloGennaioliShleifer2018} for credit cycles, can be imported into a sovereign default environment before sovereign-specific re-estimation. The full ceiling grids behind Table~\ref{tab:rules} are in Figure~\ref{fig:rule}. The optimal ceilings are $\bar b = \CeilOptC$ (market diagnostic) and $\bar b = \CeilOptD$ (market rational) in the diagnostic-government cells, roughly 1.2 and 0.7 percent of annual output. Replication code (Julia for the equilibrium computation, R for figures) accompanies the draft, and a full solve-and-simulate cycle for all configurations runs in under a minute.
+At $\theta=1$ the one-period economy defaults \DefFreqOne\ times per century and holds market access only \FracAccessOne\ percent of the time. Median spreads collapse to \SprMedOne\ percent while the winsorized standard deviation explodes. This column is a fixed-parameter stress test, not a candidate fit. It shows why credit-cycle estimates from another asset class cannot be imported without sovereign forecast measurement. The full ceiling grids behind Table~\ref{tab:rules} are in Figure~\ref{fig:rule}. The optimal ceilings are $\bar b=\CeilOptC$ and $\bar b=\CeilOptD$ in the diagnostic-government cells. Replication code records wall time, iteration counts, residuals, and random seeds for every configuration.
 
 \clearpage
 \printbibliography

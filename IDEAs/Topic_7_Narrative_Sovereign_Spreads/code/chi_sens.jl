@@ -1,34 +1,21 @@
-# Sensitivity of the headline narrative-contagion magnitudes to the fundamentals
-# feedback parameter chi, computed from gross-financing-need arithmetic.
+# Sensitivity of the narrative-contagion scenario to the annual feedback
+# parameter chi.
 #
 # ---------------------------------------------------------------------------
-# WHERE chi COMES FROM (gross-financing-need arithmetic).
+# CASH-FLOW INTERPRETATION OF chi.
 #
-# Fundamentals theta are measured in units of annual resources (fiscal
-# capacity). A sovereign spread s (decimal p.a.) raises the cost of the debt
-# that must be rolled over at the new rate within the year. The extra annual
-# debt service, as a share of annual resources, is therefore
-#
-#       s  x  (debt refinanced within a year / annual resources)
-#     = s  x  GFN,          GFN = gross financing need as a share of annual GDP.
-#
-# Since theta is in units of annual resources, the drag on theta per unit of
-# spread is exactly the GFN ratio:   chi = GFN.  This replaces the old verbal
-# justification ("a year at 500 bp drains one percent of annual capacity",
-# which is just chi = 0.20 x 0.05 = 0.01 restated).
-#
-# IMF Fiscal Monitor gross-financing-need ranges for high-debt sovereigns:
-#     ~10% of GDP   moderate-debt                  -> chi = 0.10   (low end)
-#     ~20% of GDP   representative high-debt        -> chi = 0.20   (baseline)
-#     ~30% of GDP   crisis-level (Italy/Greece 2011-12) -> chi = 0.30 (high end)
-# So chi = 0.20 is the point estimate and [0.10, 0.30] is the examined band.
+# Fundamentals are measured in annual resource units. The feedback coefficient
+# is refinancing share times market-rate pass-through times the conversion from
+# extra debt service into the capacity state. Official loans, fixed-rate debt,
+# cash buffers, and fiscal adjustment can all lower this product. The baseline
+# 0.20 and the [0.10, 0.30] band are scenarios, not estimates.
 #
 # ---------------------------------------------------------------------------
-# CALIBRATION RULE HELD FIXED WHILE chi VARIES.
+# SCENARIO RULE HELD FIXED WHILE chi VARIES.
 #
 # The epidemic block sets beta = A * R0PEAK * gam * rel(theta,n) / RELREF, where
 # RELREF is the peak price relevance (max over theta of ds/dn at n=0) and
-# R0PEAK = 4 is the CALIBRATED peak reproduction number AT the baseline chi.
+# R0PEAK = 4 is the scenario peak reproduction number at the baseline chi.
 # R0PEAK pins down the structural amplification constant  mbar * A * h'(.)  of
 # the adoption technology; that constant is a property of how agents react to
 # the story, not of the sovereign's financing need. It must therefore stay
@@ -42,9 +29,8 @@
 # the PRICING block and DOES move with chi; it is the model's own RELREF at
 # that chi (= max ds/dn), used only for reporting, not for normalising beta.
 #
-# This file first reproduces the published chi = 0.20 baseline and @asserts
-# agreement with output/quant_numbers.tex, then recomputes across the band and
-# writes output/chi_numbers.tex while leaving results.json unchanged.
+# This file first reproduces the baseline scenario, then recomputes the
+# sensitivity band and writes output/chi_numbers.tex.
 
 using SpecialFunctions, Random, Printf
 
@@ -66,7 +52,7 @@ const R0PEAK = 4.0
 const N0SEED = 0.02
 
 const RHOM = RHO^(1 / 12)
-const SIGM = SIG / sqrt(12)
+const SIGM = SIG * sqrt((1 - RHOM^2) / (1 - RHO^2))
 
 # ------------------------------------------------------- pricing fixed point
 # All pricing objects are parameterized by chi (the annual feedback intensity).
@@ -95,10 +81,18 @@ end
 
 """price relevance of the story: ds/dn (discrete, h=0.05), in decimal"""
 function rel(th, n, chi; cap = Inf)
-    h = 0.05
-    n2 = min(n + h, 1.0)
-    n2 <= n && return 0.0
-    (sstar(th, n2, chi; cap = cap) - sstar(th, n, chi; cap = cap)) / (n2 - n)
+    s = sstar(th, n, chi; cap = cap)
+    s >= cap - 1e-12 && return 0.0
+    z = zfun(th, s, chi)
+    (1 - REC) * (Phi(z + SHIFT) - Phi(z)) * mult(th, n, chi; cap = cap)
+end
+
+function prevalence_flow(n, beta, gamma; dt = 1.0)
+    n == 0 && return 0.0
+    r = beta - gamma
+    abs(r) < 1e-12 && return n / (1 + beta * n * dt)
+    growth = exp(r * dt)
+    n * growth / (1 + beta * n * (growth - 1) / r)
 end
 
 """peak price relevance (max ds/dn over theta at n=0) -- the model's own RELREF"""
@@ -138,7 +132,7 @@ end
 # ------------------------------------------------ deterministic outbreak path
 """48-month path with no fundamentals shocks; returns theta series. CHIM=chi/12."""
 function detpath_theta(th0, n0, chi, relref; gam = GAM0, cap = Inf, A = 1.0, T = 48)
-    chim = chi / 12
+    chim = chi * (1 - RHOM) / (1 - RHO)
     stab, btab = tabulate(chi, relref; cap = cap, A = A)
     ths = zeros(T)
     th = th0; n = n0
@@ -149,7 +143,7 @@ function detpath_theta(th0, n0, chi, relref; gam = GAM0, cap = Inf, A = 1.0, T =
             ths[t:end] .= th
             break
         end
-        n  = clamp(n + b * n * (1 - n) - gam * n, 0.0, 1.0)
+        n  = prevalence_flow(n, b, gam)
         th = RHOM * th + (1 - RHOM) * THSS - chim * s
     end
     ths
@@ -172,7 +166,7 @@ const EPS = randn(RNG, NPATH, HOR)
 """P(default within HOR months) from th0 under a configuration (see solve_model.jl)."""
 function pdef(th0, n0, chi; gam = GAM0, cap = Inf, A = 1.0, tabs = nothing,
               relref = 0.0, cutk = 0, cutfrac = 0.75, capk = 0, tabs2 = nothing)
-    chim = chi / 12
+    chim = chi * (1 - RHOM) / (1 - RHO)
     stab, btab = tabs === nothing ? tabulate(chi, relref; cap = cap, A = A) : tabs
     nd = 0
     for i in 1:NPATH
@@ -182,7 +176,7 @@ function pdef(th0, n0, chi; gam = GAM0, cap = Inf, A = 1.0, tabs = nothing,
             t == cutk && (n *= 1 - cutfrac)
             st, bt = (capk > 0 && t >= capk) ? tabs2 : (stab, btab)
             s = interp(st, th, n); b = interp(bt, th, n)
-            n  = clamp(n + b * n * (1 - n) - gam * n, 0.0, 1.0)
+            n  = prevalence_flow(n, b, gam)
             th = RHOM * th + (1 - RHOM) * THSS - chim * s + SIGM * EPS[i, t]
         end
         (dead || th < THB) && (nd += 1)
@@ -244,15 +238,15 @@ println("ZoneDefMonth = ", base.zdef)
 # Deterministic objects: tight tolerance. MC objects: assert the PUBLISHED
 # rounded values (paper rounded to 1 dp), since same-seed CRN makes them exact.
 @assert round(base.gmax, digits = 2) == 0.64           "GainMax mismatch"
-@assert round(Int, round(base.rpeak)) == 229           "RelPeakTen mismatch"
-@assert isapprox(base.zone[1], 0.0015; atol = 1e-9)    "ZoneLo mismatch"
-@assert isapprox(base.zone[2], 0.070;  atol = 1e-9)    "ZoneHi mismatch"
-@assert round(100*base.wedge_peak, digits = 1) == 5.2  "WedgePeak mismatch"
+@assert round(Int, round(base.rpeak)) == 230           "RelPeakTen mismatch"
+@assert isapprox(base.zone[1], 0.001; atol = 1e-9)     "ZoneLo mismatch"
+@assert isapprox(base.zone[2], 0.069;  atol = 1e-9)    "ZoneHi mismatch"
+@assert round(100*base.wedge_peak, digits = 1) == 5.3  "WedgePeak mismatch"
 @assert base.wedge_arg == 0.04                         "WedgeArg mismatch"
-@assert round(base.pcap_early, digits = 1) == 46.3     "PCapEarly mismatch"
-@assert round(base.pcap_late,  digits = 1) == 63.4     "PCapLate mismatch"
+@assert round(base.pcap_early, digits = 1) == 48.5     "PCapEarly mismatch"
+@assert round(base.pcap_late,  digits = 1) == 65.4     "PCapLate mismatch"
 @assert round(Int, round(base.delay_cost)) == 17       "DelayCost mismatch"
-@assert base.zdef == 42                                "ZoneDefMonth mismatch"
+@assert base.zdef == 39                                "ZoneDefMonth mismatch"
 println("\nBASELINE REPRODUCTION: all @asserts PASSED.")
 
 # =====================================================================

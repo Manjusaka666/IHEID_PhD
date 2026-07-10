@@ -49,13 +49,13 @@ legend("topright", bty = "n", lwd = 2, lty = c(1, 1, 3),
                   "aligned, no network externality"))
 invisible(dev.off())
 
-## ---- Figure 3: the breadth Laffer curve -----------------------------------
-lf <- r$laffer
-pdf(file.path(out_dir, "fig_laffer.pdf"), width = 9.2, height = 3.8, pointsize = 10)
+## ---- Figure 3: the sanctions-use frontier ---------------------------------
+lf <- r$frontier
+pdf(file.path(out_dir, "fig_frontier.pdf"), width = 9.2, height = 3.8, pointsize = 10)
 par(mfrow = c(1, 2), mar = c(4.2, 4.4, 2.0, 0.8), mgp = c(2.6, 0.8, 0), las = 1)
 plot(lf$p, lf$v_weaponize, type = "l", lwd = 2, col = col_hi,
      xlab = "breadth of use  p", ylab = "hegemon flow value (bn USD / yr)",
-     main = "(a) value of weaponization", ylim = range(c(lf$v_weaponize, lf$v_restraint)))
+     main = "(a) sanctions-use frontier", ylim = range(c(lf$v_weaponize, lf$v_restraint)))
 lines(lf$p, lf$v_restraint, lwd = 2, col = col_base, lty = 2)
 abline(v = r$calibration$p_single, col = col_gray, lty = 3)
 text(r$calibration$p_single + 0.008, max(lf$v_weaponize) - 1, "single use", adj = 0, cex = 0.8, col = col_gray)
@@ -141,6 +141,12 @@ lines_out <- c(
   sprintf("\\newcommand{\\GammaBase}{%s}", fmt0(r$calibration$gamma)),
   sprintf("\\newcommand{\\WReserves}{%s}", fmt0(r$calibration$W / 1000))
 )
+gt <- r$geopolitical_thresholds$`zeta_0.5_chi_1.0`
+lines_out <- c(lines_out,
+  sprintf("\\newcommand{\\ZetaH}{%s}", fmt(r$calibration$zeta_h, 2)),
+  sprintf("\\newcommand{\\GammaThresholdSingle}{%s}", fmt(gt$gamma_at_p_0.02, 1)),
+  sprintf("\\newcommand{\\GammaThresholdTen}{%s}", fmt(gt$gamma_at_p_0.10, 1)),
+  sprintf("\\newcommand{\\GammaThresholdRoutine}{%s}", fmt(gt$gamma_at_p_0.25, 1)))
 # break-even breadth: weaponization value = restraint value
 dv <- lf$v_weaponize - lf$v_restraint
 i <- which(dv <= 0)[1]

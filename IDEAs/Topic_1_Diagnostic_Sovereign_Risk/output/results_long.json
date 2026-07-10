@@ -1,0 +1,76 @@
+{
+ "calibration": {
+  "beta": 0.9546,
+  "bmax": 1.5,
+  "coupon": 0.03,
+  "d0": -0.18845,
+  "d1": 0.24559,
+  "integration_tolerance": 1.0e-10,
+  "maturity": 0.05,
+  "multigrid_debt_nodes": [
+   12,
+   50
+  ],
+  "nb": 50,
+  "reentry": 0.0385,
+  "rho": 0.948503,
+  "rstar": 0.01,
+  "sigma_e": 0.027092,
+  "sigma_m": 0.003
+ },
+ "runtime_sec": 131.0928840637207,
+ "theta_0.0": {
+  "iterations": 10083,
+  "minimum_repayment_consumption": 0.7369694158685799,
+  "moments": {
+   "average_maturity_years": 5.0,
+   "bp_per_1sd_news": 5.226846970481963e-25,
+   "corr_spread_dy": -0.34319487474090243,
+   "corr_spread_y": -0.5511826447816681,
+   "defaults_per_100y": 3.5896,
+   "frac_access": 0.764048,
+   "max_debt_index": 29,
+   "mean_debt_service_y": 0.055594240534096756,
+   "mean_debt_y": 0.7082068857846722,
+   "mean_expected_excess_bad": -1.241981156341723e-8,
+   "mean_expected_excess_good": -9.452362634693314e-9,
+   "mean_spread": 0.05990947563093471,
+   "median_spread": 0.05330682685347132,
+   "sd_spread": 0.03572040859755908,
+   "top_grid_share": 0.0
+  },
+  "residual": {
+   "autarky": 6.422951059903426e-11,
+   "continuation": 1.6773427091720805e-10,
+   "default_decision": 0.0,
+   "price": 4.9964137049940405e-8
+  }
+ },
+ "theta_0.5": {
+  "iterations": 15155,
+  "minimum_repayment_consumption": 0.7269969535500281,
+  "moments": {
+   "average_maturity_years": 5.0,
+   "bp_per_1sd_news": -126.29127083592074,
+   "corr_spread_dy": -0.5156105856571123,
+   "corr_spread_y": -0.5574367540919688,
+   "defaults_per_100y": 1.9096,
+   "frac_access": 0.873752,
+   "max_debt_index": 29,
+   "mean_debt_service_y": 0.05367477065009538,
+   "mean_debt_y": 0.6837550401286036,
+   "mean_expected_excess_bad": 0.07226031425317778,
+   "mean_expected_excess_good": -0.024301775473932617,
+   "mean_spread": 0.07498465685488133,
+   "median_spread": 0.06476143018533675,
+   "sd_spread": 0.04035575641197021,
+   "top_grid_share": 0.0
+  },
+  "residual": {
+   "autarky": 2.3156587758421665e-11,
+   "continuation": 6.490097348432755e-11,
+   "default_decision": 0.0,
+   "price": 4.992666546854707e-8
+  }
+ }
+}

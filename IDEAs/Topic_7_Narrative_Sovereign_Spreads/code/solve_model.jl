@@ -4,13 +4,13 @@
 #   p(theta, s)      = Phi((THB - RHO*theta - (1-RHO)*THSS + CHI*s)/SIG)
 #   infected belief  = p evaluated at theta - XI  (z shifted by SHIFT = RHO*XI/SIG)
 #   pbar             = (1-n) p + n p_inf ;  s = (1-REC) pbar  (fixed point in s)
-# Narrative block (monthly SIR):
-#   n' = n + beta(theta,n) n (1-n) - gam n
+# Narrative block (continuous time, evaluated at monthly intervals):
+#   dn/dt = beta(theta,n) n (1-n) - gam n
 #   beta = A * R0PEAK * gam * rel(theta,n)/RELREF,  rel = price gap per unit n
 # Fundamentals (monthly): theta' = RHOM theta + (1-RHOM) THSS - CHIM s + SIGM eps
 #
-# Writes output/results.json. Deliberately compact: the propositions carry
-# the paper; this file only produces the calibrated magnitudes.
+# Writes output/results.json. The numerical inputs define a transparent
+# scenario. The empirical section of the paper specifies their data targets.
 
 using SpecialFunctions, JSON, Random
 
@@ -32,8 +32,8 @@ const R0PEAK = 4.0    # peak reproduction number at A = 1 (modern amplification)
 const N0SEED = 0.02   # narrative seed after a viral event
 
 const RHOM = RHO^(1 / 12)
-const SIGM = SIG / sqrt(12)
-const CHIM = CHI / 12
+const SIGM = SIG * sqrt((1 - RHOM^2) / (1 - RHO^2))
+const CHIM = CHI * (1 - RHOM) / (1 - RHO)
 
 # ------------------------------------------------------- pricing fixed point
 zfun(th, s) = (THB - RHO * th - (1 - RHO) * THSS + CHI * s) / SIG
@@ -59,12 +59,25 @@ function mult(th, n; cap = Inf)
     return 1 / (1 - gain)
 end
 
-"""price relevance of the story: ds/dn (discrete, h=0.05), in decimal"""
+"""Analytical price relevance ds/dn, in decimal spread units."""
 function rel(th, n; cap = Inf)
-    h = 0.05
-    n2 = min(n + h, 1.0)
-    n2 <= n && return 0.0
-    (sstar(th, n2; cap = cap) - sstar(th, n; cap = cap)) / (n2 - n)
+    s = sstar(th, n; cap = cap)
+    s >= cap - 1e-12 && return 0.0
+    z = zfun(th, s)
+    (1 - REC) * (Phi(z + SHIFT) - Phi(z)) * mult(th, n; cap = cap)
+end
+
+"""One-month flow of the continuous-time logistic adoption equation."""
+function prevalence_flow(n, beta, gamma; dt = 1.0)
+    0 <= n <= 1 || throw(ArgumentError("prevalence must lie in [0,1]"))
+    beta >= 0 && gamma >= 0 || throw(ArgumentError("rates must be nonnegative"))
+    n == 0 && return 0.0
+    r = beta - gamma
+    if abs(r) < 1e-12
+        return n / (1 + beta * n * dt)
+    end
+    growth = exp(r * dt)
+    n * growth / (1 + beta * n * (growth - 1) / r)
 end
 
 # contagion rate: adoption prob proportional to price relevance of acting
@@ -73,6 +86,28 @@ beta_c(th, n; A = 1.0, cap = Inf) = A * R0PEAK * GAM0 * rel(th, n; cap = cap) / 
 
 # uniqueness margin of the pricing fixed point (max gain over states)
 const GAINMAX = maximum((1 - REC) * phi(z) * CHI / SIG for z in -4:0.01:4)
+
+gap(z) = Phi(z + SHIFT) - Phi(z)
+gap1(z) = phi(z + SHIFT) - phi(z)
+gap2(z) = -(z + SHIFT) * phi(z + SHIFT) + z * phi(z)
+density_mix(z, n) = (1 - n) * phi(z) + n * phi(z + SHIFT)
+density_mix1(z, n) = -(1 - n) * z * phi(z) - n * (z + SHIFT) * phi(z + SHIFT)
+density_mix2(z, n) = (1 - n) * (z^2 - 1) * phi(z) +
+    n * ((z + SHIFT)^2 - 1) * phi(z + SHIFT)
+
+"""Derivative of the log-slope condition for a unique equilibrium hump."""
+function log_slope_derivative(z, n)
+    G = gap(z)
+    a = (1 - REC) * CHI / SIG
+    d = density_mix(z, n)
+    d1 = density_mix1(z, n)
+    d2 = density_mix2(z, n)
+    (gap2(z) * G - gap1(z)^2) / G^2 +
+        a * (d2 * (1 - a * d) + a * d1^2) / (1 - a * d)^2
+end
+
+const HUMP_MARGIN = maximum(log_slope_derivative(z, n)
+    for z in -6:0.01:6, n in 0:0.02:1 if gap(z) > 1e-12)
 
 # --------------------------------------------------------------- static hump
 thgrid = collect(-0.05:0.0025:0.30)
@@ -128,7 +163,7 @@ function detpath(th0, n0; gam = GAM0, cap = Inf, A = 1.0, T = 48)
             ns[t:end] .= n; ss[t:end] .= s * 1e4; ths[t:end] .= th
             break
         end
-        n  = clamp(n + b * n * (1 - n) - gam * n, 0.0, 1.0)
+        n  = prevalence_flow(n, b, gam)
         th = RHOM * th + (1 - RHOM) * THSS - CHIM * s
     end
     (ns, ss, ths)
@@ -165,7 +200,7 @@ function pdef(th0, n0; gam = GAM0, cap = Inf, A = 1.0, tabs = nothing,
             t == cutk && (n *= 1 - cutfrac)
             st, bt = (capk > 0 && t >= capk) ? tabs2 : (stab, btab)
             s = interp(st, th, n); b = interp(bt, th, n)
-            n  = clamp(n + b * n * (1 - n) - gam * n, 0.0, 1.0)
+            n  = prevalence_flow(n, b, gam)
             th = RHOM * th + (1 - RHOM) * THSS - CHIM * s + SIGM * EPS[i, t]
         end
         (dead || th < THB) && (nd += 1)
@@ -205,6 +240,16 @@ timing = Dict(
     "nonarr" => pdef(TH_TIMING, 0.0;    tabs = tab_base),
 )
 
+# Deterministic vector field for the phase portrait.
+phase_theta = collect(0.0:0.01:0.18)
+phase_n = collect(0.0:0.05:0.80)
+phase_dtheta = [[(RHOM - 1) * th + (1 - RHOM) * THSS -
+    CHIM * sstar(th, n) for n in phase_n] for th in phase_theta]
+phase_dn = [[beta_c(th, n) * n * (1 - n) - GAM0 * n
+    for n in phase_n] for th in phase_theta]
+phase = Dict("theta" => phase_theta, "n" => phase_n,
+    "dtheta" => phase_dtheta, "dn" => phase_dn)
+
 # -------------------------------------------------------------------- output
 sz = sstar(SC["zone"], 0.0)
 results = Dict(
@@ -212,6 +257,8 @@ results = Dict(
         "rho" => RHO, "sig" => SIG, "thss" => THSS, "rec" => REC, "xi" => XI,
         "chi" => CHI, "shift" => SHIFT, "gam" => GAM0, "r0peak" => R0PEAK,
         "n0" => N0SEED, "gainmax" => GAINMAX, "multpeak" => 1 / (1 - GAINMAX),
+        "sigm" => SIGM, "chim" => CHIM, "hump_margin" => HUMP_MARGIN,
+        "input_class" => "scenario",
         "relref_bp" => RELREF * 1e4,
         "th_zone" => SC["zone"], "s_zone_bp" => sz * 1e4,
         "dsdn10_zone_bp" => rel(SC["zone"], 0.0) * 1e3,   # bp per 10pp of n
@@ -221,7 +268,7 @@ results = Dict(
     "hump" => hump, "zones" => zones, "zone_fig" => zone_fig,
     "paths" => paths,
     "peak_excess_bp" => peak_excess, "peak_n" => peak_n,
-    "mc" => mc, "timing" => timing,
+    "mc" => mc, "timing" => timing, "phase" => phase,
 )
 
 denan(x::AbstractFloat) = isnan(x) ? nothing : x

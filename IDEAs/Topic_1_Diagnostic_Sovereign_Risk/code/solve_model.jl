@@ -42,6 +42,7 @@ const THETAS = [0.0, 0.5, 1.0]
 const SEED = 20260703
 const TSIM = 500_000
 const TBURN = 1_000
+const CMIN = 1e-8
 
 Phi(z) = 0.5 * erfc(-z / sqrt(2.0))
 
@@ -77,7 +78,14 @@ function build_kernels(theta::Float64)
     x, P, Pd
 end
 
-util(c::Float64) = c > 1e-8 ? c^(1.0 - GAMMA) / (1.0 - GAMMA) : -1e12
+function util(c::Float64)
+    if c >= CMIN
+        return c^(1.0 - GAMMA) / (1.0 - GAMMA)
+    end
+    umin = CMIN^(1.0 - GAMMA) / (1.0 - GAMMA)
+    marginal = CMIN^(-GAMMA)
+    umin + marginal * (c - CMIN)
+end
 
 function ergodic(P::Matrix{Float64})
     piv = fill(1.0 / NY, NY)
@@ -112,7 +120,8 @@ struct Solution
 end
 
 function solve(theta::Float64; bceil::Float64 = Inf, tol::Float64 = 5e-8,
-               maxit::Int = 2000, damp::Float64 = 0.5)
+               maxit::Int = 2000, damp::Float64 = 0.5,
+               q0::Union{Symbol,Array{Float64,3}} = :riskfree)
     x, P, Pd = build_kernels(theta)
     y = exp.(x)
     Ey = dot(ergodic(P), y)
@@ -123,7 +132,16 @@ function solve(theta::Float64; bceil::Float64 = Inf, tol::Float64 = 5e-8,
 
     V  = zeros(NB, NY, NY)
     Vd = [util(ydef[j]) / (1.0 - BETA) for j in 1:NY]
-    q  = fill(1.0 / R, NB, NY, NY)
+    q = if q0 === :riskfree
+        fill(1.0 / R, NB, NY, NY)
+    elseif q0 === :zero
+        zeros(NB, NY, NY)
+    elseif q0 isa Array{Float64,3}
+        size(q0) == (NB, NY, NY) || throw(DimensionMismatch("q0 has the wrong dimensions"))
+        copy(q0)
+    else
+        throw(ArgumentError("q0 must be :riskfree, :zero, or a price array"))
+    end
     d  = zeros(Bool, NB, NY, NY)
     pol = ones(Int, NB, NY, NY)
 
@@ -220,6 +238,79 @@ function solve(theta::Float64; bceil::Float64 = Inf, tol::Float64 = 5e-8,
         end
     end
     Solution(x, P, y, b, V, Vd, q, d, pol, theta, iters)
+end
+
+"Evaluate one undamped Bellman-price update at a computed solution."
+function fixed_point_residual(sol::Solution; bceil::Float64 = Inf)
+    _, _, Pd = build_kernels(sol.theta)
+    y, b, P, q, V, Vd = sol.y, sol.b, sol.P, sol.q, sol.V, sol.Vd
+    Ey = dot(ergodic(P), y)
+    ydef = min.(y, PHI * Ey)
+    nbmax = something(findlast(bb -> bb <= bceil + 1e-12, b), 1)
+    R = 1.0 + RSTAR
+
+    W = zeros(NB, NY)
+    for ix in 1:NY, j in 1:NY
+        p = P[ix, j]
+        @inbounds @simd for ib in 1:NB
+            W[ib, ix] += p * V[ib, j, ix]
+        end
+    end
+
+    Vdnew = similar(Vd)
+    for ix in 1:NY
+        ev0 = 0.0
+        evd = 0.0
+        @inbounds for j in 1:NY
+            ev0 += P[ix, j] * V[1, j, ix]
+            evd += P[ix, j] * Vd[j]
+        end
+        Vdnew[ix] = util(ydef[ix]) + BETA * (LAM * ev0 + (1.0 - LAM) * evd)
+    end
+
+    Vnew = similar(V)
+    dnew = similar(sol.d)
+    @inbounds for ih in 1:NY, ix in 1:NY, ib in 1:NB
+        best = -Inf
+        for ibp in 1:nbmax
+            c = y[ix] + q[ibp, ix, ih] * b[ibp] - b[ib]
+            best = max(best, util(c) + BETA * W[ibp, ix])
+        end
+        if Vdnew[ix] > best
+            Vnew[ib, ix, ih] = Vdnew[ix]
+            dnew[ib, ix, ih] = true
+        else
+            Vnew[ib, ix, ih] = best
+            dnew[ib, ix, ih] = false
+        end
+    end
+
+    qnew = similar(q)
+    @inbounds for ih in 1:NY, ix in 1:NY, ibp in 1:NB
+        repayment = 0.0
+        for j in 1:NY
+            repayment += Pd[ix, ih, j] * (dnew[ibp, j, ix] ? 0.0 : 1.0)
+        end
+        qnew[ibp, ix, ih] = repayment / R
+    end
+
+    Dict(
+        "bellman" => max(maximum(abs.(Vnew .- V)), maximum(abs.(Vdnew .- Vd))),
+        "price" => maximum(abs.(qnew .- q)),
+        "default_policy_changes" => count(dnew .!= sol.d),
+    )
+end
+
+"Smallest consumption chosen in repayment states."
+function minimum_repayment_consumption(sol::Solution)
+    cmin = Inf
+    @inbounds for ih in 1:NY, ix in 1:NY, ib in 1:NB
+        sol.d[ib, ix, ih] && continue
+        ibp = sol.pol[ib, ix, ih]
+        c = sol.y[ix] + sol.q[ibp, ix, ih] * sol.b[ibp] - sol.b[ib]
+        cmin = min(cmin, c)
+    end
+    cmin
 end
 
 # --------------------------------------------------------------------------
@@ -447,10 +538,20 @@ function main()
         paths[th] = p
         mom["cg_beta"] = cg_coefficient(th)
         mom["iters"] = s.iters
+        mom["fixed_point_residual"] = fixed_point_residual(s)
         results["theta_$(th)"] = mom
         results["monotone_theta_$(th)"] = monotonicity_check(s)
         println("  done in $(s.iters) iters"); flush(stdout)
     end
+
+    s5_zero = solve(0.5; q0 = :zero)
+    s5_rational = solve(0.5; q0 = sols[0.0].q)
+    results["initialization_check"] = Dict(
+        "riskfree_vs_zero_q" => maximum(abs.(sols[0.5].q .- s5_zero.q)),
+        "riskfree_vs_rational_q" => maximum(abs.(sols[0.5].q .- s5_rational.q)),
+        "riskfree_vs_zero_default_changes" => count(sols[0.5].d .!= s5_zero.d),
+        "riskfree_vs_rational_default_changes" => count(sols[0.5].d .!= s5_rational.d),
+    )
 
     results["boom_events"] = boom_episodes(paths, sols)
 

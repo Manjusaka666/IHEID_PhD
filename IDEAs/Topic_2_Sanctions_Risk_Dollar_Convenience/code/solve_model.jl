@@ -31,10 +31,33 @@ const PSING  = 0.02        # single-use breadth: P(exposed country is the target
 const HL     = 3.0         # calibrated half-life of aggregate adjustment (years)
 const GAM    = 200.0       # crisis geopolitical stakes, bn USD (G(1) = GAM/2)
 const RH     = 0.04        # hegemon discount rate for present values
+const CHI0   = 1.0         # crisis-liquidity multiplier, actuarial lower bound
+const ZETA_H = 0.5         # issuer capture share, reported over [0.25, 1]
 const MGRID  = [1.0, 1.5, 2.5]   # network multiplier variants (baseline 1.5)
 const M0     = 1.5
 
 kappa() = CY0 / N0
+
+sanctions_wedge(sbar::Real, p::Real; omega::Real = OMEGA,
+                 phi::Real = PHI, chi::Real = CHI0) =
+    Float64(omega * sbar * p * phi * chi)
+
+function heterogeneous_local_response(
+        kappas::Vector{Float64}, loadings::Vector{Float64},
+        exposure::Vector{Float64}, crisis_multipliers::Vector{Float64},
+        convenience_slope::Float64)
+    n = length(kappas)
+    all(length(v) == n for v in (loadings, exposure, crisis_multipliers)) ||
+        throw(DimensionMismatch("heterogeneous arrays must have equal length"))
+    all(kappas .> 0) || throw(ArgumentError("portfolio curvatures must be positive"))
+    direct = -sum(exposure .* crisis_multipliers ./ kappas) / n
+    network_loading = sum(loadings ./ kappas) / n
+    denominator = 1 - convenience_slope * network_loading
+    denominator > 0 || throw(ArgumentError("the local aggregate response is unstable"))
+    multiplier = 1 / denominator
+    (direct = direct, multiplier = multiplier, total = direct * multiplier,
+     network_loading = network_loading)
+end
 
 "Calibrated (l0, l1, nu, lamN, lamD) for a given target multiplier m."
 function calib(m::Float64)
@@ -54,7 +77,10 @@ end
 # ------------------------------------------------------------- steady states
 "Corner-safe steady-state shares given exposed loss rate pihat. rbar is the
 financial return spread of dollar over outside reserves (0 in the baseline)."
-function ss(pihat::Float64, cb; rbar::Float64 = 0.0)
+privilege(N::Real, cb; zeta::Real = ZETA_H) =
+    Float64(zeta * (cb.l0 + cb.l1 * N) * N * W)
+
+function ss(pihat::Float64, cb; rbar::Float64 = 0.0, zeta::Float64 = ZETA_H)
     aE, aA = 0.5, 0.5
     for _ in 1:200_000
         N = MU * aE + (1.0 - MU) * aA
@@ -70,24 +96,124 @@ function ss(pihat::Float64, cb; rbar::Float64 = 0.0)
     end
     N = MU * aE + (1.0 - MU) * aA
     cy = cb.l0 + cb.l1 * N
-    (aE = aE, aA = aA, N = N, cy = cy, priv = cy * N * W)
+    (aE = aE, aA = aA, N = N, cy = cy,
+     gross_priv = cy * N * W, priv = privilege(N, cb; zeta = zeta))
 end
 
-pihat_of(sbar, p) = OMEGA * sbar * p * PHI
+pihat_of(sbar, p; phi = PHI, chi = CHI0) =
+    sanctions_wedge(sbar, p; phi = phi, chi = chi)
+
+function global_calib(m::Float64; tau::Float64 = 0.002,
+                      lmin::Float64 = 0.001, lmax::Float64 = 0.012)
+    lmin < CY0 < lmax || throw(ArgumentError("CY0 must lie between the bounds"))
+    tau >= 0 || throw(ArgumentError("tau must be nonnegative"))
+    local_cb = calib(m)
+    share = (CY0 - lmin) / (lmax - lmin)
+    steepness = local_cb.l1 / ((lmax - lmin) * share * (1 - share))
+    center = steepness == 0 ? N0 :
+        N0 - log(share / (1 - share)) / steepness
+    quadratic = local_cb.kap - 3 * tau * N0^2
+    quadratic > 0 || throw(ArgumentError("tau makes the quadratic curvature negative"))
+    rbar = quadratic * N0 + tau * N0^3 - CY0
+    (m = m, lmin = lmin, lmax = lmax, steepness = steepness,
+     center = center, quadratic = quadratic, tau = tau, rbar = rbar,
+     local_model = local_cb)
+end
+
+function global_convenience(N::Real, gc)
+    gc.steepness == 0 && return CY0
+    gc.lmin + (gc.lmax - gc.lmin) /
+        (1 + exp(-gc.steepness * (N - gc.center)))
+end
+
+function global_convenience_slope(N::Real, gc)
+    gc.steepness == 0 && return 0.0
+    share = (global_convenience(N, gc) - gc.lmin) / (gc.lmax - gc.lmin)
+    (gc.lmax - gc.lmin) * gc.steepness * share * (1 - share)
+end
+
+global_marginal_cost(a::Real, gc) = gc.quadratic * a + gc.tau * a^3
+global_marginal_cost_slope(a::Real, gc) = gc.quadratic + 3 * gc.tau * a^2
+
+function global_share(net::Float64, wedge::Float64, gc)
+    benefit = gc.rbar + global_convenience(net, gc) - wedge
+    benefit <= 0 && return 0.0
+    benefit >= global_marginal_cost(1.0, gc) && return 1.0
+    lo, hi = 0.0, 1.0
+    for _ in 1:80
+        mid = (lo + hi) / 2
+        global_marginal_cost(mid, gc) < benefit ? (lo = mid) : (hi = mid)
+    end
+    (lo + hi) / 2
+end
+
+function global_ss(wedge::Float64, gc; mu::Float64 = MU,
+                   zeta::Float64 = ZETA_H)
+    0 <= mu <= 1 || throw(ArgumentError("mu must lie in [0,1]"))
+    N = N0
+    for _ in 1:100_000
+        aE = global_share(N, wedge, gc)
+        aA = global_share(N, 0.0, gc)
+        updated = mu * aE + (1 - mu) * aA
+        abs(updated - N) < 1e-13 && begin
+            N = updated
+            break
+        end
+        N = 0.5 * N + 0.5 * updated
+    end
+    aE = global_share(N, wedge, gc)
+    aA = global_share(N, 0.0, gc)
+    cy = global_convenience(N, gc)
+    (aE = aE, aA = aA, N = N, cy = cy,
+     gross_priv = cy * N * W, priv = zeta * cy * N * W)
+end
+
+function gamma_threshold(p::Float64, gc; zeta::Float64 = ZETA_H,
+                         chi::Float64 = CHI0, mu::Float64 = MU,
+                         phi::Float64 = PHI)
+    baseline = global_ss(0.0, gc; mu = mu, zeta = zeta)
+    sanctioned = global_ss(
+        sanctions_wedge(1.0, p; phi = phi, chi = chi), gc;
+        mu = mu, zeta = zeta)
+    2 * (baseline.priv - sanctioned.priv) / OMEGA
+end
+
+function global_hflow(sbar::Float64, p::Float64, gc; gam::Float64 = GAM,
+                      zeta::Float64 = ZETA_H, chi::Float64 = CHI0,
+                      mu::Float64 = MU)
+    allocation = global_ss(
+        sanctions_wedge(sbar, p; chi = chi), gc; mu = mu, zeta = zeta)
+    allocation.priv + OMEGA * gam * (sbar - 0.5 * sbar^2)
+end
+
+function global_ramsey(p::Float64, gc; gam::Float64 = GAM,
+                       zeta::Float64 = ZETA_H, chi::Float64 = CHI0)
+    best_s, best_value = 0.0, -Inf
+    for sanction in 0.0:0.0005:1.0
+        value = global_hflow(
+            sanction, p, gc; gam = gam, zeta = zeta, chi = chi)
+        if value > best_value
+            best_s, best_value = sanction, value
+        end
+    end
+    (s = best_s, v = best_value)
+end
 
 # hegemon flow value (bn USD per year) at anticipated rule sbar, breadth p
-function hflow(sbar::Float64, p::Float64, cb; gam = GAM)
-    s = ss(pihat_of(sbar, p), cb)
+function hflow(sbar::Float64, p::Float64, cb; gam = GAM,
+               zeta::Float64 = ZETA_H, chi::Float64 = CHI0)
+    s = ss(pihat_of(sbar, p; chi = chi), cb; zeta = zeta)
     s.priv + OMEGA * gam * (sbar - 0.5 * sbar^2)
 end
 
 "Ramsey rule: maximize steady-state flow value over sbar on a fine grid
 (closed form exists in the interior region; the grid handles corners)."
-function ramsey(p::Float64, cb; gam = GAM)
+function ramsey(p::Float64, cb; gam = GAM, zeta::Float64 = ZETA_H,
+                chi::Float64 = CHI0)
     sgrid = 0.0:0.0005:1.0
     best_s, best_v = 0.0, -Inf
     for sb in sgrid
-        v = hflow(sb, p, cb; gam = gam)
+        v = hflow(sb, p, cb; gam = gam, zeta = zeta, chi = chi)
         if v > best_v
             best_v, best_s = v, sb
         end
@@ -98,7 +224,7 @@ end
 # ------------------------------------------------------------------ dynamics
 "Perfect-foresight path after a permanent jump of the exposed loss rate from
 0 to pihat at t=1, starting from the pre-shock steady state (interior case)."
-function transition(pihat::Float64, cb; T::Int = 31)
+function transition(pihat::Float64, cb; T::Int = 31, zeta::Float64 = ZETA_H)
     pre = ss(0.0, cb)
     post = ss(pihat, cb)
     dinf = post.aE - post.aA
@@ -111,7 +237,7 @@ function transition(pihat::Float64, cb; T::Int = 31)
     aA = [Npath[t] - MU * dpath[t] for t in 1:T]
     aE = [aA[t] + dpath[t] for t in 1:T]
     cy = [cb.l0 + cb.l1 * Npath[t] for t in 1:T]
-    priv = [cy[t] * Npath[t] * W for t in 1:T]
+    priv = [zeta * cy[t] * Npath[t] * W for t in 1:T]
     Dict("N" => Npath, "aE" => aE, "aA" => aA, "cy" => cy, "priv" => priv)
 end
 
@@ -119,19 +245,24 @@ end
 function main()
     results = Dict{String,Any}()
     cb0 = calib(M0)
+    gc0 = global_calib(M0)
     results["calibration"] = Dict(
         "kappa" => cb0.kap, "l0" => cb0.l0, "l1" => cb0.l1, "nu" => cb0.nu,
         "lamN" => cb0.lamN, "lamD" => cb0.lamD, "beta_c" => BETA_C,
         "CY0" => CY0, "N0" => N0, "mu" => MU, "W" => W, "omega" => OMEGA,
-        "phi" => PHI, "p_single" => PSING, "half_life" => HL, "gamma" => GAM,
-        "multiplier" => M0, "pihat_single" => pihat_of(1.0, PSING))
+        "phi" => PHI, "chi" => CHI0, "zeta_h" => ZETA_H,
+        "p_single" => PSING, "half_life" => HL, "gamma" => GAM,
+        "multiplier" => M0, "pihat_single" => pihat_of(1.0, PSING),
+        "global_lmin" => gc0.lmin, "global_lmax" => gc0.lmax,
+        "global_steepness" => gc0.steepness,
+        "global_center" => gc0.center, "global_tau" => gc0.tau)
 
     # steady states: pre, post single-use (sbar=1), post routine breadth
     PROUT = 0.25
     pre = ss(0.0, cb0)
     post1 = ss(pihat_of(1.0, PSING), cb0)
-    postR = ss(pihat_of(1.0, PROUT), cb0)
-    softR = ss(OMEGA * 1.0 * PSING * 0.15, cb0)          # phi = 0.15
+    postR = global_ss(pihat_of(1.0, PROUT), gc0)
+    softR = global_ss(pihat_of(1.0, PSING; phi = 0.15), gc0)
     results["ss"] = Dict(
         "pre" => Dict(pairs(pre)), "post_single" => Dict(pairs(post1)),
         "post_routine" => Dict(pairs(postR)), "post_soft" => Dict(pairs(softR)),
@@ -175,14 +306,28 @@ function main()
     end
     results["p5"] = p5
 
-    # Laffer curve in breadth p at sbar = 1, and Ramsey rule by breadth
+    # Global sanctions-use frontier with bounded convenience and convex costs.
     pgrid = collect(0.0:0.01:0.5)
-    laffer = Dict{String,Any}("p" => pgrid)
-    laffer["v_weaponize"] = [hflow(1.0, p, cb0) for p in pgrid]
-    laffer["v_restraint"] = [hflow(0.0, p, cb0) for p in pgrid]
-    laffer["N_weaponize"] = [ss(pihat_of(1.0, p), cb0).N for p in pgrid]
-    laffer["s_R"] = [ramsey(p, cb0).s for p in pgrid]
-    results["laffer"] = laffer
+    frontier = Dict{String,Any}("p" => pgrid)
+    frontier["v_weaponize"] = [global_hflow(1.0, p, gc0) for p in pgrid]
+    frontier["v_restraint"] = [global_hflow(0.0, p, gc0) for p in pgrid]
+    frontier["N_weaponize"] = [global_ss(pihat_of(1.0, p), gc0).N for p in pgrid]
+    frontier["s_R"] = [global_ramsey(p, gc0).s for p in pgrid]
+    frontier["gamma_threshold"] = [gamma_threshold(p, gc0) for p in pgrid]
+    results["frontier"] = frontier
+
+    threshold = Dict{String,Any}()
+    for zeta in (0.25, 0.5, 1.0), chi in (1.0, 2.0, 4.0)
+        key = "zeta_$(zeta)_chi_$(chi)"
+        threshold[key] = Dict(
+            "gamma_at_p_0.02" => gamma_threshold(
+                PSING, gc0; zeta = zeta, chi = chi),
+            "gamma_at_p_0.10" => gamma_threshold(
+                0.10, gc0; zeta = zeta, chi = chi),
+            "gamma_at_p_0.25" => gamma_threshold(
+                PROUT, gc0; zeta = zeta, chi = chi))
+    end
+    results["geopolitical_thresholds"] = threshold
 
     # counterfactual: deeper outside asset market. Lower diversification cost
     # kappa by 30 percent and recalibrate the financial spread rbar so that
@@ -209,4 +354,6 @@ function main()
             round(pol["gam_200"]["commit_flow_bn"], digits = 2))
 end
 
-main()
+if abspath(PROGRAM_FILE) == @__FILE__
+    main()
+end

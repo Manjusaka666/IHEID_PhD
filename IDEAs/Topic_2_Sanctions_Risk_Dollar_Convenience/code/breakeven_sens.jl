@@ -9,35 +9,17 @@
 #
 # Run:  julia --project=. breakeven_sens.jl
 
-include("solve_model.jl")   # reuses calib, ss, pihat_of; reruns main (fast)
-
-# steady-state privilege at exposed loss rate pihat, for possibly non-baseline
-# (mu, phi): rebuild ss with explicit mu.
-function ss_mu(pihat::Float64, cb, mu::Float64)
-    aE, aA = 0.5, 0.5
-    for _ in 1:200_000
-        N = mu * aE + (1.0 - mu) * aA
-        cy = cb.l0 + cb.l1 * N
-        aE2 = clamp((cy - pihat) / cb.kap, 0.0, 1.0)
-        aA2 = clamp(cy / cb.kap, 0.0, 1.0)
-        if abs(aE2 - aE) + abs(aA2 - aA) < 1e-15
-            aE, aA = aE2, aA2
-            break
-        end
-        aE = 0.5 * (aE + aE2)
-        aA = 0.5 * (aA + aA2)
-    end
-    N = mu * aE + (1.0 - mu) * aA
-    cy = cb.l0 + cb.l1 * N
-    (N = N, priv = cy * N * W)
-end
+include("solve_model.jl")
 
 "Break-even breadth p* by bisection, given multiplier m, stakes gam,
 severity phi, exposed mass mu."
-function pstar(m::Float64, gam::Float64, phi::Float64, mu::Float64)
-    cb = calib(m)
-    base = ss_mu(0.0, cb, mu).priv
-    f(p) = ss_mu(OMEGA * 1.0 * p * phi, cb, mu).priv + OMEGA * gam / 2.0 - base
+function pstar(m::Float64, gam::Float64, phi::Float64, mu::Float64;
+               zeta::Float64 = ZETA_H, chi::Float64 = CHI0)
+    gc = global_calib(m)
+    base = global_ss(0.0, gc; mu = mu, zeta = zeta).priv
+    f(p) = global_ss(
+        sanctions_wedge(1.0, p; phi = phi, chi = chi), gc;
+        mu = mu, zeta = zeta).priv + OMEGA * gam / 2.0 - base
     lo, hi = 1e-5, 1.0
     f(hi) > 0 && return NaN     # weapon never breaks even on [0,1]
     for _ in 1:200
@@ -48,8 +30,10 @@ function pstar(m::Float64, gam::Float64, phi::Float64, mu::Float64)
 end
 
 function main_sens()
-    base = (m = 1.5, gam = 200.0, phi = 0.5, mu = 0.5)
-    p0 = pstar(base.m, base.gam, base.phi, base.mu)
+    base = (m = 1.5, gam = 200.0, phi = 0.5, mu = 0.5,
+            zeta = ZETA_H, chi = CHI0)
+    p0 = pstar(base.m, base.gam, base.phi, base.mu;
+               zeta = base.zeta, chi = base.chi)
 
     ow = Dict(
         "m_1.0"   => pstar(1.0, base.gam, base.phi, base.mu),
@@ -60,6 +44,10 @@ function main_sens()
         "phi_0.75" => pstar(base.m, base.gam, 0.75, base.mu),
         "mu_0.3"  => pstar(base.m, base.gam, base.phi, 0.3),
         "mu_0.7"  => pstar(base.m, base.gam, base.phi, 0.7),
+        "zeta_0.25" => pstar(base.m, base.gam, base.phi, base.mu; zeta = 0.25),
+        "zeta_1.0" => pstar(base.m, base.gam, base.phi, base.mu; zeta = 1.0),
+        "chi_2.0" => pstar(base.m, base.gam, base.phi, base.mu; chi = 2.0),
+        "chi_4.0" => pstar(base.m, base.gam, base.phi, base.mu; chi = 4.0),
     )
 
     vals = Float64[]
@@ -73,10 +61,10 @@ function main_sens()
     # reputation threshold: trigger equilibrium sustains s_R iff
     # beta_H/(1-beta_H) >= gam / (omega*gam - 2*l1*omega^2*c^2*W),
     # i.e. beta_H >= T/(1+T). Computed at baseline and across gamma.
-    function beta_rep(m, gam, phi, mu, p)
+    function beta_rep(m, gam, phi, mu, p; zeta = ZETA_H, chi = CHI0)
         cb = calib(m)
-        c = mu * p * phi / (cb.kap - cb.l1)
-        denom = OMEGA * gam - 2.0 * cb.l1 * OMEGA^2 * c^2 * W
+        c = mu * p * phi * chi / (cb.kap - cb.l1)
+        denom = OMEGA * gam - 2.0 * zeta * cb.l1 * OMEGA^2 * c^2 * W
         denom <= 0 && return NaN
         T = gam / denom
         T / (1.0 + T)
@@ -102,6 +90,10 @@ function main_sens()
         "\\newcommand{\\PBEphiHigh}{$(fmtp(ow["phi_0.75"]))}",
         "\\newcommand{\\PBEmuLow}{$(fmtp(ow["mu_0.3"]))}",
         "\\newcommand{\\PBEmuHigh}{$(fmtp(ow["mu_0.7"]))}",
+        "\\newcommand{\\PBEzetaLow}{$(fmtp(ow["zeta_0.25"]))}",
+        "\\newcommand{\\PBEzetaHigh}{$(fmtp(ow["zeta_1.0"]))}",
+        "\\newcommand{\\PBEchiTwo}{$(fmtp(ow["chi_2.0"]))}",
+        "\\newcommand{\\PBEchiFour}{$(fmtp(ow["chi_4.0"]))}",
         "\\newcommand{\\PBELo}{$(fmtp(lo))}",
         "\\newcommand{\\PBEHi}{$(fmtp(hi))}",
         "\\newcommand{\\BetaRepBase}{$(round(brep, digits = 3))}",

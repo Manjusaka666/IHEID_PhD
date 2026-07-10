@@ -96,40 +96,6 @@
     \field{year}{2017}
   \endentry
 
-  \entry{BarroGordon1983}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=BRJ}{%
-         family={Barro},
-         familyi={B\bibinitperiod},
-         given={Robert\bibnamedelima J.},
-         giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
-      }}%
-      {{hash=GDB}{%
-         family={Gordon},
-         familyi={G\bibinitperiod},
-         given={David\bibnamedelima B.},
-         giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{BRJGDB1}
-    \strng{fullhash}{BRJGDB1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{1983}
-    \field{labeldatesource}{}
-    \field{sortinit}{B}
-    \field{sortinithash}{B}
-    \verb{doi}
-    \verb 10.1016/0304-3932(83)90051-X
-    \endverb
-    \field{number}{1}
-    \field{pages}{101\bibrangedash 121}
-    \field{title}{Rules, Discretion and Reputation in a Model of Monetary Policy}
-    \field{volume}{12}
-    \field{journaltitle}{Journal of Monetary Economics}
-    \field{year}{1983}
-  \endentry
-
   \entry{BianchiSosaPadilla2024JME}{article}{}{}
     \name{author}{2}{}{%
       {{hash=BJ}{%
@@ -236,46 +202,6 @@
     \field{year}{2018}
   \endentry
 
-  \entry{EichengreenMehlChitu2019}{article}{}{}
-    \name{author}{3}{}{%
-      {{hash=EB}{%
-         family={Eichengreen},
-         familyi={E\bibinitperiod},
-         given={Barry},
-         giveni={B\bibinitperiod},
-      }}%
-      {{hash=MA}{%
-         family={Mehl},
-         familyi={M\bibinitperiod},
-         given={Arnaud},
-         giveni={A\bibinitperiod},
-      }}%
-      {{hash=CL}{%
-         family={Chi{\c t}u},
-         familyi={C\bibinitperiod},
-         given={Livia},
-         giveni={L\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{EB+1}
-    \strng{fullhash}{EBMACL1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2019}
-    \field{labeldatesource}{}
-    \field{sortinit}{E}
-    \field{sortinithash}{E}
-    \verb{doi}
-    \verb 10.1093/epolic/eiz005
-    \endverb
-    \field{number}{98}
-    \field{pages}{315\bibrangedash 363}
-    \field{title}{Mars or Mercury? The Geopolitics of International Currency Choice}
-    \field{volume}{34}
-    \field{journaltitle}{Economic Policy}
-    \field{year}{2019}
-  \endentry
-
   \entry{FarhiMaggiori2018}{article}{}{}
     \name{author}{2}{}{%
       {{hash=FE}{%
@@ -310,55 +236,27 @@
     \field{year}{2018}
   \endentry
 
-  \entry{FelbermayrEtAl2020}{article}{}{}
-    \name{author}{5}{}{%
-      {{hash=FG}{%
-         family={Felbermayr},
-         familyi={F\bibinitperiod},
-         given={Gabriel},
-         giveni={G\bibinitperiod},
-      }}%
-      {{hash=KA}{%
-         family={Kirilakha},
-         familyi={K\bibinitperiod},
-         given={Aleksandra},
-         giveni={A\bibinitperiod},
-      }}%
-      {{hash=SC}{%
-         family={Syropoulos},
-         familyi={S\bibinitperiod},
-         given={Constantinos},
-         giveni={C\bibinitperiod},
-      }}%
-      {{hash=YE}{%
-         family={Yalcin},
-         familyi={Y\bibinitperiod},
-         given={Erdal},
-         giveni={E\bibinitperiod},
-      }}%
-      {{hash=YYV}{%
-         family={Yotov},
-         familyi={Y\bibinitperiod},
-         given={Yoto\bibnamedelima V.},
-         giveni={Y\bibinitperiod\bibinitdelim V\bibinitperiod},
+  \entry{GSDBRelease4}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={{Global Sanctions Data Base}},
+         familyi={G\bibinitperiod},
       }}%
     }
-    \strng{namehash}{FG+1}
-    \strng{fullhash}{FGKASCYEYYV1}
+    \strng{namehash}{G1}
+    \strng{fullhash}{G1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{labelyear}{2020}
+    \field{labelyear}{2025}
     \field{labeldatesource}{}
-    \field{sortinit}{F}
-    \field{sortinithash}{F}
-    \verb{doi}
-    \verb 10.1016/j.euroecorev.2020.103561
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{howpublished}{Public academic data release}
+    \field{title}{Global Sanctions Data Base, Release 4}
+    \verb{url}
+    \verb https://www.globalsanctionsdatabase.com/
     \endverb
-    \field{pages}{103561}
-    \field{title}{The Global Sanctions Data Base}
-    \field{volume}{129}
-    \field{journaltitle}{European Economic Review}
-    \field{year}{2020}
+    \field{year}{2025}
   \endentry
 
   \entry{GopinathStein2021}{article}{}{}
@@ -532,40 +430,6 @@
     \field{year}{2012}
   \endentry
 
-  \entry{KydlandPrescott1977}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=KFE}{%
-         family={Kydland},
-         familyi={K\bibinitperiod},
-         given={Finn\bibnamedelima E.},
-         giveni={F\bibinitperiod\bibinitdelim E\bibinitperiod},
-      }}%
-      {{hash=PEC}{%
-         family={Prescott},
-         familyi={P\bibinitperiod},
-         given={Edward\bibnamedelima C.},
-         giveni={E\bibinitperiod\bibinitdelim C\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{KFEPEC1}
-    \strng{fullhash}{KFEPEC1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{1977}
-    \field{labeldatesource}{}
-    \field{sortinit}{K}
-    \field{sortinithash}{K}
-    \verb{doi}
-    \verb 10.1086/260580
-    \endverb
-    \field{number}{3}
-    \field{pages}{473\bibrangedash 491}
-    \field{title}{Rules Rather than Discretion: The Inconsistency of Optimal Plans}
-    \field{volume}{85}
-    \field{journaltitle}{Journal of Political Economy}
-    \field{year}{1977}
-  \endentry
-
   \entry{BrookingsRussiaAssets2025}{misc}{}{}
     \name{author}{3}{}{%
       {{hash=RE}{%
@@ -602,6 +466,30 @@
     \verb en-sovereign-assets/
     \endverb
     \field{year}{2025}
+  \endentry
+
+  \entry{USTreasuryTIC}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=U}{%
+         family={{United States Department of the Treasury}},
+         familyi={U\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{U1}
+    \strng{fullhash}{U1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{U}
+    \field{sortinithash}{U}
+    \field{howpublished}{United States Department of the Treasury}
+    \field{title}{Treasury International Capital System}
+    \verb{url}
+    \verb https://home.treasury.gov/data/treasury-international-capital-tic-sys
+    \verb tem
+    \endverb
+    \field{year}{2026}
   \endentry
 
   \entry{WGC2024}{misc}{}{}
