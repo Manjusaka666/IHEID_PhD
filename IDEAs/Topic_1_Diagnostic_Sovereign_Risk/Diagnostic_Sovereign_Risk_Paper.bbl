@@ -17,68 +17,6 @@
 \endgroup
 
 \datalist[entry]{nyt/global//global/global/global}
-  \entry{AguiarEtAl2016}{incollection}{}{}
-    \name{author}{4}{}{%
-      {{hash=AM}{%
-         family={Aguiar},
-         familyi={A\bibinitperiod},
-         given={Mark},
-         giveni={M\bibinitperiod},
-      }}%
-      {{hash=CS}{%
-         family={Chatterjee},
-         familyi={C\bibinitperiod},
-         given={Satyajit},
-         giveni={S\bibinitperiod},
-      }}%
-      {{hash=CH}{%
-         family={Cole},
-         familyi={C\bibinitperiod},
-         given={Harold},
-         giveni={H\bibinitperiod},
-      }}%
-      {{hash=SZ}{%
-         family={Stangebye},
-         familyi={S\bibinitperiod},
-         given={Zachary},
-         giveni={Z\bibinitperiod},
-      }}%
-    }
-    \name{editor}{2}{}{%
-      {{hash=TJB}{%
-         family={Taylor},
-         familyi={T\bibinitperiod},
-         given={John\bibnamedelima B.},
-         giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod},
-      }}%
-      {{hash=UH}{%
-         family={Uhlig},
-         familyi={U\bibinitperiod},
-         given={Harald},
-         giveni={H\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Elsevier}%
-    }
-    \strng{namehash}{AM+1}
-    \strng{fullhash}{AMCSCHSZ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2016}
-    \field{labeldatesource}{}
-    \field{sortinit}{A}
-    \field{sortinithash}{A}
-    \field{booktitle}{Handbook of Macroeconomics}
-    \verb{doi}
-    \verb 10.1016/bs.hesmac.2016.04.005
-    \endverb
-    \field{pages}{1697\bibrangedash 1755}
-    \field{title}{Quantitative Models of Sovereign Debt Crises}
-    \field{volume}{2}
-    \field{year}{2016}
-  \endentry
-
   \entry{AguiarGopinath2006}{article}{}{}
     \name{author}{2}{}{%
       {{hash=AM}{%
@@ -443,39 +381,6 @@
     \field{year}{1981}
   \endentry
 
-  \entry{GennaioliShleifer2018}{book}{}{}
-    \name{author}{2}{}{%
-      {{hash=GN}{%
-         family={Gennaioli},
-         familyi={G\bibinitperiod},
-         given={Nicola},
-         giveni={N\bibinitperiod},
-      }}%
-      {{hash=SA}{%
-         family={Shleifer},
-         familyi={S\bibinitperiod},
-         given={Andrei},
-         giveni={A\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Princeton University Press}%
-    }
-    \strng{namehash}{GNSA1}
-    \strng{fullhash}{GNSA1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2018}
-    \field{labeldatesource}{}
-    \field{sortinit}{G}
-    \field{sortinithash}{G}
-    \field{title}{A Crisis of Beliefs: Investor Psychology and Financial Fragility}
-    \list{location}{1}{%
-      {Princeton, NJ}%
-    }
-    \field{year}{2018}
-  \endentry
-
   \entry{GreenwoodHanson2013}{article}{}{}
     \name{author}{2}{}{%
       {{hash=GR}{%
@@ -508,40 +413,6 @@
     \field{volume}{26}
     \field{journaltitle}{The Review of Financial Studies}
     \field{year}{2013}
-  \endentry
-
-  \entry{HatchondoMartinez2009}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=HJC}{%
-         family={Hatchondo},
-         familyi={H\bibinitperiod},
-         given={Juan\bibnamedelima Carlos},
-         giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod},
-      }}%
-      {{hash=ML}{%
-         family={Martinez},
-         familyi={M\bibinitperiod},
-         given={Leonardo},
-         giveni={L\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{HJCML1}
-    \strng{fullhash}{HJCML1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2009}
-    \field{labeldatesource}{}
-    \field{sortinit}{H}
-    \field{sortinithash}{H}
-    \verb{doi}
-    \verb 10.1016/j.jinteco.2009.07.002
-    \endverb
-    \field{number}{1}
-    \field{pages}{117\bibrangedash 125}
-    \field{title}{Long-Duration Bonds and Sovereign Defaults}
-    \field{volume}{79}
-    \field{journaltitle}{Journal of International Economics}
-    \field{year}{2009}
   \endentry
 
   \entry{LongstaffEtAl2011}{article}{}{}
@@ -696,6 +567,41 @@
     \field{volume}{127}
     \field{journaltitle}{The Quarterly Journal of Economics}
     \field{year}{2012}
+  \endentry
+
+  \entry{NiemannPrein2025}{report}{}{}
+    \name{author}{2}{}{%
+      {{hash=NS}{%
+         family={Niemann},
+         familyi={N\bibinitperiod},
+         given={Stefan},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=PTM}{%
+         family={Prein},
+         familyi={P\bibinitperiod},
+         given={Timm\bibnamedelima M.},
+         giveni={T\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NSPTM1}
+    \strng{fullhash}{NSPTM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2025}
+    \field{labeldatesource}{}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{number}{2025-02}
+    \field{title}{Sovereign Risk under Diagnostic Expectations}
+    \verb{url}
+    \verb https://ideas.repec.org/p/knz/dpteco/2502.html
+    \endverb
+    \list{institution}{1}{%
+      {University of Konstanz, Department of Economics}%
+    }
+    \field{type}{Working Paper Series}
+    \field{year}{2025}
   \endentry
 
   \entry{ReinhartRogoff2009}{book}{}{}

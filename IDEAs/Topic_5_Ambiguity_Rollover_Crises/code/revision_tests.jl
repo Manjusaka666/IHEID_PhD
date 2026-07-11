@@ -67,3 +67,16 @@ end
         tstar(MU0, YSTRESS; alp = ALP * (1 - eps))) / (2 * ALP * eps)
     @test sign(derivative) == sign(ydagger - YSTRESS)
 end
+
+@testset "coordination multiplier distribution" begin
+    multipliers = Float64[]
+    for y in 0.80:0.05:1.20, mu in (0.2, 0.4, 0.6, 0.8),
+            delta in (0.04, 0.08, 0.12)
+        threshold = tstar(mu, y; delF = delta)
+        slope = slope_at(threshold, mu, y; delF = delta)
+        @test 0 <= slope < 1
+        push!(multipliers, 1 / (1 - slope))
+    end
+    @test minimum(multipliers) >= 1
+    @test maximum(multipliers) > minimum(multipliers)
+end

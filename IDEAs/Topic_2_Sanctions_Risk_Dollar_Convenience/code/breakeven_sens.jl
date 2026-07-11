@@ -14,19 +14,12 @@ include("solve_model.jl")
 "Break-even breadth p* by bisection, given multiplier m, stakes gam,
 severity phi, exposed mass mu."
 function pstar(m::Float64, gam::Float64, phi::Float64, mu::Float64;
-               zeta::Float64 = ZETA_H, chi::Float64 = CHI0)
-    gc = global_calib(m)
-    base = global_ss(0.0, gc; mu = mu, zeta = zeta).priv
-    f(p) = global_ss(
-        sanctions_wedge(1.0, p; phi = phi, chi = chi), gc;
-        mu = mu, zeta = zeta).priv + OMEGA * gam / 2.0 - base
-    lo, hi = 1e-5, 1.0
-    f(hi) > 0 && return NaN     # weapon never breaks even on [0,1]
-    for _ in 1:200
-        mid = 0.5 * (lo + hi)
-        f(mid) > 0 ? (lo = mid) : (hi = mid)
-    end
-    0.5 * (lo + hi)
+               zeta::Float64 = ZETA_H, chi::Float64 = CHI0,
+               convenience::Symbol = :logistic,
+               cost::Symbol = :cubic)
+    gc = global_calib(m; convenience = convenience, cost = cost)
+    break_even_breadth(
+        gc; gam = gam, zeta = zeta, chi = chi, mu = mu, phi = phi)
 end
 
 function main_sens()
@@ -57,6 +50,27 @@ function main_sens()
         isnan(v) || push!(vals, v)
     end
     lo, hi = extrema(vals)
+
+    closures = Dict{String,Float64}()
+    closure_shares = Float64[]
+    closure_root_counts = Int[]
+    for convenience in (:logistic, :hill, :power)
+        for cost in (:quadratic, :cubic, :quintic)
+            key = "$(convenience)_$(cost)"
+            closures[key] = pstar(
+                base.m, base.gam, base.phi, base.mu;
+                zeta = base.zeta, chi = base.chi,
+                convenience = convenience, cost = cost)
+            alternative = global_calib(
+                base.m; convenience = convenience, cost = cost)
+            routine_wedge = sanctions_wedge(
+                1.0, 0.25; phi = base.phi, chi = base.chi)
+            push!(closure_shares,
+                  global_ss(routine_wedge, alternative).N)
+            push!(closure_root_counts,
+                  length(global_roots(routine_wedge, alternative)))
+        end
+    end
 
     # reputation threshold: trigger equilibrium sustains s_R iff
     # beta_H/(1-beta_H) >= gam / (omega*gam - 2*l1*omega^2*c^2*W),
@@ -99,6 +113,20 @@ function main_sens()
         "\\newcommand{\\BetaRepBase}{$(round(brep, digits = 3))}",
         "\\newcommand{\\BetaRepRoutine}{$(round(brep_rout, digits = 3))}",
         "\\newcommand{\\RateRepBase}{$(round((1.0 - brep) / brep * 100, digits = 1))}",
+        "\\newcommand{\\PBELogQuadratic}{$(fmtp(closures["logistic_quadratic"]))}",
+        "\\newcommand{\\PBELogCubic}{$(fmtp(closures["logistic_cubic"]))}",
+        "\\newcommand{\\PBELogQuintic}{$(fmtp(closures["logistic_quintic"]))}",
+        "\\newcommand{\\PBEHillQuadratic}{$(fmtp(closures["hill_quadratic"]))}",
+        "\\newcommand{\\PBEHillCubic}{$(fmtp(closures["hill_cubic"]))}",
+        "\\newcommand{\\PBEHillQuintic}{$(fmtp(closures["hill_quintic"]))}",
+        "\\newcommand{\\PBEPowerQuadratic}{$(fmtp(closures["power_quadratic"]))}",
+        "\\newcommand{\\PBEPowerCubic}{$(fmtp(closures["power_cubic"]))}",
+        "\\newcommand{\\PBEPowerQuintic}{$(fmtp(closures["power_quintic"]))}",
+        "\\newcommand{\\PBEClosureLow}{$(fmtp(minimum(values(closures))))}",
+        "\\newcommand{\\PBEClosureHigh}{$(fmtp(maximum(values(closures))))}",
+        "\\newcommand{\\NClosureLow}{$(fmtp(minimum(closure_shares)))}",
+        "\\newcommand{\\NClosureHigh}{$(fmtp(maximum(closure_shares)))}",
+        "\\newcommand{\\ClosureMaxRoots}{$(maximum(closure_root_counts))}",
     ]
     open(joinpath(OUTDIR, "breakeven_numbers.tex"), "w") do f
         for l in lines

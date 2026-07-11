@@ -346,6 +346,89 @@
    13.091969502755576
   ]
  },
+ "functional_forms": {
+  "hill_cubic": {
+   "break_even_breadth": 0.05208641360795645,
+   "continued_routine_share": 0.16350562079228043,
+   "gamma_threshold_p_0.10": 426.40367339268533,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.16350562079216624
+   ]
+  },
+  "hill_quadratic": {
+   "break_even_breadth": 0.054864566180115745,
+   "continued_routine_share": 0.18022230377309967,
+   "gamma_threshold_p_0.10": 377.7062733981421,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.1802223037730108
+   ]
+  },
+  "hill_quintic": {
+   "break_even_breadth": 0.05209023667856168,
+   "continued_routine_share": 0.16604745290219108,
+   "gamma_threshold_p_0.10": 418.37590028242045,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.1660474529020738
+   ]
+  },
+  "logistic_cubic": {
+   "break_even_breadth": 0.05540050645439312,
+   "continued_routine_share": 0.2324147747719726,
+   "gamma_threshold_p_0.10": 363.9127005327501,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.232414774771957
+   ]
+  },
+  "logistic_quadratic": {
+   "break_even_breadth": 0.05835038142231773,
+   "continued_routine_share": 0.2349168932969296,
+   "gamma_threshold_p_0.10": 334.0571829895245,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.2349168932969118
+   ]
+  },
+  "logistic_quintic": {
+   "break_even_breadth": 0.05542276459710829,
+   "continued_routine_share": 0.2323860786345559,
+   "gamma_threshold_p_0.10": 359.767146826444,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.23238607863454053
+   ]
+  },
+  "power_cubic": {
+   "break_even_breadth": 0.05373666582738548,
+   "continued_routine_share": 0.20582822335839418,
+   "gamma_threshold_p_0.10": 390.71584358699494,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.20582822335834738
+   ]
+  },
+  "power_quadratic": {
+   "break_even_breadth": 0.05659947713017763,
+   "continued_routine_share": 0.21180396675027385,
+   "gamma_threshold_p_0.10": 353.6540749949573,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.21180396675023488
+   ]
+  },
+  "power_quintic": {
+   "break_even_breadth": 0.05374942557524438,
+   "continued_routine_share": 0.20612669916268211,
+   "gamma_threshold_p_0.10": 385.18884041947996,
+   "routine_root_count": 1,
+   "routine_roots": [
+    0.20612669916264542
+   ]
+  }
+ },
  "geopolitical_thresholds": {
   "zeta_0.25_chi_1.0": {
    "gamma_at_p_0.02": 35.68551823360146,

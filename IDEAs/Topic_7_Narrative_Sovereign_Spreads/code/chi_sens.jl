@@ -1,307 +1,209 @@
-# Sensitivity of the narrative-contagion scenario to the annual feedback
-# parameter chi.
+# Debt-service-feedback sensitivity under exact one-year bond pricing.
 #
-# ---------------------------------------------------------------------------
-# CASH-FLOW INTERPRETATION OF chi.
-#
-# Fundamentals are measured in annual resource units. The feedback coefficient
-# is refinancing share times market-rate pass-through times the conversion from
-# extra debt service into the capacity state. Official loans, fixed-rate debt,
-# cash buffers, and fiscal adjustment can all lower this product. The baseline
-# 0.20 and the [0.10, 0.30] band are scenarios, not estimates.
-#
-# ---------------------------------------------------------------------------
-# SCENARIO RULE HELD FIXED WHILE chi VARIES.
-#
-# The epidemic block sets beta = A * R0PEAK * gam * rel(theta,n) / RELREF, where
-# RELREF is the peak price relevance (max over theta of ds/dn at n=0) and
-# R0PEAK = 4 is the scenario peak reproduction number at the baseline chi.
-# R0PEAK pins down the structural amplification constant  mbar * A * h'(.)  of
-# the adoption technology; that constant is a property of how agents react to
-# the story, not of the sovereign's financing need. It must therefore stay
-# FIXED as chi varies. Operationally this means RELREF is frozen at its
-# chi = 0.20 baseline value in every beta evaluation (zone AND Monte Carlo)
-# for chi = 0.10 and chi = 0.30. (If instead RELREF were recomputed at each
-# chi, R0PEAK = 4 would be silently re-imposed at every chi, re-calibrating the
-# amplification to the new pricing block -- exactly what must not happen.)
-#
-# The "peak price relevance" reported per chi (RelPeakChi*) is a property of
-# the PRICING block and DOES move with chi; it is the model's own RELREF at
-# that chi (= max ds/dn), used only for reporting, not for normalising beta.
-#
-# This file first reproduces the baseline scenario, then recomputes the
-# sensitivity band and writes output/chi_numbers.tex.
+# The attention technology is normalized once at the baseline chi = 0.12.
+# Stable sensitivity uses chi in [0.10, 0.20]. The script reports chi = 0.30
+# separately because its global pricing gain crosses the contraction bound.
 
-using SpecialFunctions, Random, Printf
+using SpecialFunctions: erfc
+using Random
+using Printf
 
-Phi(x) = 0.5 * erfc(-x / sqrt(2.0))
-phi(x) = exp(-0.5 * x^2) / sqrt(2.0 * pi)
+Phi(x) = 0.5 * erfc(-x / sqrt(2))
+phi(x) = exp(-0.5x^2) / sqrt(2pi)
 
-# ----------------------------------------------------------- fixed parameters
-# (identical to solve_model.jl; only chi -- and the derived CHIM -- vary)
-const RHO  = 0.90
-const SIG  = 0.05
-const THSS = 0.15
-const THB  = 0.0
-const REC  = 0.60
-const XI   = 0.03
-const SHIFT = RHO * XI / SIG
+const RHO_S = 0.90
+const SIG_S = 0.05
+const THSS_S = 0.15
+const REC_S = 0.60
+const XI_S = 0.03
+const SHIFT_S = RHO_S * XI_S / SIG_S
+const GAMA_S = 0.15
+const GAMN_S = 0.30
+const ACCEPTANCE_S = 0.60
+const R0PEAK_S = 4.0
+const A0SEED_S = 0.08
+const N0SEED_S = 0.02
+const RHOM_S = RHO_S^(1 / 12)
+const SIGM_S = SIG_S * sqrt((1 - RHOM_S^2) / (1 - RHO_S^2))
 
-const GAM0   = 0.30
-const R0PEAK = 4.0
-const N0SEED = 0.02
+zfun_s(th, spread, chi) =
+    (-RHO_S * th - (1 - RHO_S) * THSS_S + chi * spread) / SIG_S
+pbar_s(th, spread, n, chi) = (1 - n) * Phi(zfun_s(th, spread, chi)) +
+    n * Phi(zfun_s(th, spread, chi) + SHIFT_S)
+credit_spread_s(probability) = -log1p(-(1 - REC_S) * clamp(probability, 0, 1))
+spread_slope_s(probability) =
+    (1 - REC_S) / (1 - (1 - REC_S) * probability)
 
-const RHOM = RHO^(1 / 12)
-const SIGM = SIG * sqrt((1 - RHOM^2) / (1 - RHO^2))
-
-# ------------------------------------------------------- pricing fixed point
-# All pricing objects are parameterized by chi (the annual feedback intensity).
-zfun(th, s, chi) = (THB - RHO * th - (1 - RHO) * THSS + chi * s) / SIG
-pbar(th, s, n, chi) = (1 - n) * Phi(zfun(th, s, chi)) + n * Phi(zfun(th, s, chi) + SHIFT)
-
-"""equilibrium spread (decimal p.a.); cap = facility ceiling (Inf if none)"""
-function sstar(th, n, chi; cap = Inf)
-    s = 0.0
-    for _ in 1:200
-        snew = min((1 - REC) * pbar(th, s, n, chi), cap)
-        abs(snew - s) < 1e-12 && return snew
-        s = snew
+function sstar_s(th, n, chi; cap = Inf)
+    spread = 0.0
+    for _ in 1:2_000
+        candidate = min(credit_spread_s(pbar_s(th, spread, n, chi)), cap)
+        abs(candidate - spread) < 1e-12 && return candidate
+        spread = 0.5 * (spread + candidate)
     end
-    return s
+    error("pricing failed at chi = $chi")
 end
 
-"""pricing (doom-loop) multiplier 1/(1 - gain) at the equilibrium"""
-function mult(th, n, chi; cap = Inf)
-    s = sstar(th, n, chi; cap = cap)
-    s >= cap - 1e-12 && return 1.0
-    z = zfun(th, s, chi)
-    gain = (1 - REC) * ((1 - n) * phi(z) + n * phi(z + SHIFT)) * chi / SIG
-    return 1 / (1 - gain)
+function multiplier_s(th, n, chi; cap = Inf)
+    spread = sstar_s(th, n, chi; cap = cap)
+    spread >= cap - 1e-12 && return 1.0
+    z = zfun_s(th, spread, chi)
+    probability = pbar_s(th, spread, n, chi)
+    density = (1 - n) * phi(z) + n * phi(z + SHIFT_S)
+    1 / (1 - spread_slope_s(probability) * density * chi / SIG_S)
 end
 
-"""price relevance of the story: ds/dn (discrete, h=0.05), in decimal"""
-function rel(th, n, chi; cap = Inf)
-    s = sstar(th, n, chi; cap = cap)
-    s >= cap - 1e-12 && return 0.0
-    z = zfun(th, s, chi)
-    (1 - REC) * (Phi(z + SHIFT) - Phi(z)) * mult(th, n, chi; cap = cap)
+function relevance_s(th, n, chi; cap = Inf)
+    spread = sstar_s(th, n, chi; cap = cap)
+    spread >= cap - 1e-12 && return 0.0
+    z = zfun_s(th, spread, chi)
+    probability = pbar_s(th, spread, n, chi)
+    spread_slope_s(probability) * (Phi(z + SHIFT_S) - Phi(z)) *
+        multiplier_s(th, n, chi; cap = cap)
 end
 
-function prevalence_flow(n, beta, gamma; dt = 1.0)
-    n == 0 && return 0.0
-    r = beta - gamma
-    abs(r) < 1e-12 && return n / (1 + beta * n * dt)
-    growth = exp(r * dt)
-    n * growth / (1 + beta * n * (growth - 1) / r)
+relref_s(chi) = maximum(relevance_s(th, 0.0, chi) for th in -0.05:0.001:0.30)
+const RELREF_BASE_S = relref_s(0.12)
+attention_s(th, n, chi, normalization; A = 1.0, cap = Inf) =
+    A * R0PEAK_S * GAMN_S * relevance_s(th, n, chi; cap = cap) /
+    (ACCEPTANCE_S * normalization)
+
+function awareness_belief_flow_s(a, n, encounter; substeps = 16)
+    h = 1 / substeps
+    state = [a, n]
+    drift(x) = begin
+        aa = clamp(x[1], 0, 1)
+        nn = clamp(x[2], 0, aa)
+        flow = encounter * nn * (1 - aa)
+        [flow - GAMA_S * aa, ACCEPTANCE_S * flow - GAMN_S * nn]
+    end
+    for _ in 1:substeps
+        k1 = drift(state)
+        k2 = drift(state + 0.5h * k1)
+        k3 = drift(state + 0.5h * k2)
+        k4 = drift(state + h * k3)
+        state += h * (k1 + 2k2 + 2k3 + k4) / 6
+        state[1] = clamp(state[1], 0, 1)
+        state[2] = clamp(state[2], 0, state[1])
+    end
+    state
 end
 
-"""peak price relevance (max ds/dn over theta at n=0) -- the model's own RELREF"""
-relref_of(chi) = maximum(rel(th, 0.0, chi) for th in -0.05:0.001:0.30)
-
-# contagion rate: adoption prob proportional to price relevance of acting.
-# relref is passed in explicitly so the amplification normalization can be held
-# fixed at the baseline value while chi varies (see header).
-beta_c(th, n, chi, relref; A = 1.0, cap = Inf) =
-    A * R0PEAK * GAM0 * rel(th, n, chi; cap = cap) / relref
-
-"""max pricing loop gain over states (uniqueness margin of the fixed point)"""
-gainmax_of(chi) = maximum((1 - REC) * phi(z) * chi / SIG for z in -4:0.01:4)
-
-"""susceptible zone {theta: R0 >= 1} for amplification A, given (chi, relref)"""
-function zone(A, chi, relref)
-    inz = [th for th in -0.05:0.0005:0.30 if beta_c(th, 0.0, chi, relref; A = A) >= GAM0]
-    isempty(inz) ? nothing : [minimum(inz), maximum(inz)]
+function gainmax_s(chi)
+    maximum(begin
+        probability = (1 - n) * Phi(z) + n * Phi(z + SHIFT_S)
+        density = (1 - n) * phi(z) + n * phi(z + SHIFT_S)
+        spread_slope_s(probability) * density * chi / SIG_S
+    end for z in -8:0.005:8, n in 0:0.01:1)
 end
 
-# ------------------------------------------------- state-grid interpolation
-const THG = collect(-0.10:0.002:0.35)
-const NG  = collect(0.0:0.02:1.0)
-function tabulate(chi, relref; cap = Inf, A = 1.0)
-    stab = [sstar(th, n, chi; cap = cap) for th in THG, n in NG]
-    btab = [beta_c(th, n, chi, relref; A = A, cap = cap) for th in THG, n in NG]
-    (stab, btab)
-end
-function interp(tab, th, n)
-    th = clamp(th, THG[1], THG[end]); n = clamp(n, NG[1], NG[end])
-    i = min(searchsortedlast(THG, th), length(THG) - 1)
-    j = min(searchsortedlast(NG, n), length(NG) - 1)
-    wt = (th - THG[i]) / (THG[i+1] - THG[i]); wn = (n - NG[j]) / (NG[j+1] - NG[j])
-    (1-wt)*(1-wn)*tab[i,j] + wt*(1-wn)*tab[i+1,j] + (1-wt)*wn*tab[i,j+1] + wt*wn*tab[i+1,j+1]
+function zone_s(chi, normalization)
+    points = [th for th in -0.05:0.0005:0.30 if
+        ACCEPTANCE_S * attention_s(th, 0, chi, normalization) / GAMN_S >= 1]
+    isempty(points) ? nothing : (minimum(points), maximum(points))
 end
 
-# ------------------------------------------------ deterministic outbreak path
-"""48-month path with no fundamentals shocks; returns theta series. CHIM=chi/12."""
-function detpath_theta(th0, n0, chi, relref; gam = GAM0, cap = Inf, A = 1.0, T = 48)
-    chim = chi * (1 - RHOM) / (1 - RHO)
-    stab, btab = tabulate(chi, relref; cap = cap, A = A)
-    ths = zeros(T)
-    th = th0; n = n0
-    for t in 1:T
-        s = interp(stab, th, n); b = interp(btab, th, n)
-        ths[t] = th
-        if th < THB
-            ths[t:end] .= th
-            break
+const TH_GRID_S = collect(-0.10:0.002:0.35)
+const N_GRID_S = collect(0.0:0.02:1.0)
+
+function tabulate_s(chi, normalization; cap = Inf)
+    spreads = [sstar_s(th, n, chi; cap = cap) for th in TH_GRID_S, n in N_GRID_S]
+    encounters = [attention_s(th, n, chi, normalization; cap = cap)
+                  for th in TH_GRID_S, n in N_GRID_S]
+    spreads, encounters
+end
+
+function interpolate_s(table, th, n)
+    th = clamp(th, first(TH_GRID_S), last(TH_GRID_S))
+    n = clamp(n, first(N_GRID_S), last(N_GRID_S))
+    i = min(searchsortedlast(TH_GRID_S, th), length(TH_GRID_S) - 1)
+    j = min(searchsortedlast(N_GRID_S, n), length(N_GRID_S) - 1)
+    wt = (th - TH_GRID_S[i]) / (TH_GRID_S[i + 1] - TH_GRID_S[i])
+    wn = (n - N_GRID_S[j]) / (N_GRID_S[j + 1] - N_GRID_S[j])
+    (1 - wt) * (1 - wn) * table[i, j] + wt * (1 - wn) * table[i + 1, j] +
+        (1 - wt) * wn * table[i, j + 1] + wt * wn * table[i + 1, j + 1]
+end
+
+const NPATH_S = 8_000
+const HORIZON_S = 24
+const EPS_S = randn(MersenneTwister(42), NPATH_S, HORIZON_S)
+
+function default_probability_s(th0, a0, n0, chi; tables, cap_month = 0,
+                               cap_tables = nothing)
+    chim = chi * (1 - RHOM_S) / (1 - RHO_S)
+    defaults = 0
+    for path in 1:NPATH_S
+        th, a, n = th0, a0, n0
+        dead = false
+        for month in 1:HORIZON_S
+            if th < 0
+                dead = true
+                break
+            end
+            active = cap_month > 0 && month >= cap_month ? cap_tables : tables
+            spread = interpolate_s(active[1], th, n)
+            encounter = interpolate_s(active[2], th, n)
+            a, n = awareness_belief_flow_s(a, n, encounter)
+            th = RHOM_S * th + (1 - RHOM_S) * THSS_S - chim * spread +
+                SIGM_S * EPS_S[path, month]
         end
-        n  = prevalence_flow(n, b, gam)
-        th = RHOM * th + (1 - RHOM) * THSS - chim * s
+        (dead || th < 0) && (defaults += 1)
     end
-    ths
+    defaults / NPATH_S
 end
 
-"""first month in which the zone path (th0=0.06, n0=seed) has theta<0"""
-function zone_def_month(chi, relref)
-    ths = detpath_theta(0.06, N0SEED, chi, relref)
-    idx = findfirst(<(0), ths)
-    idx === nothing ? -1 : idx
+function magnitudes_s(chi)
+    tables = tabulate_s(chi, RELREF_BASE_S)
+    cap_tables = tabulate_s(chi, RELREF_BASE_S; cap = 0.04)
+    theta_grid = collect(0.0:0.01:0.20)
+    narrative = [default_probability_s(
+        th, A0SEED_S, N0SEED_S, chi; tables = tables) for th in theta_grid]
+    no_story = [default_probability_s(
+        th, 0.0, 0.0, chi; tables = tables) for th in theta_grid]
+    wedge = narrative - no_story
+    peak_index = argmax(wedge)
+    timing_theta = theta_grid[peak_index]
+    timing = [default_probability_s(
+        timing_theta, A0SEED_S, N0SEED_S, chi; tables = tables,
+        cap_month = month, cap_tables = cap_tables) for month in 1:2:13]
+    (chi = chi, wedge_peak = maximum(wedge),
+     delay = last(timing) - first(timing), gain = gainmax_s(chi),
+     relevance = 1_000 * relref_s(chi), zone = zone_s(chi, RELREF_BASE_S))
 end
 
-# ----------------------------------------------- Monte Carlo: crisis hazard
-# EXACT reproduction of solve_model.jl's common-random-numbers scheme: same
-# seed, same NPATH x HOR draw order, same EPS[i,t] indexing.
-const NPATH = 8000; const HOR = 24
-const RNG = MersenneTwister(42)
-const EPS = randn(RNG, NPATH, HOR)
+low = magnitudes_s(0.10)
+high = magnitudes_s(0.20)
+boundary_gain = gainmax_s(0.30)
 
-"""P(default within HOR months) from th0 under a configuration (see solve_model.jl)."""
-function pdef(th0, n0, chi; gam = GAM0, cap = Inf, A = 1.0, tabs = nothing,
-              relref = 0.0, cutk = 0, cutfrac = 0.75, capk = 0, tabs2 = nothing)
-    chim = chi * (1 - RHOM) / (1 - RHO)
-    stab, btab = tabs === nothing ? tabulate(chi, relref; cap = cap, A = A) : tabs
-    nd = 0
-    for i in 1:NPATH
-        th = th0; n = n0; dead = false
-        for t in 1:HOR
-            if th < THB; dead = true; break; end
-            t == cutk && (n *= 1 - cutfrac)
-            st, bt = (capk > 0 && t >= capk) ? tabs2 : (stab, btab)
-            s = interp(st, th, n); b = interp(bt, th, n)
-            n  = prevalence_flow(n, b, gam)
-            th = RHOM * th + (1 - RHOM) * THSS - chim * s + SIGM * EPS[i, t]
-        end
-        (dead || th < THB) && (nd += 1)
-    end
-    nd / NPATH
-end
-
-const TH0G     = collect(0.0:0.01:0.20)
-const KGRID    = collect(1:2:13)
-const TH_TIMING = 0.04
-
-"""Full set of headline magnitudes at feedback chi, with beta normalized by
-   relref_norm (frozen at the baseline for chi != 0.20). Returns a NamedTuple."""
-function magnitudes(chi, relref_norm)
-    tab_base = tabulate(chi, relref_norm)
-    tab_cap  = tabulate(chi, relref_norm; cap = 0.04)
-
-    # (d) 24-month narrative default wedge over theta0 (same MC design/seed)
-    narr   = [pdef(t0, N0SEED, chi; tabs = tab_base) for t0 in TH0G]
-    nonarr = [pdef(t0, 0.0,    chi; tabs = tab_base) for t0 in TH0G]
-    wedge  = narr .- nonarr
-    iw = argmax(wedge)
-    wedge_peak = wedge[iw]; wedge_arg = TH0G[iw]
-
-    # (e) policy-timing (Draghi) experiment: spread cap arrives in month k
-    cap_k = [pdef(TH_TIMING, N0SEED, chi; tabs = tab_base, capk = k, tabs2 = tab_cap)
-             for k in KGRID]
-    delay_cost = 100 * (cap_k[end] - cap_k[1])       # pp per 12 months of delay
-
-    # (a) max loop gain; (b) peak price relevance; (c) zone (relref frozen)
-    gmax  = gainmax_of(chi)
-    rpeak = relref_of(chi) * 1e3                      # bp per 10pp prevalence
-    z     = zone(1.0, chi, relref_norm)
-
-    (; chi, wedge_peak, wedge_arg, cap_k, delay_cost, gmax, rpeak, zone = z,
-       pcap_early = 100 * cap_k[1], pcap_late = 100 * cap_k[end],
-       zdef = zone_def_month(chi, relref_norm))
-end
-
-# =====================================================================
-# 1) BASELINE chi = 0.20 -- reproduce and assert against quant_numbers.tex
-# =====================================================================
-const RELREF_BASE = relref_of(0.20)                  # frozen amplification norm
-println("RELREF_BASE (chi=0.20) = ", RELREF_BASE, "  (", round(RELREF_BASE*1e4, digits=1), " bp/unit n)")
-
-t0 = time()
-base = magnitudes(0.20, RELREF_BASE)
-
-println("\n--- baseline chi=0.20 recomputed ---")
-println("GainMax      = ", round(base.gmax, digits = 4), "  -> ", round(base.gmax, digits = 2))
-println("RelPeakTen   = ", round(base.rpeak, digits = 3), "  -> ", round(Int, round(base.rpeak)))
-println("zone[1.0]    = ", base.zone)
-println("WedgePeak    = ", round(100*base.wedge_peak, digits = 4), "pp at th0=", base.wedge_arg)
-println("PCapEarly    = ", round(base.pcap_early, digits = 3))
-println("PCapLate     = ", round(base.pcap_late, digits = 3))
-println("DelayCost    = ", round(base.delay_cost, digits = 3))
-println("ZoneDefMonth = ", base.zdef)
-
-# Deterministic objects: tight tolerance. MC objects: assert the PUBLISHED
-# rounded values (paper rounded to 1 dp), since same-seed CRN makes them exact.
-@assert round(base.gmax, digits = 2) == 0.64           "GainMax mismatch"
-@assert round(Int, round(base.rpeak)) == 230           "RelPeakTen mismatch"
-@assert isapprox(base.zone[1], 0.001; atol = 1e-9)     "ZoneLo mismatch"
-@assert isapprox(base.zone[2], 0.069;  atol = 1e-9)    "ZoneHi mismatch"
-@assert round(100*base.wedge_peak, digits = 1) == 5.3  "WedgePeak mismatch"
-@assert base.wedge_arg == 0.04                         "WedgeArg mismatch"
-@assert round(base.pcap_early, digits = 1) == 48.5     "PCapEarly mismatch"
-@assert round(base.pcap_late,  digits = 1) == 65.4     "PCapLate mismatch"
-@assert round(Int, round(base.delay_cost)) == 17       "DelayCost mismatch"
-@assert base.zdef == 39                                "ZoneDefMonth mismatch"
-println("\nBASELINE REPRODUCTION: all @asserts PASSED.")
-
-# =====================================================================
-# 2) CHI BAND -- recompute at chi = 0.10 and chi = 0.30 (RELREF frozen)
-# =====================================================================
-lo = magnitudes(0.10, RELREF_BASE)
-hi = magnitudes(0.30, RELREF_BASE)
-
-for m in (lo, hi)
-    println("\n--- chi = ", m.chi, " (RELREF frozen at baseline) ---")
-    println("  max loop gain      = ", round(m.gmax, digits = 4),
-            "   (multiplier 1/(1-gain) = ", round(1/(1-m.gmax), digits = 2), ")")
-    println("  RelPeak (bp/10pp)  = ", round(m.rpeak, digits = 1))
-    println("  susceptible zone   = ", m.zone === nothing ? "EMPTY" : m.zone)
-    println("  wedge peak (pp)    = ", round(100*m.wedge_peak, digits = 2), " at th0=", m.wedge_arg)
-    println("  delay cost (pp/yr) = ", round(m.delay_cost, digits = 2),
-            "   (early=", round(m.pcap_early, digits=1), " late=", round(m.pcap_late, digits=1), ")")
-    println("  zone default month = ", m.zdef)
-end
-
-# =====================================================================
-# 3) WRITE output/chi_numbers.tex
-# =====================================================================
-# Formatting conventions follow quant_numbers.tex:
-#   wedge/delay : 1 dp (like \WedgePeak, \DelayCost is integer -> 0 dp)
-#   gain        : 2 dp (like \GainMax; a single dp would round 0.96 -> 1.0 and
-#                       falsely suggest the multiplicity frontier is reached)
-#   bp figures  : integer (like \RelPeakTen)
-#   zone bounds : 3 dp (like \ZoneLo/\ZoneHi)
-f1(x) = @sprintf("%.1f", x)
-f2(x) = @sprintf("%.2f", x)
-f3(x) = @sprintf("%.3f", x)
-f0(x) = @sprintf("%.0f", x)
-
-zhi(m) = m.zone === nothing ? "--" : f3(m.zone[2])
+fmt0(x) = @sprintf("%.0f", x)
+fmt1(x) = @sprintf("%.1f", x)
+fmt2(x) = @sprintf("%.2f", x)
+fmt3(x) = @sprintf("%.3f", x)
+zone_high(result) = isnothing(result.zone) ? "--" : fmt3(result.zone[2])
 
 lines = [
-    "\\newcommand{\\ChiGFNLo}{$(f2(0.10))}",
-    "\\newcommand{\\ChiGFNHi}{$(f2(0.30))}",
-    "\\newcommand{\\WedgeChiLo}{$(f1(100*lo.wedge_peak))}",
-    "\\newcommand{\\WedgeChiHi}{$(f1(100*hi.wedge_peak))}",
-    "\\newcommand{\\DelayChiLo}{$(f0(lo.delay_cost))}",
-    "\\newcommand{\\DelayChiHi}{$(f0(hi.delay_cost))}",
-    "\\newcommand{\\GainChiHi}{$(f2(hi.gmax))}",
-    "\\newcommand{\\ZoneHiChiLo}{$(zhi(lo))}",
-    "\\newcommand{\\ZoneHiChiHi}{$(zhi(hi))}",
-    "\\newcommand{\\RelPeakChiLo}{$(f0(lo.rpeak))}",
-    "\\newcommand{\\RelPeakChiHi}{$(f0(hi.rpeak))}",
+    "\\newcommand{\\ChiGFNLo}{$(fmt2(low.chi))}",
+    "\\newcommand{\\ChiGFNHi}{$(fmt2(high.chi))}",
+    "\\newcommand{\\ChiBoundary}{$(fmt2(0.30))}",
+    "\\newcommand{\\WedgeChiLo}{$(fmt1(100low.wedge_peak))}",
+    "\\newcommand{\\WedgeChiHi}{$(fmt1(100high.wedge_peak))}",
+    "\\newcommand{\\DelayChiLo}{$(fmt0(100low.delay))}",
+    "\\newcommand{\\DelayChiHi}{$(fmt0(100high.delay))}",
+    "\\newcommand{\\GainChiHi}{$(fmt2(high.gain))}",
+    "\\newcommand{\\GainChiBoundary}{$(fmt2(boundary_gain))}",
+    "\\newcommand{\\ZoneHiChiLo}{$(zone_high(low))}",
+    "\\newcommand{\\ZoneHiChiHi}{$(zone_high(high))}",
+    "\\newcommand{\\RelPeakChiLo}{$(fmt0(low.relevance))}",
+    "\\newcommand{\\RelPeakChiHi}{$(fmt0(high.relevance))}",
 ]
 
-outpath = joinpath(@__DIR__, "..", "output", "chi_numbers.tex")
-open(outpath, "w") do io
-    for l in lines; println(io, l); end
+output = joinpath(@__DIR__, "..", "output", "chi_numbers.tex")
+open(output, "w") do io
+    foreach(line -> println(io, line), lines)
 end
 
-println("\n=== output/chi_numbers.tex ===")
-for l in lines; println(l); end
-println("\nruntime = ", round(time() - t0, digits = 1), " s")
+println("baseline normalization = ", RELREF_BASE_S)
+println("low = ", low)
+println("high = ", high)
+println("chi 0.30 boundary gain = ", boundary_gain)
+println("wrote chi_numbers.tex")

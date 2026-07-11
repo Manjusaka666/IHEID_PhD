@@ -23,7 +23,7 @@ shade_zone <- function(zlo, zhi, ylim) {
 h <- r$hump
 zb <- r$zones$`1.0`                      # base susceptible zone [lo, hi]
 ord <- order(h$theta); th <- h$theta[ord]
-dsdn10 <- h$dsdn_bp[ord] / 10            # bp per 10pp of prevalence
+dsdn10 <- h$dsdn_bp[ord] / 10            # bp per 10 pp of belief
 sp <- h$spread_bp[ord]
 
 # ------------------------------------------------------------------ fig_hump
@@ -32,12 +32,12 @@ par(mfrow = c(1, 2))
 ylim <- c(0, max(dsdn10) * 1.06)
 plot(NA, xlim = c(-0.05, 0.25), ylim = ylim,
      xlab = expression("fundamentals  " * theta),
-     ylab = "bp per 10 pp of prevalence",
+     ylab = "bp per 10 pp of belief",
      main = "(a) price relevance of the story")
 shade_zone(zb[1], zb[2], ylim)
 lines(th, dsdn10, lwd = 2.4, col = col_blue)
 abline(v = 0, col = col_gray, lty = 3)
-pts <- c(0.01, 0.06, 0.15)
+pts <- c(0.01, r$calibration$th_zone, 0.15)
 idx <- sapply(pts, function(p) which.min(abs(th - p)))
 points(th[idx], dsdn10[idx], pch = 16, col = col_red)
 text(th[idx], dsdn10[idx] + 12, c("distressed", "zone", "safe"), cex = 0.75)
@@ -75,15 +75,13 @@ dev.off()
 p <- r$paths; mo <- seq_len(length(p$zone$n))
 pdfopen("fig_outbreak.pdf", w = 9.6, h = 3.6)
 par(mfrow = c(1, 3), mar = c(4, 4, 2.2, 0.8))
-plot(NA, xlim = c(1, 48), ylim = c(0, 0.8), xlab = "month",
-     ylab = expression("prevalence  " * n[t]), main = "(a) the outbreak")
-lines(mo, p$safe$n, lwd = 2.2, col = col_green)
+plot(NA, xlim = c(1, 48), ylim = range(c(p$zone$a, p$zone$n)), xlab = "month",
+     ylab = "share", main = "(a) awareness and belief")
+lines(mo, p$zone$a, lwd = 2.4, col = col_blue)
 lines(mo, p$zone$n, lwd = 2.4, col = col_orange)
-lines(mo, p$distressed$n, lwd = 2.2, col = col_red)
-legend("topleft", bty = "n", lwd = 2.2, col = c(col_green, col_orange, col_red),
-       legend = c(expression("safe  " * (theta[0] == 0.15)),
-                  expression("zone  " * (theta[0] == 0.06)),
-                  expression("distressed  " * (theta[0] == 0.01))), cex = 0.95)
+legend("topleft", bty = "n", lwd = 2.4, col = c(col_blue, col_orange),
+       legend = c(expression("aware  " * a[t]), expression("believing  " * n[t])),
+       cex = 0.9)
 plot(NA, xlim = c(1, 48), ylim = c(1, 4200), log = "y", xlab = "month",
      ylab = "spread (bp, log scale)", main = "(b) pricing the story")
 lines(mo, pmax(p$safe$s, 1), lwd = 2.2, col = col_green)
@@ -151,6 +149,7 @@ dev.off()
 
 # ------------------------------------------------------------------- fig_phase
 ph <- r$phase
+ga <- r$global_audit
 pth <- ph$theta
 pn <- ph$n
 dth <- as.matrix(ph$dtheta)
@@ -158,7 +157,7 @@ dn <- as.matrix(ph$dn)
 pdfopen("fig_phase.pdf", w = 6.8, h = 4.8)
 plot(NA, xlim = range(pth), ylim = range(pn),
      xlab = expression("fundamentals  " * theta),
-     ylab = expression("narrative prevalence  " * n),
+     ylab = expression("believing wealth share  " * n),
      main = "deterministic phase field")
 contour(pth, pn, dth, levels = 0, add = TRUE, drawlabels = FALSE,
         lwd = 2.2, col = col_blue)
@@ -177,18 +176,36 @@ for (i in seq(1, length(pth), by = 2)) {
   }
 }
 lines(p$zone$th, p$zone$n, lwd = 2.5, col = col_red)
-legend("topright", bty = "n", lwd = c(2.2, 2.2, 2.5),
-       lty = c(1, 2, 1), col = c(col_blue, col_orange, col_red),
+valid_boundary <- is.finite(ga$seed_boundary) & ga$seed_boundary > 0
+lines(ga$seed_theta[valid_boundary], ga$seed_boundary[valid_boundary],
+      lwd = 2.3, lty = 4, col = "black")
+for (row in seq_len(nrow(ga$equilibria))) {
+  points(ga$equilibria$theta[row], ga$equilibria$belief[row],
+         pch = ifelse(ga$equilibria$stable[row], 16, 1), cex = 1.1)
+}
+legend("topright", bty = "n", lwd = c(2.2, 2.2, 2.5, 2.3),
+       lty = c(1, 2, 1, 4), col = c(col_blue, col_orange, col_red, "black"),
        legend = c(expression(dot(theta) == 0), expression(dot(n) == 0),
-                  "seeded scenario path"), cex = 0.85)
+                  "seeded path", "continued seed boundary"), cex = 0.80)
 dev.off()
 
 # -------------------------------------------------------------------- macros
 fmt <- function(x, d = 1) formatC(x, format = "f", digits = d)
 cal <- r$calibration
+ga <- r$global_audit
 z25 <- r$zones$`0.25`; z15 <- r$zones$`1.5`
 sp_at <- function(x) approx(th, sp, xout = x)$y
 pz <- r$paths$zone
+positive_index <- which(ga$equilibria$belief > 0)[1]
+stable_index <- which(ga$equilibria$stable)[1]
+lower_index <- which(ga$equilibria$belief == 0 & !ga$equilibria$stable)[1]
+positive_eigen <- unlist(ga$equilibria$eigen_real[[positive_index]])
+stable_eigen <- unlist(ga$equilibria$eigen_real[[stable_index]])
+zone_audit <- ga$zone_seed_audit
+seed_horizon_diff <- max(abs(c(zone_audit$horizon_120, zone_audit$horizon_360) -
+                               zone_audit$horizon_240), na.rm = TRUE)
+seed_step_diff <- max(abs(c(zone_audit$substeps_8, zone_audit$substeps_32) -
+                          zone_audit$substeps_16), na.rm = TRUE)
 
 lines_out <- c(
   sprintf("\\newcommand{\\GainMax}{%s}", fmt(cal$gainmax, 2)),
@@ -206,7 +223,7 @@ lines_out <- c(
   sprintf("\\newcommand{\\SZoneBase}{%s}", fmt(cal$s_zone_bp, 0)),
   sprintf("\\newcommand{\\PeakN}{%s}", fmt(100 * r$peak_n, 0)),
   sprintf("\\newcommand{\\PeakExcess}{%s}", fmt(r$peak_excess_bp, 0)),
-  sprintf("\\newcommand{\\ZoneDefMonth}{%s}", ifelse(any(pz$th < 0), fmt(which(pz$th < 0)[1], 0), "--")),
+  sprintf("\\newcommand{\\ZoneDefMonth}{%s}", fmt(ga$zone_default_month, 0)),
   sprintf("\\newcommand{\\WedgePeak}{%s}", fmt(100 * m$wedge_peak, 1)),
   sprintf("\\newcommand{\\WedgeArg}{%s}", fmt(m$wedge_argmax, 2)),
   sprintf("\\newcommand{\\WedgeSafe}{%s}", fmt(100 * m$wedge_safe, 2)),
@@ -223,9 +240,29 @@ lines_out <- c(
   sprintf("\\newcommand{\\SigVal}{%s}", fmt(cal$sig, 2)),
   sprintf("\\newcommand{\\XiVal}{%s}", fmt(cal$xi, 2)),
   sprintf("\\newcommand{\\ChiVal}{%s}", fmt(cal$chi, 2)),
-  sprintf("\\newcommand{\\GamVal}{%s}", fmt(cal$gam, 2)),
+  sprintf("\\newcommand{\\GamAVal}{%s}", fmt(cal$gamma_a, 2)),
+  sprintf("\\newcommand{\\GamNVal}{%s}", fmt(cal$gamma_n, 2)),
+  sprintf("\\newcommand{\\AcceptVal}{%s}", fmt(cal$acceptance, 2)),
   sprintf("\\newcommand{\\RZeroPeak}{%s}", fmt(cal$r0peak, 0)),
-  sprintf("\\newcommand{\\SeedVal}{%s}", fmt(cal$n0, 2))
+  sprintf("\\newcommand{\\SeedVal}{%s}", fmt(cal$n0, 2)),
+  sprintf("\\newcommand{\\AwareSeedVal}{%s}", fmt(cal$a0, 2)),
+  sprintf("\\newcommand{\\SeedThresholdPct}{%s}",
+          fmt(100 * zone_audit$horizon_240, 2)),
+  sprintf("\\newcommand{\\SeedHorizonDiff}{%s}", fmt(100 * seed_horizon_diff, 3)),
+  sprintf("\\newcommand{\\SeedStepDiff}{%s}", fmt(100 * seed_step_diff, 3)),
+  sprintf("\\newcommand{\\EquilibriumCount}{%s}", nrow(ga$equilibria)),
+  sprintf("\\newcommand{\\LowerRoot}{%s}",
+          fmt(ga$equilibria$theta[lower_index], 4)),
+  sprintf("\\newcommand{\\SaddleTheta}{%s}",
+          fmt(ga$equilibria$theta[positive_index], 4)),
+  sprintf("\\newcommand{\\SaddleAwarePct}{%s}",
+          fmt(100 * ga$equilibria$awareness[positive_index], 1)),
+  sprintf("\\newcommand{\\SaddleBeliefPct}{%s}",
+          fmt(100 * ga$equilibria$belief[positive_index], 1)),
+  sprintf("\\newcommand{\\StableTheta}{%s}",
+          fmt(ga$equilibria$theta[stable_index], 4)),
+  sprintf("\\newcommand{\\SaddleEigen}{%s}", fmt(max(positive_eigen), 4)),
+  sprintf("\\newcommand{\\StableEigen}{%s}", fmt(max(stable_eigen), 4))
   ,sprintf("\\newcommand{\\HumpMargin}{%s}", fmt(cal$hump_margin, 3))
   ,sprintf("\\newcommand{\\SigMonth}{%s}", fmt(cal$sigm, 4))
   ,sprintf("\\newcommand{\\ChiMonth}{%s}", fmt(cal$chim, 4))

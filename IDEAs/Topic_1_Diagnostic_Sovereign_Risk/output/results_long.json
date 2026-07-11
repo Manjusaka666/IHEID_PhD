@@ -18,7 +18,7 @@
   "sigma_e": 0.027092,
   "sigma_m": 0.003
  },
- "runtime_sec": 131.0928840637207,
+ "runtime_sec": 1.2299120426177979,
  "theta_0.0": {
   "iterations": 10083,
   "minimum_repayment_consumption": 0.7369694158685799,
@@ -44,6 +44,66 @@
    "continuation": 1.6773427091720805e-10,
    "default_decision": 0.0,
    "price": 4.9964137049940405e-8
+  },
+  "uncertainty": {
+   "block_length": 2000,
+   "bp_per_1sd_news": {
+    "batches": 250,
+    "estimate": 1.609017478900683e-30,
+    "lower": 2.6486107337994277e-31,
+    "standard_error": 6.85806686308154e-31,
+    "upper": 2.9531738844214237e-30
+   },
+   "complete_blocks": 250,
+   "defaults_per_100y": {
+    "batches": 250,
+    "estimate": 3.5895999999999995,
+    "lower": 3.517220721196534,
+    "standard_error": 0.03692888204802942,
+    "upper": 3.661979278803465
+   },
+   "mean_debt_service_y": {
+    "batches": 250,
+    "estimate": 0.05555379391707871,
+    "lower": 0.05542143733108552,
+    "standard_error": 6.75301112863318e-5,
+    "upper": 0.0556861505030719
+   },
+   "mean_debt_y": {
+    "batches": 250,
+    "estimate": 0.7076916422557799,
+    "lower": 0.7060055710966309,
+    "standard_error": 0.0008602561947303424,
+    "upper": 0.7093777134149288
+   },
+   "mean_expected_excess_bad": {
+    "batches": 250,
+    "estimate": -1.2427058193581672e-8,
+    "lower": -1.250429187402783e-8,
+    "standard_error": 3.9405663091448365e-11,
+    "upper": -1.2349824513135514e-8
+   },
+   "mean_expected_excess_good": {
+    "batches": 250,
+    "estimate": -9.454649939544628e-9,
+    "lower": -9.509635129023822e-9,
+    "standard_error": 2.8054183603836406e-11,
+    "upper": -9.399664750065435e-9
+   },
+   "median_spread": {
+    "batches": 250,
+    "estimate": 0.051956394136682904,
+    "lower": 0.05166149664011,
+    "standard_error": 0.00015046067116488576,
+    "upper": 0.05225129163325581
+   },
+   "sd_spread": {
+    "batches": 250,
+    "estimate": 0.03541725693423871,
+    "lower": 0.03510307665475644,
+    "standard_error": 0.00016029900649220112,
+    "upper": 0.035731437213720976
+   }
   }
  },
  "theta_0.5": {
@@ -71,6 +131,66 @@
    "continuation": 6.490097348432755e-11,
    "default_decision": 0.0,
    "price": 4.992666546854707e-8
+  },
+  "uncertainty": {
+   "block_length": 2000,
+   "bp_per_1sd_news": {
+    "batches": 250,
+    "estimate": -132.87001299451384,
+    "lower": -134.45140448904272,
+    "standard_error": 0.8068472211748203,
+    "upper": -131.28862149998497
+   },
+   "complete_blocks": 250,
+   "defaults_per_100y": {
+    "batches": 250,
+    "estimate": 1.9096,
+    "lower": 1.8431671421089688,
+    "standard_error": 0.03389493807796729,
+    "upper": 1.9760328578910311
+   },
+   "mean_debt_service_y": {
+    "batches": 250,
+    "estimate": 0.05365525112102019,
+    "lower": 0.05356770253533891,
+    "standard_error": 4.4668466549310415e-5,
+    "upper": 0.05374279970670147
+   },
+   "mean_debt_y": {
+    "batches": 250,
+    "estimate": 0.6835063837072635,
+    "lower": 0.6823911150998586,
+    "standard_error": 0.0005690250515835723,
+    "upper": 0.6846216523146683
+   },
+   "mean_expected_excess_bad": {
+    "batches": 250,
+    "estimate": 0.07232073856816924,
+    "lower": 0.07148160978949471,
+    "standard_error": 0.00042813479497249874,
+    "upper": 0.07315986734684378
+   },
+   "mean_expected_excess_good": {
+    "batches": 250,
+    "estimate": -0.024301140836276554,
+    "lower": -0.024472837938388958,
+    "standard_error": 8.760217201271467e-5,
+    "upper": -0.02412944373416415
+   },
+   "median_spread": {
+    "batches": 250,
+    "estimate": 0.06471147527554078,
+    "lower": 0.06437261423416879,
+    "standard_error": 0.0001728914633354853,
+    "upper": 0.06505033631691276
+   },
+   "sd_spread": {
+    "batches": 250,
+    "estimate": 0.04006807601227332,
+    "lower": 0.0396928497523006,
+    "standard_error": 0.0001914454872295906,
+    "upper": 0.040443302272246046
+   }
   }
  }
 }
