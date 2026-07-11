@@ -4,6 +4,7 @@ include("solve_model.jl")
 include("survey_mapping_mc.jl")
 include("solve_long_bonds.jl")
 include("solve_long_bonds_ce.jl")
+include("estimate_long_ce.jl")
 
 @testset "diagnostic sovereign revision checks" begin
     x, P, Pd = build_kernels(0.5)
@@ -121,6 +122,36 @@ end
     @test size(finece.q) == (25, NY, NY)
     @test finece.Z[1, :] == seedce.Z[1, :]
     @test finece.Z[end, :] == seedce.Z[end, :]
+
+    interval = normal_interval([1.0, 2.0, 3.0, 4.0])
+    @test interval["estimate"] == 2.5
+    @test interval["standard_error"] > 0.0
+    @test interval["lower"] < interval["estimate"] < interval["upper"]
+    @test interval["batches"] == 4
+
+    fixed_state = (Z = fill(1.0, 2, 2), Xbar = fill(2.0, 2),
+                   q = fill(0.5, 2, 2, 2))
+    fixed_candidate = anderson_ce_candidate(
+        [fixed_state, fixed_state], [fixed_state, fixed_state])
+    @test fixed_candidate.Z == fixed_state.Z
+    @test fixed_candidate.Xbar == fixed_state.Xbar
+    @test fixed_candidate.q == fixed_state.q
+
+    linear_map = [1.0 2.0 0.0; 0.0 1.0 3.0; 2.0 0.0 1.0;
+                  1.0 -1.0 0.0; 0.0 2.0 -1.0; 1.0 1.0 1.0]
+    finite_difference = central_difference_jacobian(
+        [0.95, -0.2, 0.25], [1e-4, 1e-4, 1e-4],
+        parameters -> linear_map * parameters)
+    @test isapprox(finite_difference, linear_map; atol = 1e-10)
+    covariance = Matrix{Float64}(I, 6, 6)
+    weights = smm_weight_matrices(covariance)
+    @test keys(weights) == Set(["scale_diagonal", "covariance_optimal"])
+    diagnostics = smm_local_diagnostics(
+        finite_difference, covariance, weights["covariance_optimal"],
+        [0.95, -0.2, 0.25]; sample_size = 100)
+    @test diagnostics["rank"] == 3
+    @test all(isfinite, diagnostics["standard_errors"])
+    @test all(diagnostics["standard_errors"] .> 0.0)
 
 end
 

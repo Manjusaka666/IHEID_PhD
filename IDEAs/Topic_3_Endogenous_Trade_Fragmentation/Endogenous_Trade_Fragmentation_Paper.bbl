@@ -994,6 +994,47 @@
     \field{year}{1991}
   \endentry
 
+  \entry{MayerMejeanThoenig2025}{report}{}{}
+    \name{author}{3}{}{%
+      {{hash=MT}{%
+         family={Mayer},
+         familyi={M\bibinitperiod},
+         given={Thierry},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=MI}{%
+         family={Mejean},
+         familyi={M\bibinitperiod},
+         given={Isabelle},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=TM}{%
+         family={Thoenig},
+         familyi={T\bibinitperiod},
+         given={Mathias},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MT+1}
+    \strng{fullhash}{MTMITM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2025}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{number}{2025-23}
+    \field{title}{The Fragmentation Paradox: De-risking Trade and Global Safety}
+    \verb{url}
+    \verb https://www.cepii.fr/PDF_PUB/wp/2025/wp2025-23.pdf
+    \endverb
+    \list{institution}{1}{%
+      {CEPII}%
+    }
+    \field{type}{CEPII Working Paper}
+    \field{year}{2025}
+  \endentry
+
   \entry{OECDICIO}{misc}{}{}
     \name{author}{1}{}{%
       {{hash=O}{%
@@ -1014,6 +1055,29 @@
     \verb{url}
     \verb https://www.oecd.org/en/data/datasets/inter-country-input-output-tabl
     \verb es.html
+    \endverb
+    \field{year}{2026}
+  \endentry
+
+  \entry{BISFederalRegister}{misc}{}{}
+    \name{author}{1}{}{%
+      {{hash=U}{%
+         family={{U.S. Bureau of Industry and Security}},
+         familyi={U\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{U1}
+    \strng{fullhash}{U1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{U}
+    \field{sortinithash}{U}
+    \field{howpublished}{Public rule-level table with CSV export}
+    \field{title}{Federal Register Notices}
+    \verb{url}
+    \verb https://www.bis.gov/regulations/federal-register-notices
     \endverb
     \field{year}{2026}
   \endentry

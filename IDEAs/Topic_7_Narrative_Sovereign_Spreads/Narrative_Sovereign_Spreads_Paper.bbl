@@ -203,36 +203,6 @@
     \field{year}{2013}
   \endentry
 
-  \entry{DeGrauweJi2013}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=DGP}{%
-         family={De\bibnamedelima Grauwe},
-         familyi={D\bibinitperiod\bibinitdelim G\bibinitperiod},
-         given={Paul},
-         giveni={P\bibinitperiod},
-      }}%
-      {{hash=JY}{%
-         family={Ji},
-         familyi={J\bibinitperiod},
-         given={Yuemei},
-         giveni={Y\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{DGPJY1}
-    \strng{fullhash}{DGPJY1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2013}
-    \field{labeldatesource}{}
-    \field{sortinit}{D}
-    \field{sortinithash}{D}
-    \field{pages}{15\bibrangedash 36}
-    \field{title}{Self-Fulfilling Crises in the {Eurozone}: An Empirical Test}
-    \field{volume}{34}
-    \field{journaltitle}{Journal of International Money and Finance}
-    \field{year}{2013}
-  \endentry
-
   \entry{ECBDataPortal7}{online}{}{}
     \name{author}{1}{}{%
       {{hash=E}{%
@@ -380,6 +350,28 @@
     \field{year}{2019}
   \endentry
 
+  \entry{GoogleTrendsData}{online}{}{}
+    \name{author}{1}{}{%
+      {{hash=G}{%
+         family={{Google}},
+         familyi={G\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{G2}
+    \strng{fullhash}{G2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{title}{Google Trends}
+    \verb{url}
+    \verb https://trends.google.com/trends/
+    \endverb
+    \field{year}{2026}
+  \endentry
+
   \entry{KrishnamurthyEtAl2018}{article}{}{}
     \name{author}{3}{}{%
       {{hash=KA}{%
@@ -458,65 +450,6 @@
     \field{volume}{3}
     \field{journaltitle}{American Economic Journal: Macroeconomics}
     \field{year}{2011}
-  \endentry
-
-  \entry{LorenzoniWerning2019}{article}{}{}
-    \name{author}{2}{}{%
-      {{hash=LG}{%
-         family={Lorenzoni},
-         familyi={L\bibinitperiod},
-         given={Guido},
-         giveni={G\bibinitperiod},
-      }}%
-      {{hash=WI}{%
-         family={Werning},
-         familyi={W\bibinitperiod},
-         given={Iv{\'a}n},
-         giveni={I\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{LGWI1}
-    \strng{fullhash}{LGWI1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2019}
-    \field{labeldatesource}{}
-    \field{sortinit}{L}
-    \field{sortinithash}{L}
-    \field{number}{9}
-    \field{pages}{3229\bibrangedash 3263}
-    \field{title}{Slow Moving Debt Crises}
-    \field{volume}{109}
-    \field{journaltitle}{American Economic Review}
-    \field{year}{2019}
-  \endentry
-
-  \entry{Shiller2017}{article}{}{}
-    \name{author}{1}{}{%
-      {{hash=SRJ}{%
-         family={Shiller},
-         familyi={S\bibinitperiod},
-         given={Robert\bibnamedelima J.},
-         giveni={R\bibinitperiod\bibinitdelim J\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{SRJ1}
-    \strng{fullhash}{SRJ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{labelyear}{2017}
-    \field{labeldatesource}{}
-    \field{sortinit}{S}
-    \field{sortinithash}{S}
-    \verb{doi}
-    \verb 10.1257/aer.107.4.967
-    \endverb
-    \field{number}{4}
-    \field{pages}{967\bibrangedash 1004}
-    \field{title}{Narrative Economics}
-    \field{volume}{107}
-    \field{journaltitle}{American Economic Review}
-    \field{year}{2017}
   \endentry
 
   \entry{WorldBankQPSD7}{online}{}{}

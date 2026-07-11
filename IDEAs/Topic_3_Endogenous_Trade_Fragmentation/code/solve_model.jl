@@ -38,7 +38,23 @@ const DELTA_PRE  = 0.04            # dispute hazard, pre-2022
 const DELTA_POST = 0.10            # dispute hazard, post-2022 reassessment
 const ALPHA_XB   = 0.04            # cross-bloc intermediates / world GDP
 
-lam0(m) = ((1.0 - SSH[m])^(1.0 / (1.0 - SIGM[m])) - 1.0) * DUR[m]
+function disruption_loss(m::Int; inventory_years::Float64 = 0.0,
+                         emergency_substitution::Float64 = 0.0,
+                         duration_scale::Float64 = 1.0)
+    1 <= m <= length(SIGM) || throw(BoundsError(SIGM, m))
+    inventory_years >= 0 || throw(ArgumentError(
+        "inventory_years must be nonnegative"))
+    0 <= emergency_substitution <= 1 || throw(ArgumentError(
+        "emergency_substitution must lie in [0,1]"))
+    duration_scale >= 0 || throw(ArgumentError(
+        "duration_scale must be nonnegative"))
+    effective_share = SSH[m] * (1 - emergency_substitution)
+    price_increase = (1 - effective_share)^(1 / (1 - SIGM[m])) - 1
+    uncovered_duration = max(DUR[m] * duration_scale - inventory_years, 0.0)
+    price_increase * uncovered_duration
+end
+
+lam0(m) = disruption_loss(m)
 const LAM0 = [lam0(m) for m in 1:3]
 
 ncdf(z) = 0.5 * (1.0 + erf(z / sqrt(2.0)))
@@ -145,9 +161,11 @@ end
 
 "All critical-sector equilibria at dispute hazard del: scan for sign changes
 of R(Fc) = Fc - f_c(Fc, F(Fc)), refine by bisection, classify stability."
-function equilibria(del, pol)
+function equilibria(del, pol; grid_step::Float64 = 0.002)
+    0 < grid_step <= 0.1 || throw(ArgumentError(
+        "grid_step must lie in (0,0.1]"))
     R(Fc) = Fc - fmap(Fc, agg_given_Fc(Fc, del, pol), 1, del, pol)
-    grid = collect(0.0:0.002:1.0)
+    grid = collect(range(0.0, 1.0, length = ceil(Int, 1 / grid_step) + 1))
     roots = Float64[]
     for i in 1:length(grid)-1
         a, b = grid[i], grid[i+1]
@@ -162,6 +180,7 @@ function equilibria(del, pol)
             push!(roots, 0.5 * (a + b))
         end
     end
+    abs(R(1.0)) < 1e-12 && push!(roots, 1.0)
     # stability: slope of the sector map at the root
     out = NamedTuple[]
     for r in roots
@@ -171,6 +190,24 @@ function equilibria(del, pol)
         push!(out, (Fc = r, slope = slope, stable = slope < 1.0))
     end
     out
+end
+
+function equilibrium_grid_audit(del::Float64, pol;
+                                grid_steps::Vector{Float64} =
+                                    [0.004, 0.002, 0.001, 0.0005])
+    all(grid_steps .> 0) || throw(ArgumentError("grid steps must be positive"))
+    root_sets = [sort([root.Fc for root in equilibria(
+        del, pol; grid_step = step)]) for step in grid_steps]
+    root_counts = length.(root_sets)
+    reference = root_sets[end]
+    differences = Float64[]
+    for roots in root_sets[1:end-1]
+        length(roots) == length(reference) || continue
+        append!(differences, abs.(roots .- reference))
+    end
+    max_root_difference = isempty(differences) ? Inf : maximum(differences)
+    (grid_steps = grid_steps, root_counts = root_counts,
+     roots = root_sets, max_root_difference = max_root_difference)
 end
 
 fold_residual(Fc, del, pol) =
@@ -259,6 +296,76 @@ function simulate(delpath::Vector{Float64}, pol; init = fill(0.02, 3))
     end
     Fagg = [sum(W_M .* Fm[t, :]) for t in 1:T]
     (Fm = Fm, F = Fagg)
+end
+
+function perfect_foresight(
+        delpath::Vector{Float64}, pol;
+        init::Vector{Float64} = fill(0.02, 3),
+        beta_f::Float64 = 0.96,
+        initial_path::Union{Nothing,Matrix{Float64}} = nothing,
+        tolerance::Float64 = 1e-11,
+        max_iterations::Int = 20_000,
+        damping::Float64 = 0.5)
+    T = length(delpath)
+    T >= 2 || throw(ArgumentError("the path must contain at least two periods"))
+    length(init) == 3 || throw(DimensionMismatch("init must contain three sectors"))
+    0 < beta_f < 1 || throw(ArgumentError("beta_f must lie in (0,1)"))
+    0 < damping <= 1 || throw(ArgumentError("damping must lie in (0,1]"))
+    guess = if isnothing(initial_path)
+        copy(simulate(delpath, pol; init = init).Fm)
+    else
+        size(initial_path) == (T, 3) || throw(DimensionMismatch(
+            "initial_path has the wrong dimensions"))
+        copy(initial_path)
+    end
+    guess[1, :] .= init
+    thresholds = zeros(T, 3)
+    candidate = similar(guess)
+    residual = Inf
+    iterations = 0
+
+    for iteration in 1:max_iterations
+        iterations = iteration
+        aggregate = vec(guess * W_M)
+        for m in 1:3
+            numerator = zeros(T)
+            denominator = zeros(T)
+            for t in T:-1:1
+                state = guess[t, m]
+                pi_t = clamp(pim(state, aggregate[t], m, delpath[t]), 0.0, 1.0)
+                net_loss = pi_t * lamm(state, m, pol) - pol.tau
+                premium_scale = (1 - CHI * state) * (1 - pol.subs)
+                survival = beta_f * (1 - RHO) * (1 - pi_t)
+                if t == T
+                    numerator[t] = net_loss / (1 - survival)
+                    denominator[t] = premium_scale / (1 - survival)
+                else
+                    numerator[t] = net_loss + survival * numerator[t + 1]
+                    denominator[t] = premium_scale + survival * denominator[t + 1]
+                end
+                thresholds[t, m] = max(0.0, numerator[t] / denominator[t])
+            end
+        end
+
+        candidate[1, :] .= init
+        for t in 2:T, m in 1:3
+            desired = F0NG[m] +
+                (1 - F0NG[m]) * Hcdf(thresholds[t, m], m)
+            candidate[t, m] = (1 - RHO) * candidate[t - 1, m] +
+                RHO * desired
+        end
+        residual = maximum(abs.(candidate .- guess))
+        if residual < tolerance
+            guess .= candidate
+            break
+        end
+        @. guess = (1 - damping) * guess + damping * candidate
+        guess[1, :] .= init
+    end
+    residual < tolerance || error("perfect-foresight path did not converge")
+    aggregate = vec(guess * W_M)
+    (Fm = guess, F = aggregate, thresholds = thresholds,
+     residual = residual, iterations = iterations)
 end
 
 # ------------------------------------------------------------ welfare objects
@@ -388,11 +495,16 @@ function main()
     # bifurcation and fold band (baseline and policies)
     bif = bifurcation(NOPOL)
     refined_folds = refined_fold_pair(bif, NOPOL)
+    fold_midpoint = (refined_folds.lower.delta + refined_folds.upper.delta) / 2
+    root_audit = equilibrium_grid_audit(fold_midpoint, NOPOL)
     results["bifurcation"] = Dict(
         "delta" => bif.dgrid, "low" => bif.low, "mid" => bif.mid,
         "high" => bif.high,
         "band_lo" => refined_folds.lower.delta,
         "band_hi" => refined_folds.upper.delta,
+        "root_grid_steps" => root_audit.grid_steps,
+        "root_counts" => root_audit.root_counts,
+        "max_root_difference" => root_audit.max_root_difference,
         "fold_lower" => Dict(string(k) => v for (k, v) in pairs(refined_folds.lower)),
         "fold_upper" => Dict(string(k) => v for (k, v) in pairs(refined_folds.upper)))
     # distance consumed by the 2022 reassessment
@@ -436,17 +548,52 @@ function main()
     s0 = steady(DELTA_POST, NOPOL; init = fill(0.02, 3))
     pc = simulate(ctrl, NOPOL; init = s0.Fm)
     ps = simulate(spik, NOPOL; init = s0.Fm)
+    pfc = perfect_foresight(
+        ctrl, NOPOL; init = s0.Fm, initial_path = pc.Fm)
+    pfs = perfect_foresight(
+        spik, NOPOL; init = s0.Fm, initial_path = ps.Fm)
     results["hysteresis"] = Dict(
         "T" => T, "d_mid" => dmid, "d_spike" => dspike,
         "spike_on" => 16, "spike_off" => 27,
         "Fc_ctrl" => pc.Fm[:, 1], "Fc_spike" => ps.Fm[:, 1],
-        "F_ctrl" => pc.F, "F_spike" => ps.F)
+        "F_ctrl" => pc.F, "F_spike" => ps.F,
+        "Fc_ctrl_perfect_foresight" => pfc.Fm[:, 1],
+        "Fc_spike_perfect_foresight" => pfs.Fm[:, 1],
+        "F_ctrl_perfect_foresight" => pfc.F,
+        "F_spike_perfect_foresight" => pfs.F,
+        "max_path_difference_ctrl" => maximum(abs.(pfc.Fm .- pc.Fm)),
+        "max_path_difference_spike" => maximum(abs.(pfs.Fm .- ps.Fm)),
+        "perfect_foresight_residual_ctrl" => pfc.residual,
+        "perfect_foresight_residual_spike" => pfs.residual,
+        "same_terminal_branch_ctrl" =>
+            abs(pfc.Fm[end, 1] - pc.Fm[end, 1]) < 0.01,
+        "same_terminal_branch_spike" =>
+            abs(pfs.Fm[end, 1] - ps.Fm[end, 1]) < 0.01)
 
     # transition after the 2022 reassessment (permanent delta_pre -> delta_post)
     dpath = vcat(fill(DELTA_PRE, 5), fill(DELTA_POST, 36))
     sp = simulate(dpath, NOPOL; init = pre.Fm)
+    spf = perfect_foresight(
+        dpath, NOPOL; init = pre.Fm, initial_path = sp.Fm)
     results["transition"] = Dict("Fc" => sp.Fm[:, 1], "F" => sp.F,
+                                 "Fc_perfect_foresight" => spf.Fm[:, 1],
+                                 "F_perfect_foresight" => spf.F,
+                                 "max_path_difference" =>
+                                     maximum(abs.(spf.Fm .- sp.Fm)),
+                                 "perfect_foresight_residual" => spf.residual,
                                  "shock_at" => 6)
+
+    results["loss_sensitivity"] = Dict(
+        "critical_baseline" => disruption_loss(1),
+        "critical_inventory_025_substitution_025" =>
+            disruption_loss(
+                1; inventory_years = 0.25, emergency_substitution = 0.25),
+        "critical_inventory_05_substitution_05" =>
+            disruption_loss(
+                1; inventory_years = 0.5, emergency_substitution = 0.5),
+        "middle_baseline" => disruption_loss(2),
+        "flexible_baseline" => disruption_loss(3),
+    )
 
     # policy experiments: friend-shoring subsidy vs stockpile
     polS = Pol(0.25, 1.0, 0.0)        # pays 25 percent of the premium

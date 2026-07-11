@@ -1,4 +1,4 @@
-# Figures and LaTeX macros for "Ambiguity, Investor Composition, and
+# Figures and LaTeX macros for "Official Distrust, Investor Composition, and
 # Sovereign Rollover Crises". Reads output/results.json; writes
 # output/fig_*.pdf and output/quant_numbers.tex.
 
@@ -21,7 +21,7 @@ fr <- r$frontier
 pdfopen("fig_frontier.pdf", w = 9, h = 4.4)
 par(mfrow = c(1, 2))
 plot(NA, xlim = c(0, 1), ylim = c(0.5, 0.72),
-     xlab = expression("fragile investor share  " * mu),
+     xlab = expression("high-run-propensity weight  " * mu),
      ylab = expression("crisis threshold  " * theta^"*"),
      main = "(a) the fragility frontier (stress)")
 lines(fr$mu, fr$t_stress_0.04, lwd = 2.2, col = col_blue)
@@ -31,7 +31,7 @@ legend("topleft", bty = "n", lwd = 2.2, col = c(col_blue, col_orange, col_red),
        legend = c(expression(delta == 0.04), expression(delta == 0.08),
                   expression(delta == 0.12)), cex = 0.9)
 plot(NA, xlim = c(0, 1), ylim = c(150, 1100),
-     xlab = expression("fragile investor share  " * mu),
+     xlab = expression("high-run-propensity weight  " * mu),
      ylab = "spread (bp)", main = "(b) spreads along the frontier")
 lines(fr$mu, fr$s_stress_0.04, lwd = 2.2, col = col_blue)
 lines(fr$mu, fr$s_stress_0.08, lwd = 2.2, col = col_orange)
@@ -46,7 +46,7 @@ pdfopen("fig_transparency.pdf", w = 6.4, h = 4.8)
 image(ygrid, mgrid, sign(dt), col = c(grDevices::adjustcolor(col_green, 0.25),
                                       grDevices::adjustcolor(col_red, 0.30)),
       xlab = expression("official news level  " * y),
-      ylab = expression("fragile investor share  " * mu),
+      ylab = expression("high-run-propensity weight  " * mu),
       main = "when does official precision stabilize?", useRaster = TRUE)
 contour(ygrid, mgrid, dt, levels = 0, add = TRUE, lwd = 2.2, drawlabels = FALSE)
 text(0.86, 0.5, expression("precision raises  " * theta^"*"), cex = 0.85, col = col_red)

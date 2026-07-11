@@ -30,9 +30,9 @@ const REC  = 0.60      # recovery in default (Cruces-Trebesch ~40% haircut)
 const KAP  = 0.08      # exit cost of running (fire-sale discount)
 const SIGX = 0.15      # private signal noise  -> BET = 1/SIGX^2
 const SIGY = 1.0 / 3.0 # public signal noise   -> ALP = 1/SIGY^2
-const DELF = 0.08      # fragile-type effective-pessimism radius
-const DELS = 0.0       # stable-type ambiguity radius
-const MU0  = 0.40      # fragile share of the maturing debt
+const DELF = 0.08      # high-run type's effective-pessimism radius
+const DELS = 0.0       # low-run type's effective-pessimism radius
+const MU0  = 0.40      # high-run type's weight in maturing debt
 const YCALM   = 1.10   # public signal, calm
 const YSTRESS = 0.95   # public signal, stress
 
@@ -104,7 +104,7 @@ function main()
         "cutoff_premium" => (ALP / BET) * DELF,
         "shift" => (ALP / sqrt(BET)) * DELF)
 
-    # baseline thresholds, crisis probs, spreads: calm and stress, with/without ambiguity
+    # Baseline thresholds and prices with and without effective pessimism.
     base = Dict{String,Any}()
     for (tag, y) in [("calm", YCALM), ("stress", YSTRESS)]
         tA = tstar(MU0, y)                       # with ambiguity
@@ -118,7 +118,7 @@ function main()
     end
     res["base"] = base
 
-    # fragility frontier: t*(mu) for three ambiguity radii, both regimes
+    # Composition frontier for three effective-pessimism radii.
     mugrid = collect(0.0:0.01:1.0)
     fr = Dict{String,Any}("mu" => mugrid)
     for del in [0.04, 0.08, 0.12]
@@ -158,7 +158,7 @@ function main()
             spread_bp(crisisP(tstar(MU0, YSTRESS; delF = DELF / 2), YSTRESS)) -
             spread_bp(crisisP(tS, YSTRESS)))
 
-    # ambiguity is not noise: t*(delta) linear vs public-variance increase
+    # Effective pessimism is directional while noise moves with the news state.
     dgrid = collect(0.0:0.005:0.15)
     res["amb_vs_noise"] = Dict("delta" => dgrid,
         "t_delta" => [tstar(MU0, YSTRESS; delF = d) for d in dgrid],
@@ -174,7 +174,7 @@ function main()
         "d_noise" => [tstar(MU0, y; delF = 0.0, alp = 1.0 / (SIGY + DELF)^2) -
                       tstar(MU0, y; delF = 0.0) for y in ycomp])
 
-    # QT experiment: fragile share drifts 0.35 -> 0.65 over 8 years in calm;
+    # QT experiment: high-run weight drifts from 0.35 to 0.65 over eight years.
     # a moderate fundamentals shock hits in year 7; debt-service doom loop
     T = 15
     TSHOCK = 7

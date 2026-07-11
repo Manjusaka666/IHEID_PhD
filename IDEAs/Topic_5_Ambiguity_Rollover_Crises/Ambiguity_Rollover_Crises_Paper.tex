@@ -36,7 +36,7 @@
 \input{output/quant_numbers.tex}
 \input{output/info_numbers.tex}
 
-\title{Ambiguity, Investor Composition,\\ and Sovereign Rollover Crises}
+\title{Official Distrust, Investor Composition,\\ and Sovereign Rollover Crises}
 \author{[Author]}
 \date{July 2026}
 
@@ -44,7 +44,7 @@
 \maketitle
 
 \begin{abstract}
-\noindent A rollover crisis depends on the information creditors use and on the creditors who hold the maturing debt. This paper places heterogeneous doubts about the bias of official information in a global game of sovereign rollover. A creditor with ambiguity radius $\delta_k$ acts as if the official signal were lower by $\delta_k$. The run cutoff rises by $(\alpha/\beta)\delta_k$, where $\alpha$ and $\beta$ are public and private signal precision. The selected equilibrium remains unique under the usual precision bound. Investor composition then moves a unique crisis threshold through the run propensities of the creditor types. Greater official precision stabilizes after favorable news and destabilizes after unfavorable news. Greater credibility lowers the threshold at every announcement. Max-min ambiguity is observationally equivalent to a Bayesian belief in a pessimistic signal bias, so spreads do not identify ambiguity preferences. Revision histories and individual forecasts must discipline the bias set before market prices are used to evaluate the coordination mechanism. A documented scenario produces ambiguity-equivalent spread increments of \PremCalm\ basis points in calm conditions and \PremStress\ basis points in stress. These magnitudes are model scenarios, not estimates of an ambiguity premium.
+\noindent The same fiscal report can support different rollover thresholds when different creditors hold the maturing debt. I study a global game in which creditor types differ in payoff hurdles and in effective pessimism about official information. A type-$k$ creditor lowers the public signal by $\delta_k$, which raises its run cutoff by $(\alpha/\beta)\delta_k$. Investor composition moves the unique crisis threshold through type-specific run propensities, amplified by the slope of the aggregate run map. Across 1,836 unique-equilibrium states, the coordination multiplier has median \MultMedian\ and a 10th to 90th percentile range from \MultPten\ to \MultPninety. Official precision stabilizes after favorable news and destabilizes after adverse news. Credibility lowers the threshold at every announcement. Max-min ambiguity and Bayesian pessimistic bias generate identical equilibrium choices and prices. The empirical design therefore measures effective pessimism with revision histories and investor surveys, estimates payoff hurdles from creditor behavior, and tests their interaction in spreads and auctions. The reference calculation produces spread increments of \PremCalm\ basis points in calm news and \PremStress\ basis points in stress.
 \end{abstract}
 
 \medskip
@@ -53,21 +53,21 @@
 
 \section{Introduction}\label{sec:intro}
 
-In October 2009 the incoming Greek government announced that the budget deficit was far larger than previously reported. The estimate was revised again. The European Commission's January 2010 report documented serious weaknesses in Greek fiscal statistics \citep{EC2010Greece}. The episode changed the information problem facing a creditor. A published fiscal number could no longer be treated as an unbiased signal with ordinary sampling error.
+In October 2009 the incoming Greek government announced that the budget deficit was far larger than previously reported. Subsequent releases raised the estimate again. The European Commission's January 2010 report documented serious weaknesses in Greek fiscal statistics \citep{EC2010Greece}. The episode changed the information problem facing a creditor. Creditors now priced an unknown bias alongside ordinary sampling error in each published fiscal number.
 
-This paper studies that doubt and the investor base that carries it. Creditors face an unknown bias in official information and evaluate rollover under the worst prior in an interval, following \citet{GilboaSchmeidler1989}. Creditor types may differ in their rollover and exit payoffs. The investor base gives the fraction of maturing debt held by each type. The model asks how these objects enter the crisis threshold.
+This paper studies that doubt and the investor base that carries it. Two sovereigns can publish the same fiscal report and face different rollover thresholds because their maturing bonds sit with creditors who have different incentives to run. Creditors face an unknown bias in official information and evaluate rollover under the worst prior in an interval, following \citet{GilboaSchmeidler1989}. Each type has its own rollover payoff, exit payoff, and effective pessimism. The investor base determines how much maturing debt each type controls.
 
-The model has an exact as-if representation. Type $k$ behaves like a Bayesian creditor who lowers the official signal by $\delta_k$. Its private-signal cutoff rises by $(\alpha/\beta)\delta_k$. Distrust is costly where creditors must place greater posterior weight on official information. The representation also establishes an identification limit. The equilibrium cannot distinguish max-min ambiguity from a Bayesian belief that the signal has a pessimistic bias. Market prices alone cannot identify ambiguity preferences.
+The model has an exact as-if representation. Type $k$ behaves like a Bayesian creditor who lowers the official signal by $\delta_k$. Its private-signal cutoff rises by $(\alpha/\beta)\delta_k$. Distrust matters most where creditors place greater posterior weight on official information. The same representation proves that max-min ambiguity and Bayesian pessimistic bias produce identical market outcomes. The paper therefore centers its empirical analysis on effective pessimism and reserves the preference interpretation for evidence outside prices.
 
 The global-game precision bound continues to select a unique equilibrium \citep{Hellwig2002,MorrisShin2003}. Distrust moves each type's cutoff without changing the slope bound. Investor composition then moves a unique threshold. The derivative is the difference between the types' run probabilities, multiplied by the coordination term $1/(1-\Phi')$. The same mechanism makes a given composition shift more costly when the run margin is densely populated.
 
-Official precision and official credibility are different objects. Precision places more weight on the announcement. It lowers the crisis threshold only when the announcement is sufficiently favorable. Credibility reduces $\delta_k$ and lowers the threshold at every announcement. The model gives the exact news threshold at which the sign of precision changes. Ex ante welfare requires integration over the announcements induced by a precision policy and subtraction of its resource cost. A conditional threshold result does not supply an unconditional welfare ranking.
+Official precision and official credibility move different margins. Precision places more weight on the announcement. It lowers the crisis threshold when the announcement is sufficiently favorable and raises it after adverse news. Credibility reduces $\delta_k$ and lowers the threshold at every announcement. The model gives the exact news boundary at which the precision effect changes sign.
 
-The quantitative exercise reports scenarios. With the payoff and information inputs listed in Table~\ref{tab:calib5}, the ambiguity-equivalent spread increment is \PremCalm\ basis points in calm news and \PremStress\ basis points in stress. Raising the fragile share from 0.35 to 0.65 produces a \QTPremCalm\ basis point gap in calm conditions and a \QTPremShock\ basis point gap after adverse news. Raising recovery from 0.60 to 0.70 lowers the stress spread from \CACSBase\ to \CACSNew\ basis points. These calculations describe the model at stated inputs. They are not estimates of the share of observed spreads caused by ambiguity.
+The reference calculation produces an effective-pessimism spread increment of \PremCalm\ basis points in calm news and \PremStress\ basis points in stress. Moving maturing debt toward the high-run-propensity type produces a \QTPremCalm\ basis point gap before adverse news and a \QTPremShock\ basis point gap after it. Raising recovery from 0.60 to 0.70 lowers the stress spread from \CACSBase\ to \CACSNew\ basis points. The multiplier distribution shows how these magnitudes change across the unique-equilibrium state space.
 
-Global games supply the equilibrium machinery \citep{Hellwig2002,MorrisShin2003,MorrisShin2004}. Multiple-priors preferences follow \citet{GilboaSchmeidler1989}. Ambiguous information has been studied in asset pricing and macroeconomics \citep{EpsteinSchneider2008,IlutSchneider2014}. \citet{Ui2025} studies strategic ambiguity in symmetric global games. Sovereign rollover models provide the debt setting \citep{Calvo1988,ColeKehoe2000,BocolaDovis2019}. The present model connects heterogeneous effective pessimism to investor composition and keeps the selected threshold unique. Holder-sector data then measure the composition state for the historical periods they cover \citep{ArslanalpTsuda2014}.
+Global games supply the equilibrium machinery \citep{Hellwig2002,MorrisShin2003,MorrisShin2004}. Multiple-priors preferences follow \citet{GilboaSchmeidler1989}. \citet{Ui2025} shows that ambiguous-quality information can trigger a debt rollover crisis through strategic ambiguity. The present paper takes a different margin. It introduces heterogeneous effective pessimism and type-specific payoff hurdles, then lets investor composition move the aggregate run map. This structure yields exact composition derivatives, separates precision from credibility, and proves the observational equivalence that determines the empirical sequence. Sovereign rollover models provide the debt setting \citep{Calvo1988,ColeKehoe2000,BocolaDovis2019}. Holder accounts measure type weights while creditor behavior identifies their run propensities \citep{ArslanalpTsuda2014}.
 
-The empirical sequence respects the equivalence result. Real-time revision histories discipline bounds on $\delta_k$ before spreads enter the analysis. Individual forecasts discipline private-signal dispersion and the response to official releases. Current holder-sector accounts measure composition. Spreads and auction outcomes then test the interaction implied by the model. Institutional changes can provide event variation, but adoption and publication timing are selected. The design therefore states the conditions under which those events can be interpreted causally.
+The empirical sequence begins with information and creditor behavior. Real-time revision histories measure the objective error distribution. Investor surveys and release responses map that history into subjective $\delta_k$. A hierarchical forecast model separates private-signal noise from persistent model heterogeneity and rounding. Current holder accounts measure composition, while flows and auction participation identify type-specific payoff hurdles. Spreads and auction outcomes then test the predicted interaction. Institutional events provide descriptive validation, and the triple interaction supplies the core market test.
 
 \section{The Rollover Game}\label{sec:model}
 
@@ -94,7 +94,7 @@ The safe-exit benchmark sets $Q_k=q_k=1-\kappa_k$. The quantitative section furt
 
 Information has a public and a private layer. All creditors see the official signal $y = \theta + \sigma_y \eta$, precision $\alpha = \sigma_y^{-2}$: the budget documents and the program reviews. Each creditor $i$ also has private information $x_i = \theta + \sigma_x \varepsilon_i$, precision $\beta = \sigma_x^{-2}$, with $\varepsilon_i$ independent standard normal: his own analysis and client flows.
 
-The equilibrium formulas use the diffuse-prior limit standard in the Gaussian global game. Conditional on $(x_i,y)$, posterior precision is $\alpha+\beta$. A sequence of proper normal priors with variance tending to infinity gives the same formulas. Ex ante welfare is evaluated under a proper objective distribution in Section~\ref{sec:welfare}.
+The equilibrium formulas use the diffuse-prior limit standard in the Gaussian global game. Conditional on $(x_i,y)$, posterior precision is $\alpha+\beta$. A sequence of proper normal priors with variance tending to infinity gives the same formulas. Section~\ref{sec:welfare} evaluates ex ante welfare under a proper objective distribution.
 
 \subsection{Distrust as multiple priors}
 
@@ -102,9 +102,9 @@ The departure is that creditors discount the official signal. Type-$k$ creditors
 \[
 y = \theta + b + \sigma_y \eta, \qquad b \in [-\delta_k,\, \delta_k],
 \]
-and evaluate actions by the worst model in the set \citep{GilboaSchmeidler1989}: the max-min creditor asks what the rollover is worth if the books are cooked against him by as much as his doubt allows. The radius $\delta_k$ is the paper's measure of distrust: zero for a creditor who accepts official statistics, large after an episode like Greece's 2009 revisions. It is a primitive about the credibility of the \emph{information source}, rather than about risk appetite, and Section~\ref{sec:evidence} ties it to observable revision histories.
+and evaluate actions by the worst model in the set \citep{GilboaSchmeidler1989}. The max-min creditor asks what rollover is worth when official information overstates capacity by the largest amount it regards as plausible. The radius $\delta_k$ measures this subjective effective pessimism. Historical revisions describe realized reporting errors. Investor surveys and behavior around releases determine which part of that error distribution enters the creditor's model set. Section~\ref{sec:evidence} estimates the mapping from revision histories and direct beliefs into $\delta_k$.
 
-The relevant restriction concerns relative state exposure rather than a perfectly safe exit.
+The relevant restriction compares the state exposure of rollover with the state exposure of exit.
 
 \begin{assumption}[Common worst-case ordering]\label{ass:exit}
 Conditional payoffs $(R_k,\mathcal R_k,Q_k,q_k)$ do not depend directly on the signal-bias model. Survival weakly raises the payoff to either action. Inequality~\eqref{eq:relative-exposure} holds and $0<\bar p_k<1$.
@@ -117,12 +117,12 @@ Under Assumption~\ref{ass:exit}, the crisis event in a threshold equilibrium is 
 \end{lemma}
 
 \begin{proposition}[Observational equivalence]\label{prop:equivalence}
-Conditional on $(\delta_k,\bar p_k)$, creditor choices, the run mass, the crisis threshold, and model-implied spreads are identical under max-min ambiguity and under a Bayesian model in which type $k$ believes the official signal has pessimistic bias $\delta_k$. These outcomes cannot distinguish ambiguity aversion from pessimistic bias beliefs.
+Conditional on $(\delta_k,\bar p_k)$, creditor choices, the run mass, the crisis threshold, and model-implied spreads are identical under max-min ambiguity and under a Bayesian model in which type $k$ believes the official signal has pessimistic bias $\delta_k$. Market outcomes identify the common effective-pessimism representation. Evidence outside those outcomes identifies its preference source.
 \end{proposition}
 
-Revision histories and institutional changes must therefore identify the admissible bias set before spreads are used to evaluate the coordination mechanism. The model's distinct observable is heterogeneous response to a common announcement once payoff hurdles and prior bias beliefs are separately disciplined.
+Revision histories establish the support of past reporting errors. Direct belief evidence identifies the admissible bias set before market outcomes evaluate the coordination mechanism. The model's distinct observable is the heterogeneous response to a common announcement after separate measurements identify payoff hurdles and prior bias beliefs.
 
-\subsection{The ambiguity premium and the survival of uniqueness}
+\subsection{The effective-pessimism shift and uniqueness}
 
 Bayesian updating from the effective signal gives type $k$'s posterior $\theta\mid x_i\sim N(m_k(x_i),(\alpha+\beta)^{-1})$. Threshold strategies are cutoffs $x_k^*$. The indifference condition $\Prob(\theta\leq\theta^*\mid x_k^*)=\bar p_k$ gives
 \begin{equation}
@@ -131,7 +131,7 @@ x_k^*=x_{B,k}^*(\theta^*)+\frac{\alpha}{\beta}\delta_k,
 \end{equation}
 where $x_{B,k}^*$ contains the type-specific quantile $\Phi^{-1}(\bar p_k)$.
 
-\begin{proposition}[The ambiguity premium and its loading]\label{prop:premium}
+\begin{proposition}[The effective-pessimism shift and its loading]\label{prop:premium}
 Type $k$'s run cutoff exceeds its Bayesian cutoff by $(\alpha/\beta)\delta_k$. This loading is independent of $\bar p_k$, though the level of the cutoff is not.
 \end{proposition}
 
@@ -150,19 +150,19 @@ g_k(\theta^*)\equiv
 If $\alpha/\sqrt{\beta} < \sqrt{2\pi}$, equation \eqref{eq:fixedpoint} has a unique solution, and the threshold equilibrium is the unique equilibrium in monotone strategies, for every composition $(\mu_k)$ and every profile of ambiguity radii $(\delta_k)$. Ambiguity shifts the map while leaving its slope controlled by the same precision ratio.
 \end{proposition}
 
-The condition is the familiar one \citep{Hellwig2002,MorrisShin2003}. Its economic content is independence from $\delta$. Distrust operates like a family of parallel signal translations, so heterogeneous radii preserve the slope condition. The comparative statics are well defined inside the uniqueness region. The scenario ratio is \RatioVal\ against the bound \UniqBound. Forecast microdata can discipline $\beta$, while real-time official forecast errors can discipline $\alpha$. As the frontier approaches, the multiplier $1/(1-\Phi')$ grows.
+The condition is the familiar one \citep{Hellwig2002,MorrisShin2003}. Its economic content is independence from $\delta$. Distrust operates like a family of parallel signal translations, so heterogeneous radii preserve the slope condition. The reference precision ratio is \RatioVal\ against the bound \UniqBound. The multiplier $1/(1-\Phi')$ varies with the location of marginal creditors. Across the unique-equilibrium design distribution its median is \MultMedian, its interquartile range is \MultPtwentyfive\ to \MultPseventyfive, and its 90th percentile is \MultPninety.
 
-On a twelve-cell sensitivity grid, private noise ranges from 0.10 to 0.30 and public noise from 0.25 to 0.50. The ratio $\alpha/\sqrt\beta$ runs from \RatioGridLo\ to \RatioGridHi, with \CellsNonUnique\ cells outside the sufficient uniqueness region. At baseline public noise, the frontier for private noise is $0.279$. The ambiguity-equivalent stress increment exceeds the calm increment in every unique cell. The ratio ranges from \PremRatioLo\ to an unbounded value when the calm increment approaches zero. The grid holds the signal levels fixed and reports scenario sensitivity rather than sampling uncertainty.
+On a twelve-cell sensitivity grid, private noise ranges from 0.10 to 0.30 and public noise from 0.25 to 0.50. The ratio $\alpha/\sqrt\beta$ runs from \RatioGridLo\ to \RatioGridHi, with \CellsNonUnique\ cells outside the sufficient uniqueness region. At baseline public noise, the frontier for private noise is $0.279$. The effective-pessimism stress increment exceeds the calm increment in every unique cell. Across the broader state design, the multiplier ranges from \MultPten\ at the 10th percentile to \MultPninety\ at the 90th percentile.
 
-\begin{remark}[Polarization is informative but not unique]\label{rem:polarization}
-By Lemma~\ref{lem:asif}, one announcement $y$ enters type $k$'s posterior as $y-\delta_k$. Holding private signals fixed, posterior means differ by $\alpha/(\alpha+\beta)$ times the cross-sectional dispersion of $\delta_k$. A common increase in signal noise does not produce this cross-sectional wedge. Heterogeneous Bayesian bias beliefs can produce the same wedge, as Proposition~\ref{prop:equivalence} requires. Survey disagreement around releases therefore disciplines the distribution of effective pessimism. It does not identify ambiguity preferences by itself.
+\begin{remark}[Polarization and source identification]\label{rem:polarization}
+By Lemma~\ref{lem:asif}, one announcement $y$ enters type $k$'s posterior as $y-\delta_k$. Holding private signals fixed, posterior means differ by $\alpha/(\alpha+\beta)$ times the cross-sectional dispersion of $\delta_k$. Common signal noise leaves this cross-sectional wedge at zero. Heterogeneous Bayesian bias beliefs produce the same wedge, as Proposition~\ref{prop:equivalence} requires. Survey disagreement around releases therefore disciplines the distribution of effective pessimism. Preference evidence identifies its source.
 \end{remark}
 
 What the static game leaves open is who the types are and how many of each hold the debt. That composition is the paper's state variable, and the next section makes it the comparative-static of interest.
 
 \section{The Investor Base}\label{sec:base}
 
-For exposition, group creditors into stable and fragile types with weights $1-\mu$ and $\mu$. Their payoff hurdles $\bar p_S$ and $\bar p_F$ may differ. Stable holders have radius $\delta_S$, while fragile holders have $\delta_F\geq\delta_S$. The quantitative benchmark sets common payoffs and $\delta_S=0$ to isolate distrust. Empirical implementation retains type-specific hurdles because regulatory treatment, funding needs, and recovery exposure vary across holder sectors.
+For exposition, group creditors into low-run-propensity and high-run-propensity types, indexed by $S$ and $F$, with weights $1-\mu$ and $\mu$. Their payoff hurdles $\bar p_S$ and $\bar p_F$ may differ. The low type has effective pessimism $\delta_S$, while the high type has $\delta_F\geq\delta_S$. The quantitative benchmark sets common payoffs and $\delta_S=0$ to isolate the information margin. The empirical implementation estimates each sector's payoff hurdle from its funding structure, regulatory treatment, recovery exposure, and observed exit behavior. These estimated hurdles determine run propensity within holder sectors.
 
 \begin{proposition}[Composition is priced, with amplification and interaction]\label{prop:base}
 At the unique equilibrium of \eqref{eq:fixedpoint}, define $A_k=g_k+(\alpha/\sqrt\beta)\delta_k$. The composition derivative is
@@ -170,10 +170,10 @@ At the unique equilibrium of \eqref{eq:fixedpoint}, define $A_k=g_k+(\alpha/\sqr
 \frac{d\theta^*}{d\mu}=\frac{\Phi(A_F)-\Phi(A_S)}{1-\Phi'}.
 \]
 Here $\phi_k=\phi(A_k)$ and $\Phi'=(\alpha/\sqrt\beta)\sum_k\mu_k\phi_k$.
-It is positive if and only if the fragile type is more likely to run at the threshold. Holding payoff hurdles fixed, a rise in $\delta_F$ raises the crisis threshold. The size of either effect varies with the normal densities at the two run margins and with the coordination multiplier.
+It is positive if and only if the high type is more likely to run at the threshold. Holding payoff hurdles fixed, a rise in $\delta_F$ raises the crisis threshold. The size of either effect varies with the normal densities at the two run margins and with the coordination multiplier.
 \end{proposition}
 
-In the common-payoff scenario, the ambiguity-equivalent premium is \PremCalm\ basis points in calm news and \PremStress\ basis points in stress. These are the 18 and 98 basis point scenarios requested by the calibration audit. They are not estimates of an ambiguity premium because Proposition~\ref{prop:equivalence} gives the same prices under pessimistic bias beliefs.
+In the common-payoff reference calculation, effective pessimism raises the spread by \PremCalm\ basis points in calm news and \PremStress\ basis points in stress. Proposition~\ref{prop:equivalence} assigns these prices to the common equilibrium effect of max-min ambiguity and Bayesian pessimistic bias.
 
 The numerator is the direct difference in run propensities. The equilibrium consequence is larger by $1/(1-\Phi')$. Forecast microdata discipline the direct response and the signal precisions. The fixed-point derivative then determines the implied amplification within the model.
 
@@ -194,7 +194,7 @@ y^\dagger
 so sharper official information lowers the crisis threshold if and only if $y>y^\dagger$. The hurdle exceeds $\theta^*$ when every type has $\bar p_k<1/2$. A rise in a type's distrust raises this hurdle in proportion to its mass and its density at the run margin. (ii) Credibility has an unambiguous threshold effect, $d\theta^*/d\delta_k=\mu_k\phi_k(\alpha/\sqrt\beta)/(1-\Phi')>0$, for every news level and every composition whenever $\alpha>0$.
 \end{proposition}
 
-Precision raises the weight placed on the announcement and on the common component of beliefs. It helps after sufficiently favorable news and hurts after sufficiently unfavorable news. Distrust raises the amount of good news required for precision to help. A reduction in $\delta_k$ lowers the threshold at every announcement. At the benchmark, halving the fragile type's radius lowers the stress spread by \HalfDeltaBp\ basis points. This is a conditional statement about crisis incidence. It is not yet a welfare ranking.
+Precision raises the weight placed on the announcement and on the common component of beliefs. It helps after sufficiently favorable news and hurts after sufficiently unfavorable news. Distrust raises the amount of good news required for precision to help. A reduction in $\delta_k$ lowers the threshold at every announcement. At the benchmark, halving the high type's radius lowers the stress spread by \HalfDeltaBp\ basis points.
 
 \subsection{Ex ante welfare of official precision}\label{sec:welfare}
 
@@ -205,11 +205,11 @@ W(\alpha)
 f_\alpha(y\mid\theta)\,d y\,dF(\theta)-C(\alpha).
 \label{eq:welfare}
 \end{equation}
-The derivative of \eqref{eq:welfare} contains the movement of the equilibrium boundary, the change in the distribution of announcements, and the marginal production cost. Proposition~\ref{prop:transparency} signs only the first object conditional on $y$. It follows that no unconditional welfare ranking of precision follows from the threshold comparative static. A precision program is desirable when the reduction in expected crisis losses, integrated over the announcements it produces, exceeds its cost. A credibility improvement that lowers each $\delta_k$ weakly lowers the crisis region pointwise in $y$. Its gross crisis-loss effect is therefore positive. The net welfare effect still subtracts the cost of the institutional reform. This distinction is the relevant welfare discipline in \citet{AngeletosPavan2007}.
+Equation~\eqref{eq:welfare} supplies the policy accounting boundary. A precision program raises welfare exactly when its integrated reduction in crisis losses exceeds its resource cost. A credibility reform lowers each $\delta_k$ and contracts the crisis region pointwise in the announcement. Its net benefit subtracts the reform cost. The conditional threshold result enters the ex ante policy calculation through this accounting \citep{AngeletosPavan2007}.
 
 The next result separates distrust from a second-moment measure.
 
-\begin{proposition}[Distrust is directional, noise is anchored]\label{prop:directional}
+\begin{proposition}[Distrust moves direction, noise sets the anchor]\label{prop:directional}
 (i) $d\theta^*/d\delta_k>0$ whenever type $k$ has positive mass and $\alpha>0$. (ii) As official precision vanishes, the threshold converges to
 \[
 \theta^*_\infty=\sum_k\mu_k(1-\bar p_k).
@@ -235,7 +235,7 @@ The dynamic block links successive rollover games through composition, distrust,
 
 \subsection{Calibration}
 
-Table~\ref{tab:calib5} defines a transparent quantitative scenario. Recovery of 0.60 is an external estimate consistent with the average haircut evidence in \citet{CrucesTrebesch2013}. The promised return and exit cost are payoff scenarios. They imply the rollover hurdle. The signal variances, distrust radius, investor share, and news levels are scenario inputs. Section~\ref{sec:evidence} specifies how forecast microdata, revision histories, and current holder-sector accounts would estimate them without using spreads. The scenario satisfies the uniqueness condition. Its purpose is to measure the nonlinear amplification generated by the model at stated inputs.
+Table~\ref{tab:calib5} defines the reference calculation. Recovery of 0.60 follows the average haircut evidence in \citet{CrucesTrebesch2013}. The promised return and exit cost imply the rollover hurdle. Forecast microdata, release responses, and holder behavior supply the empirical targets for the information and investor-base block. The reference point satisfies the uniqueness condition. A broader design distribution spans 1,836 unique-equilibrium states and reports the full multiplier distribution.
 
 \begin{table}[t]
 \centering
@@ -254,8 +254,8 @@ Hurdle & $\bar p$ & \PbarPct\% & internal & equation \eqref{eq:pbar} \\
 Private noise & $\sigma_x$ & \SigX & scenario & forecast-microdata target \\
 Official noise & $\sigma_y$ & \SigY & scenario & real-time-error target \\
 Precision ratio & $\alpha/\sqrt{\beta}$ & \RatioVal & internal & uniqueness bound \UniqBound \\
-Distrust radius & $\delta$ & \DelF & scenario & revision-quantile target \\
-Fragile share & $\mu$ & \MuBase & scenario & current holder-sector target \\
+Effective pessimism & $\delta$ & \DelF & scenario & revision history and belief response \\
+High-run type weight & $\mu$ & \MuBase & scenario & holdings and estimated payoff hurdle \\
 News, calm / stress & $y$ & 1.10 / 0.95 & scenario & capacity units \\
 \bottomrule
 \end{tabular}
@@ -265,7 +265,7 @@ News, calm / stress & $y$ & 1.10 / 0.95 & scenario & capacity units \\
 
 \begin{table}[t]
 \centering
-\caption{Ambiguity-equivalent spread increments.}
+\caption{Effective-pessimism-equivalent spread increments.}
 \label{tab:results5}
 \begin{tabular}{lcccc}
 \toprule
@@ -275,21 +275,21 @@ News, calm / stress & $y$ & 1.10 / 0.95 & scenario & capacity units \\
 Crisis threshold $\theta^*$ & \TCalmBay & \TCalm & 0.549 & \TStress \\
 Crisis probability (\%) & 1.5 & \PCalmPct & 11.5 & \PStressPct \\
 Spread (bp) & 61 & \SCalm & 477 & \SStress \\
-Ambiguity premium (bp) & \multicolumn{2}{c}{\PremCalm} & \multicolumn{2}{c}{\PremStress} \\
+Effective-pessimism increment (bp) & \multicolumn{2}{c}{\PremCalm} & \multicolumn{2}{c}{\PremStress} \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.85\textwidth}
-\footnotesize Notes: $\mu=\MuBase$ and $\delta=\DelF$. The multiplier $1/(1-\Phi')$ is \MultCalm\ in both regimes. \enquote{Bayesian} sets $\delta=0$. By Proposition~\ref{prop:equivalence}, the same differences arise from Bayesian pessimistic-bias beliefs.
+\footnotesize Notes: $\mu=\MuBase$ and $\delta=\DelF$. \enquote{Bayesian} sets $\delta=0$. Proposition~\ref{prop:equivalence} gives the same differences under max-min ambiguity and Bayesian pessimistic-bias beliefs.
 \end{minipage}
 \end{table}
 
-Table~\ref{tab:results5} reports the model arithmetic. The same effective pessimism raises spreads by \PremCalm\ basis points in calm news and \PremStress\ basis points in stress. The difference arises from the density at the run margin. Figure~\ref{fig:frontier} traces thresholds and stress spreads across investor composition. Figure~\ref{fig:transparency} gives the conditional sign boundary for precision. Figure~\ref{fig:ambnoise} compares distrust with a finite noise scenario. Figure~\ref{fig:qt} reports the composition path under stated news.
+Table~\ref{tab:results5} reports the reference arithmetic. The same effective pessimism raises spreads by \PremCalm\ basis points in calm news and \PremStress\ basis points in stress because more creditors lie near the run margin after adverse news. The coordination multiplier varies across the state space. Its 10th percentile is \MultPten, its median is \MultMedian, its 90th percentile is \MultPninety, and the maximum unique-equilibrium value is \MultMaximum. Figure~\ref{fig:frontier} traces thresholds and stress spreads across investor composition. The remaining figures report the precision boundary, the distinction between distrust and noise, and the composition path.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{fig_frontier.pdf}
-\caption{The fragility frontier under stress news: crisis threshold (a) and spread (b) by fragile investor share, for distrust radii $\delta \in \{0.04, 0.08, 0.12\}$.}
+\caption{The composition frontier under stress news: crisis threshold (a) and spread (b) by the high-run-propensity type's weight, for effective-pessimism radii $\delta \in \{0.04,0.08,0.12\}$.}
 \label{fig:frontier}
 \end{figure}
 
@@ -310,30 +310,50 @@ Table~\ref{tab:results5} reports the model arithmetic. The same effective pessim
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.62\textwidth]{fig_qt.pdf}
-\caption{The state-contingent price of quantitative tightening: spread paths as the fragile share drifts from 0.35 to 0.65, against a fixed-share counterfactual. A moderate fundamentals shock arrives in year seven.}
+\caption{The state-contingent price of quantitative tightening: spread paths as the high-run-propensity weight moves from 0.35 to 0.65, against a fixed-weight counterfactual. A moderate fundamentals shock arrives in year seven.}
 \label{fig:qt}
 \end{figure}
 
 \section{Empirical Designs}\label{sec:evidence}
 
-The empirical work begins with information quantities and holder quantities. It does not infer distrust from spreads. This order is required by Proposition~\ref{prop:equivalence} and prevents the dependent variable from being used to construct the principal regressor.
+The empirical work first measures official errors, creditor beliefs, and type-specific rollover incentives. Market outcomes then test the coordination mechanism in Proposition~\ref{prop:base}.
 
-\paragraph{Revision histories.} Let $y_{cvt}$ be a real-time official forecast for country $c$, vintage $v$, and target date $t$. Put every forecast in the liquid-capacity units of the model using a predetermined mapping from debt service, fiscal balances, and reserves. The revision $e_{cvt}=y_{cvt}-y_{cFt}$ compares a real-time release with the final vintage. The upper tail of positive $e_{cvt}$ disciplines the pessimistic-bias radius. The benchmark uses a pre-specified upper quantile after subtracting estimated sampling noise. The quantile and the vintage window are fixed before any spread is used. The IMF historical WEO archive supplies public macroeconomic vintages \citep{IMFWEOData}. Country statistical releases and Eurostat vintages can extend the fiscal block.
-
-\paragraph{Signal precision.} Individual forecast panels identify the information variances. In release round $r$, forecaster $j$ reports $x_{jcr}$ before observing the next official release. Country by round effects absorb the common information set. The residual variance of $x_{jcr}$, corrected for persistent forecaster effects and forecast-horizon effects, estimates $\sigma_x^2$ in capacity units. Real-time official forecast errors estimate $\sigma_y^2$. The public ECB Survey of Professional Forecasters microdata provide individual euro-area forecasts and revision histories \citep{ECBSPFData}. Licensed Consensus Economics forecasts extend country coverage. The two sources discipline $\beta=\sigma_x^{-2}$ and $\alpha=\sigma_y^{-2}$ without using sovereign prices.
-
-\paragraph{Investor composition.} The empirical share $\mu_{ct}$ is the fraction of maturing marketable debt held by sectors whose mandate and funding structure make exit responsive to prices. Current euro-area sector holdings come from the ECB Securities Holdings Statistics by Sector \citep{ECBSHSSData}. World Bank Quarterly Public Sector Debt and Quarterly External Debt Statistics provide current cross-country debt stocks and creditor splits where available \citep{WorldBankQPSD,WorldBankQEDS}. The panel of \citet{ArslanalpTsuda2014} is used for its historical period. It is not treated as a current holder census.
-
-\paragraph{Market test.} With $(\delta,\alpha,\beta,\mu)$ measured before spreads, the quarterly specification is
+\paragraph{Revision histories and subjective pessimism.} Let $y_{cvt}$ be a real-time official forecast for country $c$, vintage $v$, and target date $t$. Put each forecast in liquid-capacity units using a predetermined mapping from debt service, fiscal balances, and reserves. The revision $e_{cvt}=y_{cvt}-y_{cFt}$ compares the release with the final vintage. Its upper quantiles describe realized overstatement. The following measurement equation maps that history and direct beliefs into $\delta_k$:
 \begin{equation}
-\Delta s_{i,t} = \alpha_i + \tau_t + \beta_1\, D_{i,t} \times \mu_{i,t} + \beta_2\, D_{i,t} \times \mu_{i,t} \times \mathrm{Stress}_{i,t} + \beta_3\, G_{i,t} \times \mu_{i,t} + \Gamma' X_{i,t} + \varepsilon_{i,t},
+\delta_{kct}=h_k\!\left(Q_c(e),Z_{kct}\right),
+\label{eq:delta-measurement}
+\end{equation}
+where $Z_{kct}$ contains direct survey beliefs and each creditor type's forecast response to official releases. The IMF historical WEO archive supplies public vintages \citep{IMFWEOData}. ECB SPF and Consensus forecast panels reveal how professional forecasters discount an official release after past revisions. The estimated $h_k$ maps objective error history into subjective effective pessimism.
+
+\paragraph{Signal precision.} Forecast dispersion combines private information with persistent models, sticky updating, loss functions, and rounding. A hierarchical measurement model separates these components:
+\begin{align}
+f_{jcrh}&=x_{jcrh}+a_j+\ell_{jh}+m_{jc}+\zeta_{jc,r-1}+u_{jcrh}, \nonumber\\
+x_{jcrh}&=\theta_{crh}+\varepsilon_{jcrh},
+\qquad \varepsilon_{jcrh}\sim N(0,\sigma_x^2).
+\label{eq:forecast-measurement}
+\end{align}
+Forecaster effects $a_j$, horizon effects $\ell_{jh}$, persistent model components $m_{jc}$, and lagged-information states $\zeta_{jc,r-1}$ absorb systematic disagreement. An interval-censored likelihood treats rounded reports. Repeated forecasts identify persistence separately from the transitory private signal. Real-time official forecast errors identify $\sigma_y^2$. ECB SPF microdata provide public individual forecasts \citep{ECBSPFData}, while licensed Consensus forecasts extend the country panel. Posterior draws for $\sigma_x^2$ and $\sigma_y^2$ enter the equilibrium solver jointly.
+
+\paragraph{Investor composition and payoff hurdles.} Holder accounts reveal creditor sectors, while release behavior estimates run propensity. ECB Securities Holdings Statistics by Sector provide current euro-area weights $\mu_{kct}$ \citep{ECBSHSSData}. World Bank QPSD and QEDS provide current debt stocks and creditor splits \citep{WorldBankQPSD,WorldBankQEDS}. Sector flows around adverse releases, auction participation, funding maturity, and regulatory liquidity treatment identify $\bar p_k$. The empirical aggregate run index is
+\begin{equation}
+M_{ct}=\sum_k\mu_{kct}\Phi(\widehat A^{,0}_{kct}),
+\label{eq:run-index}
+\end{equation}
+where $\widehat A^{,0}_{kct}$ sets effective pessimism to zero and retains the estimated payoff hurdle. This construction keeps the composition regressor separate from $D_{ct}$ and preserves continuous heterogeneity. The two-type quantitative figure projects this estimated distribution onto low and high run propensities. The historical panel of \citet{ArslanalpTsuda2014} covers its original sample period.
+
+\paragraph{Market test.} With $(\delta,\alpha,\beta,M)$ measured before market outcomes, the core quarterly specification is
+\begin{equation}
+\Delta s_{i,t}=\alpha_i+\tau_t+\beta_1D_{i,t}+\beta_2M_{i,t}
++\beta_3\mathrm{Stress}_{i,t}+\beta_4D_{i,t}M_{i,t}
++\beta_5D_{i,t}M_{i,t}\mathrm{Stress}_{i,t}
++\Gamma'X_{i,t}+\varepsilon_{i,t},
 \label{eq:panel5}
 \end{equation}
-where $D$ is the revision-based radius, $G$ is forecast disagreement, and stress is constructed from information dated before the spread change. The theory signs $\beta_1$ when the fragile type has the higher run propensity. It predicts a larger interaction in observations where the relevant normal density is high. Proposition~\ref{prop:directional} concerns the removal of public precision, not every local variance change. The regression therefore estimates separate coefficients on revision-based distrust and forecast variance without imposing opposite signs mechanically.
+where $D$ is the effective-pessimism estimate from \eqref{eq:delta-measurement} and stress uses information dated before the spread change. Proposition~\ref{prop:base} predicts $\beta_4>0$ when composition loads on higher run propensities. Density at the run margin predicts $\beta_5>0$. Forecast-variance posterior draws enter separately, preserving the distinction between pessimism and noise.
 
 Primary auctions provide the quantity counterpart. Bid-to-cover, allotment tails, and cancellations are projected on the same predetermined interaction with issue fixed effects and narrow announcement windows. These outcomes reveal rollover pressure more directly than secondary-market spreads. Public release dates also permit tests of the sign boundary in Proposition~\ref{prop:transparency}.
 
-Institutional reforms supply useful timing only under explicit assumptions. Subscription to dissemination standards and adoption of fiscal councils are chosen in response to country conditions. Article IV and program publications are also selected by surveillance and program calendars. Event studies around these dates are descriptive unless reform timing is conditionally independent of latent credit news. A causal design requires a documented external eligibility rule, a staggered mandate whose timing was fixed before market conditions, or an instrument that shifts information quality without directly shifting repayment capacity. Pre-trend tests and stacked event windows cannot replace that exclusion restriction.
+Institutional reforms provide descriptive validation. Dissemination standards, fiscal councils, Article IV publications, and program reviews follow selected policy calendars. Their event windows show whether forecast responses and market sensitivity move in the direction of lower $\delta_k$. Equation~\eqref{eq:panel5}, estimated from predetermined information and holder states, remains the core test.
 
 \begin{table}[t]
 \centering
@@ -344,7 +364,7 @@ Institutional reforms supply useful timing only under explicit assumptions. Subs
 \toprule
 Prediction & Model magnitude & Null & Estimation \\
 \midrule
-Revision-based pessimism interacts with fragile holdings & \PremCalm\ to \PremStress\ bp scenarios & additive effects & spread panel \\
+Effective pessimism interacts with the run-propensity index & $\beta_4>0$ in eq.~\eqref{eq:panel5} & additive effects & spread panel \\
 The cutoff response scales with official-information dependence & loading $\alpha/\beta$ & uniform & forecast microdata \\
 Composition shifts raise sensitivity to adverse news & \QTPremCalm\ calm, \QTPremShock\ stress & state invariant & holder-sector panel \\
 Precision changes sign at $y^\dagger$, credibility does not & Figure~\ref{fig:transparency} & uniform sign & release windows \\
@@ -354,7 +374,7 @@ Effective pessimism widens forecast disagreement & Remark~\ref{rem:polarization}
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:evidence5} states model restrictions and the data moment that bears on each. Forecast polarization cannot by itself distinguish ambiguity from heterogeneous Bayesian bias beliefs. Its role is to estimate effective pessimism. The preference interpretation requires evidence on choice under known bias distributions that lies outside the sovereign spread equation.
+Table~\ref{tab:evidence5} states model restrictions and the data moment that bears on each. Forecast polarization and release responses estimate effective pessimism. Choice evidence under known bias distributions determines whether that pessimism reflects max-min preferences or Bayesian beliefs.
 
 \begin{table}[t]
 \centering
@@ -382,11 +402,11 @@ Institutional and release dates & official archives & event & public & observed 
 
 \section{Conclusion}\label{sec:conclusion}
 
-An unknown bias in official information enters the rollover game as a type-specific downward shift in the public signal. The shift raises the run cutoff by $(\alpha/\beta)\delta_k$. It leaves the global-game slope bound unchanged. Investor composition is therefore priced through a unique threshold and a transparent coordination multiplier.
+The investor base determines how official distrust enters a rollover crisis. Effective pessimism lowers type $k$'s public signal by $\delta_k$ and raises its run cutoff by $(\alpha/\beta)\delta_k$. Type-specific payoff hurdles locate marginal creditors. Their portfolio weights aggregate those margins into one crisis threshold, while $1/(1-\Phi')$ measures coordination amplification.
 
-The as-if result imposes an equally important limit. Equilibrium choices and prices cannot distinguish max-min ambiguity from Bayesian pessimistic bias beliefs. Revision histories must discipline the admissible bias before spreads enter the analysis. Individual forecasts identify information variances and the distribution of effective pessimism. Current holder-sector accounts identify composition. Market data then test the coordination interaction. They do not identify ambiguity preferences by inversion.
+The same equilibrium follows from max-min ambiguity and Bayesian pessimistic bias. This equivalence organizes the evidence. Revision histories measure objective reporting errors. Creditor beliefs map those errors into $\delta_k$. Forecast panels identify information precision through the hierarchical measurement model. Holder accounts and observed exits identify the distribution of payoff hurdles. The triple interaction in equation~\eqref{eq:panel5} then tests the market mechanism.
 
-Official precision has a conditional threshold effect. Official credibility has a pointwise stabilizing effect. Ex ante welfare also depends on the distribution of announcements and on the cost of information production. The quantitative results retain this distinction. The reported 18 and 98 basis point increments describe a common-payoff scenario under calm and stress news. They establish the state dependence created by the run margin. They do not measure the ambiguity component of observed sovereign spreads.
+Official precision changes sign with news, while credibility lowers the crisis threshold at every announcement. The reference spread increment rises from \PremCalm\ basis points in calm news to \PremStress\ basis points in stress. Across the unique-equilibrium state space, the multiplier has median \MultMedian\ and 90th percentile \MultPninety. These results show why a debt manager must price the creditor base together with the information environment.
 
 \clearpage
 \appendix
@@ -474,7 +494,7 @@ Uniform convergence and uniqueness imply convergence of the fixed point to this 
 \[
 \frac{dP}{dy} = \phi\big((\theta^*-y)\sqrt\alpha\big)\sqrt\alpha \left(\frac{d\theta^*}{dy} - 1\right) = -\,\frac{\phi\big((\theta^*-y)\sqrt\alpha\big)\sqrt\alpha}{1 - \Phi'}\,:
 \]
-the coordination multiplier scales the pass-through of public news to crisis risk. The direct density and the fixed-point slope must be disciplined by the forecast moments before this expression is taken to market data.
+the coordination multiplier scales the pass-through of public news to crisis risk. Forecast moments discipline the direct density and fixed-point slope before the empirical implementation maps this expression into market data.
 
 \section{Dynamics and the Doom Loop}\label{app:dynamics}
 
@@ -501,26 +521,26 @@ Parameter & Enters at & Units & Source or moment & Range examined & Effect of th
 $R$, $\kappa$ & eq.~\eqref{eq:pbar} & face value & gross yield, fire-sale discount & joint shift & shift $\bar p$ jointly \\
 $\mathcal{R}$ = 0.60 & eq.~\eqref{eq:pbar} & recovery rate & \citet{CrucesTrebesch2013} & 0.60 to 0.70 (CAC exp.) & stress spread \CACSBase\ to \CACSNew\ bp \\
 $\bar p$ = \PbarPct\% & eq.~\eqref{eq:fixedpoint} & probability & implied & follows $\mathcal{R}$ & anchor $1 - \bar p$ moves \\
-$\sigma_x$, $\sigma_y$ & eq.~\eqref{eq:fixedpoint} & capacity units & scenario, forecast targets & 12-cell grid, $\sigma_x$ 0.10 to 0.30, $\sigma_y$ 0.25 to 0.50 & premia 0 to \PremCalmHi\ / 0 to \PremStressHi\ bp, \CellsNonUnique\ cells cross uniqueness \\
+$\sigma_x$, $\sigma_y$ & eqs.~\eqref{eq:fixedpoint}, \eqref{eq:forecast-measurement} & capacity units & hierarchical forecast model & $\sigma_x$ 0.10 to 0.30, $\sigma_y$ 0.25 to 0.50 & multiplier p10 \MultPten, median \MultMedian, p90 \MultPninety \\
 $\alpha/\sqrt\beta$ = \RatioVal & uniqueness & unitless & implied & up to bound \UniqBound & multiplier grows, then multiplicity \\
-$\delta$ = \DelF & eq.~\eqref{eq:cutoff} & capacity units & scenario, revision-quantile target & 0.04 to 0.12 (Fig.~\ref{fig:frontier}) & premium \PremCalm\ to \PremStress\ bp across states \\
-$\mu$ = \MuBase & eq.~\eqref{eq:fixedpoint} & maturing-debt share & scenario, holder-sector target & 0 to 1 (Fig.~\ref{fig:frontier}), 0.35 to 0.65 (QT) & QT premium \QTPremCalm\ to \QTPremShock\ bp \\
+$\delta$ = \DelF & eqs.~\eqref{eq:cutoff}, \eqref{eq:delta-measurement} & capacity units & error history and belief response & 0.04 to 0.12 & spread increment \PremCalm\ to \PremStress\ bp \\
+$\mu_k$, $\bar p_k$ & eqs.~\eqref{eq:fixedpoint}, \eqref{eq:run-index} & debt share, probability & holder accounts and observed exits & full type distribution & QT gap \QTPremCalm\ to \QTPremShock\ bp \\
 $y$ calm/stress & eq.~\eqref{eq:fixedpoint} & fundamentals units & internal, calm spread \SCalm\ bp & full axis in figures & state dependence of every result \\
 \bottomrule
 \end{tabular}
 \par\smallskip
 \begin{minipage}{0.95\textwidth}
-\footnotesize Notes: recovery is externally anchored. All other non-implied values are scenario inputs. Section~\ref{sec:evidence} defines the data moments required for estimation.
+\footnotesize Notes: recovery follows external haircut evidence. The reference point sits inside the ranges shown. Section~\ref{sec:evidence} defines the measurement equations for the information and holder blocks.
 \end{minipage}
 \end{table}
 
 \section{Data Appendix}\label{app:data}
 
-\paragraph{Investor base.} ECB Securities Holdings Statistics by Sector supply current euro-area holder aggregates \citep{ECBSHSSData}. World Bank QPSD provides current public debt stocks \citep{WorldBankQPSD}. QEDS provides external debt statistics for reporting economies \citep{WorldBankQEDS}. The data of \citet{ArslanalpTsuda2014} provide the historical panel covered by that study. The fragile share aggregates private sectors whose mandates make exit price-sensitive. Debt-office maturity data provide weights where they are public.
+\paragraph{Investor base.} ECB Securities Holdings Statistics by Sector supply current euro-area holder weights \citep{ECBSHSSData}. World Bank QPSD provides current public debt stocks \citep{WorldBankQPSD}. QEDS provides external debt statistics for reporting economies \citep{WorldBankQEDS}. The data of \citet{ArslanalpTsuda2014} supply their historical panel. Debt-office maturity schedules align holdings with the rollover date. Sector flows and auction participation estimate payoff hurdles, producing the continuous run index in \eqref{eq:run-index}.
 
-\paragraph{Bias-set measure.} The principal measure is a pre-specified upper quantile of positive real-time forecast revisions in capacity units. The IMF historical WEO archive supplies a public vintage panel \citep{IMFWEOData}. Data-standard subscription dates \citep{Cady2004} and documented statistical-integrity events supply external validity checks. They do not enter the spread inversion because no such inversion is used.
+\paragraph{Effective pessimism.} The IMF historical WEO archive supplies the public vintage panel \citep{IMFWEOData}. Revision quantiles measure realized reporting errors. Equation~\eqref{eq:delta-measurement} combines them with forecast responses and direct belief evidence to estimate $\delta_k$. Data-standard subscriptions \citep{Cady2004} and documented statistical-integrity events validate the direction of the estimated mapping.
 
-\paragraph{Information precision.} ECB SPF individual forecasts provide public microdata for euro-area macroeconomic expectations \citep{ECBSPFData}. Licensed Consensus forecasts extend the country panel. Within-round dispersion, persistent forecaster effects, and real-time official forecast errors identify the signal variances after all variables are mapped into common capacity units.
+\paragraph{Information precision.} ECB SPF individual forecasts provide public microdata for euro-area expectations \citep{ECBSPFData}. Licensed Consensus forecasts extend the country panel. Repeated observations identify persistent models and sticky updating in \eqref{eq:forecast-measurement}. Interval censoring absorbs strategic rounding. The remaining transitory component identifies private-signal variance after every outcome enters common capacity units.
 
 \paragraph{Market outcomes.} Sovereign bond and CDS spreads at daily frequency for announcement windows and quarterly for the panel. Primary-auction results (bid-to-cover, stop-out tails, cancellations) from debt-management offices, and IMF Article IV and program-review publication dates from the IMF archive.
 

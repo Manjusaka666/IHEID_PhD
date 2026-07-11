@@ -15,6 +15,7 @@
 # Run:  julia --project=. solve_model.jl     Output: ../output/results.json
 
 using JSON
+using LinearAlgebra
 
 const OUTDIR = joinpath(@__DIR__, "..", "output")
 mkpath(OUTDIR)
@@ -57,6 +58,89 @@ function heterogeneous_local_response(
     multiplier = 1 / denominator
     (direct = direct, multiplier = multiplier, total = direct * multiplier,
      network_loading = network_loading)
+end
+
+function heterogeneous_dynamics(
+        kappas::Vector{Float64}, adjustment_costs::Vector{Float64},
+        loadings::Vector{Float64}, reserve_weights::Vector{Float64},
+        convenience_slope::Float64;
+        beta::Float64 = BETA_C,
+        contrast::Union{Nothing,Vector{Float64}} = nothing)
+    n = length(kappas)
+    all(length(vector) == n for vector in
+        (adjustment_costs, loadings, reserve_weights)) ||
+        throw(DimensionMismatch("heterogeneous arrays must have equal length"))
+    all(kappas .> 0) || throw(ArgumentError(
+        "portfolio curvatures must be positive"))
+    all(adjustment_costs .> 0) || throw(ArgumentError(
+        "adjustment costs must be positive"))
+    all(reserve_weights .>= 0) || throw(ArgumentError(
+        "reserve weights must be nonnegative"))
+    isapprox(sum(reserve_weights), 1.0; atol = 1e-12) ||
+        throw(ArgumentError("reserve weights must sum to one"))
+    0 < beta < 1 || throw(ArgumentError("beta must lie in (0,1)"))
+    isnothing(contrast) || length(contrast) == n || throw(DimensionMismatch(
+        "the contrast must match the number of reserve managers"))
+
+    forward = Diagonal(beta .* adjustment_costs)
+    current = Diagonal(kappas .+ (1 + beta) .* adjustment_costs) .-
+        convenience_slope .* loadings * reserve_weights'
+    lagged = Diagonal(adjustment_costs)
+    companion = [forward \ current -(forward \ lagged);
+                 Matrix{Float64}(I, n, n) zeros(n, n)]
+    decomposition = eigen(companion)
+    stable_indices = findall(abs.(decomposition.values) .< 1 - 1e-10)
+    length(stable_indices) == n || throw(ArgumentError(
+        "the linearized system must have exactly n stable roots"))
+    stable_roots = decomposition.values[stable_indices]
+    stable_vectors = decomposition.vectors[1:n, stable_indices]
+
+    function observable_persistence(observable::Vector{Float64})
+        mode_loadings = abs.(vec(observable' * stable_vectors))
+        cutoff = max(maximum(mode_loadings) * 1e-8, 1e-12)
+        active = findall(mode_loadings .> cutoff)
+        isempty(active) && return 0.0
+        maximum(abs.(stable_roots[active]))
+    end
+
+    stable_transition = stable_vectors * Diagonal(stable_roots) *
+        inv(stable_vectors)
+    imaginary_residual = maximum(abs.(imag.(stable_transition)))
+    transition = imaginary_residual < 1e-10 ?
+        real.(stable_transition) : stable_transition
+    (companion = companion,
+     stable_roots = stable_roots,
+     transition = transition,
+     aggregate_persistence = observable_persistence(reserve_weights),
+     contrast_persistence = isnothing(contrast) ? NaN :
+        observable_persistence(contrast))
+end
+
+function multiplier_identified_set(direct_decline::Tuple{Float64,Float64},
+                                   aggregate_decline::Tuple{Float64,Float64})
+    direct_lower, direct_upper = direct_decline
+    total_lower, total_upper = aggregate_decline
+    0 < direct_lower <= direct_upper || throw(ArgumentError(
+        "the direct-response interval must be positive and ordered"))
+    0 < total_lower <= total_upper || throw(ArgumentError(
+        "the aggregate-response interval must be positive and ordered"))
+    lower = max(1.0, total_lower / direct_upper)
+    upper = total_upper / direct_lower
+    lower <= upper || throw(ArgumentError(
+        "the response intervals have an empty multiplier set"))
+    (lower = lower, upper = upper)
+end
+
+function minimum_reputation_beta(flow_gap::Float64,
+                                 deviation_gain::Float64,
+                                 forgiveness::Float64 = 0.0)
+    flow_gap > 0 || throw(ArgumentError("flow_gap must be positive"))
+    deviation_gain >= 0 || throw(ArgumentError(
+        "deviation_gain must be nonnegative"))
+    0 <= forgiveness <= 1 || throw(ArgumentError(
+        "forgiveness must lie in [0,1]"))
+    deviation_gain /
+        (flow_gap + deviation_gain * (1 - forgiveness))
 end
 
 "Calibrated (l0, l1, nu, lamN, lamD) for a given target multiplier m."
@@ -104,36 +188,76 @@ pihat_of(sbar, p; phi = PHI, chi = CHI0) =
     sanctions_wedge(sbar, p; phi = phi, chi = chi)
 
 function global_calib(m::Float64; tau::Float64 = 0.002,
-                      lmin::Float64 = 0.001, lmax::Float64 = 0.012)
+                      lmin::Float64 = 0.001, lmax::Float64 = 0.012,
+                      convenience::Symbol = :logistic,
+                      cost::Symbol = :cubic)
     lmin < CY0 < lmax || throw(ArgumentError("CY0 must lie between the bounds"))
     tau >= 0 || throw(ArgumentError("tau must be nonnegative"))
+    convenience in (:logistic, :hill, :power) || throw(ArgumentError(
+        "unknown convenience closure"))
+    cost in (:quadratic, :cubic, :quintic) || throw(ArgumentError(
+        "unknown portfolio-cost closure"))
     local_cb = calib(m)
     share = (CY0 - lmin) / (lmax - lmin)
     steepness = local_cb.l1 / ((lmax - lmin) * share * (1 - share))
     center = steepness == 0 ? N0 :
         N0 - log(share / (1 - share)) / steepness
-    quadratic = local_cb.kap - 3 * tau * N0^2
+    hill_elasticity = local_cb.l1 == 0 ? 1.0 :
+        local_cb.l1 * N0 / ((lmax - lmin) * share * (1 - share))
+    hill_scale = N0 * ((1 - share) / share)^(1 / hill_elasticity)
+    power_exponent = local_cb.l1 == 0 ? 1.0 :
+        local_cb.l1 * N0 / (CY0 - lmin)
+    power_scale = (CY0 - lmin) / N0^power_exponent
+    cost_power = cost === :quintic ? 5 : 3
+    effective_tau = cost === :quadratic ? 0.0 : tau
+    quadratic = local_cb.kap -
+        cost_power * effective_tau * N0^(cost_power - 1)
     quadratic > 0 || throw(ArgumentError("tau makes the quadratic curvature negative"))
-    rbar = quadratic * N0 + tau * N0^3 - CY0
+    rbar = quadratic * N0 + effective_tau * N0^cost_power - CY0
     (m = m, lmin = lmin, lmax = lmax, steepness = steepness,
-     center = center, quadratic = quadratic, tau = tau, rbar = rbar,
+     center = center, hill_elasticity = hill_elasticity,
+     hill_scale = hill_scale, power_exponent = power_exponent,
+     power_scale = power_scale, convenience = convenience,
+     cost = cost, cost_power = cost_power,
+     quadratic = quadratic, tau = effective_tau, rbar = rbar,
      local_model = local_cb)
 end
 
 function global_convenience(N::Real, gc)
-    gc.steepness == 0 && return CY0
-    gc.lmin + (gc.lmax - gc.lmin) /
-        (1 + exp(-gc.steepness * (N - gc.center)))
+    gc.local_model.l1 == 0 && return CY0
+    if gc.convenience === :logistic
+        return gc.lmin + (gc.lmax - gc.lmin) /
+            (1 + exp(-gc.steepness * (N - gc.center)))
+    elseif gc.convenience === :hill
+        numerator = N^gc.hill_elasticity
+        return gc.lmin + (gc.lmax - gc.lmin) * numerator /
+            (gc.hill_scale^gc.hill_elasticity + numerator)
+    end
+    gc.lmin + gc.power_scale * N^gc.power_exponent
 end
 
 function global_convenience_slope(N::Real, gc)
-    gc.steepness == 0 && return 0.0
-    share = (global_convenience(N, gc) - gc.lmin) / (gc.lmax - gc.lmin)
-    (gc.lmax - gc.lmin) * gc.steepness * share * (1 - share)
+    gc.local_model.l1 == 0 && return 0.0
+    if gc.convenience === :logistic
+        share = (global_convenience(N, gc) - gc.lmin) /
+            (gc.lmax - gc.lmin)
+        return (gc.lmax - gc.lmin) * gc.steepness * share * (1 - share)
+    elseif gc.convenience === :hill
+        N == 0 && return gc.hill_elasticity < 1 ? Inf : 0.0
+        share = (global_convenience(N, gc) - gc.lmin) /
+            (gc.lmax - gc.lmin)
+        return (gc.lmax - gc.lmin) * gc.hill_elasticity *
+            share * (1 - share) / N
+    end
+    N == 0 && return gc.power_exponent < 1 ? Inf :
+        gc.power_scale * gc.power_exponent
+    gc.power_scale * gc.power_exponent * N^(gc.power_exponent - 1)
 end
 
-global_marginal_cost(a::Real, gc) = gc.quadratic * a + gc.tau * a^3
-global_marginal_cost_slope(a::Real, gc) = gc.quadratic + 3 * gc.tau * a^2
+global_marginal_cost(a::Real, gc) =
+    gc.quadratic * a + gc.tau * a^gc.cost_power
+global_marginal_cost_slope(a::Real, gc) =
+    gc.quadratic + gc.cost_power * gc.tau * a^(gc.cost_power - 1)
 
 function global_share(net::Float64, wedge::Float64, gc)
     benefit = gc.rbar + global_convenience(net, gc) - wedge
@@ -145,6 +269,49 @@ function global_share(net::Float64, wedge::Float64, gc)
         global_marginal_cost(mid, gc) < benefit ? (lo = mid) : (hi = mid)
     end
     (lo + hi) / 2
+end
+
+function global_residual(net::Float64, wedge::Float64, gc;
+                         mu::Float64 = MU)
+    mu * global_share(net, wedge, gc) +
+        (1 - mu) * global_share(net, 0.0, gc) - net
+end
+
+function global_roots(wedge::Float64, gc;
+                      mu::Float64 = MU,
+                      grid_points::Int = 20_001)
+    grid_points >= 3 || throw(ArgumentError("grid_points must be at least three"))
+    grid = range(0.0, 1.0, length = grid_points)
+    residuals = [global_residual(Float64(net), wedge, gc; mu = mu)
+                 for net in grid]
+    roots = Float64[]
+    for index in 1:grid_points-1
+        left = Float64(grid[index])
+        right = Float64(grid[index + 1])
+        fleft = residuals[index]
+        fright = residuals[index + 1]
+        abs(fleft) < 1e-12 && push!(roots, left)
+        signbit(fleft) == signbit(fright) && continue
+        for _ in 1:80
+            midpoint = (left + right) / 2
+            fmid = global_residual(midpoint, wedge, gc; mu = mu)
+            if signbit(fmid) == signbit(fleft)
+                left = midpoint
+                fleft = fmid
+            else
+                right = midpoint
+            end
+        end
+        push!(roots, (left + right) / 2)
+    end
+    abs(residuals[end]) < 1e-12 && push!(roots, 1.0)
+    sort!(roots)
+    unique_roots = Float64[]
+    for root in roots
+        (isempty(unique_roots) || abs(root - unique_roots[end]) > 1e-8) &&
+            push!(unique_roots, root)
+    end
+    unique_roots
 end
 
 function global_ss(wedge::Float64, gc; mu::Float64 = MU,
@@ -178,11 +345,39 @@ function gamma_threshold(p::Float64, gc; zeta::Float64 = ZETA_H,
     2 * (baseline.priv - sanctioned.priv) / OMEGA
 end
 
+function break_even_breadth(gc; gam::Float64 = GAM,
+                            zeta::Float64 = ZETA_H,
+                            chi::Float64 = CHI0,
+                            mu::Float64 = MU,
+                            phi::Float64 = PHI)
+    net_value(p) = global_hflow(
+        1.0, p, gc; gam = gam, zeta = zeta, chi = chi, mu = mu,
+        phi = phi) -
+        global_hflow(
+            0.0, p, gc; gam = gam, zeta = zeta, chi = chi, mu = mu,
+            phi = phi)
+    left = 0.0
+    right = 1.0
+    net_value(left) >= 0 || throw(ArgumentError(
+        "full intensity must weakly dominate at zero breadth"))
+    net_value(right) <= 0 || return NaN
+    for _ in 1:100
+        midpoint = (left + right) / 2
+        if net_value(midpoint) > 0
+            left = midpoint
+        else
+            right = midpoint
+        end
+    end
+    (left + right) / 2
+end
+
 function global_hflow(sbar::Float64, p::Float64, gc; gam::Float64 = GAM,
                       zeta::Float64 = ZETA_H, chi::Float64 = CHI0,
-                      mu::Float64 = MU)
+                      mu::Float64 = MU, phi::Float64 = PHI)
     allocation = global_ss(
-        sanctions_wedge(sbar, p; chi = chi), gc; mu = mu, zeta = zeta)
+        sanctions_wedge(sbar, p; chi = chi, phi = phi), gc;
+        mu = mu, zeta = zeta)
     allocation.priv + OMEGA * gam * (sbar - 0.5 * sbar^2)
 end
 
@@ -328,6 +523,26 @@ function main()
                 PROUT, gc0; zeta = zeta, chi = chi))
     end
     results["geopolitical_thresholds"] = threshold
+
+    functional_forms = Dict{String,Any}()
+    routine_wedge = sanctions_wedge(1.0, PROUT)
+    for convenience in (:logistic, :hill, :power)
+        for cost in (:quadratic, :cubic, :quintic)
+            alternative = global_calib(
+                M0; convenience = convenience, cost = cost)
+            roots = global_roots(routine_wedge, alternative)
+            key = "$(convenience)_$(cost)"
+            functional_forms[key] = Dict(
+                "break_even_breadth" => break_even_breadth(alternative),
+                "gamma_threshold_p_0.10" => gamma_threshold(0.10, alternative),
+                "routine_root_count" => length(roots),
+                "routine_roots" => roots,
+                "continued_routine_share" =>
+                    global_ss(routine_wedge, alternative).N,
+            )
+        end
+    end
+    results["functional_forms"] = functional_forms
 
     # counterfactual: deeper outside asset market. Lower diversification cost
     # kappa by 30 percent and recalibrate the financial spread rbar so that

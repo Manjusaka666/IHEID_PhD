@@ -292,6 +292,51 @@ function ce_operator!(Vbar::Array{Float64,3}, payoffbar::Array{Float64,3},
     nothing
 end
 
+function anderson_ce_candidate(state_history::Vector,
+                               image_history::Vector)
+    memory = length(state_history)
+    memory == length(image_history) || throw(DimensionMismatch(
+        "Anderson state and image histories must have equal length"))
+    memory >= 2 || return image_history[end]
+
+    gram = zeros(memory, memory)
+    @inbounds for i in 1:memory, j in i:memory
+        state_i = state_history[i]
+        image_i = image_history[i]
+        state_j = state_history[j]
+        image_j = image_history[j]
+        value = dot(vec(image_i.Z .- state_i.Z),
+                    vec(image_j.Z .- state_j.Z)) / length(state_i.Z)
+        value += dot(image_i.Xbar .- state_i.Xbar,
+                     image_j.Xbar .- state_j.Xbar) / length(state_i.Xbar)
+        value += dot(vec(image_i.q .- state_i.q),
+                     vec(image_j.q .- state_j.q)) / length(state_i.q)
+        gram[i, j] = value
+        gram[j, i] = value
+    end
+    scale = max(maximum(diag(gram)), 1.0)
+    @inbounds for index in 1:memory
+        gram[index, index] += 1e-12 * scale
+    end
+    system = zeros(memory + 1, memory + 1)
+    system[1:memory, 1:memory] .= gram
+    system[1:memory, memory + 1] .= 1.0
+    system[memory + 1, 1:memory] .= 1.0
+    right_hand_side = zeros(memory + 1)
+    right_hand_side[memory + 1] = 1.0
+    weights = (system \ right_hand_side)[1:memory]
+
+    candidate_Z = zeros(size(image_history[end].Z))
+    candidate_Xbar = zeros(size(image_history[end].Xbar))
+    candidate_q = zeros(size(image_history[end].q))
+    @inbounds for index in 1:memory
+        @. candidate_Z += weights[index] * image_history[index].Z
+        @. candidate_Xbar += weights[index] * image_history[index].Xbar
+        @. candidate_q += weights[index] * image_history[index].q
+    end
+    (Z = candidate_Z, Xbar = candidate_Xbar, q = candidate_q)
+end
+
 function solve_long_ce(theta::Float64; beta::Float64 = LONG_BETA,
                        d0::Float64 = LONG_D0, d1::Float64 = LONG_D1,
                        reentry::Float64 = LONG_REENTRY,
@@ -303,6 +348,9 @@ function solve_long_ce(theta::Float64; beta::Float64 = LONG_BETA,
                        tol::Float64 = 5e-8, maxit::Int = 80_000,
                        damp::Float64 = 0.0,
                        price_damp::Float64 = 0.99,
+                       anderson_memory::Int = 4,
+                       anderson_start::Int = 20,
+                       anderson_blend::Float64 = 0.5,
                        q0::Union{Symbol,Array{Float64,3}} = :riskfree,
                        initial::Union{Nothing,LongCESolution} = nothing,
                        trace::Bool = false)
@@ -310,6 +358,10 @@ function solve_long_ce(theta::Float64; beta::Float64 = LONG_BETA,
     0 < reentry <= 1 || throw(ArgumentError("reentry must lie in (0,1]"))
     0 <= damp < 1 || throw(ArgumentError("damp must lie in [0,1)"))
     0 <= price_damp < 1 || throw(ArgumentError("price_damp must lie in [0,1)"))
+    anderson_memory >= 1 || throw(ArgumentError("anderson_memory must be positive"))
+    anderson_start >= 1 || throw(ArgumentError("anderson_start must be positive"))
+    0 <= anderson_blend <= 1 || throw(ArgumentError(
+        "anderson_blend must lie in [0,1]"))
     sigma_m > 0 || throw(ArgumentError("sigma_m must be positive"))
     x, P, Pd = build_long_kernels(theta)
     y = exp.(x)
@@ -343,6 +395,10 @@ function solve_long_ce(theta::Float64; beta::Float64 = LONG_BETA,
     qnew = similar(q)
     converged = false
     iterations = 0
+    state_history = Any[]
+    image_history = Any[]
+    previous_residual = Inf
+    stable_iterations = 0
 
     for it in 1:maxit
         iterations = it
@@ -356,9 +412,47 @@ function solve_long_ce(theta::Float64; beta::Float64 = LONG_BETA,
         if trace && (it <= 5 || it % 100 == 0 || residual < tol)
             println("it=$it dZ=$dZ dX=$dX dq=$dq damp=$damp price_damp=$price_damp qrange=$(extrema(qnew))")
         end
-        @. Z = damp * Z + (1 - damp) * Znew
-        @. Xbar = damp * Xbar + (1 - damp) * Xbarnew
-        @. q = clamp(price_damp * q + (1 - price_damp) * qnew, 0.0, qbar)
+        Zpic = @. damp * Z + (1 - damp) * Znew
+        Xbarpic = @. damp * Xbar + (1 - damp) * Xbarnew
+        qpic = @. clamp(price_damp * q + (1 - price_damp) * qnew, 0.0, qbar)
+
+        if residual <= previous_residual * 1.05
+            stable_iterations += 1
+        else
+            stable_iterations = 0
+            empty!(state_history)
+            empty!(image_history)
+        end
+        memory = stable_iterations >= anderson_start ? anderson_memory : 1
+        push!(state_history, (Z = copy(Z), Xbar = copy(Xbar), q = copy(q)))
+        push!(image_history,
+              (Z = copy(Zpic), Xbar = copy(Xbarpic), q = copy(qpic)))
+        length(state_history) > memory && popfirst!(state_history)
+        length(image_history) > memory && popfirst!(image_history)
+
+        if memory >= 2 && length(state_history) >= 2
+            candidate = anderson_ce_candidate(state_history, image_history)
+            if all(isfinite, candidate.Z) && all(isfinite, candidate.Xbar) &&
+                    all(isfinite, candidate.q)
+                @. Z = anderson_blend * candidate.Z +
+                    (1 - anderson_blend) * Zpic
+                @. Xbar = anderson_blend * candidate.Xbar +
+                    (1 - anderson_blend) * Xbarpic
+                @. q = clamp(anderson_blend * candidate.q +
+                    (1 - anderson_blend) * qpic, 0.0, qbar)
+            else
+                copyto!(Z, Zpic)
+                copyto!(Xbar, Xbarpic)
+                copyto!(q, qpic)
+                empty!(state_history)
+                empty!(image_history)
+            end
+        else
+            copyto!(Z, Zpic)
+            copyto!(Xbar, Xbarpic)
+            copyto!(q, qpic)
+        end
+        previous_residual = residual
         if residual < tol
             converged = true
             break
@@ -566,6 +660,92 @@ function simulate_long_ce(sol::LongCESolution; T::Int = 500_000,
     moments, paths
 end
 
+function normal_interval(estimates::AbstractVector{<:Real};
+                         z::Float64 = 1.959963984540054)
+    values = Float64[value for value in estimates if isfinite(value)]
+    length(values) >= 2 || throw(ArgumentError(
+        "at least two finite batch estimates are required"))
+    estimate = mean(values)
+    standard_error = std(values) / sqrt(length(values))
+    Dict{String,Any}(
+        "estimate" => estimate,
+        "standard_error" => standard_error,
+        "lower" => estimate - z * standard_error,
+        "upper" => estimate + z * standard_error,
+        "batches" => length(values),
+    )
+end
+
+function ce_batch_uncertainty(sol::LongCESolution, paths;
+                              block_length::Int = 2_000)
+    T = length(paths.acc)
+    2 <= block_length <= T || throw(ArgumentError(
+        "block_length must lie between 2 and the simulated sample length"))
+    number_of_blocks = fld(T, block_length)
+    number_of_blocks >= 2 || throw(ArgumentError(
+        "at least two complete blocks are required"))
+
+    moment_names = (
+        "median_spread",
+        "sd_spread",
+        "mean_debt_y",
+        "mean_debt_service_y",
+        "defaults_per_100y",
+        "bp_per_1sd_news",
+        "mean_expected_excess_good",
+        "mean_expected_excess_bad",
+    )
+    estimates = Dict(name => Float64[] for name in moment_names)
+    payment = sol.maturity + (1 - sol.maturity) * sol.coupon
+
+    for block in 1:number_of_blocks
+        first_index = (block - 1) * block_length + 1
+        last_index = block * block_length
+        indices = first_index:last_index
+        access_indices = [t for t in indices if paths.acc[t]]
+        issue_indices = [t for t in indices if paths.issue[t] &&
+                         isfinite(paths.spr[t]) && isfinite(paths.rex[t])]
+        isempty(access_indices) && continue
+        length(issue_indices) < 20 && continue
+
+        spread = paths.spr[issue_indices]
+        spread_bp = winsorize(spread .* 1e4, 0.01)
+        news = paths.news[issue_indices]
+        cell = paths.ibp[issue_indices] .* (NY + 1) .+ paths.ix[issue_indices]
+        spread_within = demean_within(spread_bp, cell)
+        news_within = demean_within(news, cell)
+        denominator = dot(news_within, news_within)
+        denominator > eps(Float64) || continue
+
+        current_income = sol.y[paths.ix[access_indices]] .+
+            paths.m[access_indices]
+        debt_ratio = sol.b[paths.ib[access_indices]] ./ current_income
+        service_ratio = payment .* sol.b[paths.ib[access_indices]] ./
+            current_income
+        good_returns = [paths.rex[t] for t in issue_indices if paths.news[t] > 0]
+        bad_returns = [paths.rex[t] for t in issue_indices if paths.news[t] < 0]
+        isempty(good_returns) && continue
+        isempty(bad_returns) && continue
+
+        push!(estimates["median_spread"], median(spread))
+        push!(estimates["sd_spread"], std(spread_bp) / 1e4)
+        push!(estimates["mean_debt_y"], mean(debt_ratio))
+        push!(estimates["mean_debt_service_y"], mean(service_ratio))
+        push!(estimates["defaults_per_100y"],
+              sum(paths.dfl[indices]) / (block_length / 400))
+        push!(estimates["bp_per_1sd_news"],
+              dot(news_within, spread_within) / denominator * std(news))
+        push!(estimates["mean_expected_excess_good"], mean(good_returns))
+        push!(estimates["mean_expected_excess_bad"], mean(bad_returns))
+    end
+
+    uncertainty = Dict{String,Any}(
+        name => normal_interval(estimates[name]) for name in moment_names)
+    uncertainty["block_length"] = block_length
+    uncertainty["complete_blocks"] = number_of_blocks
+    uncertainty
+end
+
 function ce_minimum_repayment_consumption(sol::LongCESolution;
                                           nodes::Int = 51)
     payment = sol.maturity + (1 - sol.maturity) * sol.coupon
@@ -587,6 +767,8 @@ end
 function write_ce_macros(results::Dict{String,Any})
     m0 = results["theta_0.0"]["moments"]
     m5 = results["theta_0.5"]["moments"]
+    u0 = results["theta_0.0"]["uncertainty"]
+    u5 = results["theta_0.5"]["uncertainty"]
     residual = maximum(vcat(
         collect(values(results["theta_0.0"]["residual"])),
         collect(values(results["theta_0.5"]["residual"]))))
@@ -598,12 +780,33 @@ function write_ce_macros(results::Dict{String,Any})
         "\\newcommand{\\LongDefDiag}{$(fmt(m5["defaults_per_100y"], 2))}",
         "\\newcommand{\\LongSpreadMedRE}{$(fmt(100 * m0["median_spread"], 2))}",
         "\\newcommand{\\LongSpreadMedDiag}{$(fmt(100 * m5["median_spread"], 2))}",
+        "\\newcommand{\\LongSpreadSdRE}{$(fmt(100 * m0["sd_spread"], 2))}",
         "\\newcommand{\\LongSpreadSdDiag}{$(fmt(100 * m5["sd_spread"], 2))}",
+        "\\newcommand{\\LongDebtRE}{$(fmt(100 * m0["mean_debt_y"], 1))}",
         "\\newcommand{\\LongDebtDiag}{$(fmt(100 * m5["mean_debt_y"], 1))}",
+        "\\newcommand{\\LongDebtServiceRE}{$(fmt(100 * m0["mean_debt_service_y"], 1))}",
         "\\newcommand{\\LongDebtServiceDiag}{$(fmt(100 * m5["mean_debt_service_y"], 1))}",
         "\\newcommand{\\LongNewsBp}{$(round(Int, abs(m5["bp_per_1sd_news"])))}",
+        "\\newcommand{\\LongReturnGoodRE}{$(fmt(10_000 * m0["mean_expected_excess_good"], 1))}",
+        "\\newcommand{\\LongReturnBadRE}{$(fmt(10_000 * m0["mean_expected_excess_bad"], 1))}",
         "\\newcommand{\\LongReturnGood}{$(fmt(10_000 * m5["mean_expected_excess_good"], 1))}",
         "\\newcommand{\\LongReturnBad}{$(fmt(10_000 * m5["mean_expected_excess_bad"], 1))}",
+        "\\newcommand{\\LongDefREse}{$(fmt(u0["defaults_per_100y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongDefDiagse}{$(fmt(u5["defaults_per_100y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongSpreadMedREse}{$(fmt(100 * u0["median_spread"]["standard_error"], 2))}",
+        "\\newcommand{\\LongSpreadMedDiagse}{$(fmt(100 * u5["median_spread"]["standard_error"], 2))}",
+        "\\newcommand{\\LongSpreadSdREse}{$(fmt(100 * u0["sd_spread"]["standard_error"], 2))}",
+        "\\newcommand{\\LongSpreadSdDiagse}{$(fmt(100 * u5["sd_spread"]["standard_error"], 2))}",
+        "\\newcommand{\\LongDebtREse}{$(fmt(100 * u0["mean_debt_y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongDebtDiagse}{$(fmt(100 * u5["mean_debt_y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongDebtServiceREse}{$(fmt(100 * u0["mean_debt_service_y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongDebtServiceDiagse}{$(fmt(100 * u5["mean_debt_service_y"]["standard_error"], 2))}",
+        "\\newcommand{\\LongNewsREse}{$(fmt(u0["bp_per_1sd_news"]["standard_error"], 1))}",
+        "\\newcommand{\\LongNewsDiagse}{$(fmt(u5["bp_per_1sd_news"]["standard_error"], 1))}",
+        "\\newcommand{\\LongReturnGoodREse}{$(fmt(10_000 * u0["mean_expected_excess_good"]["standard_error"], 1))}",
+        "\\newcommand{\\LongReturnBadREse}{$(fmt(10_000 * u0["mean_expected_excess_bad"]["standard_error"], 1))}",
+        "\\newcommand{\\LongReturnGoodDiagse}{$(fmt(10_000 * u5["mean_expected_excess_good"]["standard_error"], 1))}",
+        "\\newcommand{\\LongReturnBadDiagse}{$(fmt(10_000 * u5["mean_expected_excess_bad"]["standard_error"], 1))}",
         "\\newcommand{\\LongFPResidual}{$(fmt(residual, 9))}",
         "\\newcommand{\\LongTopGridShare}{$(fmt(100 * m5["top_grid_share"], 4))}",
     ]
@@ -673,8 +876,10 @@ function main_ce()
         s5 = solve_long_ce(0.5; initial = fine_seed, trace = true)
         save_checkpoint("diagnostic_final", s5)
     end
-    m0, _ = simulate_long_ce(s0)
-    m5, _ = simulate_long_ce(s5)
+    m0, paths0 = simulate_long_ce(s0)
+    m5, paths5 = simulate_long_ce(s5)
+    uncertainty0 = ce_batch_uncertainty(s0, paths0)
+    uncertainty5 = ce_batch_uncertainty(s5, paths5)
     results = Dict{String,Any}(
         "calibration" => Dict(
             "beta" => LONG_BETA, "d0" => LONG_D0, "d1" => LONG_D1,
@@ -688,11 +893,13 @@ function main_ce()
         ),
         "theta_0.0" => Dict(
             "moments" => m0, "residual" => ce_fixed_point_residual(s0),
+            "uncertainty" => uncertainty0,
             "iterations" => s0.iters,
             "minimum_repayment_consumption" => ce_minimum_repayment_consumption(s0),
         ),
         "theta_0.5" => Dict(
             "moments" => m5, "residual" => ce_fixed_point_residual(s5),
+            "uncertainty" => uncertainty5,
             "iterations" => s5.iters,
             "minimum_repayment_consumption" => ce_minimum_repayment_consumption(s5),
         ),
