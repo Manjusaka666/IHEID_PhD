@@ -1,0 +1,109 @@
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{csquotes}
+\usepackage{color}
+\usepackage{float}
+\usepackage{multido}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{enumerate}
+\usepackage{booktabs}
+\usepackage{indentfirst}
+\usepackage[style=alphabetic,maxcitenames=1]{biblatex}
+\usepackage{setspace}
+% \usepackage{calligra} % decorative font; keep out of the research default
+\usepackage{subcaption}
+\usepackage{textpos}
+\usepackage{pgfpages}
+
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools,mathrsfs}
+\input{../Math.tex}
+
+
+\renewcommand<>{\emph}[1]{{\color{Bittersweet}{\only#2{\itshape}#1}}}
+
+\renewcommand*{\bibfont}{\scriptsize}
+
+% TodoNotes and inline notes in fancy boxes
+\usepackage{todonotes}
+\usepackage{tcolorbox}
+\setlength{\marginparwidth}{2cm}
+
+% Common mathematical notation and diagram support are centralized in
+% ../Math.tex. Keep only presentation-specific aliases here.
+% Category-theory aliases are optional and retained for older slides.
+\providecommand{\identity}{\mathrm{id}}
+\providecommand{\Homomorphism}{\mathrm{Hom}}
+\providecommand{\Morphism}{\mathrm{Mor}}
+\providecommand{\Object}{\mathrm{Ob}}
+\DeclareMathOperator{\OPT}{\textsf{OPT}}
+
+\newtheorem{intuition}{Intuition}
+\AtBeginEnvironment{intuition}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=VioletRed}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=VioletRed!20!white}
+}
+
+\newtheorem{remark}{Remark}
+\AtBeginEnvironment{remark}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=Orchid}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=Orchid!20!white}
+}
+
+\newtheorem{prev}{As previously seen}
+\AtBeginEnvironment{prev}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=gray}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=gray!20!white}
+}
+
+\newtheorem{assumption}{Assumption}
+\AtBeginEnvironment{assumption}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=Purple}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=Purple!20!white}
+}
+
+\newtheorem{observe}{Observe}
+\AtBeginEnvironment{observe}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=Purple}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=Purple!20!white}
+}
+
+\newtheorem{goal}{Goal}
+\AtBeginEnvironment{goal}{%
+    \setbeamercolor{block title}{use=example text,fg=white,bg=Salmon}
+    \setbeamercolor{block body}{parent=normal text,use=block title example,bg=Salmon!20!white}
+}
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\addtobeamertemplate{frametitle}{}{
+    \begin{textblock*}{100mm}(0.85\textwidth,-1cm)
+        \includegraphics[height=1cm]{Figures/logo/logo.png}
+    \end{textblock*}}
+
+\definecolor{themecolor}{RGB}{228,105,71}
+\mode<presentation>
+{
+    \usetheme{Madrid}      % or try Darmstadt, Madrid, Warsaw, ...
+    \usecolortheme[named=themecolor]{structure} % or try albatross, beaver, crane, ...
+    \usefonttheme{default}  % or try serif, structurebold, ...
+    \setbeamertemplate{navigation symbols}{}
+    \setbeamertemplate{caption}[default]
+    \setbeamertemplate{items}[default]
+    \setbeamertemplate{section in toc}[ball unnumbered]
+}
+\let\oldfootnote\footnote
+\renewcommand\footnote[1][]{\oldfootnote[frame,#1]}
+\parskip=10pt
+\newenvironment<>{proofs}[1][\proofname]{%
+    \par
+    \def\insertproofname{#1.}%
+    \usebeamertemplate{proof begin}#2}
+{\usebeamertemplate{proof end}}
+
+% logo of my university
+\titlegraphic{\includegraphics[height=1.3cm]{Figures/logo/logo2.png}}
