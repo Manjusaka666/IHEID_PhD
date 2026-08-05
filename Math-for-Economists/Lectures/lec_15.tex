@@ -1,0 +1,845 @@
+% Source: Gerzensee "Dynamic Programming" slides 2-63 (the range of dynamic
+% economic problems; the sequential problem and its constraints; the value
+% function; stationarity and the prime notation; the policy function; Bellman's
+% principle quoted from Bellman (1957, p. 83); the Bellman equation and the
+% operator T; the contraction argument via Blackwell's monotonicity and
+% discounting conditions verified line by line; value function iteration with the
+% geometric error bound; the first-order condition and the envelope formula with
+% the full derivation; the cake-eating problem in its two state/control
+% formulations, its grid implementation and its closed-form log solution; the
+% Ramsey growth model, its Euler equation and steady state; the Lucas asset
+% pricing model, the consumer's problem, the equilibrium constraints, the
+% consumption-based pricing equation, the stochastic discount factor, Lucas'
+% indirect approach, the contraction proof for T, and the log-utility closed form).
+% Supplementary: Fukuda (2026), Ch. 15 (pp. 513-...; Sec. 15.1.1-15.1.4, 15.2).
+% Code: Supplementary/codes/DP_cake_eating.m, DP_cake_eating_CRRA.m,
+% DP_cake_eating_plot_iterations.m, deterministic_Ramsey_growth.m,
+% Lucas_Tree_DP.m, Lucas_Tree_DP_Octave.m.
+% External references actually cited in this chapter: Bellman (1957),
+% Benveniste-Scheinkman (1979), Rockafellar (1970), Stokey et al. (1989).
+
+\chapter{Discrete-Time Dynamic Programming}
+\label{ch:dynamic}
+
+\section{The Sequential Problem}\label{sec:dyn-sequential}
+
+\begin{definition}[Sequential problem]\label{def:sequential-problem}
+	Let $r\colon\R^{n}\times\R^{k}\to\R$ be the \dfnas{return function}{return
+		function}, $g\colon\R^{n}\times\R^{k}\to\R^{n}$ the \dfnas{transition
+		function}{transition function} and $\beta\in(0,1)$ the \dfnas{discount
+		factor}{discount factor}. The \dfnas{sequential problem}{sequential problem}
+	from an initial state $x_0\in\R^{n}$ is
+	\begin{equation}\label{eq:sequential-problem}
+		\sup_{(u_t)_{t=0}^{\infty}}\ \sum_{t=0}^{\infty}\beta^{t}r(x_t,u_t)
+		\qquad\st\quad
+		x_{t+1}=g(x_t,u_t)\ \text{ for every }t\geq0,\quad x_0\ \text{given}.
+	\end{equation}
+	Its value is the \dfnas{value function}{value function}
+	$V(x_0)$. The variable $x_t\in\R^{n}$ is the \dfn{state}, $u_t\in\R^{k}$ the
+	\dfn{control}, and a \dfnas{policy function}{policy function} is a map
+	$h\colon\R^{n}\to\R^{k}$ prescribing $u=h(x)$.
+	\nidx{valuefunction}{$V$, value function}
+	\nidx{policyfunction}{$h$, policy function}
+\end{definition}
+
+\begin{assumption}[Standing hypotheses]\label{ass:dyn}
+	Throughout this chapter:
+	\begin{enumerate}[(i)]
+		\item the state lies in a set $X\subseteq\R^{n}$ and the feasible controls at
+		      $x$ form a set $\Gamma(x)\subseteq\R^{k}$, defining a correspondence
+		      $\Gamma\colon X\rightrightarrows\R^{k}$ that is non-empty- and
+		      compact-valued and continuous;
+		\item $g(x,u)\in X$ for every $x\in X$ and $u\in\Gamma(x)$, so the problem is
+		      well defined;
+		\item $r$ is continuous and bounded on $\gph\Gamma$;
+		\item $\beta\in(0,1)$.
+	\end{enumerate}
+\end{assumption}
+
+Boundedness in (iii) is what makes the infinite sum in
+\eqref{eq:sequential-problem} converge absolutely: $\abs{r}\leq\bar r$ gives
+$\bigl|\sum_t\beta^{t}r(x_t,u_t)\bigr|\leq\bar r/(1-\beta)$ for every feasible
+sequence, so the supremum is finite and no ordering or summability question
+arises. It is a genuine restriction --- it excludes $\log$ utility on an
+unbounded state space, and the cake-eating problem of
+\autoref{sec:dyn-cake} violates it as $w\downarrow0$ --- and
+\autoref{rem:unbounded-returns} records what survives without it.
+
+\begin{remark}[Stationarity and the prime notation]\label{rem:stationarity}
+	The problem is \dfnas{stationary}{stationary problem}: neither $r$, $g$ nor
+	$\Gamma$ depends on $t$, and the horizon is infinite at every date. Therefore
+	\[
+		V(x_t)=\beta^{-t}\sup_{(u_\tau)_{\tau\geq t}}\
+		\sum_{\tau=t}^{\infty}\beta^{\tau}r(x_\tau,u_\tau)
+	\]
+	subject to the same constraints: the problem faced at date $t$ in state $x_t$ is
+	the same problem faced at date $0$ in state $x_0=x_t$. Only the state matters,
+	not the date at which it is reached, and one may therefore drop time subscripts
+	and write $x$ for today's state and $x'$ for tomorrow's
+	\autocite[slide 8]{fukuda2026dynamic}. Every statement about $V$ and $h$ below
+	is a statement about functions of the state alone; the reduction from a sequence
+	problem in infinitely many variables to a functional equation in one is the
+	entire content of the method.
+\end{remark}
+
+\section{Bellman's Principle of Optimality}\label{sec:dyn-bellman}
+
+\begin{quote}
+	``An optimal policy has the property that whatever the initial state and initial
+	decision are, the remaining decisions must constitute an optimal policy with
+	regard to the state resulting from the first decision.''
+	\autocite[p.~83]{bellman1957dynamic}
+\end{quote}
+
+\begin{definition}[Bellman operator]\label{def:bellman-operator}
+	Under \autoref{ass:dyn}, define $T$ on the space
+	$\Bspace{X}{\R}$ of bounded continuous functions $X\to\R$ by
+	\begin{equation}\label{eq:bellman-max}
+		(TW)(x)\eqdef\max_{u\in\Gamma(x)}\ \bigl\{r(x,u)+\beta W\bigl(g(x,u)\bigr)\bigr\},
+		\qquad x\in X .
+	\end{equation}
+	A function $W$ with $W=TW$ solves the \dfnas{Bellman equation}{Bellman equation}.
+	\nidx{bellmanoperator}{$T$, Bellman operator}
+\end{definition}
+
+Definition \eqref{eq:bellman-max} is \eqref{eq:bellman-operator} of
+\autoref{ch:completeness} with the supremum replaced by a maximum. The
+replacement is a theorem, not a convention: \autoref{ass:dyn} makes the
+constraint correspondence compact-valued and the objective continuous, so
+\autoref{prop:bellman-well-defined} shows the supremum is attained. Where it is
+not, every statement below about the policy correspondence fails while the
+contraction argument of \autoref{prop:bellman-contraction} survives unchanged.
+
+\begin{proposition}[$T$ is well defined]\label{prop:bellman-well-defined}
+	Under \autoref{ass:dyn}, $T$ maps $\Bspace{X}{\R}$ into itself, and the
+	associated \dfnas{policy correspondence}{policy correspondence}
+	\begin{equation}\label{eq:policy-correspondence}
+		H_W(x)\eqdef\argmax_{u\in\Gamma(x)}\
+		\bigl\{r(x,u)+\beta W\bigl(g(x,u)\bigr)\bigr\}
+	\end{equation}
+	is non-empty- and compact-valued and upper hemicontinuous.
+\end{proposition}
+
+\begin{proof}
+	Fix $W\in\Bspace{X}{\R}$. The objective
+	$(x,u)\mapsto r(x,u)+\beta W(g(x,u))$ is continuous on $\gph\Gamma$, being a sum
+	of a continuous function and the composition of the continuous $W$ with the
+	continuous $g$. \autoref{ass:dyn}(i) makes $\Gamma$ continuous with non-empty
+	compact values, so \autoref{thm:berge-maximum} applies: the maximum is attained,
+	$TW$ is continuous, and $H_W$ is non-empty- and compact-valued and upper
+	hemicontinuous, $\R^{k}$ being Hausdorff. Boundedness is immediate from
+	$\abs{TW}\leq\bar r+\beta\norm{W}_\infty$.
+\end{proof}
+
+\begin{theorem}[Principle of optimality]\label{thm:principle-of-optimality}
+	Under \autoref{ass:dyn}:
+	\begin{enumerate}[(i)]
+		\item the value function $V$ of \eqref{eq:sequential-problem} satisfies the
+		      Bellman equation $V=TV$;
+		\item conversely, if $W\in\Bspace{X}{\R}$ satisfies $W=TW$, then $W=V$;
+		\item a feasible plan $(u_t^{\ast})$ from $x_0$ is optimal for
+		      \eqref{eq:sequential-problem} if and only if
+		      $u_t^{\ast}\in H_V(x_t^{\ast})$ for every $t$, where
+		      $x_{t+1}^{\ast}=g(x_t^{\ast},u_t^{\ast})$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i) Fix $x\in X$ and write $S(x)$ for the value of
+	\eqref{eq:sequential-problem}. Any feasible plan from $x$ decomposes into a
+	first control $u\in\Gamma(x)$ and a continuation plan feasible from
+	$g(x,u)$, and its objective is $r(x,u)+\beta$ times the objective of the
+	continuation plan. Taking suprema over continuation plans first and then over
+	$u$, and using that the supremum over a product decomposes,
+	\[
+		S(x)=\sup_{u\in\Gamma(x)}\bigl\{r(x,u)+\beta S(g(x,u))\bigr\}=(TS)(x),
+	\]
+	the interchange being legitimate because the inner supremum is finite,
+	uniformly bounded by $\bar r/(1-\beta)$.
+
+	(ii) Let $W=TW$ with $W$ bounded. By (i) $V=TV$, and by
+	\autoref{thm:bellman-contraction} below $T$ has at most one fixed point in
+	$\Bspace{X}{\R}$, so $W=V$ provided $V\in\Bspace{X}{\R}$; that $V$ is bounded is
+	the estimate $\abs{V}\leq\bar r/(1-\beta)$, and that it is continuous follows
+	from (i) and \autoref{prop:bellman-well-defined} once $V$ is known to be the
+	limit of $T^{m}W_0$, which is \autoref{thm:bellman-contraction}.
+
+	(iii) ($\Leftarrow$) Suppose $u_t^{\ast}\in H_V(x_t^{\ast})$ for all $t$. Then
+	$V(x_t^{\ast})=r(x_t^{\ast},u_t^{\ast})+\beta V(x_{t+1}^{\ast})$ for every $t$;
+	iterating $m$ times,
+	\begin{equation}\label{eq:value-unrolled}
+		V(x_0)=\sum_{t=0}^{m-1}\beta^{t}r(x_t^{\ast},u_t^{\ast})
+		+\beta^{m}V(x_m^{\ast}).
+	\end{equation}
+	Since $\abs{V}\leq\bar r/(1-\beta)$, the last term vanishes as $m\to\infty$, so
+	the plan attains $V(x_0)$ and is optimal.
+
+	($\Rightarrow$) Suppose the plan is optimal but
+	$u_{t_0}^{\ast}\notin H_V(x_{t_0}^{\ast})$ for some $t_0$. Then
+	$r(x_{t_0}^{\ast},u_{t_0}^{\ast})+\beta V(x_{t_0+1}^{\ast})<V(x_{t_0}^{\ast})$
+	by the definition of the argmax, so replacing the continuation from $t_0$ by an
+	optimal one --- which exists by
+	\autoref{prop:bellman-well-defined} and the argument just given --- raises the
+	objective by $\beta^{t_0}$ times a strictly positive amount, contradicting
+	optimality.
+\end{proof}
+
+\begin{remark}[Where the transversality condition hides]\label{rem:transversality}
+	The step $\beta^{m}V(x_m^{\ast})\to0$ in \eqref{eq:value-unrolled} is the
+	transversality condition, and boundedness of $V$ is what supplies it. Without
+	\autoref{ass:dyn}(iii) it must be imposed separately: a plan satisfying the
+	Bellman equation at every date but with
+	$\limsup_m\beta^{m}V(x_m)>0$ need not be optimal, and the standard example is a
+	rational asset-price bubble, in which the price satisfies the pricing equation
+	period by period while violating the terminal condition. The converse failure ---
+	a solution of the Bellman equation that is not the value function --- is the same
+	phenomenon read in the other direction.
+\end{remark}
+
+\section{The Contraction Argument}\label{sec:dyn-contraction}
+
+\begin{theorem}[The Bellman operator is a contraction]\label{thm:bellman-contraction}
+	Under \autoref{ass:dyn}, $T\colon\Bspace{X}{\R}\to\Bspace{X}{\R}$ is a
+	contraction of modulus $\beta$ in the supremum norm. Consequently:
+	\begin{enumerate}[(i)]
+		\item $T$ has a unique fixed point $V\in\Bspace{X}{\R}$, so the value function
+		      exists, is unique among bounded continuous functions, and is continuous;
+		\item for every $W_0\in\Bspace{X}{\R}$ the iterates $W_m\eqdef T^{m}W_0$
+		      converge uniformly to $V$, with
+		      \begin{equation}\label{eq:vfi-error}
+			      \norm{W_m-V}_\infty\leq\frac{\beta^{m}}{1-\beta}\norm{W_1-W_0}_\infty
+			      \qquad\text{and}\qquad
+			      \norm{W_m-V}_\infty\leq\frac{\beta}{1-\beta}\norm{W_m-W_{m-1}}_\infty;
+		      \end{equation}
+		\item the policy correspondence $H_V$ of \eqref{eq:policy-correspondence} is
+		      non-empty- and compact-valued and upper hemicontinuous, and is a
+		      continuous function whenever the maximiser is unique.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	$\Bspace{X}{\R}$ is complete in the supremum norm by \autoref{thm:B-complete}
+	and \autoref{prop:C-complete}, and $T$ maps it into itself by
+	\autoref{prop:bellman-well-defined}. We verify Blackwell's two sufficient
+	conditions of \autoref{thm:blackwell}.
+
+	\emph{Monotonicity.} If $W\leq W'$ pointwise then for every $x$ and every
+	$u\in\Gamma(x)$,
+	$r(x,u)+\beta W(g(x,u))\leq r(x,u)+\beta W'(g(x,u))$, and taking maxima over the
+	same set $\Gamma(x)$ preserves the inequality: $TW\leq TW'$.
+
+	\emph{Discounting.} For $\alpha\geq0$ constant,
+	\[
+		\bigl(T(W+\alpha)\bigr)(x)
+		=\max_{u\in\Gamma(x)}\bigl\{r(x,u)+\beta W(g(x,u))+\beta\alpha\bigr\}
+		=(TW)(x)+\beta\alpha,
+	\]
+	the constant $\beta\alpha$ passing outside the maximum because it does not
+	depend on $u$.
+
+	\autoref{thm:blackwell} therefore makes $T$ a contraction of modulus $\beta$,
+	and \autoref{thm:banach-fixed-point} gives (i) and the first bound in (ii); the
+	second bound is \eqref{eq:contraction-error}. Continuity of $V$ holds because
+	$\Bspace{X}{\R}$ consists of continuous functions and uniform limits of
+	continuous functions are continuous. Claim (iii) is
+	\autoref{prop:bellman-well-defined} applied to $W=V$, together with
+	\autoref{prop:hemicontinuity-global} for the single-valued case.
+\end{proof}
+
+The proof separates two things that are easily conflated. Monotonicity is a
+property of maximisation --- raising the continuation value cannot lower today's
+optimum --- and holds regardless of discounting. Discounting is a property of
+$\beta<1$ and holds regardless of the maximisation. Neither alone gives a
+contraction, and the failure of the second is exactly what makes undiscounted
+infinite-horizon problems hard.
+
+\begin{remark}[Value function iteration]\label{rem:vfi}
+	The two bounds in \eqref{eq:vfi-error} play different roles. The first is
+	\emph{a priori}: before running anything, it says $m\geq\log\bigl(\varepsilon
+		(1-\beta)/\norm{W_1-W_0}_\infty\bigr)/\log\beta$ iterations suffice for accuracy
+	$\varepsilon$. The second is \emph{a posteriori}: it converts the observed
+	change $\norm{W_m-W_{m-1}}_\infty$, which the algorithm computes anyway, into a
+	certified bound on the distance to the unknown $V$. Stopping when
+	$\norm{W_m-W_{m-1}}_\infty<\varepsilon$, as on
+	\autocite[slides 14--16]{fukuda2026dynamic}, therefore guarantees an error of at
+	most $\beta\varepsilon/(1-\beta)$, not $\varepsilon$ --- a distinction that
+	matters when $\beta=0.99$, where the inflation factor is $99$.
+
+	Both bounds are uniform in the initial guess, so a bad $W_0$ costs iterations
+	but never convergence. Both degrade as $\beta\to1$, and this is the practical
+	reason patient problems are computationally hard: the number of iterations
+	needed for fixed accuracy grows like $1/(1-\beta)$ up to logarithms.
+
+	Implemented on a finite grid, $W$ is a vector of values at nodes and the maximum
+	in \eqref{eq:bellman-max} is taken over grid points, which introduces a
+	discretisation error that \eqref{eq:vfi-error} does not control. The
+	programs \path{DP_cake_eating.m} and \path{DP_cake_eating_CRRA.m} choose the
+	state and control so that the transition maps grid points to grid points,
+	avoiding interpolation entirely: consumption is read off as
+	$c_{ij}=w_i-w_j$ from the matrix of all pairs of nodes, and the maximisation
+	is a row-wise maximum. The Lucas program of \autoref{sec:dyn-lucas} cannot do
+	this, because the transition $y\mapsto y^{\alpha}r$ carries nodes off the grid,
+	and it interpolates.
+\end{remark}
+
+\begin{remark}[Unbounded returns]\label{rem:unbounded-returns}
+	\autoref{ass:dyn}(iii) fails for $\log$ utility near zero consumption and for
+	CRRA with $\gamma>1$. Two repairs are standard. If the state space can be
+	restricted to a compact set that the optimal path never leaves --- as in
+	\autoref{sec:dyn-ramsey}, where capital stays in $[k_{\min},k_{\max}]$ --- then
+	$r$ is bounded there and the theory applies verbatim. Otherwise one replaces the
+	supremum norm by a weighted norm $\norm{W}_\phi=\sup_x\abs{W(x)}/\phi(x)$ for a
+	suitable $\phi$ and re-establishes the contraction property in that norm; see
+	\textcite[Ch.~4]{stokey1989recursive}. The cake-eating problem of
+	\autoref{sec:dyn-cake} is solved below by guess-and-verify precisely because it
+	falls outside \autoref{ass:dyn}, and its verification consists in checking
+	\eqref{eq:value-unrolled} directly rather than invoking
+	\autoref{thm:bellman-contraction}.
+\end{remark}
+
+\section{First-Order Conditions and the Envelope Formula}\label{sec:dyn-foc}
+
+Contraction gives existence, uniqueness and an algorithm, but no
+characterisation. Characterisation comes from differentiating the Bellman
+equation, and that requires knowing that $V$ is differentiable --- which is a
+conclusion, not an assumption, since $V$ is defined as a supremum.
+
+\begin{lemma}[Supergradients of a concave function]\label{lem:supergradient}
+	Let $V\colon X\to\R$ be concave on a convex $X\subseteq\R^{n}$ and let
+	$x_0\in\Int X$. Then there exists $p\in\R^{n}$ with
+	\begin{equation}\label{eq:supergradient}
+		V(x)\leq V(x_0)+\ip{p}{x-x_0}\qquad\text{for every }x\in X,
+	\end{equation}
+	and $V$ is differentiable at $x_0$ if and only if such a $p$ is unique, in which
+	case $p=\nabla V(x_0)$.
+\end{lemma}
+
+\begin{proof}
+	The hypograph $\hyp V=\{(x,t)\in X\times\R : t\leq V(x)\}$ is convex, by the
+	concave analogue of \autoref{prop:convex-epigraph}, and $(x_0,V(x_0))$ is a
+	boundary point of it. \autoref{thm:supporting-hyperplane} supplies
+	$(a,b)\neq0$ with $\ip{a}{x}+bt\leq\ip{a}{x_0}+bV(x_0)$ for all
+	$(x,t)\in\hyp V$. Letting $t\to-\infty$ forces $b\geq0$; and $b=0$ would give
+	$\ip{a}{x-x_0}\leq0$ for all $x\in X$ with $a\neq0$, impossible for $x_0$
+	interior. Dividing by $b>0$ and setting $p\eqdef-a/b$ gives
+	\eqref{eq:supergradient} on taking $t=V(x)$. The equivalence of uniqueness with
+	differentiability is \textcite[Thm.~25.1]{rockafellar1970convex}.
+\end{proof}
+
+\begin{theorem}[Benveniste--Scheinkman]\label{thm:benveniste-scheinkman}
+	Let $X\subseteq\R^{n}$ be convex, $V\colon X\to\R$ concave, and
+	$x_0\in\Int X$. Suppose there is a neighbourhood $D\subseteq X$ of $x_0$ and a
+	concave function $W\colon D\to\R$, differentiable at $x_0$, with
+	\begin{equation}\label{eq:bs-sandwich}
+		W(x_0)=V(x_0)\qquad\text{and}\qquad W(x)\leq V(x)\ \text{ for all }x\in D .
+	\end{equation}
+	Then $V$ is differentiable at $x_0$ and $\nabla V(x_0)=\nabla W(x_0)$.
+\end{theorem}
+
+\begin{proof}
+	Let $p$ satisfy \eqref{eq:supergradient} for $V$ at $x_0$, which
+	\autoref{lem:supergradient} provides. For $x\in D$,
+	\[
+		W(x)\leq V(x)\leq V(x_0)+\ip{p}{x-x_0}=W(x_0)+\ip{p}{x-x_0},
+	\]
+	so $p$ is a supergradient of $W$ at $x_0$. But $W$ is differentiable at $x_0$,
+	so by \autoref{lem:supergradient} its supergradient there is unique and equals
+	$\nabla W(x_0)$; hence $p=\nabla W(x_0)$. Since $p$ was an arbitrary
+	supergradient of $V$, the supergradient of $V$ at $x_0$ is unique, and
+	\autoref{lem:supergradient} makes $V$ differentiable there with
+	$\nabla V(x_0)=\nabla W(x_0)$.
+\end{proof}
+
+This is \textcite{benveniste1979differentiability}. The function $W$ is
+constructed from the optimal policy: fixing the control at its optimal value
+$u^{\ast}=h(x_0)$ and letting the state vary gives
+$W(x)\eqdef r(x,u^{\ast})+\beta V\bigl(g(x,u^{\ast})\bigr)$, which is feasible
+hence dominated by $V$, and which agrees with $V$ at $x_0$ because $u^{\ast}$ is
+optimal there. Differentiability of $V$ is thereby inherited from
+differentiability of the \emph{primitives} $r$ and $g$, and the argument is a
+dynamic instance of the envelope logic of \autoref{thm:envelope}: the derivative
+of an optimised value equals the partial derivative holding the optimiser fixed.
+
+\begin{theorem}[Euler equation and envelope formula]\label{thm:euler-envelope}
+	Take $n=k=1$, let the constraint set be $\Gamma(x)=\R$ or an interval whose
+	interior contains the optimal control, and suppose $r$ and $g$ are continuously
+	differentiable, $V$ is concave, and the optimal policy $h$ is interior. Then at
+	every $x\in\Int X$ the optimal control $u^{\ast}=h(x)$ satisfies the
+	\dfnas{first-order condition}{first-order condition, dynamic}
+	\begin{equation}\label{eq:dyn-foc}
+		\frac{\partial r}{\partial u}(x,u^{\ast})
+		+\beta V'\bigl(g(x,u^{\ast})\bigr)\frac{\partial g}{\partial u}(x,u^{\ast})=0,
+	\end{equation}
+	and $V$ is differentiable at $x$ with the \dfnas{envelope formula}{envelope
+		formula}
+	\begin{equation}\label{eq:dyn-envelope}
+		V'(x)=\frac{\partial r}{\partial x}(x,u^{\ast})
+		+\beta V'\bigl(g(x,u^{\ast})\bigr)\frac{\partial g}{\partial x}(x,u^{\ast}).
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Equation \eqref{eq:dyn-foc} is \autoref{thm:fermat} applied to the differentiable
+	function $u\mapsto r(x,u)+\beta V(g(x,u))$ at its interior maximiser, $V$ being
+	differentiable by \autoref{thm:benveniste-scheinkman} applied at $g(x,u^{\ast})$.
+
+	For \eqref{eq:dyn-envelope}, put $W(z)\eqdef r(z,u^{\ast})+\beta V(g(z,u^{\ast}))$
+	on a neighbourhood of $x$, with $u^{\ast}=h(x)$ \emph{held fixed}. Then
+	$W(x)=V(x)$ because $u^{\ast}$ is optimal at $x$, and $W(z)\leq V(z)$ for $z$
+	near $x$ because $u^{\ast}$ is merely feasible at $z$. So
+	\autoref{thm:benveniste-scheinkman} gives
+	$V'(x)=W'(x)=r_x(x,u^{\ast})+\beta V'(g(x,u^{\ast}))g_x(x,u^{\ast})$.
+\end{proof}
+
+\begin{remark}[The derivation by differentiating the policy]\label{rem:envelope-direct}
+	The derivation on \autocite[slide 18]{fukuda2026dynamic} differentiates
+	$V(x)=r(x,h(x))+\beta V(g(x,h(x)))$ directly, obtaining
+	\[
+		V'(x)=\underbrace{\Bigl[r_u+\beta V'(g)\,g_u\Bigr]}_{=0\ \text{by }\eqref{eq:dyn-foc}}h'(x)
+		+r_x+\beta V'(g)\,g_x,
+	\]
+	so that the term in $h'$ drops out and \eqref{eq:dyn-envelope} remains. The
+	computation is exactly right in content and presupposes what is at issue:
+	that $V$ and $h$ are differentiable. \autoref{thm:benveniste-scheinkman}
+	establishes the conclusion without differentiating $h$ at all, and therefore
+	without assuming the policy is smooth --- which it need not be, since
+	\autoref{thm:bellman-contraction} delivers only upper hemicontinuity.
+\end{remark}
+
+\begin{corollary}[Euler equation]\label{cor:euler}
+	In the setting of \autoref{thm:euler-envelope}, suppose $r(x,u)=\tilde r(u)$
+	does not depend on $x$ and $g(x,u)=x-u$. Then
+	\begin{equation}\label{eq:euler-dyn}
+		\tilde r'(u_t)=\beta\,\tilde r'(u_{t+1})\qquad\text{for every }t .
+	\end{equation}
+\end{corollary}
+
+\begin{proof}
+	Here $r_u=\tilde r'$, $g_u=-1$, $r_x=0$ and $g_x=1$, so \eqref{eq:dyn-foc} reads
+	$\tilde r'(u)=\beta V'(x')$ and \eqref{eq:dyn-envelope} reads
+	$V'(x)=\beta V'(x')$. Applying the first at date $t$ and at date $t+1$,
+	\[
+		\tilde r'(u_t)=\beta V'(x_{t+1})
+		\overset{\text{envelope}}{=}\beta\cdot\beta V'(x_{t+2})
+		\overset{\text{FOC}}{=}\beta\,\tilde r'(u_{t+1}),
+	\]
+	which is \eqref{eq:euler-dyn}.
+\end{proof}
+
+The chain in the proof --- first-order condition, envelope, first-order condition
+--- is the standard route from a Bellman equation to an Euler equation, and it
+eliminates the unknown $V'$ entirely: the Euler equation involves only
+primitives \autocite[slide 32]{fukuda2026dynamic}. Its economic reading is a
+no-arbitrage condition along the optimal path. Consuming $\Delta$ less today
+costs $\tilde r'(u_t)\Delta$ in current utility and returns
+$\beta\tilde r'(u_{t+1})\Delta$ in discounted utility tomorrow; at an optimum the
+two are equal, and the equality is precisely the first-order condition of the
+perturbed problem in $\Delta$ at $\Delta=0$.
+
+\section{The Cake-Eating Problem}\label{sec:dyn-cake}
+
+\paragraph{Problem.} An agent endowed with a cake of size $w_0>0$ chooses
+consumption $(c_t)_{t\geq0}$ to maximise $\sum_{t\geq0}\beta^{t}\log c_t$ subject
+to $w_{t+1}=w_t-c_t$ and $c_t\geq0$, $w_t\geq0$.
+
+There are two ways to assign the state and the control, and they are not
+computationally equivalent \autocite[slides 21--22]{fukuda2026dynamic}. Taking
+the control to be consumption gives
+$V(w)=\max_{c\in[0,w]}\{\log c+\beta V(w-c)\}$, in which $w-c$ generally falls
+between grid points and must be interpolated. Taking the control to be
+\emph{tomorrow's cake} gives
+\begin{equation}\label{eq:cake-bellman}
+	V(w)=\max_{w'\in[0,w]}\ \bigl\{\log(w-w')+\beta V(w')\bigr\},
+\end{equation}
+in which the transition is the identity on the grid. The second formulation is
+the one implemented.
+
+\begin{proposition}[Closed form]\label{prop:cake-solution}
+	The cake-eating problem has value function and policy
+	\begin{equation}\label{eq:cake-solution}
+		V(w)=\frac{\log(1-\beta)}{1-\beta}+\frac{\beta\log\beta}{(1-\beta)^{2}}
+		+\frac{\log w}{1-\beta},
+		\qquad
+		h(w)=(1-\beta)w,
+	\end{equation}
+	so that $c_t=(1-\beta)\beta^{t}w_0$ and $w_{t+1}=\beta w_t$.
+\end{proposition}
+
+\begin{proof}
+	\emph{From the Euler equation.} \autoref{cor:euler} with
+	$\tilde r=\log$ gives $1/c_t=\beta/c_{t+1}$, that is $c_{t+1}=\beta c_t$, hence
+	$c_\tau=\beta^{\tau-t}c_t$. Summing the budget identity
+	$w_t=\sum_{\tau\geq t}c_\tau$ --- which holds because the cake is exhausted in
+	the limit, $\lim_t w_t=0$ being forced by $\log$ utility and $\beta<1$ --- gives
+	\[
+		w_t=\sum_{\tau=t}^{\infty}\beta^{\tau-t}c_t=\frac{c_t}{1-\beta},
+		\qquad\text{so}\qquad c_t=(1-\beta)w_t,
+	\]
+	which is the stated policy, and then $w_{t+1}=w_t-c_t=\beta w_t$ and
+	$c_t=(1-\beta)\beta^{t}w_0$.
+
+	\emph{Value.} Substituting the optimal path into the objective,
+	\begin{align*}
+		V(w_0) & =\sum_{t=0}^{\infty}\beta^{t}\log\bigl((1-\beta)\beta^{t}w_0\bigr)
+		=\log(1-\beta)\sum_{t\geq0}\beta^{t}
+		+\log\beta\sum_{t\geq0}t\beta^{t}
+		+\log w_0\sum_{t\geq0}\beta^{t}                                            \\
+		       & =\frac{\log(1-\beta)}{1-\beta}+\frac{\beta\log\beta}{(1-\beta)^{2}}
+		+\frac{\log w_0}{1-\beta},
+	\end{align*}
+	using $\sum_{t\geq0}\beta^{t}=1/(1-\beta)$ and
+	\[
+		\sum_{t\geq0}t\beta^{t}=\beta\sum_{t\geq0}t\beta^{t-1}
+		=\beta\deriv{}{\beta}\sum_{t\geq0}\beta^{t}
+		=\beta\deriv{}{\beta}\frac{1}{1-\beta}=\frac{\beta}{(1-\beta)^{2}},
+	\]
+	the term-by-term differentiation being legitimate on $\abs{\beta}<1$, where the
+	power series converges uniformly on compact subsets.
+
+	\emph{Verification.} Write $V(w)=A+B\log w$ with $B=1/(1-\beta)$ and $A$ as in
+	\eqref{eq:cake-solution}. The objective in \eqref{eq:cake-bellman} is strictly
+	concave in $w'$ on $(0,w)$ and tends to $-\infty$ at both endpoints, so its
+	unique maximiser is interior and solves
+	$1/(w-w')=\beta B/w'$, that is $w'=\beta Bw/(1+\beta B)=\beta w$ since
+	$\beta B=\beta/(1-\beta)$ and $1+\beta B=1/(1-\beta)$. Substituting back,
+	\[
+		\log\bigl((1-\beta)w\bigr)+\beta\bigl(A+B\log(\beta w)\bigr)
+		=\underbrace{\log(1-\beta)+\beta A+\beta B\log\beta}_{=A}
+		+\underbrace{(1+\beta B)}_{=B}\log w,
+	\]
+	the first bracket equalling $A$ because $A(1-\beta)=\log(1-\beta)+\beta\log\beta/(1-\beta)$
+	by \eqref{eq:cake-solution}. Hence $TV=V$. Optimality of the associated plan
+	follows from \eqref{eq:value-unrolled}: along it $w_m=\beta^{m}w_0$, so
+	$\beta^{m}V(w_m)=\beta^{m}(A+B\log w_0)+mB\beta^{m}\log\beta\to0$, and the
+	transversality condition of \autoref{rem:transversality} holds even though
+	\autoref{ass:dyn}(iii) fails.
+\end{proof}
+
+The eaten fraction $1-\beta$ is independent of the cake size --- a consequence of
+the homotheticity of $\log$ utility, under which the problem scales --- and
+independent of time, which is stationarity. The value function inherits the
+logarithm from the return function, which is why the guess $A+B\log w$ works and
+why it would fail for a return function outside the CRRA class.
+
+\begin{remark}[What the numerical solution adds]\label{rem:cake-numerics}
+	Solving \eqref{eq:cake-bellman} by value function iteration on a grid of
+	$2000$ points from $0.001$ to $w_0=1$ with $\beta=0.85$, starting from
+	$W_0\equiv0$, reproduces \eqref{eq:cake-solution} to grid accuracy
+	\autocite[slides 23--30]{fukuda2026dynamic}; this is
+	\path{DP_cake_eating.m}, and \path{DP_cake_eating_CRRA.m} repeats it for CRRA
+	utility while \path{DP_cake_eating_plot_iterations.m} displays the successive
+	iterates $W_m$ converging to $V$. The lower endpoint is not zero
+	because $\log0=-\infty$; the truncation is a discretisation of the state space,
+	not an approximation of the economics, and the computed policy inherits an
+	error of the order of the grid spacing near the boundary. The exercise is worth
+	doing on a problem with a known closed form precisely because the discrepancy
+	between \eqref{eq:cake-solution} and the computed value is then pure numerical
+	error and can be attributed.
+\end{remark}
+
+\section{The Ramsey Growth Model}\label{sec:dyn-ramsey}
+
+\paragraph{Problem.} A planner chooses consumption to maximise
+$\sum_{t\geq0}\beta^{t}u(c_t)$ subject to
+\begin{equation}\label{eq:ramsey-constraint}
+	k_{t+1}=f(k_t)+(1-\delta)k_t-c_t,
+	\qquad f(k)=Ak^{\alpha},\ \alpha\in(0,1),\ A>0,\ \delta\in(0,1],
+\end{equation}
+with $k_0>0$ given, $c_t\geq0$ and $k_t\geq0$; $u$ is strictly increasing,
+strictly concave and continuously differentiable. In recursive form,
+\begin{equation}\label{eq:ramsey-bellman}
+	V(k)=\max_{k'\in[0,f(k)+(1-\delta)k]}
+	\bigl\{u\bigl(f(k)+(1-\delta)k-k'\bigr)+\beta V(k')\bigr\}.
+\end{equation}
+
+\begin{proposition}[Euler equation and steady state]\label{prop:ramsey}
+	Along an interior optimal path of \eqref{eq:ramsey-bellman},
+	\begin{equation}\label{eq:ramsey-euler}
+		u'(c_t)=\beta\,u'(c_{t+1})\bigl(f'(k_{t+1})+1-\delta\bigr),
+	\end{equation}
+	and the unique interior steady state $(k^{\ast},c^{\ast})$ with
+	$c_t\equiv c^{\ast}$, $k_t\equiv k^{\ast}$ is
+	\begin{equation}\label{eq:ramsey-steady-state}
+		k^{\ast}=\left(\frac{\alpha A}{\beta^{-1}-(1-\delta)}\right)^{\frac{1}{1-\alpha}},
+		\qquad
+		c^{\ast}=A(k^{\ast})^{\alpha}-\delta k^{\ast}.
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	Apply \autoref{thm:euler-envelope} with state $k$, control $k'$,
+	$r(k,k')=u(f(k)+(1-\delta)k-k')$ and $g(k,k')=k'$. Then $r_{k'}=-u'(c)$ and
+	$g_{k'}=1$, so \eqref{eq:dyn-foc} gives
+	\begin{equation}\label{eq:ramsey-foc}
+		u'(c_t)=\beta V'(k_{t+1});
+	\end{equation}
+	and $r_k=u'(c)\bigl(f'(k)+1-\delta\bigr)$ with $g_k=0$, so
+	\eqref{eq:dyn-envelope} gives
+	\begin{equation}\label{eq:ramsey-envelope}
+		V'(k_t)=u'(c_t)\bigl(f'(k_t)+1-\delta\bigr).
+	\end{equation}
+	Substituting \eqref{eq:ramsey-envelope} at $t+1$ into \eqref{eq:ramsey-foc}
+	yields \eqref{eq:ramsey-euler}. Concavity of $V$, required by
+	\autoref{thm:euler-envelope}, follows from concavity of $u$ and of the
+	constraint set: \autoref{prop:value-concave} applies to each iterate $T^{m}W_0$
+	started from a concave $W_0$, and \autoref{thm:bellman-contraction} makes the
+	uniform limit $V$ concave, uniform limits preserving the inequality in
+	\autoref{def:convex-function}.
+
+	At a steady state, $c_t=c_{t+1}$ cancels $u'$ from \eqref{eq:ramsey-euler},
+	leaving $1=\beta\bigl(f'(k^{\ast})+1-\delta\bigr)$, that is
+	$\alpha A(k^{\ast})^{\alpha-1}=\beta^{-1}-(1-\delta)$, which rearranges to the
+	first half of \eqref{eq:ramsey-steady-state}; the exponent
+	$1/(1-\alpha)$ is positive and the right-hand side is positive because
+	$\beta^{-1}>1\geq1-\delta$, so $k^{\ast}$ exists and is unique. Setting
+	$k_{t+1}=k_t=k^{\ast}$ in \eqref{eq:ramsey-constraint} gives
+	$c^{\ast}=f(k^{\ast})-\delta k^{\ast}$.
+\end{proof}
+
+Equation \eqref{eq:ramsey-euler} is the intertemporal condition of the
+one-sector growth model: the marginal utility cost of investing a unit today
+equals its discounted marginal utility return, the return being the marginal
+product of capital plus the undepreciated remainder. The steady-state condition
+$\beta\bigl(f'(k^{\ast})+1-\delta\bigr)=1$ is the modified golden rule: the net
+marginal product $f'(k^{\ast})-\delta$ equals the rate of time preference
+$\beta^{-1}-1$. Capital is therefore below the golden-rule level that maximises
+steady-state consumption, at which $f'(k)=\delta$, and the wedge is impatience.
+Comparative statics follow directly: $k^{\ast}$ is increasing in $\beta$, in $A$
+and in $\alpha$, and decreasing in $\delta$.
+
+Unlike \autoref{sec:dyn-cake} the model has no closed form for general $u$ and
+$\delta<1$; the exception is $\delta=1$ with $u=\log$, where the policy is
+$k'=\alpha\beta\bigl(Ak^{\alpha}\bigr)$. This is why the numerical treatment of
+\autocite[slides 37--41]{fukuda2026dynamic} restricts the grid to
+$[k_{\min},k_{\max}]$ containing $k^{\ast}$: on that compact set the return
+function is bounded, \autoref{ass:dyn} holds, and
+\autoref{thm:bellman-contraction} applies as stated. The program
+\path{deterministic_Ramsey_growth.m} computes $k^{\ast}$ from
+\eqref{eq:ramsey-steady-state} first and then lays $1000$ nodes over
+$[0.25k^{\ast},1.75k^{\ast}]$, so the compact set is chosen by the theory rather
+than guessed; infeasible pairs $(k,k')$ receive a large penalty in place of an
+undefined utility, which is the discrete analogue of the constraint
+$c_t\geq0$.
+
+\section{The Lucas Asset-Pricing Model}\label{sec:dyn-lucas}
+
+\paragraph{Environment.} A representative agent in an endowment economy consumes
+a single non-storable good produced by a single tree. The endowment
+$(y_t)_{t\geq0}$ is Markov, $y_{t+1}=G(y_t,\varepsilon_{t+1})$ with
+$(\varepsilon_t)$ i.i.d.\ with distribution $\varphi$; in the numerical
+implementation $\log y_{t+1}=\alpha\log y_t+\sigma\varepsilon_{t+1}$ with
+$\varepsilon_t$ standard normal. The agent ranks streams by
+$\E_0\bigl[\sum_{t\geq0}\beta^{t}u(c_t)\bigr]$ with $u$ of the CRRA form. A share
+$\pi_t\in[0,1]$ of the tree, chosen at $t-1$, is the agent's only store of value,
+and an ex-dividend claim bought at price $p_t$ entitles the holder to $y_{t+1}$
+and to the resale price $p_{t+1}$.
+
+\paragraph{The agent's problem.} With the share as state alongside the endowment,
+\begin{equation}\label{eq:lucas-bellman}
+	v(\pi,y)=\max_{\pi'}\
+	\Bigl\{u\bigl((y+p(y))\pi-p(y)\pi'\bigr)
+	+\beta\int v\bigl(\pi',G(y,z)\bigr)\varphi(\diff z)\Bigr\},
+\end{equation}
+the budget constraint $c+p(y)\pi'\leq(y+p(y))\pi$ binding because $u$ is strictly
+increasing. The agent takes the pricing function $p(\cdot)$ as given; the guess
+that the price depends on the history only through the current endowment is
+verified by the construction below, and is legitimate because the endowment is
+Markov.
+
+\begin{theorem}[Consumption-based asset pricing]\label{thm:lucas-pricing}
+	In a competitive equilibrium of the Lucas economy the pricing function satisfies
+	\begin{equation}\label{eq:lucas-functional}
+		p(y)=\beta\int\frac{u'\bigl(G(y,z)\bigr)}{u'(y)}
+		\Bigl(G(y,z)+p\bigl(G(y,z)\bigr)\Bigr)\varphi(\diff z),
+	\end{equation}
+	equivalently, in sequence form,
+	\begin{equation}\label{eq:sdf}
+		p_t=\E_t\left[\underbrace{\beta\frac{u'(y_{t+1})}{u'(y_t)}}_{\text{stochastic discount factor}}
+			\bigl(y_{t+1}+p_{t+1}\bigr)\right].
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	The first-order condition of \eqref{eq:lucas-bellman} in $\pi'$ is
+	\begin{equation}\label{eq:lucas-foc}
+		u'(c)\,p(y)=\beta\int v_1\bigl(\pi',G(y,z)\bigr)\varphi(\diff z),
+		\qquad v_1\eqdef\frac{\partial v}{\partial\pi},
+	\end{equation}
+	the cost in current marginal utility of an extra share equalling its discounted
+	expected marginal value. Differentiating \eqref{eq:lucas-bellman} in the state
+	$\pi$ with $\pi'$ held at its optimum --- which is legitimate by
+	\autoref{thm:benveniste-scheinkman}, $v$ being concave in $\pi$ as the value of
+	a concave problem on a convex constraint set --- gives the envelope formula
+	\begin{equation}\label{eq:lucas-envelope}
+		v_1(\pi,y)=u'(c)\bigl(y+p(y)\bigr),
+	\end{equation}
+	an extra share being worth the marginal utility of the dividend plus the resale
+	value it delivers.
+
+	Two market-clearing conditions pin down the equilibrium. The good is
+	non-storable, so $c_t=y_t$; and with a representative agent there is no trade, so
+	$\pi_t=1$ for every $t$. Imposing $c=y$ and $\pi=\pi'=1$ and substituting
+	\eqref{eq:lucas-envelope} into \eqref{eq:lucas-foc},
+	\[
+		u'(y)p(y)=\beta\int u'\bigl(G(y,z)\bigr)
+		\Bigl(G(y,z)+p\bigl(G(y,z)\bigr)\Bigr)\varphi(\diff z),
+	\]
+	which is \eqref{eq:lucas-functional} after division by $u'(y)>0$. Rewriting the
+	integral as a conditional expectation gives \eqref{eq:sdf}.
+\end{proof}
+
+Equation \eqref{eq:sdf} is the central identity of asset pricing: the price of
+any claim is the conditional expectation of its payoff weighted by the
+\dfnas{stochastic discount factor}{stochastic discount factor}
+$m_{t+1}=\beta u'(y_{t+1})/u'(y_t)$. Prices are high for claims that pay off when
+consumption is low, because marginal utility is then high; that is the entire
+economics, and the equity premium is the statement that the covariance between
+$m_{t+1}$ and equity payoffs is empirically far too small to match observed
+returns for plausible $\gamma$.
+
+\begin{theorem}[Existence of the pricing function]\label{thm:lucas-contraction}
+	Suppose the map
+	$y\mapsto\beta\int u'\bigl(G(y,z)\bigr)G(y,z)\,\varphi(\diff z)$
+	defines a bounded continuous function $h$ on $\R_+$. Then the operator
+	\begin{equation}\label{eq:lucas-T}
+		(\mathcal{T}\!f)(y)\eqdef h(y)+\beta\int f\bigl(G(y,z)\bigr)\varphi(\diff z)
+	\end{equation}
+	is a contraction of modulus $\beta$ on $\Bspace{\R_+}{\R}$, so it has a unique
+	fixed point $f^{\ast}$, reached from any starting point, and the equilibrium
+	price is recovered as
+	\begin{equation}\label{eq:lucas-recover}
+		p^{\ast}(y)=\frac{f^{\ast}(y)}{u'(y)} .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Setting $f(y)\eqdef u'(y)p(y)$ turns \eqref{eq:lucas-functional} into
+	$f=\mathcal{T}\!f$, because the integrand
+	$u'(G(y,z))\bigl(G(y,z)+p(G(y,z))\bigr)$ splits as
+	$u'(G(y,z))G(y,z)$, whose integral is $h(y)/\beta$, plus $f(G(y,z))$. This is
+	Lucas' change of unknown, and its point is that the resulting operator is
+	\emph{affine} in $f$, whereas \eqref{eq:lucas-functional} in the unknown $p$ is
+	not.
+
+	For the contraction property, take $f_1,f_2\in\Bspace{\R_+}{\R}$. For each $y$,
+	\begin{align*}
+		\abs{(\mathcal{T}\!f_1)(y)-(\mathcal{T}\!f_2)(y)}
+		 & =\beta\left|\int\bigl[f_1(G(y,z))-f_2(G(y,z))\bigr]\varphi(\diff z)\right| \\
+		 & \leq\beta\int\abs{f_1-f_2}\bigl(G(y,z)\bigr)\varphi(\diff z)
+		\leq\beta\norm{f_1-f_2}_\infty,
+	\end{align*}
+	the first inequality by the triangle inequality for integrals and the second
+	because $\varphi$ is a probability measure. Taking the supremum over $y$ gives
+	$\norm{\mathcal{T}\!f_1-\mathcal{T}\!f_2}_\infty\leq\beta\norm{f_1-f_2}_\infty$.
+	\autoref{thm:B-complete} and \autoref{thm:banach-fixed-point} give the rest, and
+	\eqref{eq:lucas-recover} inverts the substitution.
+\end{proof}
+
+\begin{eg}[Logarithmic utility]\label{eg:lucas-log}
+	Let $u=\log$, so $u'(c)=1/c$. Then
+	\[
+		h(y)=\beta\int\frac{1}{G(y,z)}G(y,z)\,\varphi(\diff z)
+		=\beta\int\varphi(\diff z)=\beta,
+	\]
+	a constant independent of $y$ and of the law of motion $G$. The functional
+	equation becomes $f=\beta+\beta f$ for a constant $f$, whose solution is
+	$f^{\ast}=\beta/(1-\beta)$, and uniqueness in \autoref{thm:lucas-contraction}
+	rules out any other bounded solution. Hence
+	\begin{equation}\label{eq:lucas-log-price}
+		p^{\ast}(y)=\frac{f^{\ast}(y)}{u'(y)}=\frac{\beta}{1-\beta}\,y .
+	\end{equation}
+	The price-dividend ratio is the constant $\beta/(1-\beta)$: with logarithmic
+	utility the income and substitution effects of a change in expected future
+	dividends cancel exactly, so no feature of the endowment process ---
+	persistence $\alpha$, volatility $\sigma$, even the shape of $\varphi$ ---
+	affects the ratio. This is the cleanest statement of why the log case is a
+	knife-edge, and why matching observed variation in price-dividend ratios
+	requires $\gamma\neq1$.
+\end{eg}
+
+\begin{remark}[Numerical implementation]\label{rem:lucas-numerics}
+	Iterating \eqref{eq:lucas-T} requires evaluating $f$ at
+	$G(y,z)=y^{\alpha}r$, $r=e^{\sigma\varepsilon}$ log-normal, which is not a grid
+	point; \path{Lucas_Tree_DP.m} and \path{Lucas_Tree_DP_Octave.m} interpolate
+	with a spline \autocite[slide 61]{fukuda2026dynamic}. Two approximations
+	therefore compound
+	with the contraction error \eqref{eq:vfi-error}: the integral is replaced by an
+	average over $500$ draws, contributing a Monte Carlo error of order
+	$500^{-1/2}$ by \autoref{rem:markov-sharp}, and $f$ off the grid is replaced by
+	a spline. Neither is controlled by \eqref{eq:vfi-error}, which bounds only the
+	distance between the exact iterates and the exact fixed point. The grid is
+	centred using the stationary moments of the endowment: from
+	$\log y_{t+1}=\alpha\log y_t+\sigma\varepsilon_{t+1}$ with $\abs{\alpha}<1$,
+	$\E[\log y_t]=0$ and $\Var(\log y_t)=\sigma^{2}/(1-\alpha^{2})$ in the
+	stationary distribution, and the grid spans four standard deviations either
+	side. Checking the computed $p^{\ast}$ against \eqref{eq:lucas-log-price} in the
+	log case is the available validation, and it is the reason that case is run
+	first.
+\end{remark}
+
+\section{Chapter Summary}\label{sec:dyn-summary}
+
+A stationary discounted sequential problem reduces to a functional equation in
+the state alone. Bellman's principle, made precise in
+\autoref{thm:principle-of-optimality}, has two halves: the value function solves
+the Bellman equation, and --- given boundedness, which supplies the transversality
+condition --- any bounded solution of the Bellman equation is the value function
+and any plan attaining the maximum period by period is optimal. The Bellman
+operator satisfies Blackwell's monotonicity and discounting conditions, hence is
+a contraction of modulus $\beta$ on the Banach space of bounded continuous
+functions; \autoref{thm:banach-fixed-point} then delivers existence, uniqueness,
+convergence of value function iteration from any starting point, and the two
+error bounds that make the algorithm usable. Berge's theorem supplies continuity
+of the value function and upper hemicontinuity of the policy correspondence at
+each iterate.
+
+Characterisation requires differentiability of the value function, which the
+Benveniste--Scheinkman theorem obtains without assuming it: a concave function
+sandwiched above a differentiable concave function that touches it at an interior
+point is differentiable there, with the same derivative. Applied with the control
+fixed at its optimum, this yields the envelope formula, and combining the
+envelope formula with the first-order condition eliminates the value function and
+produces the Euler equation in primitives alone.
+
+The three applications instantiate the same machinery. In the cake-eating problem
+the Euler equation $c_{t+1}=\beta c_t$ integrates to the policy
+$h(w)=(1-\beta)w$ and the value function
+$A+\log w/(1-\beta)$, verified directly because unbounded $\log$ utility falls
+outside the standing hypotheses. In the Ramsey model the Euler equation
+$u'(c_t)=\beta u'(c_{t+1})(f'(k_{t+1})+1-\delta)$ has the modified golden rule
+$\beta(f'(k^{\ast})+1-\delta)=1$ as its steady state, placing capital below the
+golden-rule level by exactly the rate of time preference. In the Lucas economy the
+first-order and envelope conditions, combined with the market-clearing conditions
+$c=y$ and $\pi=1$, give the consumption-based pricing equation and the stochastic
+discount factor $\beta u'(y_{t+1})/u'(y_t)$; substituting $f=u'p$ linearises the
+functional equation into a contraction, and under log utility the price-dividend
+ratio is the constant $\beta/(1-\beta)$ regardless of the endowment process.
+
+\begin{exercise}\label{ex:dyn-1}
+	Complete the proof of \autoref{thm:principle-of-optimality}(i) by justifying the
+	interchange of suprema in detail: show that for a bounded objective,
+	$\sup_{u,\,(u_t)_{t\geq1}}\{\Phi(u,(u_t))\}
+		=\sup_u\{\sup_{(u_t)_{t\geq1}}\Phi(u,(u_t))\}$, and exhibit an unbounded example
+	in which the two sides differ. Relate the example to
+	\autoref{rem:transversality}.
+\end{exercise}
+
+\begin{exercise}\label{ex:dyn-2}
+	Solve the Ramsey model in closed form for $u=\log$ and $\delta=1$ by guessing
+	$V(k)=A+B\log k$. Show $B=\alpha/(1-\alpha\beta)$ and that the policy is
+	$k'=\alpha\beta Ak^{\alpha}$, so the saving rate is the constant $\alpha\beta$.
+	Verify that the steady state of this policy agrees with
+	\eqref{eq:ramsey-steady-state} at $\delta=1$, and explain why the constant
+	saving rate is a knife-edge property of the pairing of $\log$ utility with
+	full depreciation.
+\end{exercise}
+
+\begin{exercise}\label{ex:dyn-3}
+	In the Lucas economy with $u(c)=c^{1-\gamma}/(1-\gamma)$ and
+	$\log y_{t+1}=\alpha\log y_t+\sigma\varepsilon_{t+1}$, use
+	\autoref{prop:exponential-moments} to compute $h(y)$ in closed form, and show
+	that the price-dividend ratio depends on $y$ unless $\gamma=1$ or $\alpha=0$.
+	Determine the sign of $\partial(p^{\ast}(y)/y)/\partial y$ as a function of
+	$\gamma$ and interpret it in terms of the relative strength of income and
+	substitution effects.
+\end{exercise}

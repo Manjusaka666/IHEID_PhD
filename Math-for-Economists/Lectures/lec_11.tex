@@ -1,0 +1,557 @@
+% Source: Gerzensee "Calculus" slides 55-64 (the least-squares problem; Calculus
+% Approach I with the two normal equations and the explicit 2x2 inverse; Calculus
+% Approach II with the matrix form X^T y = X^T X beta; the projection aside, the
+% orthogonality picture with 1 and x spanning the fitted subspace, and the
+% projection matrix X(X^T X)^{-1} X^T; Example 8.1, the n=500 simulation).
+% Supplementary: Fukuda (2026), Ch. 9 -- Thm 9.1 and Prop. 9.1 (projection onto a
+% closed convex set), Def. 9.2-9.3 and Prop. 9.4-9.6 (orthogonality),
+% Prop. 9.8-9.9 and Thm 9.2 (projection onto a closed subspace), Thm 9.3 (Riesz),
+% Thm 9.4 (projection in R^n), Sec. 9.4 (OLS three ways), Sec. 9.5 (Gram-Schmidt
+% and QR), Sec. 9.6.2 (best linear predictor).
+% Code: Supplementary/codes/regression.m, regression_Octave.m,
+% regression_Python.py (the Example 8.1 simulation).
+% No external reference is cited in this chapter: every statement is drawn
+% from the Gerzensee slides and the supplementary lecture notes listed above.
+
+\chapter{Projection, Orthogonality, and Least Squares}
+\label{ch:projection}
+
+\section{Motivation: Least Squares Is Not About Calculus}\label{sec:proj-motivation}
+
+\autoref{prop:ols-calculus} solved the least-squares problem by setting a
+gradient to zero. The solution was correct and the method was, in a precise
+sense, beside the point. Writing $\mathbf1=(1,\dots,1)^{\transp}$,
+$x=(x_1,\dots,x_n)^{\transp}$ and $y=(y_1,\dots,y_n)^{\transp}$ in $\R^n$, the
+objective is
+\begin{equation}\label{eq:ols-norm}
+	S(\beta_1,\beta_2)=\sum_{i=1}^n\bigl(y_i-\beta_1-\beta_2x_i\bigr)^2
+	=\norm{y-\beta_1\mathbf1-\beta_2x}^2 ,
+\end{equation}
+so the problem is to find the point of the plane $\Span\{\mathbf1,x\}$ closest to
+$y$ \autocite[slide 61]{fukuda2026calculus}. That is a question about distance in
+an inner product space, and its answer --- drop a perpendicular --- does not
+involve differentiation, holds in infinite dimensions where the calculus argument
+would not, and explains why the first-order conditions look the way they do:
+the normal equations \emph{are} the statement that the residual is orthogonal to
+the regressors.
+
+This chapter develops that geometry. Its three payoffs are the orthogonal
+decomposition theorem, the projection formula
+$P=X(X^{\transp}X)^{-1}X^{\transp}$, and the identification of conditional
+expectation as a projection, which \autoref{ch:probability} uses to characterise
+the best predictor.
+
+\section{Orthogonality}\label{sec:proj-orthogonality}
+
+Throughout, $H$ is a real inner product space with inner product $\ip{\cdot}{\cdot}$
+and induced norm $\norm{\cdot}$ (\autoref{prop:ip-induces-norm}), and it is a
+Hilbert space when complete (\autoref{def:banach-hilbert}). The leading cases are
+$H=\R^n$ and $H=L^2$.
+
+\begin{definition}[Orthogonal complement]\label{def:orthogonal-complement}
+	For $\emptyset\neq A\subseteq H$, the \dfn{orthogonal complement} is
+	\[
+		A^{\perp}\eqdef\{x\in H : \ip{x}{a}=0\ \text{for all }a\in A\} .
+	\]
+	A set $A$ is \dfnas{orthogonal}{orthogonal set} if $\ip{x}{y}=0$ for all
+	distinct $x,y\in A$, and \dfnas{orthonormal}{orthonormal set} if in addition
+	$\norm{x}=1$ for every $x\in A$.
+	\nidx{Aperp}{$A^{\perp}$, orthogonal complement}
+\end{definition}
+
+\begin{proposition}[Elementary properties]\label{prop:orthogonal-complement}
+	Let $A,B\subseteq H$ be non-empty.
+	\begin{enumerate}[(i)]
+		\item $A^{\perp}$ is a closed vector subspace of $H$, whether or not $A$ is.
+		\item $A\subseteq B$ implies $B^{\perp}\subseteq A^{\perp}$, and
+		      $A\subseteq A^{\perp\perp}$, and $A^{\perp}=A^{\perp\perp\perp}$.
+		\item $x\in\bigl(\Span\{x_1,\dots,x_m\}\bigr)^{\perp}$ if and only if
+		      $\ip{x}{x_i}=0$ for every $i$.
+		\item An orthogonal set not containing $0$ is linearly independent.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Linearity of the inner product in its first argument makes $A^{\perp}$ a
+	subspace. For closedness, let $x_k\to x$ with $x_k\in A^{\perp}$; for each
+	$a\in A$, $\ip{x}{a}=\lim_k\ip{x_k}{a}=0$ by continuity of the inner product,
+	which follows from Cauchy--Schwarz (\autoref{lem:cauchy-schwarz}).
+
+	(ii) The first claim is immediate. For $A\subseteq A^{\perp\perp}$: if $a\in A$
+	then $\ip{a}{z}=0$ for every $z\in A^{\perp}$ by definition of $A^{\perp}$, so
+	$a\in A^{\perp\perp}$. Applying the first claim to
+	$A\subseteq A^{\perp\perp}$ gives $A^{\perp\perp\perp}\subseteq A^{\perp}$, and
+	applying $A\subseteq A^{\perp\perp}$ with $A^{\perp}$ in place of $A$ gives the
+	reverse inclusion.
+
+	(iii) If $\ip{x}{x_i}=0$ for every $i$, then $\ip{x}{\sum_i\lambda_ix_i}=0$ by
+	linearity. The converse is the special case of singleton combinations.
+
+	(iv) Let $x_1,\dots,x_m$ be orthogonal and non-zero with
+	$\sum_i\lambda_ix_i=0$. Taking the inner product with $x_j$ kills every term but
+	the $j$th, giving $\lambda_j\norm{x_j}^2=0$, hence $\lambda_j=0$.
+\end{proof}
+
+These are Propositions~9.4 and~9.6 of \textcite[pp.~299--301]{fukuda2026notes}.
+Part (i) contains a fact used repeatedly: orthogonal complements are
+automatically closed, which is why the decomposition theorem below can be stated
+for an arbitrary closed subspace $M$ without any hypothesis on $M^{\perp}$.
+
+\begin{proposition}[Pythagoras]\label{prop:pythagoras}
+	If $x\perp y$ then $\norm{x+y}^2=\norm{x}^2+\norm{y}^2$. More generally, for a
+	finite orthogonal set $\{x_1,\dots,x_m\}$,
+	$\norm{\sum_ix_i}^2=\sum_i\norm{x_i}^2$.
+\end{proposition}
+
+\begin{proof}
+	Expand $\norm{x+y}^2=\norm{x}^2+2\ip{x}{y}+\norm{y}^2$ and use $\ip{x}{y}=0$;
+	iterate for the general case.
+\end{proof}
+
+\section{The Projection Theorem}\label{sec:proj-theorem}
+
+\begin{theorem}[Projection onto a closed convex set]\label{thm:projection-convex}
+	Let $H$ be a Hilbert space, $\emptyset\neq M\subseteq H$ closed and convex, and
+	$x\in H$. Then there is a unique $P_Mx\in M$ with
+	\[
+		\norm{x-P_Mx}=\inf_{y\in M}\norm{x-y},
+	\]
+	and $y_0=P_Mx$ is characterised by
+	\begin{equation}\label{eq:proj-variational}
+		\ip{x-y_0}{z-y_0}\leq0\qquad\text{for all }z\in M .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	\emph{Existence.} Let $d\eqdef\inf_{y\in M}\norm{x-y}$ and take
+	$(y_k)\subseteq M$ with $\norm{x-y_k}\to d$. The parallelogram law
+	(\autoref{rem:parallelogram}) applied to $x-y_j$ and $x-y_k$ gives
+	\[
+		\norm{y_j-y_k}^2
+		=2\norm{x-y_j}^2+2\norm{x-y_k}^2-4\left\lVert x-\frac{y_j+y_k}{2}\right\rVert^2
+		\leq2\norm{x-y_j}^2+2\norm{x-y_k}^2-4d^2,
+	\]
+	where the inequality uses $\tfrac12(y_j+y_k)\in M$ by convexity. As
+	$j,k\to\infty$ the right side tends to $2d^2+2d^2-4d^2=0$, so $(y_k)$ is
+	Cauchy. Completeness of $H$ and closedness of $M$
+	(\autoref{prop:closed-subset-complete}) give a limit $y_0\in M$, and
+	$\norm{x-y_0}=\lim_k\norm{x-y_k}=d$ by continuity of the norm.
+
+	\emph{Uniqueness and characterisation.} Identical to the corresponding parts of
+	the proof of \autoref{lem:nearest-point}, which used only the parallelogram law
+	and convexity.
+\end{proof}
+
+This is Theorem~9.1 with Proposition~9.1 of
+\textcite[pp.~295--298]{fukuda2026notes}. The comparison with
+\autoref{lem:nearest-point} is instructive. There, existence came from
+compactness: a closed bounded subset of $\R^n$ is compact and a continuous
+function attains its minimum. Here compactness is unavailable --- the closed unit
+ball of an infinite-dimensional space is not compact
+(\autoref{rem:heine-borel-fails}) --- and the parallelogram law does the work
+instead, converting a minimising sequence into a Cauchy sequence, which
+completeness then converges. Convexity is used exactly once, to place the
+midpoint $\tfrac12(y_j+y_k)$ in $M$, and the theorem is false without it: in
+$\R^2$ the point $0$ has no unique nearest point in the closed non-convex set
+$\{y:\norm{y}=1\}$.
+
+\begin{proposition}[Characterisation for subspaces]\label{prop:proj-subspace-char}
+	Let $M\subseteq H$ be a closed subspace and $x\in H$. Then $y_0\in M$ minimises
+	$\norm{x-y}$ over $M$ if and only if
+	\begin{equation}\label{eq:orthogonality-condition}
+		\ip{x-y_0}{z}=0\qquad\text{for all }z\in M,
+	\end{equation}
+	that is, if and only if $x-y_0\in M^{\perp}$.
+\end{proposition}
+
+\begin{proof}
+	($\Rightarrow$) Let $u\in M$ and $t\in\R$. Then $y_0+tu\in M$, so
+	\[
+		\norm{x-y_0}^2\leq\norm{x-y_0-tu}^2
+		=\norm{x-y_0}^2-2t\ip{x-y_0}{u}+t^2\norm{u}^2 .
+	\]
+	Hence $t^2\norm{u}^2-2t\ip{x-y_0}{u}\geq0$ for \emph{every} real $t$,
+	including $t$ of both signs. A quadratic in $t$ with a non-negative value
+	everywhere and a zero at $t=0$ must have vanishing linear coefficient, so
+	$\ip{x-y_0}{u}=0$.
+
+	($\Leftarrow$) If $x-y_0\perp M$ then for any $y\in M$, $y_0-y\in M$ and
+	Pythagoras (\autoref{prop:pythagoras}) gives
+	\[
+		\norm{x-y}^2=\norm{(x-y_0)+(y_0-y)}^2=\norm{x-y_0}^2+\norm{y_0-y}^2
+		\geq\norm{x-y_0}^2 .
+	\]
+\end{proof}
+
+This is Proposition~9.8 of \textcite[p.~301]{fukuda2026notes}. Comparing
+\eqref{eq:orthogonality-condition} with \eqref{eq:proj-variational}: on a
+subspace the variational inequality holds for $z$ and for $-z$ simultaneously,
+so it collapses to an equality. The last display also proves more than was asked:
+it quantifies the loss from using any other $y\in M$, and that identity is the
+decomposition of total variation used in \autoref{eq:anova} below.
+
+\begin{theorem}[Orthogonal decomposition]\label{thm:orthogonal-decomposition}
+	Let $M$ be a closed subspace of a Hilbert space $H$. Then every $x\in H$ has a
+	unique decomposition
+	\[
+		x=y+z,\qquad y=P_Mx\in M,\quad z\in M^{\perp},
+	\]
+	so that $H=M\oplus M^{\perp}$, and $M^{\perp\perp}=M$.
+\end{theorem}
+
+\begin{proof}
+	\emph{Existence.} If $x\in M$ take $(y,z)=(x,0)$. Otherwise let $y=P_Mx$ from
+	\autoref{thm:projection-convex}, which applies since a closed subspace is closed
+	and convex, and let $z\eqdef x-y$; then $z\in M^{\perp}$ by
+	\autoref{prop:proj-subspace-char}.
+
+	\emph{Uniqueness.} If $y_1+z_1=y_2+z_2$ with $y_i\in M$, $z_i\in M^{\perp}$,
+	then $y_1-y_2=z_2-z_1\in M\cap M^{\perp}$. Any $w$ in that intersection
+	satisfies $\ip{w}{w}=0$, hence $w=0$.
+
+	\emph{$M^{\perp\perp}=M$.} The inclusion $M\subseteq M^{\perp\perp}$ is
+	\autoref{prop:orthogonal-complement}(ii). Conversely, let
+	$x\in M^{\perp\perp}$ and decompose $x=y+z$ as above. Then
+	$z=x-y\in M^{\perp}$, and also $z\in M^{\perp\perp}$ since both $x$ and
+	$y\in M\subseteq M^{\perp\perp}$ lie there. So $\ip{z}{z}=0$ and $x=y\in M$.
+\end{proof}
+
+This is Theorem~9.2 of \textcite[p.~302]{fukuda2026notes}. The hypothesis that
+$M$ be \emph{closed} cannot be dropped, and in infinite dimensions it is not
+automatic: by \autoref{cor:subspace-complete} every subspace of $\R^n$ is closed,
+but the subspace of finitely supported sequences in $L^2$ is dense and proper, so
+its orthogonal complement is $\{0\}$ and no decomposition of the stated form
+exists.
+
+\begin{proposition}[The projection operator]\label{prop:projection-operator}
+	Let $M\subseteq H$ be a closed subspace. The map $P_M\colon H\to M$ is
+	\begin{enumerate}[(i)]
+		\item linear and surjective onto $M$;
+		\item idempotent, $P_M^2=P_M$, with $\Ker P_M=M^{\perp}$ and
+		      $\Image P_M=M$;
+		\item self-adjoint, $\ip{P_Mx}{w}=\ip{x}{P_Mw}$ for all $x,w\in H$;
+		\item norm-reducing, $\norm{P_Mx}\leq\norm{x}$, with equality if and only if
+		      $x\in M$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Let $x=y+z$ and $x'=y'+z'$ be the decompositions of
+	\autoref{thm:orthogonal-decomposition} and $\alpha,\beta\in\R$. Then
+	$\alpha x+\beta x'=(\alpha y+\beta y')+(\alpha z+\beta z')$ with the first
+	bracket in $M$ and the second in $M^{\perp}$, both being subspaces; by
+	uniqueness this is \emph{the} decomposition, so
+	$P_M(\alpha x+\beta x')=\alpha P_Mx+\beta P_Mx'$. Surjectivity: $P_My=y$ for
+	$y\in M$.
+
+	(ii) Immediate from $P_My=y$ on $M$ and $P_Mz=0$ on $M^{\perp}$.
+
+	(iii) Write $x=y+z$, $w=y'+z'$. Then
+	$\ip{P_Mx}{w}=\ip{y}{y'+z'}=\ip{y}{y'}$ since $y\in M$ and $z'\in M^{\perp}$,
+	and symmetrically $\ip{x}{P_Mw}=\ip{y+z}{y'}=\ip{y}{y'}$.
+
+	(iv) $\norm{x}^2=\norm{y}^2+\norm{z}^2\geq\norm{y}^2$ by
+	\autoref{prop:pythagoras}, with equality exactly when $z=0$.
+\end{proof}
+
+This is Proposition~9.9 of \textcite[p.~302]{fukuda2026notes}, with the
+self-adjointness added because it is what identifies the projection matrix in
+\autoref{prop:projection-matrix} and what makes the residual maker symmetric.
+
+\begin{theorem}[Riesz representation]\label{thm:riesz-hilbert}
+	Let $H$ be a Hilbert space and $f\colon H\to\R$ a continuous linear functional.
+	Then there is a unique $a\in H$ with $f(x)=\ip{a}{x}$ for all $x\in H$, and
+	$\norm{a}$ equals the operator norm of $f$.
+\end{theorem}
+
+\begin{proof}
+	If $f\equiv0$ take $a=0$. Otherwise $M\eqdef\Ker f$ is a closed proper subspace
+	--- closed because $f$ is continuous and $M=f^{-1}(\{0\})$
+	(\autoref{thm:continuity-preimage}) --- so by
+	\autoref{thm:orthogonal-decomposition} there is $u\in M^{\perp}$ with
+	$\norm{u}=1$. For any $x\in H$ the vector $f(x)u-f(u)x$ lies in $M$, since $f$
+	of it is $f(x)f(u)-f(u)f(x)=0$; taking the inner product with $u\in M^{\perp}$
+	gives $f(x)-f(u)\ip{u}{x}=0$, that is $f(x)=\ip{f(u)u}{x}$. So $a=f(u)u$ works.
+	Uniqueness: if $\ip{a}{x}=\ip{a'}{x}$ for all $x$, take $x=a-a'$.
+\end{proof}
+
+This is Theorem~9.3 of \textcite[p.~304]{fukuda2026notes} and the promised
+generalisation of \autoref{thm:riesz-rn}; in $\R^n$ continuity was automatic by
+\autoref{prop:linear-continuous}(ii), and in infinite dimensions it must be
+assumed, since discontinuous linear functionals exist there.
+
+\section{Projection in \texorpdfstring{$\R^n$}{Rn} and the Projection Matrix}
+\label{sec:proj-rn}
+
+\begin{proposition}[Projection matrix]\label{prop:projection-matrix}
+	Let $X\in M_{n\times k}(\R)$ have linearly independent columns, and let
+	$M\eqdef\Image X=\Span\{X_{\cdot1},\dots,X_{\cdot k}\}\subseteq\R^n$. Then
+	$X^{\transp}X$ is invertible, and for every $y\in\R^n$,
+	\begin{equation}\label{eq:projection-matrix}
+		P_My=X\bigl(X^{\transp}X\bigr)^{-1}X^{\transp}y,
+		\qquad
+		P\eqdef X\bigl(X^{\transp}X\bigr)^{-1}X^{\transp} .
+	\end{equation}
+	The matrix $P$ is symmetric and idempotent with $\rank P=k$, and
+	$Q\eqdef I_n-P$ is the projection onto $M^{\perp}$, symmetric and idempotent
+	with $\rank Q=n-k$.
+\end{proposition}
+
+\begin{proof}
+	\emph{Invertibility.} Suppose $X^{\transp}Xv=0$ for some $v\in\R^k$. Then
+	$0=v^{\transp}X^{\transp}Xv=\norm{Xv}^2$, so $Xv=0$, and linear independence of
+	the columns forces $v=0$. Hence $\Ker(X^{\transp}X)=\{0\}$ and
+	\autoref{thm:rank-nullity} makes the square matrix $X^{\transp}X$ invertible.
+
+	\emph{The formula.} Set $\hat y\eqdef X(X^{\transp}X)^{-1}X^{\transp}y$, which
+	lies in $M$ because it is $X$ times a vector. By
+	\autoref{prop:proj-subspace-char} it suffices to check
+	$y-\hat y\perp M$, and by \autoref{prop:orthogonal-complement}(iii) it suffices
+	to check orthogonality to each column of $X$, that is
+	$X^{\transp}(y-\hat y)=0$:
+	\[
+		X^{\transp}y-X^{\transp}X\bigl(X^{\transp}X\bigr)^{-1}X^{\transp}y
+		=X^{\transp}y-X^{\transp}y=0 .
+	\]
+
+	\emph{Properties.} Symmetry: $P^{\transp}=X\bigl((X^{\transp}X)^{-1}\bigr)^{\transp}
+		X^{\transp}=P$, since $X^{\transp}X$ is symmetric and so is its inverse.
+	Idempotence: $P^2=X(X^{\transp}X)^{-1}(X^{\transp}X)(X^{\transp}X)^{-1}X^{\transp}=P$.
+	Rank: $\Image P=M$ has dimension $k$. The statements for $Q$ follow from
+	\autoref{thm:orthogonal-decomposition}, $Q=I-P$ being the projection onto
+	$M^{\perp}$, whose dimension is $n-k$ by
+	\autoref{thm:rank-nullity}.
+\end{proof}
+
+This is Theorem~9.4 of \textcite[p.~305]{fukuda2026notes}, and it is the
+formula displayed on \autocite[slide 62]{fukuda2026calculus}. Both hypotheses on
+$X$ carry economic content: linear independence of the columns is the
+no-perfect-multicollinearity condition of \autoref{rem:square-matters}, and
+$k\leq n$ is the requirement of at least as many observations as parameters,
+which is forced because $k$ independent vectors cannot live in $\R^n$ with $k>n$
+by \autoref{thm:dimension-well-defined}.
+
+\subsection{Gram--Schmidt and QR}
+
+\begin{proposition}[Gram--Schmidt]\label{prop:gram-schmidt}
+	Let $v_1,\dots,v_k\in H$ be linearly independent. Define recursively
+	\[
+		u_1\eqdef v_1,\qquad
+		u_j\eqdef v_j-\sum_{i=1}^{j-1}\frac{\ip{v_j}{u_i}}{\norm{u_i}^2}\,u_i
+		\quad(j=2,\dots,k),
+		\qquad e_j\eqdef\frac{u_j}{\norm{u_j}} .
+	\]
+	Then $\{e_1,\dots,e_k\}$ is orthonormal and
+	$\Span\{e_1,\dots,e_j\}=\Span\{v_1,\dots,v_j\}$ for every $j$.
+\end{proposition}
+
+\begin{proof}
+	Induction on $j$. Each $u_j$ is $v_j$ minus its projection onto
+	$\Span\{u_1,\dots,u_{j-1}\}$, expressed through the orthogonal basis by
+	\autoref{prop:pythagoras}; by \autoref{prop:proj-subspace-char} the difference
+	is orthogonal to that span. It is non-zero because $v_j\notin
+		\Span\{v_1,\dots,v_{j-1}\}=\Span\{u_1,\dots,u_{j-1}\}$ by independence, so
+	the normalisation is legitimate, and the span statement follows since the
+	transformation is triangular with unit diagonal.
+\end{proof}
+
+\begin{corollary}[QR decomposition]\label{cor:qr}
+	Every $X\in M_{n\times k}(\R)$ with independent columns factors as $X=QR$ with
+	$Q\in M_{n\times k}(\R)$ having orthonormal columns and $R\in M_{k\times k}(\R)$
+	upper triangular with positive diagonal. Then
+	$P=QQ^{\transp}$ and the least-squares coefficient solves $R\hat\beta=Q^{\transp}y$.
+\end{corollary}
+
+\begin{proof}
+	Apply \autoref{prop:gram-schmidt} to the columns of $X$ and collect the
+	coefficients of $v_j$ in terms of $e_1,\dots,e_j$ into the $j$th column of $R$,
+	which is upper triangular by construction. Then
+	$X^{\transp}X=R^{\transp}Q^{\transp}QR=R^{\transp}R$ and
+	\eqref{eq:projection-matrix} gives
+	$P=QR(R^{\transp}R)^{-1}R^{\transp}Q^{\transp}=QQ^{\transp}$; substituting into
+	$X^{\transp}X\hat\beta=X^{\transp}y$ gives
+	$R^{\transp}R\hat\beta=R^{\transp}Q^{\transp}y$, and $R^{\transp}$ is invertible.
+\end{proof}
+
+This is Section~9.5 of \textcite[pp.~320--323]{fukuda2026notes}. The practical
+point is numerical: forming $X^{\transp}X$ squares the condition number of $X$,
+so the explicit inverse in \eqref{eq:projection-matrix} is a formula for
+analysis and a poor algorithm, whereas solving the triangular system
+$R\hat\beta=Q^{\transp}y$ is stable. Statistical software computes the QR
+factorisation, not the inverse.
+
+\section{Econometric Application: Least Squares}\label{sec:proj-ols}
+
+\paragraph{Setting.} Observations $(x_i,y_i)_{i=1}^n$ are stacked as
+$y\in\R^n$ and $X=[\mathbf1\ \ x]\in M_{n\times2}(\R)$. The least-squares
+problem is \eqref{eq:ols-norm}.
+
+\begin{proposition}[Least squares as projection]\label{prop:ols-projection}
+	Suppose the columns of $X$ are linearly independent, equivalently that the
+	$x_i$ are not all equal. Then \eqref{eq:ols-norm} has the unique solution
+	\begin{equation}\label{eq:ols-matrix}
+		\hat\beta=\bigl(X^{\transp}X\bigr)^{-1}X^{\transp}y,
+	\end{equation}
+	the fitted vector is $\hat y=X\hat\beta=Py$, the residual is
+	$\hat e=y-\hat y=Qy$, and
+	\begin{equation}\label{eq:normal-equations-geometric}
+		X^{\transp}\hat e=0,
+		\qquad\text{that is}\qquad
+		\sum_{i=1}^n\hat e_i=0
+		\quad\text{and}\quad\sum_{i=1}^nx_i\hat e_i=0 .
+	\end{equation}
+	Moreover
+	\begin{equation}\label{eq:anova}
+		\norm{y-\bar y\mathbf1}^2=\norm{\hat y-\bar y\mathbf1}^2+\norm{\hat e}^2 .
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	Minimising \eqref{eq:ols-norm} is minimising $\norm{y-v}$ over
+	$v\in M=\Image X$, so the solution is $\hat y=P_My$, unique by
+	\autoref{thm:projection-convex}, and given by
+	\eqref{eq:projection-matrix}. Since $X$ has independent columns, the
+	representation $\hat y=X\hat\beta$ has a unique coefficient vector, namely
+	\eqref{eq:ols-matrix}. Orthogonality
+	\eqref{eq:normal-equations-geometric} is
+	\autoref{prop:proj-subspace-char} combined with
+	\autoref{prop:orthogonal-complement}(iii), the two scalar equations being
+	orthogonality to $\mathbf1$ and to $x$.
+
+	For \eqref{eq:anova}: the first equation of
+	\eqref{eq:normal-equations-geometric} gives
+	$\bar{\hat e}=0$, hence $\bar{\hat y}=\bar y$, so
+	$\hat y-\bar y\mathbf1\in M$ and $\hat e\in M^{\perp}$ are orthogonal;
+	$y-\bar y\mathbf1=(\hat y-\bar y\mathbf1)+\hat e$ and
+	\autoref{prop:pythagoras} apply.
+\end{proof}
+
+\paragraph{What the geometry explains.} Four things that the calculus derivation
+leaves opaque.
+
+First, the normal equations \eqref{eq:normal-equations-geometric} are not
+computational artefacts. They say the residual is orthogonal to every regressor,
+which is the defining property of the projection, and they are the sample analogue
+of the population moment conditions $\E[\hat e]=0$, $\E[x\hat e]=0$ that identify
+the estimand. The first equation holds \emph{because} $\mathbf1$ is a regressor:
+a regression without an intercept has residuals that need not sum to zero, and
+then $\bar{\hat y}\neq\bar y$ and \eqref{eq:anova} fails.
+
+Second, \eqref{eq:anova} is the analysis-of-variance decomposition, total sum of
+squares equals explained plus residual, and it is Pythagoras' theorem. The
+coefficient of determination $R^2=\norm{\hat y-\bar y\mathbf1}^2/
+	\norm{y-\bar y\mathbf1}^2$ is therefore $\cos^2$ of the angle between the
+demeaned data vector and the demeaned fit, which by
+\autoref{eg:correlation-cosine} is the squared sample correlation between $y$ and
+$\hat y$. That $R^2\in[0,1]$ is Cauchy--Schwarz, not a convention.
+
+Third, adding a regressor cannot raise the residual sum of squares, because it
+enlarges $M$ and \autoref{thm:projection-convex} minimises over a larger set. This
+is a geometric fact about nested subspaces, which is why $R^2$ is
+non-decreasing in the number of regressors and why model selection needs a
+penalty rather than a fit criterion.
+
+Fourth, the estimator is linear in $y$: $\hat\beta=(X^{\transp}X)^{-1}X^{\transp}y$
+applies a fixed matrix to the data. Linearity is
+\autoref{prop:projection-operator}(i), and it is the property that makes the
+sampling distribution of $\hat\beta$ computable from that of $y$ --- normal if
+$y$ is normal, by the linear-image property of the Gaussian family.
+
+\begin{eg}[The simulation]\label{eg:ols-simulation}
+	Example~8.1 of \textcite{fukuda2026notes}
+	\autocite[slides 63--64]{fukuda2026calculus} draws $n=500$ independent standard
+	normal regressors $x_i$ and errors $\varepsilon_i$, sets
+	$y_i=1+3x_i+\varepsilon_i$, and computes $\hat\beta$ from
+	\eqref{eq:ols-matrix}. The accompanying programs
+	--- \path{regression.m} for \textsc{Matlab}, \path{regression_Octave.m}, and
+	\path{regression_Python.py} --- fix the random seed, build
+	$X=[\mathbf1\ \ x]$, and evaluate
+	\verb|inv(X'*X)*X'*y|, comparing the result with the built-in
+	\verb|regress|. The exercise is worth performing once for the sake of a single
+	observation: $\hat\beta$ is a random vector, being a fixed linear map applied to
+	the random $y$, and its realisation differs from the true $(1,3)^{\transp}$ by an
+	amount that is itself the projection of the error vector $\varepsilon$,
+	\[
+		\hat\beta-\beta=\bigl(X^{\transp}X\bigr)^{-1}X^{\transp}\varepsilon .
+	\]
+	Every result in the asymptotic theory of least squares is a statement about that
+	expression.
+\end{eg}
+
+\subsection{The best linear predictor}
+
+\begin{proposition}[Population least squares]\label{prop:best-linear-predictor}
+	Let $(X,Y)$ be square-integrable random variables with $\Var[X]>0$. The
+	minimiser of $\E\bigl[(Y-a-bX)^2\bigr]$ over $(a,b)\in\R^2$ is
+	\[
+		b^\ast=\frac{\Cov(X,Y)}{\Var[X]},\qquad a^\ast=\E[Y]-b^\ast\E[X],
+	\]
+	and the prediction error $Y-a^\ast-b^\ast X$ has mean zero and is uncorrelated
+	with $X$.
+\end{proposition}
+
+\begin{proof}
+	Work in the Hilbert space $L^2$ with $\ip{U}{V}=\E[UV]$
+	(\autoref{eg:ip-spaces}) and let $M\eqdef\Span\{1,X\}$, a two-dimensional,
+	hence closed, subspace by \autoref{cor:subspace-complete} applied inside the
+	finite-dimensional span. Minimising $\E[(Y-a-bX)^2]=\norm{Y-a-bX}^2$ is
+	projecting $Y$ onto $M$, so by \autoref{prop:proj-subspace-char} the solution is
+	characterised by $\E[(Y-a-bX)\cdot1]=0$ and $\E[(Y-a-bX)X]=0$. The first gives
+	$a=\E[Y]-b\E[X]$; substituting into the second gives
+	$\E[(Y-\E Y)X]-b\,\E[(X-\E X)X]=0$, that is $\Cov(X,Y)=b\Var[X]$.
+\end{proof}
+
+The formulas are the population counterparts of \eqref{eq:ols-solution}, and the
+argument is the same projection applied in $L^2$ rather than in $\R^n$: the
+sample version replaces $\E$ by the sample average, that is, replaces the $L^2$
+inner product by $\ip{u}{v}=n^{-1}\sum_iu_iv_i$. Enlarging $M$ from
+$\Span\{1,X\}$ to the set of all square-integrable functions of $X$ turns the
+best \emph{linear} predictor into the best predictor, and
+\autoref{thm:best-predictor} identifies it as $\E[Y\mid X]$.
+
+\section{Chapter Summary}\label{sec:proj-summary}
+
+Orthogonal complements are always closed subspaces; orthogonal sets of non-zero
+vectors are independent; and orthogonality makes norms add, which is Pythagoras.
+In a Hilbert space, every non-empty closed convex set contains a unique nearest
+point to any given point, with existence obtained from the parallelogram law and
+completeness rather than from compactness; on a subspace the characterising
+variational inequality becomes the orthogonality condition
+\eqref{eq:orthogonality-condition}. Hence $H=M\oplus M^{\perp}$ for every closed
+subspace $M$, the projection operator is linear, idempotent, self-adjoint and
+norm-reducing, and every continuous linear functional on a Hilbert space is an
+inner product with a fixed vector.
+
+In $\R^n$ the projection onto the column space of a full-column-rank $X$ is
+$X(X^{\transp}X)^{-1}X^{\transp}$, and invertibility of $X^{\transp}X$ is exactly
+independence of the columns. Least squares is that projection: the normal
+equations are orthogonality of the residual to the regressors, the
+analysis-of-variance identity is Pythagoras, $R^2$ is a squared cosine, adding
+regressors cannot worsen the fit because it enlarges the subspace, and the
+estimator is linear in the data. The same projection performed in $L^2$ gives the
+best linear predictor, with covariance over variance replacing the sample formula.
+
+\begin{exercise}\label{ex:proj-1}
+	Let $M_1\subseteq M_2$ be closed subspaces of a Hilbert space. Show that
+	$P_{M_1}P_{M_2}=P_{M_2}P_{M_1}=P_{M_1}$, and deduce that
+	$\norm{y-P_{M_2}y}\leq\norm{y-P_{M_1}y}$. Give the econometric reading, and
+	explain why the inequality is generally strict even when the added regressor is
+	independent of $y$ in the population.
+\end{exercise}
+
+\begin{exercise}\label{ex:proj-2}
+	(Frisch--Waugh--Lovell.) Partition $X=[X_1\ \ X_2]$ and let
+	$Q_1=I-X_1(X_1^{\transp}X_1)^{-1}X_1^{\transp}$. Show that the sub-vector
+	$\hat\beta_2$ of \eqref{eq:ols-matrix} equals the least-squares coefficient from
+	regressing $Q_1y$ on $Q_1X_2$. Identify at which step
+	\autoref{prop:projection-operator}(ii) and (iii) are used, and interpret the
+	result as ``controlling for $X_1$''.
+\end{exercise}
+
+\begin{exercise}\label{ex:proj-3}
+	Let $H=L^2([0,1])$ and $M$ the subspace of polynomials of degree at most $2$.
+	Compute $P_M f$ for $f(t)=e^t$ by applying \autoref{prop:gram-schmidt} to
+	$\{1,t,t^2\}$, and compare the resulting quadratic with the second-order Taylor
+	polynomial of $e^t$ at $t=0$. Explain in terms of the two different
+	optimality criteria why they differ.
+\end{exercise}

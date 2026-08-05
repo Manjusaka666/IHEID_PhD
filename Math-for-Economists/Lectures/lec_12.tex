@@ -1,0 +1,645 @@
+% Source: Gerzensee "Optimization" slides 3-31 (Problem 1 and Remark 12.1;
+% binding versus slack constraints and why one identifies them first; the
+% overview diagram of implications; Problems 2-5, the Lagrangian, the first-order
+% conditions, complementary slackness and the saddle-point formulation;
+% Proposition 12.1 and Exercise 12.3; Theorem 12.1, the Kuhn-Tucker theorem with
+% its concavity and Slater hypotheses; the Cobb-Douglas consumer problem worked
+% through, the multiplier computed two ways, and the envelope calculation).
+% Supplementary: Fukuda (2026), Ch. 12 (pp. 423-464) and Sec. 13.4.1
+% (Prop. 13.9-13.10, envelope theorems, pp. 479-484); Thm 10.9 (Farkas-Minkowski)
+% supplies the proof of Theorem 12.1.
+% Code: Supplementary/codes/consumer_choice_fmincon.m, consumer_choice_sqp_Octave.m,
+% consumer_choice_python.py, two_periods_consumption_*.{m,py},
+% Nash_bargaining_*.{m,py}.
+% External references actually cited in this chapter: Boyd-Vandenberghe
+% (2004), Mangasarian (1994), Milgrom-Segal (2002).
+
+\chapter{Constrained Optimisation: Lagrange and Kuhn--Tucker}
+\label{ch:optimization}
+
+\section{The Programming Problem}\label{sec:opt-formulation}
+
+\begin{definition}[The programming problem]\label{def:program}
+	Let $f,g_1,\dots,g_n\colon\R^m\to\R$. The \dfnas{programming
+		problem}{programming problem}, henceforth \dfnas{Problem 1}{Problem 1}, is
+	\begin{equation}\label{eq:problem-1}
+		\max_{x\in\R^m}\ f(x)
+		\qquad\st\quad g_j(x)\geq0\ \text{ for each }j\in\{1,\dots,n\}.
+	\end{equation}
+	The inequalities are the \dfnas{constraints}{constraint}, $f$ is the
+	\dfn{objective function}, and
+	\[
+		D\eqdef\{x\in\R^m : g_j(x)\geq0\ \text{for each }j\}
+	\]
+	is the \dfnas{domain}{domain of a program} of the program. The program is
+	\dfnas{bounded}{bounded program} if $f$ is bounded above on $D$.
+\end{definition}
+
+The sign convention $g_j\geq0$ is not restrictive. A constraint $h(x)\leq0$ is
+$-h(x)\geq0$, and an equality constraint $h(x)=0$ is the pair
+$h(x)\geq0$ and $-h(x)\geq0$; nothing else is needed
+\autocite[slide 4]{fukuda2026optimization}. The convention is chosen so that the
+multipliers below are non-negative, and it must be applied consistently: writing
+a budget constraint as $m-\ip{p}{x}\geq0$ rather than $\ip{p}{x}-m\geq0$ is what
+makes the multiplier on wealth positive rather than negative.
+
+\begin{definition}[Binding and slack]\label{def:binding}
+	The constraint $g_j(x)\geq0$ is \dfnas{binding}{binding constraint} at
+	$x^\ast\in D$ if $g_j(x^\ast)=0$, and \dfnas{slack}{slack constraint} if
+	$g_j(x^\ast)>0$.
+\end{definition}
+
+\begin{remark}[Identify the binding constraints first]\label{rem:which-bind}
+	Before differentiating anything, determine which constraints bind at the
+	optimum. The recommendation of \autocite[slides 6--9]{fukuda2026optimization} is
+	not a matter of convenience; it is where the economics of a problem is located,
+	and three cases recur.
+
+	\emph{Non-negativity.} With $\lim_{c\downarrow0}u'(c)=\infty$ --- an Inada
+	condition --- the constraint $c\geq0$ cannot bind at an optimum, since moving to
+	$c=\varepsilon$ raises utility without bound relative to the cost. The
+	first-order conditions are then equalities and the analysis is standard. When
+	instead a non-negativity-type constraint does bind --- a borrowing constraint, a
+	short-sale constraint, limited liability, the zero lower bound on nominal rates
+	--- the character of the solution changes, and solving the unconstrained
+	first-order condition gives the wrong answer rather than an approximation to the
+	right one.
+
+	\emph{Incentive constraints.} A mechanism-design or agency problem may carry
+	dozens of incentive-compatibility constraints. Establishing which of them bind
+	--- typically the local downward constraints under a single-crossing condition
+	--- reduces the problem to a tractable one and is the substantive step.
+
+	\emph{Direction of an equality.} If a constraint is known to hold with equality
+	at the optimum, it still matters which inequality is imposed. Writing the budget
+	set as $\ip{p}{x}\leq m$ rather than $\ip{p}{x}\geq m$ yields a multiplier with
+	the sign that makes it the marginal utility of wealth.
+\end{remark}
+
+\section{Five Formulations}\label{sec:opt-five}
+
+The Kuhn--Tucker theorem is the statement that five apparently different
+problems have the same solutions under suitable hypotheses. Stating them
+separately makes visible exactly which hypothesis is responsible for which
+implication \autocite[slides 10--20]{fukuda2026optimization}.
+
+\begin{definition}[Problem 2: local maximum]\label{def:problem-2}
+	Find $x\in D$ such that for every $u\in\R^m$ there is $\lambda_0>0$ with
+	\[
+		0\leq\lambda\leq\lambda_0\ \text{and}\ x+\lambda u\in D
+		\quad\Longrightarrow\quad f(x+\lambda u)\leq f(x).
+	\]
+\end{definition}
+
+The quantifier structure matters: $\lambda_0$ may depend on the direction $u$.
+This is weaker than requiring a single ball around $x$ on which $f(x)$ dominates,
+and it is the formulation that matches the way local optimality is verified in
+economics --- by considering one-dimensional deviations. The one-shot deviation
+principle in repeated games and the perturbation of a consumption path in a
+growth model are both instances of checking \autoref{def:problem-2} along a
+particular family of directions $u$.
+
+\begin{definition}[Problem 3: no improving feasible direction]\label{def:problem-3}
+	Suppose $f,g_1,\dots,g_n$ are differentiable. Find $x\in D$ such that
+	\[
+		\ip{\nabla f(x)}{u}\leq0
+		\quad\text{for every }u\in\R^m\text{ satisfying}\quad
+		\bigl[\,g_j(x)=0\ \Longrightarrow\ \ip{\nabla g_j(x)}{u}\geq0\,\bigr].
+	\]
+\end{definition}
+
+In words: every direction that does not immediately violate a binding constraint
+fails to increase the objective to first order. The geometry of
+\autocite[slides 12--13]{fukuda2026optimization} is that $\nabla f(x)$ makes an
+angle of at least $90^{\circ}$ with every such $u$, while each binding
+$\nabla g_j(x)$ makes an angle of at most $90^{\circ}$. With a single binding
+constraint this forces $\nabla f(x)$ and $\nabla g_1(x)$ to be antiparallel, that
+is $\nabla f(x)+y_1\nabla g_1(x)=0$ for some $y_1\geq0$, which is the Lagrange
+condition.
+
+\begin{definition}[Problem 4: Lagrange's problem]\label{def:problem-4}
+	Suppose $f,g_1,\dots,g_n$ are differentiable. Find $x\in D$ and
+	$y=(y_1,\dots,y_n)\in\R^n_+$ such that
+	\begin{align}
+		\frac{\partial f}{\partial x_i}(x)
+		+\sum_{j=1}^{n}y_j\frac{\partial g_j}{\partial x_i}(x) & =0
+		\qquad\text{for each }i\in\{1,\dots,m\},\label{eq:kkt-foc}                     \\
+		\sum_{j=1}^{n}y_jg_j(x)                                & =0 .\label{eq:kkt-cs}
+	\end{align}
+\end{definition}
+
+\begin{definition}[Problem 5: saddle point]\label{def:problem-5}
+	Define the \dfn{Lagrangian} $F\colon\R^m\times\R^n_+\to\R$ by
+	\begin{equation}\label{eq:lagrangian}
+		F(x,y)\eqdef f(x)+\sum_{j=1}^{n}y_jg_j(x).
+	\end{equation}
+	Find $(\bar x,\bar y)\in\R^m\times\R^n_+$ that is a \dfnas{saddle
+		point}{saddle point} of $F$:
+	\begin{equation}\label{eq:saddle}
+		F(x,\bar y)\leq F(\bar x,\bar y)\leq F(\bar x,y)
+		\qquad\text{for all }x\in\R^m\text{ and }y\in\R^n_+ .
+	\end{equation}
+	\nidx{Lagrangian}{$\Lag$, $F(x,y)$, Lagrangian}
+\end{definition}
+
+Condition \eqref{eq:saddle} has two halves: $\bar x$ maximises $F(\cdot,\bar y)$
+over the \emph{whole} of $\R^m$, with no constraint, and $\bar y$ minimises
+$F(\bar x,\cdot)$ over $\R^n_+$. This is the saddle-point interpretation of
+\textcite[Sec.~5.4, p.~237]{boyd2004convex}, whose Section~5.5 (p.~241) states
+the optimality conditions \eqref{eq:kkt-foc}--\eqref{eq:kkt-cs} in the same
+form and whose Section~5.6 (p.~249) develops the sensitivity reading of the
+multiplier recovered below in \autoref{thm:envelope}. The first is what makes the Lagrangian method a
+method: an unconstrained problem replaces a constrained one. The second encodes
+feasibility, as the next proposition shows.
+
+\begin{proposition}[Complementary slackness at a saddle point]\label{prop:cs}
+	Let $(\bar x,\bar y)$ solve Problem 5. Then $\bar x\in D$ and
+	$\bar y_jg_j(\bar x)=0$ for every $j$; in particular \eqref{eq:kkt-cs} holds.
+\end{proposition}
+
+\begin{proof}
+	\emph{Feasibility.} Suppose $g_{j_0}(\bar x)<0$ for some $j_0$. Taking
+	$y=\bar y+te_{j_0}$ with $t>0$ gives
+	$F(\bar x,y)=F(\bar x,\bar y)+tg_{j_0}(\bar x)\to-\infty$ as $t\to\infty$,
+	contradicting the right-hand inequality of \eqref{eq:saddle}. So
+	$\bar x\in D$.
+
+	\emph{Complementary slackness.} Taking $y=0\in\R^n_+$ in \eqref{eq:saddle} gives
+	$F(\bar x,\bar y)\leq F(\bar x,0)=f(\bar x)$, that is
+	$\sum_j\bar y_jg_j(\bar x)\leq0$. Every summand is a product of the
+	non-negative numbers $\bar y_j$ and $g_j(\bar x)$, so every summand is
+	non-negative; a non-negative sum that is at most zero has all terms zero.
+\end{proof}
+
+This is Exercise~12.3 of \textcite{fukuda2026notes}
+\autocite[slide 19]{fukuda2026optimization}. The economic reading of
+$\bar y_jg_j(\bar x)=0$ is exactly the dichotomy on
+\autocite[slide 16]{fukuda2026optimization}: either the constraint binds, or its
+marginal valuation is zero. A resource in excess supply has price zero, and a
+resource with a positive price is exhausted.
+
+\begin{proposition}[The unconditional implications]\label{prop:p5-p1-p2}
+	\begin{enumerate}[(i)]
+		\item If $(\bar x,\bar y)$ solves Problem 5, then $\bar x$ solves Problem 1.
+		\item If $\bar x$ solves Problem 1, then $\bar x$ solves Problem 2.
+	\end{enumerate}
+	Neither implication requires any hypothesis on $f$ or the $g_j$.
+\end{proposition}
+
+\begin{proof}
+	(i) By \autoref{prop:cs}, $\bar x\in D$ and $F(\bar x,\bar y)=f(\bar x)$. For
+	any $x\in D$, the left inequality of \eqref{eq:saddle} gives
+	\[
+		f(x)\leq f(x)+\sum_j\bar y_jg_j(x)=F(x,\bar y)\leq F(\bar x,\bar y)=f(\bar x),
+	\]
+	the first step because $\bar y_j\geq0$ and $g_j(x)\geq0$ for feasible $x$.
+
+	(ii) A global maximiser over $D$ satisfies the local condition of
+	\autoref{def:problem-2} with $\lambda_0$ arbitrary.
+\end{proof}
+
+This is Proposition~12.1 of \textcite{fukuda2026notes}
+\autocite[slide 19]{fukuda2026optimization}. Part (i) is the part used in
+practice: exhibiting a saddle point \emph{proves} global optimality with no
+concavity, no differentiability and no constraint qualification. The converse
+implications are where hypotheses are needed.
+
+\section{The Kuhn--Tucker Theorem}\label{sec:opt-kkt}
+
+\begin{assumption}[Slater's condition]\label{ass:slater}
+	There exists $\hat x\in\R^m$ such that $g_j(\hat x)\geq0$ for every $j$, and
+	$g_j(\hat x)>0$ for every $j$ for which $g_j$ is not affine.
+\end{assumption}
+
+\begin{theorem}[Kuhn--Tucker]\label{thm:kuhn-tucker}
+	Suppose $f,g_1,\dots,g_n$ are concave and \autoref{ass:slater} holds.
+	\begin{enumerate}[(i)]
+		\item Problems 1, 2 and 5 are equivalent: $\bar x$ solves one if and only if it
+		      solves the others, where for Problem 5 this means that some
+		      $\bar y\in\R^n_+$ makes $(\bar x,\bar y)$ a saddle point.
+		\item If in addition $f,g_1,\dots,g_n$ are differentiable, all five problems
+		      are equivalent.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	By \autoref{prop:p5-p1-p2} it remains to prove that a solution of Problem 2 is a
+	solution of Problem 5, and, under differentiability, to relate Problems 3 and 4
+	to the rest.
+
+	\emph{Problem 2 $\Rightarrow$ Problem 1 under concavity.} Let $\bar x$ solve
+	Problem 2 and let $x\in D$. Concavity of each $g_j$ makes $D$ convex
+	(it is an intersection of upper contour sets of concave, hence quasiconcave,
+	functions), so $\bar x+\lambda(x-\bar x)\in D$ for $\lambda\in[0,1]$. Applying
+	\autoref{def:problem-2} with $u=x-\bar x$ gives, for small $\lambda>0$,
+	\[
+		f(\bar x)\geq f\bigl(\bar x+\lambda(x-\bar x)\bigr)
+		\geq(1-\lambda)f(\bar x)+\lambda f(x),
+	\]
+	the second inequality by concavity of $f$. Rearranging,
+	$\lambda f(\bar x)\geq\lambda f(x)$, so $f(\bar x)\geq f(x)$.
+
+	\emph{Problem 1 $\Rightarrow$ Problem 5.} Let $\bar x$ solve Problem 1 and set
+	$\tilde f(x)\eqdef f(x)-f(\bar x)$, which is concave. Optimality of $\bar x$
+	says the system
+	\[
+		\tilde f(x)>0\quad\text{and}\quad g_j(x)\geq0\ (j=1,\dots,n)
+	\]
+	has no solution. \autoref{ass:slater} is exactly the solvability hypothesis
+	\eqref{eq:slater} of the Farkas--Minkowski theorem, so
+	\autoref{thm:farkas} supplies $\bar y\in\R^n_+$ with
+	\[
+		\sup_{x\in\R^m}\Bigl\{\tilde f(x)+\sum_j\bar y_jg_j(x)\Bigr\}\leq0,
+		\qquad\text{that is}\qquad
+		F(x,\bar y)\leq f(\bar x)\ \text{ for all }x\in\R^m .
+	\]
+	Evaluating at $x=\bar x$ gives $\sum_j\bar y_jg_j(\bar x)\leq0$; every term is
+	non-negative, so all vanish and $F(\bar x,\bar y)=f(\bar x)$. Hence
+	$F(x,\bar y)\leq F(\bar x,\bar y)$ for all $x$, the left half of
+	\eqref{eq:saddle}. For the right half, $y\in\R^n_+$ gives
+	$F(\bar x,y)=f(\bar x)+\sum_jy_jg_j(\bar x)\geq f(\bar x)=F(\bar x,\bar y)$,
+	since each $g_j(\bar x)\geq0$.
+
+	\emph{Problems 3, 4 and 5 under differentiability.} If $(\bar x,\bar y)$ is a
+	saddle point, then $\bar x$ maximises the differentiable function
+	$F(\cdot,\bar y)$ over the open set $\R^m$, so \autoref{thm:fermat-n} gives
+	\eqref{eq:kkt-foc}, and \eqref{eq:kkt-cs} is \autoref{prop:cs}: Problem 5
+	implies Problem 4. Conversely, if \eqref{eq:kkt-foc}--\eqref{eq:kkt-cs} hold,
+	then $F(\cdot,\bar y)$ is concave --- a non-negative combination of concave
+	functions, by \autoref{prop:convex-function-operations}(i) applied to $-F$ ---
+	with vanishing gradient at $\bar x$, so \autoref{thm:foc-concave-n} makes
+	$\bar x$ a global maximiser of $F(\cdot,\bar y)$, and the right half of
+	\eqref{eq:saddle} follows as above: Problem 4 implies Problem 5. That Problem 4
+	implies Problem 3 is immediate on taking the inner product of
+	\eqref{eq:kkt-foc} with an admissible $u$; the converse uses
+	\autoref{thm:farkas} applied to the linearised system at $\bar x$.
+\end{proof}
+
+This is Theorem~12.1 of \textcite[p.~436]{fukuda2026notes}
+\autocite[slide 20]{fukuda2026optimization}. The proof locates each hypothesis.
+Concavity of the $g_j$ makes $D$ convex, which is what turns local into global.
+Concavity of $f$ is used in the same step and again in
+\autoref{thm:foc-concave-n}. Slater's condition is used once, to invoke
+\autoref{thm:farkas}, and it is what guarantees a multiplier \emph{exists};
+\autoref{eg:slater-fails} exhibits a program in which it does not.
+
+\begin{remark}[Constraint qualifications]\label{rem:constraint-qualification}
+	\autoref{ass:slater} is one of several conditions under which multipliers exist;
+	they are collectively the \dfnas{constraint qualifications}{constraint
+		qualification}. Three points about them.
+
+	First, they are conditions on the \emph{constraint functions}, not on the
+	feasible set. The set $\{x\in\R : -x^2\geq0\}=\{0\}$ and the set
+	$\{x\in\R : x\geq0,\ -x\geq0\}=\{0\}$ are identical, but the second
+	description satisfies \autoref{ass:slater} --- both constraints are affine ---
+	while the first does not, as \autoref{eg:slater-fails} showed. A change of
+	description changes whether multipliers exist.
+
+	Second, the affine exemption in \autoref{ass:slater} is not cosmetic. Linear
+	programs and problems with only budget and non-negativity constraints satisfy
+	the qualification automatically, which is why the constraint qualification is
+	almost never mentioned in consumer theory and is essential in problems with
+	nonlinear constraints such as incentive compatibility.
+
+	Third, when the objective and constraints are not concave the relevant
+	qualification is local and differential rather than global. The standard
+	condition is that the gradients of the binding constraints at $\bar x$ be
+	linearly independent, and under it the conclusion is weaker: the first-order
+	conditions \eqref{eq:kkt-foc}--\eqref{eq:kkt-cs} are necessary at a local
+	maximum, but not sufficient, and Problem 5 is not equivalent to Problem 1. See
+	\textcite[Ch.~7]{mangasarian1994nonlinear}.
+\end{remark}
+
+\begin{eg}[Failure of the constraint qualification]\label{eg:cq-failure}
+	Maximise $f(x_1,x_2)=x_1$ subject to
+	$g_1(x)=-x_2\geq0$ and $g_2(x)=x_2-(1-x_1)^3\geq0$. The feasible set is
+	$\{(x_1,0) : x_1\geq1\}$ together with the region below the cubic, and
+	$\bar x=(1,0)$ is a local maximiser on the curve. At $\bar x$ both constraints
+	bind, and $\nabla g_1(\bar x)=(0,-1)^{\transp}$,
+	$\nabla g_2(\bar x)=(0,1)^{\transp}$ are linearly dependent. No
+	$y\in\R^2_+$ satisfies $\nabla f(\bar x)+y_1\nabla g_1+y_2\nabla g_2=0$, since
+	the first component of $\nabla f$ is $1$ and both constraint gradients have
+	first component $0$. The first-order conditions therefore have no solution at a
+	point that is optimal, and a search over stationary points would miss it.
+\end{eg}
+
+\subsection{Interpretation of the multipliers}
+
+\begin{theorem}[Envelope theorem]\label{thm:envelope}
+	Consider the parametrised program
+	\[
+		V(b,\alpha)\eqdef\max_{x\in\R^m}\ f(x,\alpha)
+		\qquad\st\quad g(x,\alpha)=b,
+	\]
+	with $f,g$ continuously differentiable, and suppose that on a neighbourhood of
+	$(\bar b,\bar\alpha)$ the solution $x^\ast(b,\alpha)$ and the multiplier
+	$\lambda^\ast(b,\alpha)$ are unique and continuously differentiable. Then
+	\begin{equation}\label{eq:envelope}
+		\frac{\partial V}{\partial\alpha}
+		=\frac{\partial f}{\partial\alpha}\bigl(x^\ast,\alpha\bigr)
+		-\lambda^\ast\,\frac{\partial g}{\partial\alpha}\bigl(x^\ast,\alpha\bigr),
+		\qquad
+		\frac{\partial V}{\partial b}=\lambda^\ast .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Write $V(b,\alpha)=f(x^\ast,\alpha)+\lambda^\ast\bigl(b-g(x^\ast,\alpha)\bigr)$,
+	which is legitimate because the bracket vanishes at the optimum. Differentiate
+	with respect to $\alpha$ using \autoref{thm:chain-rule}:
+	\[
+		\frac{\partial V}{\partial\alpha}
+		=\underbrace{\bigl(f_x-\lambda^\ast g_x\bigr)}_{=0\ \text{by \eqref{eq:kkt-foc}}}
+		\cdot\frac{\partial x^\ast}{\partial\alpha}
+		+\underbrace{\bigl(b-g(x^\ast,\alpha)\bigr)}_{=0\ \text{by feasibility}}
+		\cdot\frac{\partial\lambda^\ast}{\partial\alpha}
+		+f_\alpha-\lambda^\ast g_\alpha .
+	\]
+	The first bracket vanishes by the first-order condition and the second by the
+	constraint, leaving the last two terms. Differentiating instead with respect to
+	$b$ leaves only the term $\lambda^\ast\cdot\partial b/\partial b=\lambda^\ast$.
+\end{proof}
+
+This is Proposition~13.9 and the constrained envelope theorem of
+\textcite[pp.~479--481]{fukuda2026notes}, and the computation of
+\autocite[slide 28]{fukuda2026optimization}. The content is that the indirect
+effects, operating through the response $\partial x^\ast/\partial\alpha$ of the
+optimal choice, cancel: at an optimum the marginal value of moving $x$ is zero,
+so a marginal change in the parameter has only its direct effect. This is what
+makes $\lambda^\ast$ the \emph{shadow price} of the constraint: it is the rate at
+which the maximised value rises when the constraint is relaxed, and it is
+computable without differentiating the solution.
+
+\begin{remark}[Differentiability of $V$ is an assumption, not a conclusion]
+	\label{rem:envelope-caveats}
+	\autoref{thm:envelope} presumes that $x^\ast$ and $\lambda^\ast$ are
+	differentiable in the parameters, which is itself a conclusion of the implicit
+	function theorem (\autoref{thm:implicit-function}) applied to the first-order
+	conditions, and requires the bordered Hessian to be nonsingular at the optimum.
+	When the solution set is not a singleton or when the active set changes, $V$ can
+	have a kink and \eqref{eq:envelope} fails as stated. The general form due to
+	\textcite{milgrom2002envelope} replaces the derivative by one-sided derivatives
+	and requires only that $f_\alpha(x^\ast,\alpha)$ exist at a single maximiser:
+	$V'(\alpha^-)\leq f_\alpha(x^\ast,\alpha)\leq V'(\alpha^+)$ whenever the
+	one-sided derivatives exist, with equality when $V$ is differentiable. That
+	version is what applies to mechanism design, where $X$ may be a discrete set
+	with no differentiable structure at all.
+\end{remark}
+
+\section{Economic Application: The Consumer's Problem}\label{sec:opt-consumer}
+
+\paragraph{Problem.} With $f(x_1,x_2)=x_1^{\alpha}x_2^{1-\alpha}$,
+$\alpha\in(0,1)$, and constraints
+\[
+	g_1(x)=m-p_1x_1-p_2x_2\geq0,\qquad g_2(x)=x_1\geq0,\qquad g_3(x)=x_2\geq0,
+\]
+with $p_1,p_2,m>0$, solve \eqref{eq:problem-1}.
+
+\begin{proposition}\label{prop:cobb-douglas-demand}
+	The problem has the unique solution
+	\begin{equation}\label{eq:cobb-douglas-demand}
+		x_1^\ast=\frac{\alpha m}{p_1},\qquad x_2^\ast=\frac{(1-\alpha)m}{p_2},
+	\end{equation}
+	with multipliers $y_2^\ast=y_3^\ast=0$ and
+	\begin{equation}\label{eq:cobb-douglas-multiplier}
+		y_1^\ast=\frac{(x_1^\ast)^{\alpha}(x_2^\ast)^{1-\alpha}}{m}
+		=\frac{v(p,m)}{m},
+	\end{equation}
+	where $v(p,m)$ is the indirect utility. Expenditure shares are constant:
+	$p_1x_1^\ast/m=\alpha$ and $p_2x_2^\ast/m=1-\alpha$.
+\end{proposition}
+
+\begin{proof}
+	\emph{Existence and uniqueness.} The budget set is compact
+	(\autoref{eg:budget-compact}) and non-empty, and $f$ is continuous, so a
+	solution exists by \autoref{cor:weierstrass-continuous}. On $\R^2_{++}$ the
+	function $f$ is strictly quasiconcave, so the solution is unique by
+	\autoref{prop:strict-quasi-unique}
+	\autocite[slide 21]{fukuda2026optimization}.
+
+	\emph{Which constraints bind.} If $x_1^\ast=0$ then $f=0$, while the feasible
+	point $(m/(2p_1),m/(2p_2))$ gives $f>0$; so $g_2$ is slack, and symmetrically
+	$g_3$. The budget constraint binds: $f$ is strictly increasing in each argument
+	on $\R^2_{++}$, so an unspent unit of wealth could be spent to raise utility.
+
+	\emph{First-order conditions.} With $y_2=y_3=0$ by \autoref{prop:cs},
+	\eqref{eq:kkt-foc} reads
+	\[
+		\alpha (x_1^\ast)^{\alpha-1}(x_2^\ast)^{1-\alpha}=y_1p_1,
+		\qquad
+		(1-\alpha)(x_1^\ast)^{\alpha}(x_2^\ast)^{-\alpha}=y_1p_2 .
+	\]
+	Dividing eliminates $y_1$ and gives
+	$\dfrac{x_2^\ast}{x_1^\ast}=\dfrac{1-\alpha}{\alpha}\cdot\dfrac{p_1}{p_2}$,
+	that is $p_2x_2^\ast=\frac{1-\alpha}{\alpha}p_1x_1^\ast$. Substituting into the
+	binding budget constraint $p_1x_1^\ast+p_2x_2^\ast=m$ yields
+	$p_1x_1^\ast\bigl(1+\frac{1-\alpha}{\alpha}\bigr)=m$, hence
+	\eqref{eq:cobb-douglas-demand}.
+
+	\emph{Multiplier.} From the first condition,
+	\[
+		y_1^\ast=\frac{\alpha(x_1^\ast)^{\alpha-1}(x_2^\ast)^{1-\alpha}}{p_1}
+		=\frac{\alpha(x_1^\ast)^{\alpha}(x_2^\ast)^{1-\alpha}}{p_1x_1^\ast}
+		=\frac{(x_1^\ast)^{\alpha}(x_2^\ast)^{1-\alpha}}{m},
+	\]
+	using $p_1x_1^\ast=\alpha m$. The second condition gives the same value, using
+	$p_2x_2^\ast=(1-\alpha)m$.
+
+	\emph{Verification via Problem 5.} $f$ is concave on $\R^2_+$ and the $g_j$ are
+	affine, so \autoref{ass:slater} holds automatically and
+	\autoref{thm:kuhn-tucker} applies; alternatively, the candidate with its
+	multipliers satisfies \eqref{eq:kkt-foc}--\eqref{eq:kkt-cs}, which by the last
+	part of that proof makes it a saddle point, and
+	\autoref{prop:p5-p1-p2}(i) then certifies global optimality without any further
+	argument.
+\end{proof}
+
+\paragraph{Reading the multiplier.} Formula
+\eqref{eq:cobb-douglas-multiplier} says $y_1^\ast=v(p,m)/m$, and since Cobb--Douglas
+indirect utility is $v(p,m)=m\cdot(\alpha/p_1)^{\alpha}((1-\alpha)/p_2)^{1-\alpha}$,
+the multiplier is independent of $m$: the marginal utility of wealth is constant,
+because the utility function is homogeneous of degree one in the bundle and hence
+in wealth. \autoref{thm:envelope} confirms this directly,
+$\partial v/\partial m=y_1^\ast$, which is the computation of
+\autocite[slides 28--29]{fukuda2026optimization} in which every term involving
+$\diff x_i^\ast/\diff m$ cancels against a first-order condition.
+
+The constant expenditure shares are the economic signature of Cobb--Douglas
+preferences and are the reason the functional form is used: demand for each good
+is independent of the price of the other, income elasticities are unity, and the
+own-price elasticity is exactly $-1$. Each of these is a strong restriction, and
+all three follow from the single fact that the elasticity of substitution is $1$.
+
+\paragraph{Numerical counterpart.} Three of the accompanying programs solve the
+same problem by sequential quadratic programming
+\autocite[slides 33--36]{fukuda2026optimization}: \path{consumer_choice_fmincon.m},
+\path{consumer_choice_sqp_Octave.m} and \path{consumer_choice_python.py}. Two observations
+are worth making about the comparison. The solver returns a multiplier alongside
+the solution, and it is the same $y_1^\ast$; a numerical multiplier that differs
+from $\partial V/\partial m$ computed by finite differences signals either a
+non-binding constraint or a failure of the constraint qualification. And the
+solver requires the problem in minimisation form with constraints written as
+$c(x)\leq0$, which is the sign flip of \autoref{def:program}: the multiplier
+returned is then non-negative for the reversed convention, and reading its sign
+without checking the convention is the most common error in applied work.
+
+\section{Economic Application: Intertemporal Choice}\label{sec:opt-intertemporal}
+
+\paragraph{Problem.} A consumer with wealth $W>0$ chooses consumption in two
+periods, facing gross interest rate $R>0$ and discount factor $\beta\in(0,1)$:
+\begin{equation}\label{eq:two-period}
+	\max_{c_1,c_2\geq0}\ u(c_1)+\beta u(c_2)
+	\qquad\st\quad c_1+\frac{c_2}{R}\leq W,
+\end{equation}
+with $u$ strictly increasing, strictly concave, differentiable and satisfying
+$\lim_{c\downarrow0}u'(c)=\infty$.
+
+\begin{proposition}[Euler equation]\label{prop:euler-two-period}
+	Problem \eqref{eq:two-period} has a unique solution, it is interior, the budget
+	constraint binds, and the solution satisfies
+	\begin{equation}\label{eq:euler-equation}
+		u'(c_1^\ast)=\beta R\,u'(c_2^\ast),
+	\end{equation}
+	with multiplier $\lambda^\ast=u'(c_1^\ast)$. For
+	$u(c)=c^{1-\gamma}/(1-\gamma)$ this gives
+	$c_2^\ast/c_1^\ast=(\beta R)^{1/\gamma}$ and
+	\[
+		c_1^\ast=\frac{W}{1+\beta^{1/\gamma}R^{(1-\gamma)/\gamma}} .
+	\]
+\end{proposition}
+
+\begin{proof}
+	The feasible set is compact and convex and the objective continuous and strictly
+	concave, so a unique solution exists by
+	\autoref{cor:weierstrass-continuous} and \autoref{prop:strict-quasi-unique}. The
+	Inada condition rules out $c_i^\ast=0$: at such a point the derivative of the
+	objective in $c_i$ is $+\infty$ while the marginal cost is finite, so a small
+	increase is feasible and improving. Monotonicity makes the budget constraint
+	bind. The constraints are affine, so \autoref{ass:slater} holds and
+	\autoref{thm:kuhn-tucker} applies. The Lagrangian
+	$F=u(c_1)+\beta u(c_2)+\lambda(W-c_1-c_2/R)$ gives
+	$u'(c_1^\ast)=\lambda^\ast$ and $\beta u'(c_2^\ast)=\lambda^\ast/R$;
+	eliminating $\lambda^\ast$ yields \eqref{eq:euler-equation}. With CRRA utility,
+	$u'(c)=c^{-\gamma}$ and \eqref{eq:euler-equation} reads
+	$(c_1^\ast)^{-\gamma}=\beta R(c_2^\ast)^{-\gamma}$, that is
+	$c_2^\ast=(\beta R)^{1/\gamma}c_1^\ast$; substituting into the binding budget
+	constraint gives the stated $c_1^\ast$.
+\end{proof}
+
+\paragraph{Content of \eqref{eq:euler-equation}.} The marginal utility cost of
+saving one more unit today equals its discounted marginal utility benefit
+tomorrow, scaled by the gross return. Three comparative statics follow, each
+requiring a different piece of the machinery. The consumption growth rate
+$(\beta R)^{1/\gamma}$ is increasing in $R$ with elasticity $1/\gamma$, the
+elasticity of intertemporal substitution. The effect of $R$ on $c_1^\ast$ is
+ambiguous in sign and is positive exactly when $\gamma>1$, the income effect
+dominating the substitution effect. And $\lambda^\ast=u'(c_1^\ast)$ is the
+marginal utility of wealth, so by \autoref{thm:envelope}
+$\partial V/\partial W=u'(c_1^\ast)$ --- an identity that is trivial here and is
+the Benveniste--Scheinkman formula of \autoref{ch:dynamic} in the infinite-horizon
+case. The corresponding programs are \path{two_periods_consumption_fmincon.m},
+\path{two_periods_consumption_sqp_Octave.m} and
+\path{two_periods_consumption_python.py}
+\autocite[slides 37--40]{fukuda2026optimization}.
+
+\section{Economic Application: Nash Bargaining}\label{sec:opt-nash}
+
+\paragraph{Problem.} Two players divide a surplus. The set of feasible utility
+pairs is $S\subseteq\R^2$, compact and convex, and the disagreement point is
+$d\in S$. The \dfnas{Nash bargaining solution}{Nash bargaining solution} solves
+\begin{equation}\label{eq:nash-bargaining}
+	\max_{(u_1,u_2)\in S}\ (u_1-d_1)(u_2-d_2)
+	\qquad\st\quad u_1\geq d_1,\ u_2\geq d_2 .
+\end{equation}
+
+\begin{proposition}\label{prop:nash-bargaining}
+	Suppose $S$ is compact and convex and there is $u\in S$ with $u\gg d$. Then
+	\eqref{eq:nash-bargaining} has a unique solution $u^\ast$, it satisfies
+	$u^\ast\gg d$, and if $S=\{u\in\R^2_+ : u_1/a_1+u_2/a_2\leq1\}$ with
+	$a_1,a_2>0$ and $d=0$, then $u^\ast=(a_1/2,a_2/2)$: the surplus is split
+	equally in normalised units.
+\end{proposition}
+
+\begin{proof}
+	Existence follows from compactness of the feasible set, which is the
+	intersection of $S$ with two closed half-spaces, and continuity of the
+	objective (\autoref{cor:weierstrass-continuous}). The objective is not concave,
+	but its logarithm $\log(u_1-d_1)+\log(u_2-d_2)$ is strictly concave on the
+	region where both factors are positive, and by
+	\autoref{prop:concave-implies-quasiconcave} the strictly increasing
+	transformation preserves the maximiser; uniqueness is
+	\autoref{prop:strict-quasi-unique}. The hypothesis $u\gg d$ makes the maximum
+	positive, so $u^\ast\gg d$ and the transformation is legitimate at the optimum.
+
+	For the linear frontier with $d=0$, maximise $\log u_1+\log u_2$ subject to
+	$u_1/a_1+u_2/a_2\leq1$. This is \autoref{prop:cobb-douglas-demand} with
+	$\alpha=\tfrac12$, $p_i=1/a_i$ and $m=1$, giving $u_i^\ast=a_i/2$.
+\end{proof}
+
+The identification with the Cobb--Douglas consumer problem is not a coincidence:
+maximising a product subject to a linear constraint is the same problem in both
+cases, and the equal split of the Nash solution corresponds to the equal
+expenditure shares of symmetric Cobb--Douglas preferences. The numerical
+counterparts are \path{Nash_bargaining_fmincon.m},
+\path{Nash_bargaining_sqp_Octave.m} and \path{Nash_bargaining_python.py}
+\autocite[slides 41--44]{fukuda2026optimization}. Two practical points appear
+there. Solving \eqref{eq:nash-bargaining} directly is numerically worse
+conditioned than solving the logarithmic version, because the product objective
+is flat near the axes; and a solver started at the disagreement point returns it,
+since the gradient of the product vanishes there, so the initial guess must lie
+in the interior.
+
+\section{Chapter Summary}\label{sec:opt-summary}
+
+A programming problem in the standard form \eqref{eq:problem-1} admits five
+formulations: global maximum, local maximum, absence of an improving feasible
+direction, the Lagrange conditions with complementary slackness, and a saddle
+point of the Lagrangian. Two implications hold with no hypotheses at all: a
+saddle point yields a global maximum, and a global maximum is a local maximum.
+The converses require concavity of the objective and constraints and a constraint
+qualification, and under those hypotheses the Kuhn--Tucker theorem makes all five
+equivalent, with differentiability needed only for the two formulations that
+mention derivatives. The proof of the essential implication --- from global
+optimality to the existence of multipliers --- is an application of the
+Farkas--Minkowski theorem, itself a consequence of the separating hyperplane
+theorem, so the multipliers are the coefficients of a separating hyperplane.
+
+Complementary slackness says a constraint either binds or has zero multiplier.
+The multiplier is the shadow price of the constraint, and the envelope theorem
+makes this precise: at an optimum, the derivative of the value function with
+respect to a parameter is the partial derivative of the Lagrangian, with all
+indirect effects through the optimal choice cancelling against the first-order
+conditions. Applied to the Cobb--Douglas consumer, the machinery yields constant
+expenditure shares and a multiplier equal to indirect utility divided by wealth;
+applied to two-period consumption, the Euler equation
+$u'(c_1)=\beta Ru'(c_2)$ with the multiplier equal to the marginal utility of
+current consumption; and applied to bargaining, the Nash solution, which is
+formally the same optimisation as symmetric Cobb--Douglas demand.
+
+\begin{exercise}\label{ex:opt-1}
+	A firm maximises $pF(K,L)-rK-wL$ subject to $K\leq\bar K$, with $F$ concave and
+	increasing. Write the Kuhn--Tucker conditions, and show that the multiplier on
+	the capacity constraint equals $pF_K-r$ when the constraint binds and $0$
+	otherwise. Interpret it as the shadow rental rate, and use
+	\autoref{thm:envelope} to compute the value of an extra unit of capacity.
+\end{exercise}
+
+\begin{exercise}\label{ex:opt-2}
+	Consider $\max x_1$ subject to $g_1(x)=x_2-x_1^3\geq0$ and
+	$g_2(x)=-x_2\geq0$. Show that $\bar x=(0,0)$ is the unique feasible point with
+	$x_1\geq0$ maximal, that both constraints bind there, and that no multipliers
+	satisfy \eqref{eq:kkt-foc}. Identify which hypothesis of
+	\autoref{thm:kuhn-tucker} fails, and verify that adding the affine constraint
+	$x_1\leq0$ makes the program satisfy \autoref{ass:slater}.
+\end{exercise}
+
+\begin{exercise}\label{ex:opt-3}
+	Derive the expenditure-minimisation dual of
+	\autoref{prop:cobb-douglas-demand}: minimise $p_1x_1+p_2x_2$ subject to
+	$x_1^{\alpha}x_2^{1-\alpha}\geq\bar u$. Show that the multiplier on the utility
+	constraint is the reciprocal of $y_1^\ast$ from
+	\eqref{eq:cobb-douglas-multiplier} evaluated at the corresponding wealth, and
+	that the expenditure function $e(p,\bar u)$ satisfies
+	$\partial e/\partial p_i=x_i^h$, the Hicksian demand. State which part of
+	\autoref{thm:envelope} delivers the last identity.
+\end{exercise}

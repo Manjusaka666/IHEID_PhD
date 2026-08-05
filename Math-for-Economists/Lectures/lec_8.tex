@@ -1,0 +1,894 @@
+% Source: Gerzensee "Calculus" slides 43-54 (the representative firm and the OLS
+% problems; the coordinate-by-coordinate idea; partial derivatives and
+% Definition 3.5; the Cobb-Douglas example; the quadratic-form gradient
+% (A+A^T)x of Exercise 3.3/Example 11.2; the tangent-plane picture and the total
+% differential; the first-order condition and its concave sufficiency; the four
+% surfaces x^2+y^2, -x^2-y^2, x^2-y^2, -x^3; the representative firm's FOCs and
+% factor shares).
+% Supplementary: Fukuda (2026), Ch. 11 -- Definition 11.1 (differentiability),
+% Prop. 11.3 (differentiability implies continuity), Remarks 11.3-11.5
+% (counterexamples), Prop. 11.4 (C^1 implies differentiable), Thm 11.1 (chain
+% rule), Prop. 11.6 (gradients and level sets), Def. 11.3 (homogeneity),
+% Thm 11.2 (Fermat), Thm 11.3 (differentiable convexity), Def. 11.6 (Hessian),
+% Thm 11.5 (second-order Taylor), Thm 11.6 (Hessian and convexity),
+% Thm 11.7 (implicit function theorem, p. 419).
+% External references actually cited in this chapter: Rudin (1976).
+
+\chapter{Differential Calculus in Several Variables}
+\label{ch:calculusn}
+
+\section{Motivation: Two Multivariate Problems}\label{sec:cn-motivation}
+
+Two problems drive the chapter \autocite[slide 43]{fukuda2026calculus}. The
+representative firm chooses capital and labour to solve
+\begin{equation}\label{eq:rep-firm}
+	\max_{K,L\geq0}\ \Pi(K,L),\qquad
+	\Pi(K,L)\eqdef AK^{\alpha}L^{1-\alpha}-(rK+wL),
+\end{equation}
+and the econometrician fits a line by
+\begin{equation}\label{eq:ols-problem}
+	\min_{(\beta_1,\beta_2)\in\R^2}\ \sum_{i=1}^{n}\bigl(y_i-\beta_1-\beta_2x_i\bigr)^2 .
+\end{equation}
+
+Neither is harder than the one-variable problems of \autoref{ch:calculus1} once
+the right notion of derivative is in place, and finding that notion is the
+substance of the chapter. Two distinct ideas are involved and are frequently
+conflated. The first is to vary one coordinate at a time, which produces partial
+derivatives. The second is to approximate $f$ near a point by an affine function
+of the whole vector, which produces the total derivative. In one variable the two
+coincide. In several variables the second is strictly stronger, and it is the
+second that supports the chain rule, the first-order condition, and the implicit
+function theorem.
+
+\section{Partial Derivatives and the Gradient}\label{sec:cn-partial}
+
+\begin{definition}[Partial derivative and gradient]\label{def:partial}
+	Let $f\colon A\to\R$ with $A\subseteq\R^n$ and let $x$ be interior to $A$. For
+	$i\in\{1,\dots,n\}$ the \dfnas{$i$th partial derivative}{partial derivative} of
+	$f$ at $x$ is
+	\[
+		\frac{\partial f}{\partial x_i}(x)\eqdef
+		\lim_{h\to0}\frac{f(x_1,\dots,x_i+h,\dots,x_n)-f(x_1,\dots,x_i,\dots,x_n)}{h},
+	\]
+	provided the limit exists and is finite; equivalently, it is the ordinary
+	derivative at $x_i$ of the section $t\mapsto f(x_1,\dots,t,\dots,x_n)$. When all
+	$n$ partial derivatives exist, the \dfn{gradient} of $f$ at $x$ is the vector
+	\[
+		\nabla f(x)\eqdef
+		\left(\frac{\partial f}{\partial x_1}(x),\dots,
+		\frac{\partial f}{\partial x_n}(x)\right)^{\transp}\in\R^n .
+	\]
+	\nidx{partial}{$\partial f/\partial x_i$, partial derivative}
+	\nidx{nabla}{$\nabla f$, gradient}
+\end{definition}
+
+This is Definition~3.5 of \textcite{fukuda2026notes}
+\autocite[slides 46, 48]{fukuda2026calculus}, where the alternatives
+$\partial f(x)/\partial x_i$, $f_{x_i}(x)$ and $f'(x)$ for the gradient are also
+recorded. This volume writes the gradient as a column vector, consistently with
+the front-matter chapter on notation and conventions; the row vector
+$\nabla f(x)^{\transp}$ is the Jacobian of $f$ viewed as a map into $\R^1$, and
+conflating the two is the most frequent source of transpose errors in
+comparative statics.
+
+\begin{eg}[Cobb--Douglas]\label{eg:cobb-douglas-partials}
+	For $f(x,y)=x^{\alpha}y^{1-\alpha}$ with $\alpha\in(0,1)$ and $x,y>0$, fixing
+	$y$ makes $f$ a power function of $x$, so
+	\[
+		\frac{\partial f}{\partial x}=\alpha x^{\alpha-1}y^{1-\alpha}
+		=\alpha\left(\frac{y}{x}\right)^{1-\alpha},
+		\qquad
+		\frac{\partial f}{\partial y}=(1-\alpha)x^{\alpha}y^{-\alpha}
+		=(1-\alpha)\left(\frac{x}{y}\right)^{\alpha}.
+	\]
+	Both are positive and each is decreasing in its own argument: marginal products
+	are positive and diminishing. Both are homogeneous of degree zero, so they depend
+	on the two inputs only through the ratio $x/y$ --- the property that makes the
+	factor-price equations of \autoref{sec:cn-firm} determine the capital--labour
+	ratio and nothing else \autocite[slide 47]{fukuda2026calculus}.
+\end{eg}
+
+\begin{eg}[Gradient of a quadratic form]\label{eg:quadratic-gradient}
+	Let $A=(a_{ij})\in M_{n\times n}(\R)$ and $f(x)=x^{\transp}Ax
+		=\sum_{i,j}a_{ij}x_ix_j$. Differentiating with respect to $x_k$, the terms
+	containing $x_k$ are $a_{kk}x_k^2$ and, for $j\neq k$, $a_{kj}x_kx_j$ and
+	$a_{jk}x_jx_k$, so
+	\[
+		\frac{\partial f}{\partial x_k}(x)=2a_{kk}x_k+\sum_{j\neq k}(a_{kj}+a_{jk})x_j
+		=\sum_{j=1}^{n}(a_{kj}+a_{jk})x_j ,
+	\]
+	that is,
+	\begin{equation}\label{eq:quadratic-gradient}
+		\nabla\bigl(x^{\transp}Ax\bigr)=\bigl(A+A^{\transp}\bigr)x .
+	\end{equation}
+	For $n=2$ this is the matrix
+	$\begin{psmallmatrix}2a_{11}&a_{12}+a_{21}\\a_{12}+a_{21}&2a_{22}\end{psmallmatrix}$
+	applied to $x$, as in Exercise~3.3 and Example~11.2 of
+	\textcite{fukuda2026notes} \autocite[slide 49]{fukuda2026calculus}. When $A$ is
+	symmetric \eqref{eq:quadratic-gradient} reduces to the familiar $2Ax$; when it is
+	not, only the symmetric part $\tfrac12(A+A^{\transp})$ of $A$ affects the
+	quadratic form, which is \autoref{rem:symmetric-part}. The identities that
+	recur in least squares, in the second-order conditions of
+	\autoref{ch:optimization} and in the Kalman recursion of
+	\autoref{subsec:prob-kalman} are collected in \autoref{app:matrix-calculus}.
+\end{eg}
+
+\section{Differentiability}\label{sec:cn-differentiability}
+
+\begin{definition}[Differentiability and the total derivative]\label{def:total-derivative}
+	Let $A\subseteq\R^n$ be open and $f\colon A\to\R$. The function $f$ is
+	\dfnas{differentiable at}{differentiability!in several variables} $x_0\in A$ if
+	there is a vector $\nabla f(x_0)\in\R^n$ such that
+	\begin{equation}\label{eq:frechet}
+		\beta_{x_0}(u)\eqdef
+		\frac{f(x_0+u)-f(x_0)-\ip{\nabla f(x_0)}{u}}{\norm{u}}
+		\;\longrightarrow\;0
+		\qquad\text{as }u\to0,\ u\neq0 .
+	\end{equation}
+	The associated linear functional $Df(x_0)\colon\R^n\to\R$,
+	$Df(x_0)u\eqdef\ip{\nabla f(x_0)}{u}$, is the \dfn{total derivative} of $f$ at
+	$x_0$. The function is differentiable on $A$ if it is differentiable at every
+	point of $A$.
+	\nidx{Df}{$Df(x_0)$, total derivative}
+\end{definition}
+
+This is Definition~11.1 of \textcite[p.~369]{fukuda2026notes}. Condition
+\eqref{eq:frechet} says that $f(x_0)+\ip{\nabla f(x_0)}{u}$ approximates
+$f(x_0+u)$ with an error small relative to $\norm{u}$; geometrically, the graph
+has a tangent hyperplane at $x_0$ \autocite[slide 50]{fukuda2026calculus}. The
+existence of the vector $\nabla f(x_0)$ is part of the requirement, and by
+\autoref{thm:riesz-rn} any linear functional on $\R^n$ has such a
+representation, so nothing is lost by stating the definition with an inner
+product rather than an abstract linear map.
+
+\begin{proposition}[Consistency with the one-variable definition]\label{prop:consistency-1d}
+	For $n=1$, \autoref{def:total-derivative} holds at $x_0$ with
+	$\nabla f(x_0)=L$ if and only if \autoref{def:derivative} holds with
+	$f'(x_0)=L$.
+\end{proposition}
+
+\begin{proof}
+	For $n=1$, \eqref{eq:frechet} reads
+	$\bigl(f(x_0+u)-f(x_0)-Lu\bigr)/\abs{u}\to0$, which since
+	$\abs{\abs{u}}=\abs{u}$ is equivalent to
+	$\bigl(f(x_0+u)-f(x_0)\bigr)/u\to L$. This is
+	\autoref{prop:diff-continuous}, and hence \autoref{def:derivative}.
+\end{proof}
+
+\begin{proposition}[Differentiability implies continuity and the existence of partials]
+	\label{prop:differentiable-implies}
+	If $f$ is differentiable at $x_0$, then $f$ is continuous at $x_0$, every
+	partial derivative of $f$ exists at $x_0$, and the vector $\nabla f(x_0)$ in
+	\eqref{eq:frechet} is the gradient of \autoref{def:partial}. Moreover the
+	directional derivative in any direction $v\in\R^n$ exists and equals
+	$\ip{\nabla f(x_0)}{v}$.
+\end{proposition}
+
+\begin{proof}
+	Continuity: from \eqref{eq:frechet},
+	$f(x_0+u)-f(x_0)=\ip{\nabla f(x_0)}{u}+\norm{u}\beta_{x_0}(u)$, and both terms
+	tend to $0$ as $u\to0$, the first by Cauchy--Schwarz
+	(\autoref{lem:cauchy-schwarz}) and the second because
+	$\beta_{x_0}(u)\to0$.
+
+	Directional derivatives: put $u=tv$ with $t\neq0$ and $v\neq0$. Then
+	\[
+		\frac{f(x_0+tv)-f(x_0)}{t}
+		=\ip{\nabla f(x_0)}{v}+\frac{\abs{t}\norm{v}}{t}\,\beta_{x_0}(tv)
+		\;\longrightarrow\;\ip{\nabla f(x_0)}{v},
+	\]
+	because $\abs{\abs{t}/t}=1$ and $\beta_{x_0}(tv)\to0$. Taking $v=e_i$ gives the
+	$i$th partial derivative and identifies the $i$th coordinate of
+	$\nabla f(x_0)$.
+\end{proof}
+
+The converse fails in both of the ways that matter, and the two counterexamples
+are worth stating because each corresponds to a real modelling error.
+
+\begin{eg}[Partials without continuity]\label{eg:partials-no-continuity}
+	Let $f\colon\R^2\to\R$ be $f(x_1,x_2)=0$ if $x_1x_2=0$ and $f(x_1,x_2)=1$
+	otherwise. Along each axis $f$ is identically zero, so
+	$\partial f/\partial x_1(0,0)=\partial f/\partial x_2(0,0)=0$. Yet
+	$f(\varepsilon,\varepsilon)=1$ for every $\varepsilon\neq0$, so $f$ is not
+	continuous at the origin. In one variable this cannot happen
+	(\autoref{prop:diff-continuous}); in several, the partial derivatives see only
+	$n$ lines through the point and are blind to everything else
+	\autocite[Rem.~11.4, p.~375]{fukuda2026notes}.
+\end{eg}
+
+\begin{eg}[Continuity and partials without differentiability]\label{eg:no-differentiability}
+	Let
+	\[
+		f(x,y)=
+		\begin{cases}
+			\dfrac{xy}{\sqrt{x^2+y^2}}, & (x,y)\neq(0,0), \\[1.5ex]
+			0,                          & (x,y)=(0,0).
+		\end{cases}
+	\]
+	Since $\abs{xy}\leq\tfrac12(x^2+y^2)$, we have
+	$\abs{f(x,y)}\leq\tfrac12\sqrt{x^2+y^2}\to0$, so $f$ is continuous at the
+	origin. Both partial derivatives at the origin vanish, since $f$ is identically
+	zero on each axis. If $f$ were differentiable at the origin, then by
+	\autoref{prop:differentiable-implies} the gradient would be $0$ and
+	\eqref{eq:frechet} would require
+	\[
+		\beta_0(x,y)=\frac{f(x,y)}{\sqrt{x^2+y^2}}=\frac{xy}{x^2+y^2}\to0 .
+	\]
+	Along $(x,y)=(h,h)$ this ratio equals $\tfrac12$ for every $h\neq0$, so the
+	limit is not $0$ and $f$ is not differentiable at the origin
+	\autocite[Rem.~11.3, p.~374]{fukuda2026notes}. The obstruction is directional:
+	$f$ has a directional derivative in every direction but they do not fit together
+	into a linear functional.
+\end{eg}
+
+\begin{proposition}[Continuous partials suffice]\label{prop:c1-differentiable}
+	Let $A\subseteq\R^n$ be open and let $f\colon A\to\R$ have partial derivatives
+	with respect to every variable at every point of $A$, all of them continuous at
+	$x_0\in A$. Then $f$ is differentiable at $x_0$.
+\end{proposition}
+
+\begin{proof}
+	Write $u=(u_1,\dots,u_n)$ and interpolate one coordinate at a time. Set
+	$v^0\eqdef x_0$ and $v^k\eqdef x_0+\sum_{i\leq k}u_ie_i$, so $v^n=x_0+u$. Then
+	\[
+		f(x_0+u)-f(x_0)=\sum_{k=1}^{n}\bigl(f(v^k)-f(v^{k-1})\bigr),
+	\]
+	and each summand differs only in the $k$th coordinate. Applying the
+	one-variable mean value theorem (\autoref{thm:mvt}) to that section gives
+	$\xi^k$ on the segment from $v^{k-1}$ to $v^k$ with
+	$f(v^k)-f(v^{k-1})=\frac{\partial f}{\partial x_k}(\xi^k)\,u_k$. Hence
+	\[
+		f(x_0+u)-f(x_0)-\ip{\nabla f(x_0)}{u}
+		=\sum_{k=1}^{n}\left(\frac{\partial f}{\partial x_k}(\xi^k)
+		-\frac{\partial f}{\partial x_k}(x_0)\right)u_k .
+	\]
+	Since $\abs{u_k}\leq\norm{u}$ and $\xi^k\to x_0$ as $u\to0$, continuity of the
+	partials makes each bracket tend to $0$, so the whole expression divided by
+	$\norm{u}$ tends to $0$.
+\end{proof}
+
+This is Proposition~11.4 of \textcite[p.~375]{fukuda2026notes}. It supplies the
+practical criterion: a function given by an explicit formula built from
+elementary operations has continuous partials wherever those operations are
+defined, hence is differentiable there, and the pathologies of
+\autoref{eg:partials-no-continuity} and \autoref{eg:no-differentiability} arise
+only at points where the formula changes.
+
+\begin{definition}[Continuous differentiability]\label{def:c1}
+	$f$ is \dfnas{continuously differentiable}{continuously differentiable} on an
+	open $A$, written $f\in C^1(A)$, if all partial derivatives exist and are
+	continuous on $A$. Inductively, $f\in C^k(A)$ if all partial derivatives of
+	order $k$ exist and are continuous.
+	\nidx{Ck}{$C^k$, $k$ times continuously differentiable}
+\end{definition}
+
+The implications established so far, none of which reverses, are
+\[
+	f\in C^1\ \Longrightarrow\ f\text{ differentiable}\ \Longrightarrow\
+	\begin{cases}
+		f\text{ continuous},                \\
+		\text{all partials exist}
+	\end{cases}
+\]
+and neither of the two consequences on the right, alone or together, implies
+differentiability.
+
+\begin{remark}[The total differential]\label{rem:total-differential}
+	Writing $\diff y$ for the increment of $f$ and $\diff x_i$ for the increments of the
+	arguments, \eqref{eq:frechet} is the statement
+	\[
+		\diff y=\pderiv{f}{x_1}\,\diff x_1+\cdots+
+		\pderiv{f}{x_n}\,\diff x_n
+	\]
+	up to an error small relative to $\norm{\diff x}$
+	\autocite[slide 51]{fukuda2026calculus}. The classical notation is convenient
+	and hides the content: the identity is not an algebraic manipulation of
+	infinitesimals but the assertion that the error term in \eqref{eq:frechet}
+	vanishes faster than $\norm{u}$, which by
+	\autoref{eg:no-differentiability} is a genuine restriction on $f$ and not a
+	consequence of the existence of the partial derivatives appearing in it.
+\end{remark}
+
+\subsection{Vector-valued maps and the Jacobian}
+
+\begin{definition}[Jacobian]\label{def:jacobian}
+	Let $A\subseteq\R^n$ be open and $f=(f_1,\dots,f_m)\colon A\to\R^m$. Then $f$
+	is differentiable at $x_0$ if there is a linear map
+	$Df(x_0)\colon\R^n\to\R^m$ with
+	$\norm{f(x_0+u)-f(x_0)-Df(x_0)u}/\norm{u}\to0$ as $u\to0$. Equivalently, each
+	component $f_k$ is differentiable at $x_0$; and the matrix of $Df(x_0)$ in the
+	canonical bases is the \dfn{Jacobian matrix}
+	\[
+		Df(x_0)=\begin{pmatrix}
+			\dfrac{\partial f_1}{\partial x_1}(x_0) & \cdots & \dfrac{\partial f_1}{\partial x_n}(x_0) \\[1.5ex]
+			\vdots                                  &        & \vdots                                  \\[0.5ex]
+			\dfrac{\partial f_m}{\partial x_1}(x_0) & \cdots & \dfrac{\partial f_m}{\partial x_n}(x_0)
+		\end{pmatrix}\in M_{m\times n}(\R).
+	\]
+	\nidx{Jacobian}{$Df$, Jacobian matrix}
+\end{definition}
+
+The row-wise reading of a matrix flagged in \autoref{thm:matrix-rep} appears
+here: row $k$ of $Df(x_0)$ is $\nabla f_k(x_0)^{\transp}$. For $m=1$ the
+Jacobian is the \emph{row} vector $\nabla f(x_0)^{\transp}$, which is why
+gradients and Jacobians differ by a transpose and why the chain rule below is
+stated for matrices rather than vectors.
+
+\begin{theorem}[Chain rule]\label{thm:chain-rule}
+	Let $A\subseteq\R^n$ and $B\subseteq\R^m$ be open, $f\colon A\to\R^m$ with
+	$f(A)\subseteq B$, and $\varphi\colon B\to\R^p$. If $f$ is differentiable at
+	$x_0$ and $\varphi$ is differentiable at $f(x_0)$, then $\varphi\circ f$ is
+	differentiable at $x_0$ and
+	\begin{equation}\label{eq:chain-rule}
+		D(\varphi\circ f)(x_0)=D\varphi\bigl(f(x_0)\bigr)\,Df(x_0),
+	\end{equation}
+	a product of a $p\times m$ by an $m\times n$ matrix. Componentwise, for
+	$p=1$,
+	\begin{equation}\label{eq:chain-rule-components}
+		\frac{\partial(\varphi\circ f)}{\partial x_i}(x_0)
+		=\sum_{k=1}^{m}\frac{\partial\varphi}{\partial y_k}\bigl(f(x_0)\bigr)\,
+		\frac{\partial f_k}{\partial x_i}(x_0).
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Write $y_0=f(x_0)$, $S\eqdef Df(x_0)$ and $T\eqdef D\varphi(y_0)$. By
+	differentiability,
+	$f(x_0+u)=y_0+Su+\norm{u}\varepsilon_1(u)$ with $\varepsilon_1(u)\to0$, and
+	$\varphi(y_0+v)=\varphi(y_0)+Tv+\norm{v}\varepsilon_2(v)$ with
+	$\varepsilon_2(v)\to0$. Put $v(u)\eqdef Su+\norm{u}\varepsilon_1(u)$; then
+	\[
+		\varphi\bigl(f(x_0+u)\bigr)-\varphi(y_0)
+		=T\bigl(Su\bigr)+\norm{u}\,T\varepsilon_1(u)
+		+\norm{v(u)}\,\varepsilon_2\bigl(v(u)\bigr).
+	\]
+	Divide by $\norm{u}$. The second term tends to $0$ because $T$ is linear on a
+	finite-dimensional space, hence continuous by
+	\autoref{prop:linear-continuous}(ii), and $\varepsilon_1(u)\to0$. For the
+	third, $\norm{v(u)}\leq\bigl(\norm{S}+\norm{\varepsilon_1(u)}\bigr)\norm{u}$
+	stays bounded relative to $\norm{u}$, while $v(u)\to0$ forces
+	$\varepsilon_2(v(u))\to0$. Hence the quotient tends to $0$ and
+	$D(\varphi\circ f)(x_0)=TS$.
+\end{proof}
+
+This is Theorem~11.1 of \textcite[p.~380]{fukuda2026notes}. Identity
+\eqref{eq:chain-rule-components} is the rule ``sum over all channels through
+which $x_i$ affects the value'', and it is the formal content of every
+total-derivative computation in comparative statics: when a policy parameter
+enters an equilibrium condition both directly and through an endogenous variable,
+\eqref{eq:chain-rule-components} is what enumerates the channels.
+
+\begin{proposition}[Gradients are orthogonal to level sets]\label{prop:gradient-level-set}
+	Let $f\colon A\to\R$ be differentiable at $x_0$ and let
+	$\gamma\colon(-\delta,\delta)\to A$ be a differentiable curve with
+	$\gamma(0)=x_0$ lying in the level set $\{x : f(x)=f(x_0)\}$. Then
+	$\ip{\nabla f(x_0)}{\gamma'(0)}=0$. Moreover, among unit vectors $v$, the
+	directional derivative $\ip{\nabla f(x_0)}{v}$ is maximised at
+	$v=\nabla f(x_0)/\norm{\nabla f(x_0)}$ when $\nabla f(x_0)\neq0$.
+\end{proposition}
+
+\begin{proof}
+	The function $t\mapsto f(\gamma(t))$ is constant, so by
+	\autoref{thm:chain-rule} its derivative
+	$\ip{\nabla f(x_0)}{\gamma'(0)}$ vanishes. The second claim is the equality case
+	of Cauchy--Schwarz (\autoref{lem:cauchy-schwarz}):
+	$\ip{\nabla f(x_0)}{v}\leq\norm{\nabla f(x_0)}$ with equality exactly when $v$
+	is the stated unit vector.
+\end{proof}
+
+The economic reading is that the gradient of a utility function is orthogonal to
+the indifference curve and points in the direction of steepest preference
+increase, and that the marginal rate of substitution between goods $i$ and $j$ is
+the ratio $\bigl(\partial u/\partial x_i\bigr)\big/\bigl(\partial u/\partial
+	x_j\bigr)$ precisely because the level set is orthogonal to the gradient. This is
+Proposition~11.6 of \textcite[p.~385]{fukuda2026notes}.
+
+\subsection{Homogeneous functions}
+
+\begin{definition}[Homogeneity]\label{def:homogeneous}
+	Let $X\subseteq\R^n$ be a cone, that is $\lambda x\in X$ whenever $x\in X$ and
+	$\lambda>0$. A function $f\colon X\to\R$ is \dfnas{homogeneous of degree
+		$k$}{homogeneous function} if $f(\lambda x)=\lambda^kf(x)$ for all $x\in X$ and
+	$\lambda>0$.
+\end{definition}
+
+\begin{theorem}[Euler]\label{thm:euler-homogeneous}
+	Let $X\subseteq\R^n$ be an open cone and $f\colon X\to\R$ differentiable. Then
+	$f$ is homogeneous of degree $k$ if and only if
+	\begin{equation}\label{eq:euler}
+		\ip{\nabla f(x)}{x}=\sum_{i=1}^{n}\frac{\partial f}{\partial x_i}(x)\,x_i
+		=k\,f(x)\qquad\text{for all }x\in X .
+	\end{equation}
+	Moreover, if $f$ is homogeneous of degree $k$ then each partial derivative
+	$\partial f/\partial x_i$ is homogeneous of degree $k-1$.
+\end{theorem}
+
+\begin{proof}
+	($\Rightarrow$) Differentiate $f(\lambda x)=\lambda^kf(x)$ with respect to
+	$\lambda$ using \autoref{thm:chain-rule}:
+	$\ip{\nabla f(\lambda x)}{x}=k\lambda^{k-1}f(x)$. Setting $\lambda=1$ gives
+	\eqref{eq:euler}. Differentiating instead with respect to $x_i$ gives
+	$\lambda\,\partial_if(\lambda x)=\lambda^k\partial_if(x)$, which is homogeneity
+	of degree $k-1$ of $\partial_if$.
+
+	($\Leftarrow$) Fix $x$ and set $g(\lambda)\eqdef\lambda^{-k}f(\lambda x)$ for
+	$\lambda>0$. By \autoref{thm:chain-rule} and \eqref{eq:euler} applied at
+	$\lambda x$,
+	\[
+		g'(\lambda)=-k\lambda^{-k-1}f(\lambda x)+\lambda^{-k}\ip{\nabla f(\lambda x)}{x}
+		=-k\lambda^{-k-1}f(\lambda x)+\lambda^{-k-1}\,k f(\lambda x)=0 ,
+	\]
+	using $\ip{\nabla f(\lambda x)}{\lambda x}=kf(\lambda x)$. So $g$ is constant
+	on $(0,\infty)$ by \autoref{thm:mvt}, and $g(1)=f(x)$ gives
+	$f(\lambda x)=\lambda^kf(x)$.
+\end{proof}
+
+Homogeneity of degree $1$ of a production function is constant returns to scale,
+and \eqref{eq:euler} then reads $Y=F_KK+F_LL$: output is exhausted by payments to
+factors at their marginal products. This is Definition~11.3 of
+\textcite[p.~385]{fukuda2026notes}, and it is the identity behind the factor
+shares computed in \autoref{sec:cn-firm}.
+
+\section{Optimisation Without Constraints}\label{sec:cn-foc}
+
+\begin{theorem}[Fermat, several variables]\label{thm:fermat-n}
+	Let $A\subseteq\R^n$, let $x^\ast$ be an interior point of $A$ at which
+	$f\colon A\to\R$ is differentiable, and suppose $x^\ast$ is a local maximiser or
+	local minimiser of $f$ on $A$. Then $\nabla f(x^\ast)=0$.
+\end{theorem}
+
+\begin{proof}
+	Fix $i$ and consider the section $g_i(t)\eqdef f(x^\ast+te_i)$, defined for
+	$\abs{t}$ small because $x^\ast$ is interior. Then $g_i$ is differentiable at
+	$0$ with $g_i'(0)=\partial f/\partial x_i(x^\ast)$ by
+	\autoref{prop:differentiable-implies}, and $0$ is a local extremum of $g_i$. By
+	\autoref{thm:fermat}, $g_i'(0)=0$. As $i$ was arbitrary,
+	$\nabla f(x^\ast)=0$.
+\end{proof}
+
+\begin{theorem}[Sufficiency under concavity]\label{thm:foc-concave-n}
+	Let $C\subseteq\R^n$ be convex, $f\colon C\to\R$ continuous on $C$,
+	differentiable on $\Int C$, and concave. Then $x^\ast\in\Int C$ is a global
+	maximiser of $f$ on $C$ if and only if $\nabla f(x^\ast)=0$. The convex case
+	with minimisers is obtained by replacing $f$ with $-f$.
+\end{theorem}
+
+\begin{proof}
+	Necessity is \autoref{thm:fermat-n}. For sufficiency, the multivariate
+	analogue of \autoref{thm:concave-tangent}(ii), proved as
+	\autoref{thm:concave-gradient}, gives
+	$f(x)\leq f(x^\ast)+\ip{\nabla f(x^\ast)}{x-x^\ast}=f(x^\ast)$ for all
+	$x\in C$, first for $x\in\Int C$ and then for $x\in C$ by continuity.
+\end{proof}
+
+This is the content of \autocite[slide 52]{fukuda2026calculus}.
+
+\begin{eg}[The four canonical surfaces]\label{eg:four-surfaces}
+	At the origin, all four functions below have vanishing gradient
+	\autocite[slide 53]{fukuda2026calculus}.
+	\begin{enumerate}[(i)]
+		\item $f(x,y)=x^2+y^2$: a strict global minimum. $\Hess f=2I\succ0$.
+		\item $f(x,y)=-x^2-y^2$: a strict global maximum. $\Hess f=-2I\prec0$.
+		\item $f(x,y)=x^2-y^2$: a saddle. $\Hess f=\diag(2,-2)$ is indefinite;
+		      the origin is a minimum along the $x$-axis and a maximum along the
+		      $y$-axis, so it is neither.
+		\item $f(x,y)=-x^3$: neither, and the Hessian at the origin is the zero
+		      matrix, which is both positive and negative semidefinite. The second-order
+		      test is silent, and the third derivative decides.
+	\end{enumerate}
+	Cases (iii) and (iv) are the two ways in which a stationary point can fail to be
+	an extremum, and they are distinguished by whether the Hessian is indefinite
+	(the test rules out an extremum) or merely singular (the test is
+	inconclusive).
+\end{eg}
+
+\section{Second-Order Theory}\label{sec:cn-second}
+
+\begin{definition}[Hessian]\label{def:hessian}
+	Let $A\subseteq\R^n$ be open and $f\colon A\to\R$ twice differentiable at
+	$x\in A$. The \dfn{Hessian} of $f$ at $x$ is the matrix of second partial
+	derivatives
+	\[
+		\Hess f(x)\eqdef
+		\left(\frac{\partial^2f}{\partial x_i\partial x_j}(x)\right)_{i,j=1}^{n}
+		\in M_{n\times n}(\R),
+	\]
+	also written $Hf(x)$ or $\nabla^2f(x)$; it is the Jacobian of the map
+	$x\mapsto\nabla f(x)$.
+	\nidx{Hessian}{$\Hess f$, Hessian matrix}
+\end{definition}
+
+\begin{theorem}[Schwarz]\label{thm:schwarz}
+	If $f\in C^2(A)$ then $\Hess f(x)$ is symmetric for every $x\in A$:
+	$\partial^2f/\partial x_i\partial x_j=\partial^2f/\partial x_j\partial x_i$.
+\end{theorem}
+
+Symmetry is not automatic without the continuity hypothesis; the standard
+counterexample is $f(x,y)=xy(x^2-y^2)/(x^2+y^2)$ with $f(0,0)=0$, for which the
+two mixed partials at the origin are $-1$ and $+1$. See
+\textcite[Thm.~9.41]{rudin1976principles}. In economics symmetry of the Hessian
+is not a technicality: it is the source of the Slutsky symmetry conditions and of
+the reciprocity relations that make the Hessian of an expenditure function
+testable.
+
+\begin{theorem}[Second-order Taylor expansion]\label{thm:taylor-n}
+	Let $A\subseteq\R^n$, let $\bar x\in\Int A$, and let $f\colon A\to\R$ be twice
+	differentiable at $\bar x$. Then
+	\begin{equation}\label{eq:taylor-n}
+		f(x)=f(\bar x)+\ip{\nabla f(\bar x)}{x-\bar x}
+		+\tfrac12(x-\bar x)^{\transp}\Hess f(\bar x)(x-\bar x)
+		+\norm{x-\bar x}^2\alpha_{\bar x}(x-\bar x),
+	\end{equation}
+	where $\alpha_{\bar x}(x-\bar x)\to0$ as $x\to\bar x$. If $f\in C^2$ on a
+	neighbourhood of the segment $[\bar x,x]$, there is
+	$\theta\in(0,1)$ with the exact expression
+	\[
+		f(x)=f(\bar x)+\ip{\nabla f(\bar x)}{x-\bar x}
+		+\tfrac12(x-\bar x)^{\transp}\Hess f\bigl(\bar x+\theta(x-\bar x)\bigr)(x-\bar x).
+	\]
+\end{theorem}
+
+\begin{proof}
+	For the exact form, fix $x$ and set $\varphi(t)\eqdef f\bigl(\bar
+		x+t(x-\bar x)\bigr)$ for $t\in[0,1]$. By \autoref{thm:chain-rule},
+	$\varphi'(t)=\ip{\nabla f(\bar x+t(x-\bar x))}{x-\bar x}$ and, applying the
+	chain rule again to the gradient map,
+	$\varphi''(t)=(x-\bar x)^{\transp}\Hess f(\bar x+t(x-\bar x))(x-\bar x)$.
+	Applying the one-variable Taylor theorem
+	(\autoref{thm:taylor-1d} with $n=1$) to $\varphi$ on $[0,1]$ gives
+	$\varphi(1)=\varphi(0)+\varphi'(0)+\tfrac12\varphi''(\theta)$ for some
+	$\theta\in(0,1)$, which is the claim. The Peano form \eqref{eq:taylor-n} follows
+	from twice differentiability at the single point $\bar x$ by the same argument
+	applied with \autoref{cor:peano}.
+\end{proof}
+
+This is Theorem~11.5 of \textcite[p.~413]{fukuda2026notes}.
+
+\begin{theorem}[Second-order conditions]\label{thm:second-order-conditions}
+	Let $A\subseteq\R^n$ be open, $f\in C^2(A)$, and $x^\ast\in A$ with
+	$\nabla f(x^\ast)=0$.
+	\begin{enumerate}[(i)]
+		\item If $\Hess f(x^\ast)\prec0$, then $x^\ast$ is a strict local maximiser.
+		\item If $\Hess f(x^\ast)\succ0$, then $x^\ast$ is a strict local minimiser.
+		\item If $\Hess f(x^\ast)$ is indefinite, then $x^\ast$ is neither.
+		\item If $x^\ast$ is a local maximiser then $\Hess f(x^\ast)\preceq0$; if a
+		      local minimiser then $\Hess f(x^\ast)\succeq0$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i) Let $H\eqdef\Hess f(x^\ast)\prec0$. The function $v\mapsto v^{\transp}Hv$
+	is continuous on the compact unit sphere, so by
+	\autoref{cor:weierstrass-continuous} it attains a maximum $-2\mu$ there, and
+	$\mu>0$ by negative definiteness. By homogeneity,
+	$u^{\transp}Hu\leq-2\mu\norm{u}^2$ for all $u$. From \eqref{eq:taylor-n} with
+	$u=x-x^\ast$ and $\nabla f(x^\ast)=0$,
+	\[
+		f(x)-f(x^\ast)\leq-\mu\norm{u}^2+\norm{u}^2\alpha(u)
+		=\norm{u}^2\bigl(\alpha(u)-\mu\bigr),
+	\]
+	which is negative for $u\neq0$ small enough that $\abs{\alpha(u)}<\mu$. Part
+	(ii) applies (i) to $-f$.
+
+	(iii) Indefiniteness supplies $v_+$ with $v_+^{\transp}Hv_+>0$ and $v_-$ with
+	$v_-^{\transp}Hv_-<0$. Restricting $f$ to the line $t\mapsto x^\ast+tv_+$ and
+	applying \eqref{eq:taylor-n} shows $f(x^\ast+tv_+)>f(x^\ast)$ for small
+	$t\neq0$, and symmetrically along $v_-$; so $x^\ast$ is neither a local maximum
+	nor a local minimum.
+
+	(iv) If $x^\ast$ is a local maximiser and some $v$ had $v^{\transp}Hv>0$, the
+	argument of (iii) along $v$ would contradict maximality.
+\end{proof}
+
+The gap between the sufficient conditions (i)--(ii) and the necessary condition
+(iv) is exactly the semidefinite case, and it cannot be closed:
+$f(x)=x^3$ and $f(x)=x^4$ both have $f''(0)=0$ and differ in their behaviour.
+Definiteness is checked by the eigenvalue criterion
+(\autoref{prop:definiteness-eigen}) or by Sylvester's criterion
+(\autoref{prop:sylvester}), with the warning of
+\autoref{rem:semidefinite-minors} about the semidefinite case.
+
+\begin{theorem}[Hessian characterisation of convexity]\label{thm:hessian-convexity}
+	Let $A\subseteq\R^n$ be open and convex and $f\in C^2(A)$. Then $f$ is convex
+	on $A$ if and only if $\Hess f(x)\succeq0$ for every $x\in A$, and concave if
+	and only if $\Hess f(x)\preceq0$ for every $x\in A$. If $\Hess f(x)\succ0$
+	everywhere then $f$ is strictly convex; the converse fails, as $f(x)=x^4$
+	shows.
+\end{theorem}
+
+\begin{proof}
+	Convexity of $f$ on the convex set $A$ is equivalent to convexity of
+	$\varphi_{x,y}(t)\eqdef f\bigl(x+t(y-x)\bigr)$ on $[0,1]$ for every
+	$x,y\in A$, since the two statements are the same inequality. By
+	\autoref{thm:concave-tangent} applied to $-\varphi_{x,y}$, that holds if and
+	only if $\varphi_{x,y}''\geq0$, and
+	$\varphi_{x,y}''(t)=(y-x)^{\transp}\Hess f(x+t(y-x))(y-x)$ as computed in the
+	proof of \autoref{thm:taylor-n}. Ranging over $x,y\in A$ makes $y-x$ an
+	arbitrary direction and $x+t(y-x)$ an arbitrary point of $A$, which is exactly
+	$\Hess f\succeq0$ on $A$.
+\end{proof}
+
+This is Theorem~11.6 of \textcite[p.~415]{fukuda2026notes}.
+
+\section{The Implicit and Inverse Function Theorems}\label{sec:cn-ift}
+
+\begin{theorem}[Implicit function theorem]\label{thm:implicit-function}
+	Let $\Lambda\subseteq\R^n\times\R^m$ be open and $f\colon\Lambda\to\R^m$
+	continuously differentiable. Let $(\bar x,\bar y)\in\Lambda$ satisfy
+	$f(\bar x,\bar y)=0$ and suppose the $m\times m$ matrix
+	$\nabla_yf(\bar x,\bar y)$ is nonsingular. Then there are an open neighbourhood
+	$\Gamma\subseteq\R^n$ of $\bar x$ and a continuously differentiable map
+	$e\colon\Gamma\to\R^m$ such that
+	\begin{enumerate}[(i)]
+		\item $(x,e(x))\in\Lambda$ and $f\bigl(x,e(x)\bigr)=0$ for all $x\in\Gamma$;
+		\item $e(\bar x)=\bar y$;
+		\item $\nabla_yf\bigl(x,e(x)\bigr)$ is nonsingular for all $x\in\Gamma$; and
+		\item for all $x\in\Gamma$,
+		      \begin{equation}\label{eq:ift-derivative}
+			      De(x)=-\bigl[\nabla_yf\bigl(x,e(x)\bigr)\bigr]^{-1}
+			      \nabla_xf\bigl(x,e(x)\bigr).
+		      \end{equation}
+	\end{enumerate}
+	Moreover $e$ is the unique such function on a possibly smaller neighbourhood:
+	the solutions of $f(x,y)=0$ near $(\bar x,\bar y)$ are exactly the points
+	$(x,e(x))$.
+\end{theorem}
+
+This is Theorem~11.7 of \textcite[p.~419]{fukuda2026notes}. The proof constructs
+$e$ as the fixed point of a contraction: for each $x$ near $\bar x$ the map
+$y\mapsto y-[\nabla_yf(\bar x,\bar y)]^{-1}f(x,y)$ is a contraction on a small
+closed ball, by continuity of $Df$, and \autoref{thm:banach-fixed-point} applies
+on that complete set, with \autoref{cor:invariant-set} keeping the fixed point
+inside the ball; the regularity of $e$ then follows from the regularity of $f$.
+It is carried out in full in \autoref{app:ift}, where it is placed because it is
+long and purely technical, and because it is exactly the use of the contraction
+mapping theorem advertised on \autocite[slide 65]{fukuda2026analysis}; the
+classical treatment is \textcite[Thm.~9.28]{rudin1976principles}.
+
+Formula \eqref{eq:ift-derivative} is not an extra: it is obtained by
+differentiating the identity $f(x,e(x))=0$ with respect to $x$ using
+\autoref{thm:chain-rule},
+\[
+	\nabla_xf\bigl(x,e(x)\bigr)+\nabla_yf\bigl(x,e(x)\bigr)De(x)=0,
+\]
+and solving, which is legitimate precisely because (iii) guarantees the inverse
+exists. The differentiation is valid only once $e$ is known to be
+differentiable, which is why (iv) is a conclusion of the theorem and not a
+derivation of it.
+
+\begin{corollary}[Inverse function theorem]\label{thm:inverse-function}
+	Let $A\subseteq\R^n$ be open, $g\colon A\to\R^n$ continuously differentiable,
+	and $\bar x\in A$ with $Dg(\bar x)$ nonsingular. Then there are open
+	neighbourhoods $U\ni\bar x$ and $V\ni g(\bar x)$ such that
+	$\restr{g}{U}\colon U\to V$ is a bijection with continuously differentiable
+	inverse, and
+	\[
+		D\bigl(g^{-1}\bigr)(y)=\bigl[Dg\bigl(g^{-1}(y)\bigr)\bigr]^{-1},
+		\qquad y\in V .
+	\]
+\end{corollary}
+
+\begin{proof}
+	Apply \autoref{thm:implicit-function} to $f(y,x)\eqdef g(x)-y$ on
+	$\R^n\times A$, at the point $(g(\bar x),\bar x)$. Here the roles are exchanged:
+	the ``parameter'' is $y$ and the ``unknown'' is $x$, and
+	$\nabla_xf=Dg(\bar x)$ is nonsingular by hypothesis. The implicit function
+	$e$ is the local inverse, and \eqref{eq:ift-derivative} gives
+	$De(y)=-[Dg]^{-1}(-I)=[Dg]^{-1}$.
+\end{proof}
+
+For $n=1$ this is \autoref{prop:inverse-derivative}, with $Dg(\bar x)\neq0$ in
+place of $f'(x_0)\neq0$. The theorem is local and cannot be made global: the map
+$g(x_1,x_2)=(e^{x_1}\cos x_2,e^{x_1}\sin x_2)$ has everywhere nonsingular
+Jacobian and is not injective, being $2\pi$-periodic in $x_2$.
+
+\begin{remark}[Comparative statics is the implicit function theorem]
+	\label{rem:comparative-statics-ift}
+	The standard comparative-statics exercise has this form. An endogenous vector
+	$y\in\R^m$ and an exogenous vector $x\in\R^n$ satisfy $m$ equilibrium conditions
+	$f(x,y)=0$ --- first-order conditions, market-clearing conditions, or both. At a
+	reference equilibrium $(\bar x,\bar y)$ one asks how $y$ responds to $x$. The
+	theorem answers three questions at once, and it is worth separating them.
+
+	\emph{Does an equilibrium exist nearby?} Yes, and it varies continuously: this is
+	conclusion (i)--(ii).
+
+	\emph{Is it locally unique?} Yes: this is the uniqueness clause, and it is what
+	makes ``the'' comparative static well posed. Uniqueness is local only; the
+	theorem says nothing about other equilibria far away.
+
+	\emph{What is the response?} It is \eqref{eq:ift-derivative}. The economic
+	content is in the two factors. The matrix $\nabla_xf$ collects the direct
+	effects of the parameters on the equilibrium conditions; the matrix
+	$[\nabla_yf]^{-1}$ propagates them through the simultaneous system. When
+	$f=\nabla_y\Pi$ for an objective $\Pi$, the propagating matrix is the inverse
+	Hessian, and \autoref{thm:second-order-conditions} makes it negative definite at
+	a maximum --- which is the source of the standard sign restrictions on
+	comparative statics.
+
+	The condition that can fail is nonsingularity of $\nabla_yf$. At such a point
+	the equilibrium is not locally unique, comparative statics are undefined, and
+	the model is at a bifurcation.
+\end{remark}
+
+\section{Economic Application: The Representative Firm}\label{sec:cn-firm}
+
+\paragraph{Environment.} A firm rents capital $K\geq0$ at rate $r>0$ and hires
+labour $L\geq0$ at wage $w>0$, producing $Y=F(K,L)=AK^{\alpha}L^{1-\alpha}$ with
+$A>0$ and $\alpha\in(0,1)$. Output is the numeraire. The firm solves
+\eqref{eq:rep-firm}.
+
+\begin{proposition}[First-order conditions and factor shares]\label{prop:rep-firm}
+	Let $(K^\ast,L^\ast)$ be an interior solution of \eqref{eq:rep-firm}. Then
+	\begin{equation}\label{eq:factor-prices}
+		r=\frac{\partial Y}{\partial K}=\alpha A\left(\frac{K^\ast}{L^\ast}\right)^{\alpha-1},
+		\qquad
+		w=\frac{\partial Y}{\partial L}=(1-\alpha)A\left(\frac{K^\ast}{L^\ast}\right)^{\alpha},
+	\end{equation}
+	and consequently
+	\begin{equation}\label{eq:shares}
+		\alpha=\frac{rK^\ast}{Y^\ast},\qquad 1-\alpha=\frac{wL^\ast}{Y^\ast},
+		\qquad\text{and}\qquad \Pi(K^\ast,L^\ast)=0 .
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	$\Pi$ is differentiable on $\R^2_{++}$ and $(K^\ast,L^\ast)$ is interior, so
+	\autoref{thm:fermat-n} gives $\nabla\Pi=0$, which is \eqref{eq:factor-prices}
+	after computing the partials as in \autoref{eg:cobb-douglas-partials}.
+	Multiplying the first equation by $K^\ast$ gives
+	$rK^\ast=\alpha A(K^\ast)^{\alpha}(L^\ast)^{1-\alpha}=\alpha Y^\ast$, and
+	similarly for labour. Adding, $rK^\ast+wL^\ast=Y^\ast$, so profit is zero.
+\end{proof}
+
+\paragraph{Reading the result.} Three points, each with a mathematical source.
+
+The zero-profit conclusion is \autoref{thm:euler-homogeneous} with $k=1$: $F$ is
+homogeneous of degree $1$, so $\ip{\nabla F}{(K,L)}=F(K,L)$, and payment of each
+factor at its marginal product exhausts output exactly. Nothing about
+Cobb--Douglas is used beyond constant returns.
+
+The factor shares in \eqref{eq:shares} are constants, independent of $r$, $w$ and
+$A$. This is special to Cobb--Douglas, and it is the reason the function is used:
+it is the production function whose elasticity of substitution between capital
+and labour equals $1$, and constancy of shares is equivalent to that.
+
+The scale of the firm is indeterminate. Equations \eqref{eq:factor-prices}
+involve $K^\ast$ and $L^\ast$ only through their ratio, because the marginal
+products are homogeneous of degree $0$ by the second part of
+\autoref{thm:euler-homogeneous}. Given $(r,w)$, either no ratio satisfies both
+equations, or one does and then every scalar multiple of $(K^\ast,L^\ast)$ is
+also optimal. Formally, the Hessian
+\[
+	\Hess\Pi=\Hess F=
+	\alpha(1-\alpha)\frac{Y}{KL}
+	\begin{pmatrix}
+		-L/K & 1     \\
+		1    & -K/L
+	\end{pmatrix}
+\]
+has determinant $0$ and trace $-\alpha(1-\alpha)\frac{Y}{KL}(L/K+K/L)<0$, so it
+is negative \emph{semi}definite with a one-dimensional null space spanned by
+$(K,L)$ --- the direction of proportional scaling. The maximum is therefore not
+strict, and \autoref{thm:second-order-conditions}(i) does not apply. This is not a
+defect of the mathematics but the correct statement that a constant-returns firm
+in a competitive market has an indeterminate size: only the aggregate is pinned
+down, by demand. This is the optional exercise of
+\autocite[slides 43, 54]{fukuda2026calculus}.
+
+\section{Economic Application: Least Squares by Calculus}\label{sec:cn-ols}
+
+\paragraph{Problem.} Given data $(x_i,y_i)_{i=1}^n$ with at least two distinct
+$x_i$, minimise the sum of squared residuals \eqref{eq:ols-problem}.
+
+\begin{proposition}\label{prop:ols-calculus}
+	Let $S(\beta_1,\beta_2)\eqdef\sum_{i=1}^n(y_i-\beta_1-\beta_2x_i)^2$. If the
+	$x_i$ are not all equal, then $S$ has a unique global minimiser, given by
+	\begin{equation}\label{eq:ols-solution}
+		\hat\beta_2=\frac{\sum_i(x_i-\bar x)(y_i-\bar y)}{\sum_i(x_i-\bar x)^2},
+		\qquad
+		\hat\beta_1=\bar y-\hat\beta_2\bar x,
+	\end{equation}
+	where $\bar x=n^{-1}\sum_ix_i$ and $\bar y=n^{-1}\sum_iy_i$.
+\end{proposition}
+
+\begin{proof}
+	$S$ is a polynomial, hence $C^\infty$. Its partial derivatives are
+	\[
+		\frac{\partial S}{\partial\beta_1}=-2\sum_i(y_i-\beta_1-\beta_2x_i),
+		\qquad
+		\frac{\partial S}{\partial\beta_2}=-2\sum_ix_i(y_i-\beta_1-\beta_2x_i),
+	\]
+	so $\nabla S=0$ is the pair of \dfnas{normal equations}{normal equations}
+	\begin{equation}\label{eq:normal-equations}
+		n\beta_1+\Bigl(\sum_ix_i\Bigr)\beta_2=\sum_iy_i,
+		\qquad
+		\Bigl(\sum_ix_i\Bigr)\beta_1+\Bigl(\sum_ix_i^2\Bigr)\beta_2=\sum_ix_iy_i .
+	\end{equation}
+	The Hessian is
+	\[
+		\Hess S=2\begin{pmatrix}n & \sum_ix_i \\ \sum_ix_i & \sum_ix_i^2\end{pmatrix},
+	\]
+	constant in $\beta$, with $\det\Hess S=4\bigl(n\sum_ix_i^2-(\sum_ix_i)^2\bigr)
+		=4n\sum_i(x_i-\bar x)^2>0$ when the $x_i$ are not all equal, and leading entry
+	$2n>0$. By \autoref{prop:sylvester}, $\Hess S\succ0$, so $S$ is strictly convex
+	by \autoref{thm:hessian-convexity} and the unique stationary point is the global
+	minimiser by \autoref{thm:foc-concave-n}. Solving \eqref{eq:normal-equations} by
+	Cramer's rule (\autoref{eg:cramer}) yields \eqref{eq:ols-solution}.
+\end{proof}
+
+\paragraph{What is and is not established.} The calculus route delivers existence,
+uniqueness and a formula, and it makes the role of the data condition explicit:
+$\sum_i(x_i-\bar x)^2>0$ is simultaneously the nondegeneracy condition on the
+regressors, the invertibility condition for the normal equations, and the
+positive definiteness condition for the Hessian. It is the two-variable case of
+the no-perfect-multicollinearity condition of \autoref{rem:square-matters}.
+
+What the calculus route does not deliver is the interpretation. Formula
+\eqref{eq:ols-solution} says that $\hat\beta_2$ is the ratio of a sample
+covariance to a sample variance, and \autoref{eg:correlation-cosine} identified
+that ratio as a cosine rescaled by norms. The geometry behind it --- that the
+fitted values are the orthogonal projection of $y$ onto the span of the
+regressors, that the residual is orthogonal to that span, and that the normal
+equations \eqref{eq:normal-equations} \emph{are} the orthogonality conditions ---
+is developed in \autoref{ch:projection}, where the same estimator is obtained
+without differentiating anything and in a form that survives to infinite
+dimensions \autocite[slides 55--64]{fukuda2026calculus}.
+
+\section{Chapter Summary}\label{sec:cn-summary}
+
+Partial derivatives differentiate along the coordinate axes; the total derivative
+requires a single linear map to approximate the increment in every direction at
+once. In one variable the two notions coincide; in several they do not, and the
+gap is genuine: a function can have all partial derivatives at a point and be
+discontinuous there (\autoref{eg:partials-no-continuity}), or be continuous with
+all partials and still fail to be differentiable
+(\autoref{eg:no-differentiability}). Continuity of the partials is sufficient
+(\autoref{prop:c1-differentiable}), which is why $C^1$ is the standard working
+hypothesis. Differentiability delivers continuity, all directional derivatives,
+the chain rule in matrix form \eqref{eq:chain-rule}, orthogonality of the
+gradient to level sets, and Euler's identity for homogeneous functions.
+
+At an interior local extremum of a differentiable function the gradient vanishes;
+under concavity the condition is also sufficient and global. The second-order
+theory rests on the Hessian: symmetric under $C^2$ by
+\autoref{thm:schwarz}, appearing as the quadratic term of the Taylor expansion
+\eqref{eq:taylor-n}, and determining local behaviour at a stationary point
+through definiteness, with the semidefinite case inconclusive. Global convexity
+or concavity is exactly semidefiniteness of the Hessian everywhere.
+
+The implicit function theorem converts a system of equilibrium conditions into a
+locally unique, continuously differentiable solution mapping with derivative
+\eqref{eq:ift-derivative}; it is the theorem underlying essentially all
+differentiable comparative statics, and its hypothesis --- nonsingularity of the
+Jacobian in the endogenous variables --- is exactly what fails at a bifurcation.
+Applied to the constant-returns firm, the first-order conditions determine the
+capital--labour ratio, exhaust output through Euler's identity, and leave scale
+indeterminate, the last fact readable from the singular Hessian.
+
+\begin{exercise}\label{ex:cn-1}
+	Let $f(x,y)=x^3y/(x^4+y^2)$ for $(x,y)\neq(0,0)$ and $f(0,0)=0$. Show that the
+	directional derivative of $f$ at the origin exists and equals $0$ in every
+	direction, yet $f$ is not continuous at the origin. Locate the failure relative
+	to \autoref{prop:differentiable-implies}, and explain why this is not a
+	counterexample to it.
+\end{exercise}
+
+\begin{exercise}\label{ex:cn-2}
+	Let $F$ be $C^2$, homogeneous of degree $1$, and strictly quasiconcave on
+	$\R^2_{++}$. Show that $\Hess F(K,L)$ is singular with $(K,L)$ in its kernel,
+	and deduce that no interior strict local maximum of
+	$F(K,L)-rK-wL$ exists. Then show that the cost-minimisation problem
+	$\min\{rK+wL : F(K,L)\geq\bar Y\}$ does have a unique solution, and explain the
+	difference.
+\end{exercise}
+
+\begin{exercise}\label{ex:cn-3}
+	A monopolist chooses $q$ facing inverse demand $P(q,\theta)$ with a demand
+	shifter $\theta$, and cost $c(q)$. Write the first-order condition as
+	$f(\theta,q)=0$ and use \eqref{eq:ift-derivative} to compute
+	$dq^\ast/d\theta$. State the exact sign restriction on
+	$\partial^2\Pi/\partial q\,\partial\theta$ that makes the response positive, and
+	verify that the second-order condition supplies the sign of the denominator.
+	Relate the result to \autoref{rem:comparative-statics-ift}.
+\end{exercise}

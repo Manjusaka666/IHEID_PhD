@@ -1,0 +1,1038 @@
+% Source: Gerzensee "Probability Theory" slides 3-32 (probability space and the
+% four properties of P; conditional probability; Bayes Theorems 1 and 2 and the
+% partition form; the medical-test, airport-carousel, market-microstructure and
+% political-poll examples with their numerical answers; random variables, pmf and
+% expectation in the two equivalent forms; conditional expectation given an event
+% and given a random variable; Theorems 2.4 and 2.5, the two laws of iterated
+% expectations; conditional expectation as best predictor with the full proof;
+% normal-normal updating in variance form and precision form, the completing-the-
+% square derivation, and the multiple-observation version; the closing list of
+% applications).
+% Supplementary: Fukuda (2026), Sec. 2.1-2.5 (pp. 57-82; Def. 2.1-2.13,
+% Prop. 2.1, 2.7, Remark 2.1-2.5, Thm 2.4-2.5, Exercises 2.1, 2.11, 2.14, 2.15,
+% 2.17-2.20) and Sec. 9.6 (pp. 323-332; best predictor, best linear predictor,
+% the bivariate normal case, Thm 9.5-9.6, Markov and Chebyshev).
+% External references actually cited in this chapter: Brockwell-Davis (2016),
+% Gelman et al. (2013), Grossman-Stiglitz (1980), Kyle (1985), Le Gall (2022),
+% O'Hara (1998).
+
+\chapter[Probability and Conditional Expectation]{Probability, Conditional Expectation and Bayesian Updating}
+\label{ch:probability}
+
+\section{Probability Spaces}\label{sec:prob-spaces}
+
+Uncertainty enters an economic model as a set of states, a rule assigning
+likelihoods to statements about the state, and functions of the state that the
+agent cares about. The three objects are the sample space, the probability
+measure and the random variables, and the first difficulty is that the second
+cannot in general be defined on all statements.
+
+\begin{definition}[$\sigma$-algebra]\label{def:sigma-algebra}
+	Let $\Omega$ be a set. A collection $\mathcal{F}$ of subsets of $\Omega$ is a
+	\dfnas{$\sigma$-algebra}{sigma-algebra@$\sigma$-algebra} on $\Omega$ if
+	\begin{enumerate}[(i)]
+		\item $\Omega\in\mathcal{F}$;
+		\item $E\in\mathcal{F}$ implies $E^{c}\in\mathcal{F}$;
+		\item $E_n\in\mathcal{F}$ for every $n\in\N$ implies $\bigcap_{n\in\N}E_n\in\mathcal{F}$.
+	\end{enumerate}
+	The pair $(\Omega,\mathcal{F})$ is then a \dfnas{measurable space}{measurable space} and
+	the members of $\mathcal{F}$ are \dfnas{events}{event}.
+	\nidx{sigmaalgebra}{$\mathcal{F}$, $\sigma$-algebra of events}
+\end{definition}
+
+\begin{proposition}[Closure properties]\label{prop:sigma-algebra-basics}
+	Let $\mathcal{F}$ be a $\sigma$-algebra on $\Omega$. Then $\emptyset\in\mathcal{F}$ and
+	$\bigcup_{n\in\N}E_n\in\mathcal{F}$ whenever every $E_n\in\mathcal{F}$; consequently $\mathcal{F}$ is
+	closed under finite unions, finite intersections and set differences.
+\end{proposition}
+
+\begin{proof}
+	$\emptyset=\Omega^{c}\in\mathcal{F}$ by (i) and (ii). For unions, De Morgan's law
+	(\autoref{prop:demorgan}) gives
+	$\bigcup_nE_n=\bigl(\bigcap_nE_n^{c}\bigr)^{c}$, and each $E_n^{c}\in\mathcal{F}$ by
+	(ii), so the intersection lies in $\mathcal{F}$ by (iii) and its complement by (ii).
+	Finite operations follow by padding the sequence with $\Omega$ or $\emptyset$,
+	and $E\setminus F=E\cap F^{c}$.
+\end{proof}
+
+An event is a statement about the experiment admitting a yes-or-no answer, and
+the three axioms are the closure of such statements under negation and countable
+conjunction. The restriction to \emph{countable} conjunction is what makes the
+definition non-trivial: uncountable operations are excluded because they would
+force $\mathcal{F}$ to be the whole power set, and on an uncountable $\Omega$ no
+probability measure with the required additivity can be defined on the whole
+power set. This is a theorem of measure theory rather than a technical
+convenience; see \textcite[Ch.~1]{legall2022measure}. \autoref{ch:topology}
+recorded the formal parallel with \autoref{def:topological-space}: a topology is
+closed under arbitrary unions and finite intersections, a $\sigma$-algebra under
+countable operations of both kinds and under complementation, and neither
+contains the other.
+
+\begin{definition}[Probability measure and probability space]\label{def:probability-measure}
+	Let $(\Omega,\mathcal{F})$ be a measurable space. A function $\Prob\colon\mathcal{F}\to[0,1]$ is a
+	\dfnas{probability measure}{probability measure} if
+	\begin{enumerate}[(i)]
+		\item $\Prob(\Omega)=1$;
+		\item ($\sigma$-additivity) $\Prob\bigl(\bigcup_{n\in\N}E_n\bigr)
+			      =\sum_{n=1}^{\infty}\Prob(E_n)$ whenever $(E_n)_{n\in\N}$ is pairwise
+		      disjoint.
+	\end{enumerate}
+	The triple $(\Omega,\mathcal{F},\Prob)$ is a \dfnas{probability space}{probability space}.
+	\nidx{probmeasure}{$\Prob$, probability measure}
+\end{definition}
+
+\begin{proposition}[Elementary properties]\label{prop:probability-basics}
+	Let $(\Omega,\mathcal{F},\Prob)$ be a probability space and $E,F\in\mathcal{F}$.
+	\begin{enumerate}[(i)]
+		\item $\Prob(\emptyset)=0$.
+		\item (Monotonicity) $E\subseteq F$ implies $\Prob(E)\leq\Prob(F)$.
+		\item (Finite additivity) $E\cap F=\emptyset$ implies
+		      $\Prob(E\cup F)=\Prob(E)+\Prob(F)$; in particular
+		      $\Prob(E)+\Prob(E^{c})=1$.
+		\item (Inclusion--exclusion)
+		      $\Prob(E\cup F)=\Prob(E)+\Prob(F)-\Prob(E\cap F)$, hence
+		      $\Prob(E\cup F)\leq\Prob(E)+\Prob(F)$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Suppose $\Prob(\emptyset)=a>0$ and take $E_n=\emptyset$ for every $n$. These
+	are pairwise disjoint, so $\sigma$-additivity gives
+	$a=\Prob(\emptyset)=\sum_{n=1}^{\infty}a=\infty$, contradicting
+	$\Prob\leq1$.
+
+	(ii) Put $E_1=E$, $E_2=F\setminus E$ and $E_n=\emptyset$ for $n\geq3$; these are
+	disjoint with union $F$, so
+	$\Prob(F)=\Prob(E)+\Prob(F\setminus E)\geq\Prob(E)$ by (i) and non-negativity.
+
+	(iii) Put $E_1=E$, $E_2=F$, $E_n=\emptyset$ for $n\geq3$. Taking $F=E^{c}$ gives
+	$\Prob(E)+\Prob(E^{c})=\Prob(\Omega)=1$.
+
+	(iv) Decompose $E\cup F$ into the three disjoint events
+	$E\setminus F$, $E\cap F$, $F\setminus E$ and apply (iii) three times:
+	$\Prob(E\cup F)=\Prob(E\setminus F)+\Prob(E\cap F)+\Prob(F\setminus E)$, while
+	$\Prob(E)=\Prob(E\setminus F)+\Prob(E\cap F)$ and similarly for $F$; adding the
+	last two and subtracting $\Prob(E\cap F)$ gives the identity. The inequality
+	follows since $\Prob(E\cap F)\geq0$.
+\end{proof}
+
+\begin{remark}[The countable case]\label{rem:discrete-probability}
+	When $\Omega$ is at most countable one may take $\mathcal{F}=\pow(\Omega)$ and specify
+	$\Prob$ by the numbers $\Prob(\{\omega\})$, $\omega\in\Omega$, which are
+	non-negative and sum to $1$; every event then has
+	$\Prob(E)=\sum_{\omega\in E}\Prob(\{\omega\})$ and $\sigma$-additivity is
+	automatic. The four properties listed on
+	\autocite[slide 4]{fukuda2026probability} --- $\Prob(\emptyset)=0$,
+	$\Prob(\Omega)=1$, monotonicity and additivity on disjoint events --- are exactly
+	\autoref{def:probability-measure} together with
+	\autoref{prop:probability-basics} specialised to this case. Every statement in
+	\autoref{sec:prob-bayes} and \autoref{sec:prob-conditional} below is proved in
+	the countable setting and holds verbatim in general once the sums are read as
+	integrals.
+\end{remark}
+
+\section{Random Variables and Expectation}\label{sec:prob-rv}
+
+\begin{definition}[Random variable]\label{def:random-variable}
+	Let $(\Omega,\mathcal{F},\Prob)$ be a probability space. A \dfnas{random
+		variable}{random variable} is a function $X\colon\Omega\to\R$ that is
+	\dfnas{measurable}{measurable function}: $X^{-1}(B)\in\mathcal{F}$ for every Borel set
+	$B\subseteq\R$. When $\Omega$ is at most countable and $\mathcal{F}=\pow(\Omega)$ the
+	measurability requirement is vacuous. Writing $X(\Omega)=\{x_i\}_{i}$ for the
+	set of realisations, the \dfnas{probability mass function}{probability mass
+		function} of $X$ is
+	\begin{equation}\label{eq:pmf}
+		f(x)\eqdef\Prob\bigl(\{\omega\in\Omega : X(\omega)=x\}\bigr)
+		=\Prob\bigl(X^{-1}(\{x\})\bigr),\qquad x\in X(\Omega),
+	\end{equation}
+	and one writes $p_i\eqdef f(x_i)$ and $[X=x]\eqdef X^{-1}(\{x\})$.
+	\nidx{randomvariable}{$X$, $Y$, random variables}
+\end{definition}
+
+Measurability is the requirement that every statement about the value of $X$ be
+an event, so that its probability is defined. It is the probabilistic
+counterpart of continuity: \autoref{thm:continuity-preimage} characterised
+continuity by $f^{-1}(\text{open})$ open, and
+\autoref{rem:continuity-measurability} recorded that measurability replaces
+``open'' by ``Borel'' and ``open'' by ``in $\mathcal{F}$''. On a countable sample space the
+condition is empty, which is why the slides define a random variable simply as a
+function \autocite[slide 15]{fukuda2026probability}.
+
+\begin{definition}[Expectation]\label{def:expectation}
+	For a random variable $X$ on an at most countable probability space with
+	$X(\Omega)=\{x_i\}_{i=1}^{n}$, the \dfnas{expectation}{expectation} is
+	\begin{equation}\label{eq:expectation}
+		\E[X]\eqdef\sum_{i=1}^{n}p_ix_i
+		=\sum_{\omega\in\Omega}\Prob(\{\omega\})X(\omega),
+	\end{equation}
+	the two expressions being equal because the events $[X=x_i]$ partition $\Omega$.
+	\nidx{expectation}{$\E[X]$, expectation}
+\end{definition}
+
+\begin{proof}[Proof of the second equality in \eqref{eq:expectation}]
+	Group the sum over $\Omega$ by the value of $X$:
+	\[
+		\sum_{\omega\in\Omega}\Prob(\{\omega\})X(\omega)
+		=\sum_{i=1}^{n}\ \sum_{\omega\,:\,X(\omega)=x_i}\Prob(\{\omega\})X(\omega)
+		=\sum_{i=1}^{n}x_i\sum_{\omega\,:\,X(\omega)=x_i}\Prob(\{\omega\})
+		=\sum_{i=1}^{n}x_ip_i,
+	\]
+	using \eqref{eq:pmf} in the last step. Rearrangement is legitimate because the
+	family $\bigl([X=x_i]\bigr)_{i}$ partitions $\Omega$ and, for a countable
+	$\Omega$, absolute convergence of $\sum_{\omega}\Prob(\{\omega\})\abs{X(\omega)}$
+	is exactly the integrability of $X$.
+\end{proof}
+
+\begin{proposition}[Properties of expectation]\label{prop:expectation-properties}
+	Let $X,Y$ be integrable random variables and $a,b\in\R$.
+	\begin{enumerate}[(i)]
+		\item (Linearity) $\E[aX+bY]=a\E[X]+b\E[Y]$.
+		\item (Monotonicity) $X\leq Y$ pointwise implies $\E[X]\leq\E[Y]$; and
+		      $X\geq0$ with $\E[X]=0$ implies $\Prob(X=0)=1$.
+		\item (Change of variables) $\E[g(X)]=\sum_{x\in X(\Omega)}g(x)f(x)$ for any
+		      $g\colon\R\to\R$ for which the sum converges absolutely.
+		\item (Independence) If $X$ and $Y$ are independent, meaning
+		      $\Prob([X\in A]\cap[Y\in B])=\Prob(X\in A)\Prob(Y\in B)$ for all Borel
+		      $A,B$, then $\E[XY]=\E[X]\E[Y]$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i)--(iii) are rearrangements of absolutely convergent sums, using
+	\eqref{eq:expectation} in its second form for (i) and its first form for (iii).
+	For the second half of (ii), if $\Prob(X>0)>0$ then $\Prob(X>1/k)>0$ for some
+	$k$ by countable additivity applied to $[X>0]=\bigcup_k[X>1/k]$, and then
+	$\E[X]\geq(1/k)\Prob(X>1/k)>0$. For (iv), independence makes the joint mass
+	function factor, $f_{X,Y}(x,y)=f_X(x)f_Y(y)$, and
+	$\E[XY]=\sum_{x,y}xyf_X(x)f_Y(y)=\bigl(\sum_xxf_X(x)\bigr)\bigl(\sum_yyf_Y(y)\bigr)$.
+\end{proof}
+
+\begin{definition}[Variance and covariance]\label{def:variance}
+	For square-integrable $X,Y$,
+	\[
+		\Var(X)\eqdef\E\bigl[(X-\E[X])^{2}\bigr],
+		\qquad
+		\Cov(X,Y)\eqdef\E\bigl[(X-\E[X])(Y-\E[Y])\bigr],
+	\]
+	\[
+		\Corr(X,Y)\eqdef\frac{\Cov(X,Y)}{\sqrt{\Var(X)\Var(Y)}}\,,
+		\qquad\text{defined when }\Var(X)\Var(Y)>0 .
+	\]
+	\nidx{variance}{$\Var(X)$, $\Cov(X,Y)$, variance and covariance}
+\end{definition}
+
+\begin{proposition}[The variance identity]\label{prop:variance-identity}
+	For square-integrable $X$ and $Y$,
+	\begin{equation}\label{eq:variance-identity}
+		\Var(X)=\E[X^{2}]-\bigl(\E[X]\bigr)^{2},
+		\qquad
+		\Cov(X,Y)=\E[XY]-\E[X]\E[Y] .
+	\end{equation}
+	More generally, for any $c\in\R$,
+	$\E\bigl[(X-c)^{2}\bigr]=\Var(X)+\bigl(\E[X]-c\bigr)^{2}$, so
+	$c\mapsto\E[(X-c)^{2}]$ is minimised uniquely at $c=\E[X]$.
+\end{proposition}
+
+\begin{proof}
+	Write $\mu\eqdef\E[X]$ and expand, using
+	\autoref{prop:expectation-properties}(i) and the fact that $\mu$ is a constant:
+	\[
+		\E\bigl[(X-c)^{2}\bigr]
+		=\E\bigl[(X-\mu)^{2}\bigr]+2(\mu-c)\underbrace{\E[X-\mu]}_{=0}+(\mu-c)^{2}
+		=\Var(X)+(\mu-c)^{2}.
+	\]
+	Taking $c=0$ gives the first identity in \eqref{eq:variance-identity}; the
+	covariance identity is the same expansion applied to the product. The
+	minimisation claim is immediate since $(\mu-c)^{2}\geq0$ with equality only at
+	$c=\mu$.
+\end{proof}
+
+The last sentence is the reason the mean, and not some other centre, is the
+object that appears throughout asset pricing and econometrics: it is the constant
+that best predicts $X$ in mean square. \autoref{thm:best-predictor} extends the
+statement from constants to functions of a conditioning variable, and
+\autoref{prop:best-linear-predictor} to affine functions.
+
+\begin{theorem}[Jensen's inequality]\label{thm:jensen}
+	Let $I\subseteq\R$ be an interval, $\varphi\colon I\to\R$ convex, and $X$ an
+	integrable random variable with $\Prob(X\in I)=1$ and $\E[X]$ in the interior of
+	$I$. Then $\E[\varphi(X)]\geq\varphi(\E[X])$, with equality if and only if
+	$\varphi$ is affine on the smallest interval carrying all the mass of $X$. The
+	inequality reverses for concave $\varphi$.
+\end{theorem}
+
+\begin{proof}
+	Put $\mu\eqdef\E[X]$. By \autoref{prop:convex-epigraph} the set $\epi\varphi$ is
+	convex, and $(\mu,\varphi(\mu))$ lies on its boundary, so
+	\autoref{thm:supporting-hyperplane} supplies a supporting hyperplane: there is
+	$(a,b)\neq0$ with $a x+b t\geq a\mu+b\varphi(\mu)$ for every
+	$(x,t)\in\epi\varphi$. Since $t$ may be taken arbitrarily large, $b\geq0$; and
+	$b=0$ would force $ax\geq a\mu$ for all $x\in I$ with $a\neq0$, impossible
+	because $\mu$ is interior to $I$. Dividing by $b>0$ and setting
+	$s\eqdef-a/b$ gives the supporting line
+	\begin{equation}\label{eq:supporting-line}
+		\varphi(x)\geq\varphi(\mu)+s(x-\mu)\qquad\text{for all }x\in I .
+	\end{equation}
+	Substituting $X$ and taking expectations, monotonicity and linearity
+	(\autoref{prop:expectation-properties}) give
+	$\E[\varphi(X)]\geq\varphi(\mu)+s\E[X-\mu]=\varphi(\mu)$. Equality forces
+	$\E\bigl[\varphi(X)-\varphi(\mu)-s(X-\mu)\bigr]=0$ with a non-negative
+	integrand, hence by \autoref{prop:expectation-properties}(ii) the integrand
+	vanishes almost surely: $\varphi$ agrees with the affine function
+	\eqref{eq:supporting-line} on the support of $X$.
+\end{proof}
+
+\begin{eg}[Risk aversion is Jensen]\label{eg:jensen-risk}
+	If $u$ is concave, \autoref{thm:jensen} gives
+	$\E[u(W)]\leq u(\E[W])$: the agent prefers the expected value of the gamble to
+	the gamble. The certainty equivalent $c$ defined by $u(c)=\E[u(W)]$ therefore
+	satisfies $c\leq\E[W]$, and the risk premium $\E[W]-c$ is non-negative. The
+	second-order expansion of \autoref{thm:arrow-pratt} quantified this premium as
+	$\tfrac12A(\E[W])\Var(W)$ for small risks; Jensen gives the sign for risks of
+	any size, with no differentiability and no smallness. Equality holds only if $u$
+	is affine on the support of $W$, which is the definition of risk neutrality
+	there.
+\end{eg}
+
+\section{Conditional Probability and Bayes' Rule}\label{sec:prob-bayes}
+
+\begin{definition}[Conditional probability]\label{def:conditional-probability}
+	For events $D,H$ with $\Prob(H)>0$,
+	\begin{equation}\label{eq:conditional-probability}
+		\Prob(D\mid H)\eqdef\frac{\Prob(D\cap H)}{\Prob(H)} .
+	\end{equation}
+	Events $D$ and $H$ are \dfnas{independent}{independent events} if
+	$\Prob(D\cap H)=\Prob(D)\Prob(H)$, equivalently
+	$\Prob(D\mid H)=\Prob(D)$ when $\Prob(H)>0$.
+\end{definition}
+
+For fixed $H$ with $\Prob(H)>0$ the map $E\mapsto\Prob(E\mid H)$ is itself a
+probability measure on $(\Omega,\mathcal{F})$: it assigns $1$ to $\Omega$ and is
+$\sigma$-additive, both immediately from \eqref{eq:conditional-probability} and
+$\sigma$-additivity of $\Prob$. Everything proved for probability measures
+therefore applies to conditional probabilities without further argument.
+
+\begin{theorem}[Bayes' rule]\label{thm:bayes}
+	Let $D,H$ be events with $\Prob(D)>0$ and $\Prob(H)>0$. Then
+	\begin{equation}\label{eq:bayes-1}
+		\Prob(H\mid D)=\frac{\Prob(H)\,\Prob(D\mid H)}{\Prob(D)} .
+	\end{equation}
+	If moreover $0<\Prob(H)<1$,
+	\begin{equation}\label{eq:bayes-2}
+		\Prob(H\mid D)
+		=\frac{\Prob(H)\,\Prob(D\mid H)}
+		{\Prob(H)\,\Prob(D\mid H)+\Prob(H^{c})\,\Prob(D\mid H^{c})} .
+	\end{equation}
+	More generally, if $(H_j)_{j=1}^{n}$ partitions $\Omega$ with $\Prob(H_j)>0$ for
+	every $j$, then for each $i$
+	\begin{equation}\label{eq:bayes-partition}
+		\Prob(H_i\mid D)
+		=\frac{\Prob(D\mid H_i)\Prob(H_i)}
+		{\sum_{j=1}^{n}\Prob(D\mid H_j)\Prob(H_j)} .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	By \eqref{eq:conditional-probability} applied twice,
+	$\Prob(H\mid D)\Prob(D)=\Prob(D\cap H)=\Prob(D\mid H)\Prob(H)$; dividing by
+	$\Prob(D)>0$ gives \eqref{eq:bayes-1}. For the denominators, the events
+	$D\cap H_j$ are pairwise disjoint with union $D$ because $(H_j)$ partitions
+	$\Omega$, so finite additivity (\autoref{prop:probability-basics}(iii)) gives
+	the \dfnas{law of total probability}{law of total probability}
+	\begin{equation}\label{eq:total-probability}
+		\Prob(D)=\sum_{j=1}^{n}\Prob(D\cap H_j)
+		=\sum_{j=1}^{n}\Prob(D\mid H_j)\Prob(H_j) .
+	\end{equation}
+	Substituting \eqref{eq:total-probability} into \eqref{eq:bayes-1} gives
+	\eqref{eq:bayes-partition}, and \eqref{eq:bayes-2} is the case
+	$n=2$ with $H_1=H$, $H_2=H^{c}$.
+\end{proof}
+
+The content of \eqref{eq:bayes-1} is a reversal of the direction of conditioning.
+The likelihood $\Prob(D\mid H)$ runs from hypothesis to data, from cause to
+effect; the posterior $\Prob(H\mid D)$ runs from data back to hypothesis, and
+the theorem says the two are related by the ratio of the prior to the marginal
+likelihood of the data \autocite[slide 6]{fukuda2026probability}.
+
+\begin{eg}[Base rates dominate]\label{eg:medical-test}
+	A disease affects $1\%$ of the population. The test is positive with probability
+	$0.95$ on the diseased and negative with probability $0.9$ on the healthy. Let
+	$H$ be ``diseased'' and $D$ ``tests positive''. Then
+	\[
+		\Prob(H\mid D)
+		=\frac{0.01\times0.95}{0.01\times0.95+0.99\times0.10}
+		=\frac{0.0095}{0.1085}=\frac{19}{217}\approx0.0876 .
+	\]
+	A test with $95\%$ sensitivity and $90\%$ specificity leaves the posterior
+	probability of disease below $9\%$. The reason is arithmetic rather than
+	statistical: the $99\%$ healthy generate $9.9$ false positives per hundred while
+	the $1\%$ diseased generate $0.95$ true positives, and no reading of the
+	likelihoods alone can reveal this. Neglect of the denominator in
+	\eqref{eq:bayes-2} is the base-rate fallacy, and it is the mechanism behind
+	overconfidence in models of belief updating.
+\end{eg}
+
+\begin{eg}[The airport carousel]\label{eg:carousel}
+	Bags are correctly loaded with probability $0.9$. Conditional on the bag having
+	been loaded, it fails to appear after nine minutes with probability $0.1$; if it
+	was not loaded it certainly does not appear. With $H$ ``not loaded'' and $D$
+	``bag missing'',
+	\[
+		\Prob(H\mid D)=\frac{0.1\times1}{0.1\times1+0.9\times0.1}
+		=\frac{0.1}{0.19}=\frac{10}{19}\approx0.5263 .
+	\]
+	Waiting turns a prior of $0.1$ into a posterior above one half. The magnitude of
+	the revision is governed by the likelihood ratio
+	$\Prob(D\mid H)/\Prob(D\mid H^{c})=10$, which is the sufficient statistic
+	for the evidence: \eqref{eq:bayes-2} in odds form reads
+	\begin{equation}\label{eq:odds-form}
+		\frac{\Prob(H\mid D)}{\Prob(H^{c}\mid D)}
+		=\frac{\Prob(H)}{\Prob(H^{c})}\cdot
+		\frac{\Prob(D\mid H)}{\Prob(D\mid H^{c})},
+	\end{equation}
+	posterior odds equal prior odds times the likelihood ratio.
+\end{eg}
+
+\begin{eg}[A poll]\label{eg:poll}
+	Party $A$ has $30\%$ support, party $B$ has $40\%$, and $30\%$ support neither.
+	The cabinet is supported by $80\%$ of $A$'s supporters, $20\%$ of $B$'s and
+	$50\%$ of the rest. By \eqref{eq:bayes-partition} with the three-element
+	partition, a randomly chosen cabinet supporter belongs to party $A$ with
+	probability
+	\[
+		\frac{0.3\times0.8}{0.3\times0.8+0.4\times0.2+0.3\times0.5}
+		=\frac{0.24}{0.47}=\frac{24}{47}\approx0.5106 .
+	\]
+\end{eg}
+
+\subsection{Economic application: order flow and the market maker's beliefs}
+\label{subsec:prob-microstructure}
+
+\paragraph{Environment.} An asset has value $V\in\{H,L\}$ with $H>L$. A market
+maker holds the prior $p\eqdef\Prob(V=H)\in(0,1)$ and quotes prices at which
+they will trade one unit. A trader arrives; with probability $q\in(0,1)$ the
+trader is \emph{informed} and knows $V$, and with probability $1-q$ the trader is
+\emph{uninformed}. The informed trader buys when $V=H$ and sells when $V=L$; the
+uninformed trader buys or sells with probability $\tfrac12$ each, independently of
+$V$.
+
+\begin{proposition}[Posterior after a sale]\label{prop:microstructure}
+	Let $S$ denote the event that the first trade is a sale. Then
+	\begin{equation}\label{eq:microstructure-posterior}
+		\Prob(V=H\mid S)=\frac{p(1-q)}{p(1-q)+(1-p)(1+q)},
+	\end{equation}
+	which is strictly less than $p$ for every $q\in(0,1)$, is strictly decreasing in
+	$q$, equals $p$ at $q=0$ and tends to $0$ as $q\to1$.
+\end{proposition}
+
+\begin{proof}
+	Conditioning on the trader's type and using
+	\eqref{eq:total-probability} within each state,
+	\[
+		\Prob(S\mid V=H)=q\cdot0+(1-q)\cdot\tfrac12=\tfrac{1-q}{2},
+		\qquad
+		\Prob(S\mid V=L)=q\cdot1+(1-q)\cdot\tfrac12=\tfrac{1+q}{2},
+	\]
+	because an informed trader never sells when the value is high and always sells
+	when it is low. Substituting into \eqref{eq:bayes-2} and cancelling the factor
+	$\tfrac12$ gives \eqref{eq:microstructure-posterior}. Writing the posterior as
+	$\bigl(1+\frac{1-p}{p}\cdot\frac{1+q}{1-q}\bigr)^{-1}$ exhibits it as strictly
+	decreasing in $q$, since $q\mapsto(1+q)/(1-q)$ is strictly increasing on
+	$(0,1)$; the boundary values follow by inspection.
+\end{proof}
+
+The comparative static in $q$ is the informational content of order flow. When
+$q=0$ every trade is noise and prices do not move; as $q\to1$ a single sale
+reveals the state. The market maker who sets the bid at
+$\E[V\mid S]=L+(H-L)\Prob(V=H\mid S)$ and the ask at $\E[V\mid B]$ makes
+zero expected profit on each trade and covers the losses to informed traders with
+the gains from uninformed ones; the difference between the two quotes is the
+bid--ask spread, and \eqref{eq:microstructure-posterior} shows it widens in $q$.
+This is the adverse-selection account of the spread, and the calculation above is
+its entire mechanism \autocite[slide 12]{fukuda2026probability}; see
+\textcite[Sec.~3.A.1]{ohara1998market} for the sequential-trade model built on
+it and \textcite{kyle1985continuous} for the continuous version in which the
+informed trader chooses order size strategically.
+
+\section{Conditional Expectation}\label{sec:prob-conditional}
+
+\begin{definition}[Conditional expectation given an event]\label{def:conditional-expectation-event}
+	For an event $H$ with $\Prob(H)>0$ and a random variable $X$,
+	\begin{equation}\label{eq:conditional-expectation}
+		\E[X\mid H]\eqdef\sum_{x\in X(H)}x\,\Prob\bigl([X=x]\mid H\bigr)
+		=\sum_{\omega\in H}X(\omega)\,\Prob\bigl(\{\omega\}\mid H\bigr)
+		=\frac{\E[X\one_H]}{\Prob(H)},
+	\end{equation}
+	where $X(H)\eqdef\{X(\omega) : \omega\in H\}$ and $\one_H$ is the indicator of
+	$H$.
+\end{definition}
+
+\begin{proof}[Proof of the equalities in \eqref{eq:conditional-expectation}]
+	The first equals the second by grouping $\omega\in H$ according to the value of
+	$X(\omega)$, exactly as in \eqref{eq:expectation}. For the third, expand
+	$\Prob(\{\omega\}\mid H)=\Prob(\{\omega\})/\Prob(H)$ for $\omega\in H$ and
+	note that $X(\omega)\one_H(\omega)=0$ for $\omega\notin H$, so
+	$\sum_{\omega\in H}X(\omega)\Prob(\{\omega\})
+		=\sum_{\omega\in\Omega}X(\omega)\one_H(\omega)\Prob(\{\omega\})=\E[X\one_H]$.
+\end{proof}
+
+\begin{definition}[Conditional expectation given a random variable]
+	\label{def:conditional-expectation-rv}
+	Let $X,Y$ be random variables. The \dfnas{conditional expectation}{conditional
+		expectation} $\E[Y\mid X]$ is the random variable
+	$\omega\mapsto\E\bigl[Y\mid[X=X(\omega)]\bigr]$, that is, the function of $X$
+	whose value at $x\in X(\Omega)$ is
+	\begin{equation}\label{eq:conditional-expectation-rv}
+		\E[Y\mid X=x]\eqdef\sum_{y\in Y(\Omega)}y\,f_{Y\mid X}(y\mid x),
+		\qquad
+		f_{Y\mid X}(y\mid x)\eqdef\Prob\bigl([Y=y]\mid[X=x]\bigr).
+	\end{equation}
+	\nidx{condexpectation}{$\E[Y\mid X]$, conditional expectation}
+\end{definition}
+
+The distinction between \autoref{def:conditional-expectation-event} and
+\autoref{def:conditional-expectation-rv} is that the first is a number and the
+second a random variable --- a function of $X$, hence itself measurable with
+respect to the information generated by $X$. Everything that follows turns on
+this: $\E[Y\mid X]$ is the best summary of $Y$ available to someone who
+observes $X$.
+
+\begin{proposition}[Taking out what is known]\label{prop:taking-out}
+	Let $X,Y$ be random variables and $g\colon\R\to\R$ with $g(X)Y$ integrable.
+	Then
+	\begin{equation}\label{eq:taking-out}
+		\E\bigl[g(X)Y\mid X\bigr]=g(X)\,\E[Y\mid X] .
+	\end{equation}
+	In particular $\E[g(X)\mid X]=g(X)$ and $\E[a\mid X]=a$ for constant $a$.
+\end{proposition}
+
+\begin{proof}
+	Fix $x_0\in X(\Omega)$ and put $W\eqdef g(X)Y$. If $g(x_0)=0$ then
+	$W$ is identically zero on $[X=x_0]$ and both sides of \eqref{eq:taking-out}
+	vanish there. If $g(x_0)\neq0$ then on the event $[X=x_0]$ we have
+	$W=w$ if and only if $Y=w/g(x_0)$, so
+	\[
+		\Prob\bigl([W=w]\mid[X=x_0]\bigr)
+		=\Prob\Bigl(\bigl[Y=\tfrac{w}{g(x_0)}\bigr]\mid[X=x_0]\Bigr),
+	\]
+	and substituting $y=w/g(x_0)$ in \eqref{eq:conditional-expectation-rv},
+	\[
+		\E[W\mid X=x_0]=\sum_{w}w\,\Prob\bigl([W=w]\mid[X=x_0]\bigr)
+		=g(x_0)\sum_{y}y\,\Prob\bigl([Y=y]\mid[X=x_0]\bigr)
+		=g(x_0)\E[Y\mid X=x_0].
+	\]
+	Since $x_0$ was arbitrary, \eqref{eq:taking-out} holds as an identity between
+	random variables. Taking $Y\equiv1$ gives $\E[g(X)\mid X]=g(X)$, and $g$
+	constant gives the last claim.
+\end{proof}
+
+\begin{theorem}[Law of iterated expectations]\label{thm:lie}
+	\begin{enumerate}[(i)]
+		\item Let $(H_j)_{j=1}^{m}$ partition $\Omega$ with $\Prob(H_j)>0$ for every
+		      $j$, and let $X$ be integrable. Then
+		      \begin{equation}\label{eq:lie-partition}
+			      \E[X]=\sum_{j=1}^{m}\E[X\mid H_j]\,\Prob(H_j).
+		      \end{equation}
+		\item For integrable $X$ and any random variable $Y$,
+		      \begin{equation}\label{eq:lie}
+			      \E[X]=\E\bigl[\E[X\mid Y]\bigr].
+		      \end{equation}
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i) By the third form of \eqref{eq:conditional-expectation},
+	$\E[X\mid H_j]\Prob(H_j)=\E[X\one_{H_j}]$. Since $(H_j)$ partitions $\Omega$,
+	$\sum_j\one_{H_j}=1$ pointwise, so linearity
+	(\autoref{prop:expectation-properties}(i)) gives
+	$\sum_j\E[X\one_{H_j}]=\E\bigl[X\sum_j\one_{H_j}\bigr]=\E[X]$.
+
+	(ii) Apply (i) to the partition $H_j\eqdef[Y=y_j]$, $y_j\in Y(\Omega)$, and
+	observe that $\sum_j\E[X\mid Y=y_j]\Prob(Y=y_j)$ is by
+	\eqref{eq:expectation} and \eqref{eq:conditional-expectation-rv} precisely the
+	expectation of the random variable $\E[X\mid Y]$, whose value on $[Y=y_j]$ is
+	$\E[X\mid Y=y_j]$ and which takes that value with probability
+	$\Prob(Y=y_j)$.
+\end{proof}
+
+These are Theorems 2.4 and 2.5 of \textcite[pp.~74--75]{fukuda2026notes}
+\autocite[slides 18--19]{fukuda2026probability}. The statement to hold on to is
+that conditioning on less information cannot change the average: an expectation
+computed in two stages, first within each cell of a partition and then across
+cells, equals the expectation computed at once. Almost every argument in dynamic
+economics that replaces a many-period expectation by a one-period expectation of
+a continuation value is an application of \eqref{eq:lie}.
+
+\begin{proposition}[Conditional Jensen]\label{prop:conditional-jensen}
+	Let $\varphi\colon I\to\R$ be convex on an interval $I$, and let $Y$ be
+	integrable with $\Prob(Y\in I)=1$ and $\E[Y\mid X]$ almost surely interior to
+	$I$. Then
+	\begin{equation}\label{eq:conditional-jensen}
+		\E\bigl[\varphi(Y)\mid X\bigr]\geq\varphi\bigl(\E[Y\mid X]\bigr)
+		\qquad\text{almost surely,}
+	\end{equation}
+	and the inequality reverses for concave $\varphi$.
+\end{proposition}
+
+\begin{proof}
+	Fix $x\in X(\Omega)$. Conditional on $[X=x]$ the map
+	$E\mapsto\Prob(E\mid[X=x])$ is a probability measure, as noted after
+	\autoref{def:conditional-probability}, and $\E[\cdot\mid X=x]$ is the
+	expectation under it. \autoref{thm:jensen} applied under that measure, with
+	$\mu\eqdef\E[Y\mid X=x]$ interior to $I$, gives
+	$\E[\varphi(Y)\mid X=x]\geq\varphi(\mu)$. As $x$ was arbitrary, the inequality
+	holds pointwise as an inequality between random variables.
+\end{proof}
+
+Taking expectations in \eqref{eq:conditional-jensen} and applying
+\eqref{eq:lie} recovers \autoref{thm:jensen}, so the conditional version is
+strictly stronger. It is what makes the value function of a dynamic programme
+concave in the state when the return function is concave, and it is what forces
+the martingale $\bigl(\E[Y\mid X_t]\bigr)_t$ to have a convex-increasing
+transform.
+
+\section{Conditional Expectation as a Projection}\label{sec:prob-projection}
+
+Let $L^{2}\eqdef L^{2}(\Omega,\mathcal{F},\Prob)$ be the space of square-integrable random
+variables with the inner product $\ip{U}{V}\eqdef\E[UV]$; it is a Hilbert space,
+and the geometry of \autoref{ch:projection} applies verbatim with
+$\norm{U}^{2}=\E[U^{2}]$.
+
+\begin{theorem}[Conditional expectation is the best predictor]\label{thm:best-predictor}
+	Let $X,Y\in L^{2}$ and let
+	$M(X)\eqdef\{\phi(X) : \phi\ \text{Borel},\ \phi(X)\in L^{2}\}$, a closed
+	subspace of $L^{2}$. Then for every $\phi$ with $\phi(X)\in L^{2}$,
+	\begin{equation}\label{eq:best-predictor}
+		\E\bigl[(Y-\phi(X))^{2}\bigr]
+		=\E\bigl[(Y-\E[Y\mid X])^{2}\bigr]
+		+\E\bigl[(\E[Y\mid X]-\phi(X))^{2}\bigr]
+		\geq\E\bigl[(Y-\E[Y\mid X])^{2}\bigr],
+	\end{equation}
+	with equality if and only if $\phi(X)=\E[Y\mid X]$ almost surely. Equivalently,
+	$\E[Y\mid X]$ is the orthogonal projection of $Y$ onto $M(X)$:
+	$P_{M(X)}Y=\E[Y\mid X]$.
+\end{theorem}
+
+\begin{proof}
+	Write $\hat Y\eqdef\E[Y\mid X]$ and decompose
+	$Y-\phi(X)=(Y-\hat Y)+(\hat Y-\phi(X))$. Expanding the square,
+	\[
+		\E\bigl[(Y-\phi(X))^{2}\bigr]
+		=\E\bigl[(Y-\hat Y)^{2}\bigr]
+		+2\,\E\bigl[(Y-\hat Y)(\hat Y-\phi(X))\bigr]
+		+\E\bigl[(\hat Y-\phi(X))^{2}\bigr].
+	\]
+	The cross term vanishes. Indeed $\hat Y-\phi(X)$ is a function of $X$, so
+	\autoref{prop:taking-out} and then \eqref{eq:lie} give
+	\[
+		\E\bigl[(Y-\hat Y)(\hat Y-\phi(X))\bigr]
+		=\E\Bigl[\E\bigl[(Y-\hat Y)(\hat Y-\phi(X))\mid X\bigr]\Bigr]
+		=\E\Bigl[(\hat Y-\phi(X))\,\underbrace{\bigl(\E[Y\mid X]-\hat Y\bigr)}_{=0}\Bigr]
+		=0,
+	\]
+	using $\E[\hat Y\mid X]=\hat Y$ from \autoref{prop:taking-out}. This proves the
+	identity in \eqref{eq:best-predictor}; the inequality and its equality case
+	follow because the second term is non-negative and vanishes only when
+	$\hat Y=\phi(X)$ almost surely, by
+	\autoref{prop:expectation-properties}(ii).
+
+	The vanishing of the cross term for \emph{every} $\phi$ says
+	$Y-\hat Y\perp M(X)$, and $\hat Y\in M(X)$; by
+	\autoref{prop:proj-subspace-char} this characterises $\hat Y$ as the orthogonal
+	projection of $Y$ onto $M(X)$, whose existence and uniqueness are
+	\autoref{thm:orthogonal-decomposition}.
+\end{proof}
+
+Three readings of \eqref{eq:best-predictor} are worth separating. As a
+minimisation, it says the conditional expectation is the mean-square-optimal
+forecast among all functions of the conditioning variable, extending the
+constant-forecast statement of \autoref{prop:variance-identity}. As a geometric
+statement, it identifies conditioning with orthogonal projection, so that all the
+structure of \autoref{ch:projection} --- idempotence, the Pythagorean
+decomposition, contraction in norm --- transfers to conditioning; the tower
+property \eqref{eq:lie} becomes the composition of projections onto nested
+subspaces. As a variance decomposition, taking $\phi\equiv\E[Y]$ in
+\eqref{eq:best-predictor} and using \eqref{eq:lie} yields
+\begin{equation}\label{eq:variance-decomposition}
+	\Var(Y)=\E\bigl[\Var(Y\mid X)\bigr]+\Var\bigl(\E[Y\mid X]\bigr),
+\end{equation}
+the law of total variance: unexplained variation plus explained variation. In a
+regression context the second term over the first is the population $R^{2}$.
+
+\begin{remark}[Linear versus general prediction]\label{rem:linear-vs-general}
+	\autoref{prop:best-linear-predictor} solved the same problem over the strictly
+	smaller subspace $\Span\{1,X\}\subseteq M(X)$ and produced
+	\begin{equation}\label{eq:blp-again}
+		\E^{\ast}[Y\mid X]=\E[Y]+\frac{\Cov(X,Y)}{\Var(X)}\bigl(X-\E[X]\bigr).
+	\end{equation}
+	Since the subspace is smaller, the linear predictor is weakly worse, and
+	strictly worse whenever $\E[Y\mid X]$ is not affine in $X$. The two coincide
+	exactly when $\E[Y\mid X]$ happens to be affine, which is the content of the
+	next proposition and the reason the bivariate normal is the workhorse of applied
+	work: it is the case in which linear regression estimates the conditional
+	expectation rather than merely its best affine approximation.
+\end{remark}
+
+\begin{proposition}[The Gaussian case]\label{prop:bivariate-normal}
+	Let $(X,Y)$ be jointly normal with $\Var(X)>0$. Then
+	\begin{equation}\label{eq:gaussian-conditional}
+		\E[Y\mid X]=\E[Y]+\frac{\Cov(X,Y)}{\Var(X)}\bigl(X-\E[X]\bigr),
+		\qquad
+		\Var(Y\mid X)=\bigl(1-\Corr(X,Y)^{2}\bigr)\Var(Y),
+	\end{equation}
+	the conditional variance being a constant, not a function of $X$.
+\end{proposition}
+
+The multivariate statement, in which $X$ and $Y$ are vectors and the ratio
+$\Cov(X,Y)/\Var(X)$ becomes $\Sigma_{12}\Sigma_{22}^{-1}$, is
+\autoref{thm:mvn-conditional} of \autoref{app:normal}, together with the affine
+stability of the family that makes the argument work.
+
+\begin{proof}
+	Let $g(X)$ denote the right-hand side of \eqref{eq:blp-again}. By construction
+	$Y-g(X)$ is orthogonal to $1$ and to $X$, that is $\E[Y-g(X)]=0$ and
+	$\Cov\bigl(X,Y-g(X)\bigr)=0$. Now $Y-g(X)$ and $X$ are jointly normal, being
+	affine images of the jointly normal pair $(X,Y)$, and for jointly normal
+	variables zero correlation implies independence, since the joint density then
+	factors. Hence
+	$\E[Y-g(X)\mid X]=\E[Y-g(X)]=0$, which is the first identity in
+	\eqref{eq:gaussian-conditional}.
+
+	For the variance, $Y-\E[Y]=\frac{\Cov(X,Y)}{\Var(X)}(X-\E[X])+(Y-g(X))$ is an
+	orthogonal decomposition, so \autoref{prop:pythagoras} gives
+	\[
+		\Var(Y)=\frac{\Cov(X,Y)^{2}}{\Var(X)^{2}}\Var(X)+\Var\bigl(Y-g(X)\bigr)
+		=\frac{\Cov(X,Y)^{2}}{\Var(X)}+\Var(Y\mid X),
+	\]
+	and rearranging gives the stated expression with
+	$\Corr(X,Y)^{2}=\Cov(X,Y)^{2}/(\Var(X)\Var(Y))$.
+\end{proof}
+
+\section{Normal--Normal Updating}\label{sec:prob-normal}
+
+\begin{theorem}[Gaussian updating, one observation]\label{thm:normal-updating}
+	Let $X\sim\mathcal{N}(\mu_x,\sigma_x^{2})$ with $\sigma_x^2>0$ and let
+	$Y=X+\varepsilon$ with $\varepsilon\sim\mathcal{N}(0,\sigma_\varepsilon^{2})$,
+	$\sigma_\varepsilon^2>0$, independent of $X$. Then
+	\begin{equation}\label{eq:normal-updating}
+		X\mid Y=y\ \sim\
+		\mathcal{N}\!\left(
+		\frac{\sigma_\varepsilon^{2}\mu_x+\sigma_x^{2}y}
+		{\sigma_x^{2}+\sigma_\varepsilon^{2}},\
+		\frac{\sigma_x^{2}\sigma_\varepsilon^{2}}
+		{\sigma_x^{2}+\sigma_\varepsilon^{2}}
+		\right).
+	\end{equation}
+	Writing $\tau_x\eqdef1/\sigma_x^{2}$ and
+	$\tau_\varepsilon\eqdef1/\sigma_\varepsilon^{2}$ for the \dfnas{precisions}{precision}
+	and $\tau\eqdef\tau_x+\tau_\varepsilon$, this reads
+	\begin{equation}\label{eq:normal-updating-precision}
+		X\mid Y=y\ \sim\
+		\mathcal{N}\!\left(\frac{\tau_x\mu_x+\tau_\varepsilon y}{\tau},\ \tau^{-1}\right).
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	The prior density and the likelihood are
+	\[
+		\pi(x)=\frac{1}{\sqrt{2\pi}\sigma_x}
+		\exp\!\left(-\frac{(x-\mu_x)^{2}}{2\sigma_x^{2}}\right),
+		\qquad
+		L(y\mid x)=\frac{1}{\sqrt{2\pi}\sigma_\varepsilon}
+		\exp\!\left(-\frac{(y-x)^{2}}{2\sigma_\varepsilon^{2}}\right),
+	\]
+	the second because $Y-X=\varepsilon$ is independent of $X$. By Bayes' rule in
+	density form,
+	$f(x\mid Y=y)=\pi(x)L(y\mid x)\big/\int_{-\infty}^{\infty}
+		\pi(\tilde x)L(y\mid\tilde x)\,\diff\tilde x$, so as a function of $x$,
+	\[
+		f(x\mid Y=y)\propto
+		\exp\!\left(-\frac{(x-\mu_x)^{2}}{2\sigma_x^{2}}
+		-\frac{(y-x)^{2}}{2\sigma_\varepsilon^{2}}\right).
+	\]
+	Complete the square in the exponent. Multiplying out,
+	\begin{align*}
+		-\frac{(x-\mu_x)^{2}}{2\sigma_x^{2}}-\frac{(y-x)^{2}}{2\sigma_\varepsilon^{2}}
+		 & =-\frac{1}{2\sigma_x^{2}\sigma_\varepsilon^{2}}
+		\Bigl[\sigma_\varepsilon^{2}(x-\mu_x)^{2}+\sigma_x^{2}(y-x)^{2}\Bigr]         \\
+		 & =-\frac{1}{2\sigma_x^{2}\sigma_\varepsilon^{2}}
+		\Bigl[(\sigma_x^{2}+\sigma_\varepsilon^{2})x^{2}
+		-2(\sigma_\varepsilon^{2}\mu_x+\sigma_x^{2}y)x
+		+(\sigma_\varepsilon^{2}\mu_x^{2}+\sigma_x^{2}y^{2})\Bigr]                    \\
+		 & =-\frac{\sigma_x^{2}+\sigma_\varepsilon^{2}}
+		{2\sigma_x^{2}\sigma_\varepsilon^{2}}
+		\left(x-\frac{\sigma_\varepsilon^{2}\mu_x+\sigma_x^{2}y}
+		{\sigma_x^{2}+\sigma_\varepsilon^{2}}\right)^{2}+c(y),
+	\end{align*}
+	where $c(y)$ collects all terms free of $x$. Exponentiating, the posterior
+	density is proportional to a Gaussian kernel in $x$ with mean
+	$(\sigma_\varepsilon^{2}\mu_x+\sigma_x^{2}y)/(\sigma_x^{2}+\sigma_\varepsilon^{2})$
+	and variance
+	$\sigma_x^{2}\sigma_\varepsilon^{2}/(\sigma_x^{2}+\sigma_\varepsilon^{2})$; since
+	a density is determined by its kernel up to the normalising constant, and by
+	\autoref{prop:gaussian-integral} that constant is
+	$\bigl(2\pi\sigma_x^{2}\sigma_\varepsilon^{2}/
+		(\sigma_x^{2}+\sigma_\varepsilon^{2})\bigr)^{-1/2}$,
+	\eqref{eq:normal-updating} follows. The precision form is the substitution
+	$\sigma_x^{2}=1/\tau_x$, $\sigma_\varepsilon^{2}=1/\tau_\varepsilon$, under which
+	$\sigma_x^2+\sigma_\varepsilon^2=\tau/(\tau_x\tau_\varepsilon)$.
+\end{proof}
+
+This is the conjugate normal model of \textcite[Sec.~2.5, pp.~39--42]{gelman2013bayesian},
+whose multivariate counterpart with known variance is Section~3.5 of the same
+work; the precision form \eqref{eq:normal-updating-precision} is the statement
+there that the posterior precision is the prior precision plus the data
+precision. Three of its properties are the reason the Gaussian model is used
+wherever information is aggregated.
+
+\emph{Precisions add.} The posterior precision $\tau=\tau_x+\tau_\varepsilon$
+does not depend on the realisation $y$: the informativeness of an observation is
+known before it is made. Consequently the posterior variance
+$\tau^{-1}<\sigma_x^{2}$ falls with every observation, deterministically.
+
+\emph{The posterior mean is a precision-weighted average.} It is linear in $y$,
+\[
+	\E[X\mid Y=y]
+	=\mu_x+\frac{\sigma_x^{2}}{\sigma_x^{2}+\sigma_\varepsilon^{2}}(y-\mu_x),
+\]
+so the response to the surprise $y-\mu_x$ is the ratio of prior variance to total
+variance, between $0$ and $1$. A precise prior or a noisy signal produces
+sluggish updating; the converse produces aggressive updating. Linearity in $y$ is
+also the statement that the best predictor is the best \emph{linear} predictor,
+which is \autoref{prop:bivariate-normal} applied to the jointly normal pair
+$(X,Y)$.
+
+\emph{Conjugacy.} The posterior is again normal, so the operation can be iterated
+without leaving the family --- and this is exactly what makes recursive filtering
+tractable.
+
+\begin{theorem}[Gaussian updating, many observations]\label{thm:normal-updating-many}
+	Let $X\sim\mathcal{N}(\mu_x,\tau_x^{-1})$ and let
+	$Y_j=X+\varepsilon_j$ for $j=1,\dots,n$, where the
+	$\varepsilon_j\sim\mathcal{N}(0,\tau_j^{-1})$ are mutually independent and
+	independent of $X$. Then with $\tau\eqdef\tau_x+\sum_{j=1}^{n}\tau_j$,
+	\begin{equation}\label{eq:normal-updating-many}
+		X\mid(Y_j=y_j)_{j=1}^{n}\ \sim\
+		\mathcal{N}\!\left(\frac{\tau_x}{\tau}\mu_x
+		+\sum_{j=1}^{n}\frac{\tau_j}{\tau}y_j,\ \tau^{-1}\right).
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Independence of the errors makes the joint likelihood the product
+	$\prod_{j}L(y_j\mid x)$, so
+	\[
+		f\bigl(x\mid(Y_j=y_j)_j\bigr)\propto
+		\exp\!\left(-\tfrac12\Bigl[\tau_x(x-\mu_x)^{2}
+			+\sum_{j=1}^{n}\tau_j(x-y_j)^{2}\Bigr]\right).
+	\]
+	The bracket is a quadratic in $x$ with leading coefficient
+	$\tau_x+\sum_j\tau_j=\tau$ and linear coefficient
+	$-2\bigl(\tau_x\mu_x+\sum_j\tau_jy_j\bigr)$, so completing the square as in
+	\autoref{thm:normal-updating} gives
+	$\tau\bigl(x-(\tau_x\mu_x+\sum_j\tau_jy_j)/\tau\bigr)^{2}$ plus terms free of
+	$x$. Identification of the Gaussian kernel gives
+	\eqref{eq:normal-updating-many}.
+\end{proof}
+
+The posterior mean is a weighted average of the prior mean and all the
+observations, with weights proportional to precisions summing to one, and the
+posterior precision is the sum of all precisions. Applying
+\autoref{thm:normal-updating} sequentially, using the posterior after $j$
+observations as the prior for observation $j+1$, gives the same answer --- the
+order of arrival is irrelevant, which is a substantive restriction and not an
+accounting identity.
+
+\subsection{Economic application: CARA--normal portfolio choice}
+\label{subsec:prob-cara}
+
+\paragraph{Environment.} An investor with initial wealth $W_0$ and constant
+absolute risk aversion $a>0$, $u(W)=-e^{-aW}$, chooses a quantity $\theta\in\R$
+of a risky asset with payoff $V\sim\mathcal{N}(\mu,\sigma^{2})$ at price $p$; the
+riskless rate is normalised to zero, so terminal wealth is
+$W=W_0+\theta(V-p)$.
+
+\begin{proposition}[Gaussian demand]\label{prop:cara-demand}
+	The investor's optimal holding is
+	\begin{equation}\label{eq:cara-demand}
+		\theta^{\ast}=\frac{\mu-p}{a\sigma^{2}},
+	\end{equation}
+	and the certainty equivalent of the optimal portfolio is
+	$W_0+(\mu-p)^{2}/(2a\sigma^{2})$. If instead the investor observes a signal
+	$Y=V+\varepsilon$ with $\varepsilon\sim\mathcal{N}(0,\tau_\varepsilon^{-1})$
+	independent of $V$, then $\theta^{\ast}$ is \eqref{eq:cara-demand} with $\mu$
+	and $\sigma^{2}$ replaced by the posterior mean and variance of
+	\autoref{thm:normal-updating}.
+\end{proposition}
+
+\begin{proof}
+	Terminal wealth is normal with mean $W_0+\theta(\mu-p)$ and variance
+	$\theta^{2}\sigma^{2}$, so by \autoref{prop:exponential-moments}
+	\[
+		\E[u(W)]=-\exp\!\left(-a\bigl(W_0+\theta(\mu-p)\bigr)
+		+\tfrac12a^{2}\theta^{2}\sigma^{2}\right).
+	\]
+	Maximising this is minimising the exponent, that is maximising
+	$\theta(\mu-p)-\tfrac12a\theta^{2}\sigma^{2}$, a strictly concave quadratic in
+	$\theta$; \autoref{thm:foc-concave} gives the unique maximiser
+	\eqref{eq:cara-demand}, and substituting back gives an exponent of
+	$-a\bigl(W_0+(\mu-p)^{2}/(2a\sigma^{2})\bigr)$, whose certainty equivalent is
+	the stated value. Conditioning on $Y=y$ replaces the distribution of $V$ by its
+	posterior, which is again normal by \autoref{thm:normal-updating}, and the same
+	computation applies.
+\end{proof}
+
+Demand is linear in the price with slope $-1/(a\sigma^{2})$, and initial wealth
+does not appear --- the wealth effect is exactly zero under CARA, which is what
+makes the model aggregate. Two consequences follow. Because demand is linear in
+the posterior mean and the posterior mean is linear in the signal by
+\autoref{thm:normal-updating}, individual demands are linear in private signals,
+so aggregate demand is linear in the average signal and the market-clearing price
+is a linear statistic of the population's information. This is the mechanism by
+which prices aggregate dispersed information; adding noise traders to prevent the
+price from being fully revealing gives the noisy rational-expectations
+equilibrium of \textcite{grossman1980impossibility}, in which the price is
+informative but not sufficient, so that costly information acquisition remains
+worthwhile. Second, the precision arithmetic of \eqref{eq:normal-updating-precision}
+means an investor with a more precise signal takes a larger position on the same
+price, which is the source of the informed trader's profit in
+\autoref{subsec:prob-microstructure}.
+
+\subsection{Economic application: recursive filtering}\label{subsec:prob-kalman}
+
+Conjugacy makes updating recursive. Let the state follow
+$X_{t+1}=\rho X_t+\eta_{t+1}$ with $\eta_{t+1}\sim\mathcal{N}(0,\tau_2)$ and let the
+observation be $Y_t=X_t+\varepsilon_t$ with
+$\varepsilon_t\sim\mathcal{N}(0,\tau_1^{-1})$, all errors independent. If the prior
+on $X_t$ given the history is $\mathcal{N}(\hat x_t,P_t)$, then
+\autoref{thm:normal-updating} gives the posterior precision
+$P_t^{-1}+\tau_1$ after observing $Y_t$, and the transition inflates the variance
+by $\tau_2$ after scaling by $\rho^{2}$:
+\begin{equation}\label{eq:riccati-recursion}
+	P_{t+1}=\rho^{2}\bigl(P_t^{-1}+\tau_1\bigr)^{-1}+\tau_2 .
+\end{equation}
+The right-hand side is exactly the operator $T$ of \eqref{eq:riccati}, shown in
+\autoref{prop:riccati-contraction} to be a contraction of modulus $\rho^{2}$ on
+$\R_{++}$. \autoref{thm:banach-fixed-point} therefore gives a unique steady-state
+variance $x^{\ast}$ satisfying \eqref{eq:riccati-fixed-point}, reached from every
+initial uncertainty at the geometric rate $\rho^{2}$. The economics of the
+recursion is that the filter never learns the state exactly, no matter how long
+it observes: each period's transition injects fresh variance $\tau_2$, and the
+steady state balances that injection against the precision $\tau_1$ acquired from
+the new observation. Setting $\rho=0$ makes the state i.i.d.\ and gives
+$x^{\ast}=\tau_2$, the variance of a state about which yesterday's data say
+nothing.
+
+Equation \eqref{eq:riccati-recursion} is the scalar case of the Kalman
+recursions of \textcite[Sec.~9.4, p.~270]{brockwell2016introduction}, whose
+general form replaces the variances by covariance matrices and the scalar $\rho$
+by a transition matrix; the fixed point $x^{\ast}$ is then the steady-state
+error covariance of the filter. The contraction argument survives verbatim in
+the matrix case with the operator acting on positive definite matrices, which is
+why the filter forgets its initialisation at a geometric rate there too.
+
+\section{Probability Inequalities}\label{sec:prob-inequalities}
+
+\begin{theorem}[Markov and Chebyshev]\label{thm:markov}
+	Let $X\geq0$ be a random variable and $a>0$. Then
+	\begin{equation}\label{eq:markov}
+		\Prob(X\geq a)\leq\frac{\E[X]}{a} .
+	\end{equation}
+	Consequently, for any square-integrable $Z$ and $k>0$,
+	\begin{equation}\label{eq:chebyshev}
+		\Prob\bigl(\abs{Z-\E[Z]}\geq k\bigr)\leq\frac{\Var(Z)}{k^{2}} .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Since $X\geq0$, the pointwise inequality $X\geq a\one_{[X\geq a]}$ holds:
+	on $[X\geq a]$ the left side is at least $a$, and elsewhere the right side is
+	zero. Taking expectations and using monotonicity and linearity
+	(\autoref{prop:expectation-properties}) gives
+	$\E[X]\geq a\,\E[\one_{[X\geq a]}]=a\Prob(X\geq a)$, which is
+	\eqref{eq:markov}. For \eqref{eq:chebyshev}, apply \eqref{eq:markov} to the
+	non-negative variable $X\eqdef(Z-\E[Z])^{2}$ with threshold $k^{2}$ and use
+	$\{\abs{Z-\E[Z]}\geq k\}=\{X\geq k^{2}\}$ together with $\E[X]=\Var(Z)$.
+\end{proof}
+
+\begin{remark}[Sharpness and use]\label{rem:markov-sharp}
+	Markov's inequality is attained: if $X=a$ with probability $\E[X]/a$ and $X=0$
+	otherwise, \eqref{eq:markov} holds with equality, so no distribution-free
+	improvement is possible. Its role is to convert a statement about a mean into a
+	statement about a tail using no distributional assumption, and this is what
+	drives the weak law of large numbers: for i.i.d.\ square-integrable
+	$(Z_i)$ with mean $\mu$ and variance $\sigma^{2}$, the sample mean
+	$\bar Z_n$ has $\E[\bar Z_n]=\mu$ and, by independence,
+	$\Var(\bar Z_n)=\sigma^{2}/n$, so \eqref{eq:chebyshev} gives
+	$\Prob(\abs{\bar Z_n-\mu}\geq k)\leq\sigma^{2}/(nk^{2})\to0$ for every $k>0$.
+	Convergence in probability of sample averages is therefore a two-line
+	consequence of the variance identity and Markov's inequality, requiring no
+	central limit theorem and no normality.
+\end{remark}
+
+\section{Chapter Summary}\label{sec:prob-summary}
+
+A probability space consists of a sample space, a $\sigma$-algebra of events
+closed under complementation and countable intersection, and a countably additive
+measure of total mass one; monotonicity, finite additivity and
+inclusion--exclusion follow from the two axioms. A random variable is a
+measurable real function on the sample space, its expectation the mass-weighted
+sum of its values, and the variance identity
+$\Var(X)=\E[X^{2}]-(\E[X])^{2}$ is the special case, at $c=0$, of the
+decomposition $\E[(X-c)^{2}]=\Var(X)+(\E[X]-c)^{2}$ that identifies the mean as
+the best constant predictor. Jensen's inequality follows from the existence of a
+supporting line to a convex function, and yields the sign of the risk premium
+without differentiability.
+
+Conditional probability makes $\Prob(\cdot\mid H)$ a probability measure in its
+own right; Bayes' rule reverses the direction of conditioning, and in odds form
+states that posterior odds are prior odds times the likelihood ratio. The
+denominator, computed by the law of total probability, is what the base-rate
+fallacy neglects. Conditional expectation given a random variable is itself a
+random variable, satisfies the pull-out property
+$\E[g(X)Y\mid X]=g(X)\E[Y\mid X]$ and the law of iterated expectations
+$\E[\E[X\mid Y]]=\E[X]$, and, viewed in $L^{2}$, is the orthogonal projection
+of $Y$ onto the functions of $X$. That identification supplies at once the
+best-predictor property, the law of total variance, and the fact that the best
+linear predictor is a strictly worse projection onto a strictly smaller subspace,
+the two coinciding exactly in the jointly normal case.
+
+Gaussian updating is conjugate: posterior precision is the sum of prior and
+signal precisions, independent of the realisation, and the posterior mean is the
+corresponding precision-weighted average, linear in the signal. With many
+independent signals the same arithmetic applies to their sum, and the sequential
+and simultaneous updates agree. Applied to a CARA investor the linearity yields
+demand $(\mu-p)/(a\sigma^{2})$ with no wealth effect, hence prices that are linear
+statistics of dispersed information; applied recursively it yields the Kalman
+recursion, whose variance obeys the Riccati equation shown in
+\autoref{ch:completeness} to be a contraction. Markov's inequality bounds a tail
+by a mean with no distributional assumption, and through Chebyshev delivers the
+weak law of large numbers.
+
+\begin{exercise}\label{ex:prob-1}
+	Prove the general Bayes formula \eqref{eq:bayes-partition} directly from
+	\autoref{def:conditional-probability} without invoking
+	\eqref{eq:bayes-1}, and verify it against \autoref{eg:poll}. Then show that the
+	odds form \eqref{eq:odds-form} extends to a partition of size $n$ as the
+	statement that $\Prob(H_i\mid D)/\Prob(H_j\mid D)$ equals the prior odds
+	ratio times the likelihood ratio, so that the normalising constant never has to
+	be computed to compare two hypotheses.
+\end{exercise}
+
+\begin{exercise}\label{ex:prob-2}
+	Prove the law of total variance \eqref{eq:variance-decomposition} from
+	\autoref{thm:best-predictor} and \autoref{thm:lie}. Then show that
+	$\Var\bigl(\E[Y\mid X]\bigr)\leq\Var(Y)$, with equality if and only if $Y$ is
+	almost surely a function of $X$, and interpret the ratio of the two as the
+	population $R^{2}$ of the regression of $Y$ on $X$.
+\end{exercise}
+
+\begin{exercise}\label{ex:prob-3}
+	In the setting of \autoref{prop:microstructure}, compute
+	$\Prob(V=H\mid B)$ after a buy, and show that the market maker's bid
+	$\E[V\mid S]$ and ask $\E[V\mid B]$ satisfy
+	$\E[V\mid S]<\E[V]<\E[V\mid B]$ with the spread strictly increasing in $q$
+	and vanishing at $q=0$. Then verify that the martingale property
+	$\E\bigl[\E[V\mid\text{trade}]\bigr]=\E[V]$ holds, and explain why this is
+	\autoref{thm:lie} rather than an assumption about the market maker's behaviour.
+\end{exercise}

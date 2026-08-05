@@ -1,0 +1,479 @@
+% Source: Gerzensee "Real Analysis" slides 5-25 (inner product, Riesz
+% representation for R^n, norm, Cauchy-Schwarz, distance, the nesting of inner
+% product / normed / metric spaces, Banach and Hilbert spaces).
+% Supplementary: Fukuda (2026), Sec. 7.1 (pp. 201-214), Def. 7.12-7.13 (p. 293).
+% External references actually cited in this chapter: LeRoy-Werner (2000).
+
+\chapter{Inner Products, Norms, and Metric Spaces}\label{ch:metric}
+
+\section{Motivation: Geometry Without Coordinates}\label{sec:met-motivation}
+
+The Gerzensee course opens its real-analysis block with the inner product and
+immediately lists what it buys: length, angle, and orthogonality in $\R^n$ and in
+function spaces; the projection theorem, which delivers both ordinary least
+squares and conditional expectation; and the separation theorems, which deliver
+the second welfare theorem and the existence of state prices in a no-arbitrage
+economy \autocite[slide 3]{fukuda2026analysis}. All of these are geometric
+statements, and all of them survive the passage from $\R^n$ to spaces of
+functions and of random variables --- provided the geometry is set up
+abstractly.
+
+The structures form a strict hierarchy:
+\[
+	\text{inner product spaces}\ \subsetneq\
+	\text{normed spaces}\ \subsetneq\
+	\text{metric spaces},
+\]
+reproduced on slide~25 of \autocite{fukuda2026analysis}. Each step forgets
+something. A metric gives distance but no notion of adding points; a norm gives
+length and a vector structure but no notion of angle; an inner product gives
+angle as well. Knowing which structure a theorem needs is what tells us how far
+it generalises, and this chapter states each result at the weakest level at which
+it is true.
+
+\section{Inner Product Spaces}\label{sec:met-ip}
+
+\begin{definition}[Inner product]\label{def:inner-product}
+	Let $V$ be a real vector space. An \dfn{inner product} on $V$ is a map
+	$\ip{\cdot}{\cdot}\colon V\times V\to\R$ such that for all $x,y,z\in V$ and
+	$\lambda\in\R$:
+	\begin{enumerate}[(i)]
+		\item $\ip{x}{x}\geq0$, with $\ip{x}{x}=0$ if and only if $x=0$
+		      (positive definiteness);
+		\item $\ip{x}{y}=\ip{y}{x}$ (symmetry);
+		\item $\ip{x}{\lambda y}=\lambda\ip{x}{y}$ and
+		      $\ip{x}{y+z}=\ip{x}{y}+\ip{x}{z}$ (linearity in the second argument;
+		      with (ii) this gives linearity in each argument separately).
+	\end{enumerate}
+	The pair $(V,\ip{\cdot}{\cdot})$ is an \dfn{inner product space}.
+	\nidx{$\langle\cdot,\cdot\rangle$}{$\ip{x}{y}$, inner product}
+\end{definition}
+
+These are exactly the five properties verified in
+\autocite[slides 5--6]{fukuda2026analysis} for the Euclidean inner product
+$\ip{a}{x}=\sum_{i=1}^n a_ix_i$ on $\R^n$; the abstraction consists in taking
+them as the definition.
+
+\begin{eg}[Inner product spaces used in this volume]\label{eg:ip-spaces}
+	\begin{enumerate}[(i)]
+		\item $\R^n$ with $\ip{x}{y}=x^{\transp}y=\sum_ix_iy_i$.
+		\item $\R^n$ with $\ip{x}{y}_W=x^{\transp}Wy$ for a symmetric $W\succ0$. This is
+		      an inner product precisely because $W$ is positive definite
+		      (\autoref{prop:definiteness-eigen}), and it is the metric under which
+		      generalised least squares is an orthogonal projection.
+		\item $\Lspace{2}(\R)=\bigl\{f\colon\R\to\R \text{ measurable}:
+			      \int_{-\infty}^{\infty}\abs{f(x)}^2\,\diff x<\infty\bigr\}$ with
+		      $\ip{f}{g}=\int_{-\infty}^{\infty}f(x)g(x)\,\diff x$.
+		\item The space of square-integrable random variables on a probability space
+		      $(\Omega,\mathcal{F},\Prob)$, with $\ip{X}{Y}=\E[XY]$; or, on the subspace
+		      of centred variables, $\ip{X}{Y}=\E[(X-\E X)(Y-\E Y)]=\Cov(X,Y)$.
+	\end{enumerate}
+	Items (iii) and (iv) are stated in \autocite[slide 7]{fukuda2026analysis}.
+\end{eg}
+
+\begin{remark}[The qualification the slides leave out]\label{rem:l2-quotient}
+	On $\Lspace{2}$ the map $\ip{f}{g}=\int fg$ satisfies (ii) and (iii) but only
+	half of (i): $\ip{f}{f}=0$ forces $f=0$ almost everywhere, not everywhere. The
+	slide's hedge that ``roughly, the inner product satisfies the properties''
+	\autocite[slide 7]{fukuda2026analysis} refers to exactly this. The remedy is
+	standard: work with the quotient of $\Lspace{2}$ by the subspace of functions
+	vanishing almost everywhere, writing $L^2$ for the quotient, whose elements are
+	equivalence classes under the relation of \autoref{prop:equivalence-partition}.
+	On $L^2$, positive definiteness holds. In the random-variable case (iv) the same
+	convention identifies random variables that agree $\Prob$-almost surely, and it
+	is what makes conditional expectation in \autoref{ch:probability} a
+	well-defined element rather than a function defined up to null sets.
+\end{remark}
+
+\begin{lemma}[Cauchy--Schwarz inequality]\label{lem:cauchy-schwarz}
+	Let $(V,\ip{\cdot}{\cdot})$ be an inner product space and set
+	$\norm{x}=\sqrt{\ip{x}{x}}$. Then
+	\[
+		\abs{\ip{x}{y}}\leq\norm{x}\,\norm{y}\qquad\text{for all }x,y\in V,
+	\]
+	with equality if and only if $x$ and $y$ are linearly dependent.
+\end{lemma}
+
+\begin{proof}
+	If $y=0$ both sides vanish and $x,y$ are dependent. Assume $y\neq0$ and set
+	$\lambda\eqdef\ip{x}{y}/\ip{y}{y}$. Then
+	\[
+		0\leq\norm{x-\lambda y}^2=\ip{x-\lambda y}{x-\lambda y}
+		=\norm{x}^2-2\lambda\ip{x}{y}+\lambda^2\norm{y}^2
+		=\norm{x}^2-\frac{\ip{x}{y}^2}{\norm{y}^2},
+	\]
+	which rearranges to $\ip{x}{y}^2\leq\norm{x}^2\norm{y}^2$.
+
+	Equality holds if and only if $\norm{x-\lambda y}=0$, that is
+	$x=\lambda y=\frac{\ip{x}{y}}{\ip{y}{y}}y$, which is linear dependence; and
+	conversely if $x=\mu y$ then both sides equal $\abs{\mu}\norm{y}^2$.
+\end{proof}
+
+The choice of $\lambda$ is the one that makes $x-\lambda y$ orthogonal to $y$, so
+the proof is the projection argument of \autoref{ch:projection} in miniature.
+This is the content of the geometric derivation on
+\autocite[slide 17]{fukuda2026analysis}, where the condition
+$\ip{\lambda x}{y-\lambda x}=0$ is solved for $\lambda$.
+
+\begin{definition}[Orthogonality and angle]\label{def:orthogonality}
+	Vectors $x,y$ in an inner product space are \dfn{orthogonal}, written
+	$x\perp y$, if $\ip{x}{y}=0$. For non-zero $x,y$ the \dfn{angle} between them is
+	the unique $\theta\in[0,\pi]$ with
+	$\cos\theta=\ip{x}{y}/(\norm{x}\norm{y})$, which is well defined precisely
+	because \autoref{lem:cauchy-schwarz} places the ratio in $[-1,1]$.
+\end{definition}
+
+\begin{eg}[Correlation is a cosine]\label{eg:correlation-cosine}
+	Let $x,y\in\R^n$ with sample means $\mu_x,\mu_y$, and put
+	$\tilde x=x-\mu_x\mathbf{1}$, $\tilde y=y-\mu_y\mathbf{1}$ where
+	$\mathbf 1=(1,\dots,1)^{\transp}$. With
+	$\sigma_{x,y}=\frac1n\ip{\tilde x}{\tilde y}$,
+	$\sigma_x^2=\frac1n\norm{\tilde x}^2$ and $\sigma^2_y=\frac1n\norm{\tilde y}^2$,
+	the Pearson correlation coefficient is
+	\[
+		\rho=\frac{\sigma_{x,y}}{\sigma_x\sigma_y}
+		=\frac{\ip{\tilde x}{\tilde y}}{\norm{\tilde x}\,\norm{\tilde y}}
+		=\cos\theta .
+	\]
+	\autoref{lem:cauchy-schwarz} therefore gives $\abs{\rho}\leq1$ immediately, and
+	the equality case gives $\abs{\rho}=1$ if and only if $\tilde y=c\tilde x$ for
+	some $c\in\R$, that is
+	\[
+		y_i-\mu_y=\frac{\sigma_{x,y}}{\sigma_x^2}(x_i-\mu_x)
+		\qquad\text{for all }i,
+	\]
+	since $c$ must equal $\ip{\tilde x}{\tilde y}/\norm{\tilde x}^2$. This settles
+	Exercise~7.6 of \autocite[slide 18]{fukuda2026analysis} and identifies the
+	constant as the population regression slope of \autoref{ch:projection}. The same
+	computation with $\ip{X}{Y}=\Cov(X,Y)$ shows that the correlation of two random
+	variables is the cosine of the angle between them in $L^2$.
+\end{eg}
+
+\subsection{Riesz representation in \texorpdfstring{$\R^n$}{Rn}}
+
+\begin{theorem}[Riesz representation theorem for $\R^n$]\label{thm:riesz-rn}
+	\begin{enumerate}[(i)]
+		\item For each $a\in\R^n$ the map $f_a\colon\R^n\to\R$, $f_a(x)=\ip{a}{x}$, is
+		      linear.
+		\item Conversely, for every linear $f\colon\R^n\to\R$ there is a unique
+		      $a\in\R^n$ with $f(x)=\ip{a}{x}$ for all $x\in\R^n$; explicitly
+		      $a=(f(e^1),\dots,f(e^n))^{\transp}$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i) is linearity of the inner product in its second argument.
+
+	(ii) Existence: writing $x=\sum_ix_ie^i$ and using linearity,
+	$f(x)=\sum_ix_if(e^i)=\ip{a}{x}$ with $a$ as displayed. Uniqueness: if
+	$\ip{a}{x}=\ip{a'}{x}$ for all $x$, then $\ip{a-a'}{x}=0$ for all $x$; taking
+	$x=a-a'$ gives $\norm{a-a'}^2=0$, hence $a=a'$ by positive definiteness.
+\end{proof}
+
+This is Theorem~7.1 of \textcite{fukuda2026notes}; the two-dimensional picture is
+\autocite[slide 9]{fukuda2026analysis}. It is the special case $m=1$ of
+\autoref{thm:matrix-rep}, but stated this way it says something the matrix
+version does not: \emph{a linear functional is the same thing as a vector}. Three
+economic readings follow.
+
+\begin{eg}[Expected utility as an inner product]\label{eg:eu-riesz}
+	Let $\Omega=\{\omega_1,\dots,\omega_n\}$ and let $p\in\R^n$ be a probability
+	vector. Expected utility $\E[u]=\sum_ip_iu_i=\ip{u}{p}$ is linear in the
+	probability vector $p$ for fixed utility index $u$, and linear in $u$ for fixed
+	$p$ \autocite[slide 8]{fukuda2026analysis}. Read in the first way,
+	\autoref{thm:riesz-rn} says that \emph{any} functional on lotteries that is
+	linear in probabilities has an expected-utility representation, with the
+	representing vector $a$ being the utility index. The von Neumann--Morgenstern
+	theorem is the statement that the behavioural axioms force linearity; the Riesz
+	theorem then supplies the index.
+\end{eg}
+
+\begin{eg}[State prices and the stochastic discount factor]\label{eg:state-prices}
+	Let there be $n$ states and let an asset be a payoff vector $z\in\R^n$. Suppose
+	the pricing functional $\pi\colon\R^n\to\R$ is linear --- which is exactly the
+	law of one price plus portfolio additivity. By \autoref{thm:riesz-rn} there is a
+	unique $q\in\R^n$ with $\pi(z)=\ip{q}{z}=\sum_iq_iz_i$; the $q_i$ are
+	\dfnas{state prices}{state price}. If moreover $\pi(z)>0$ whenever
+	$z\geq0$, $z\neq0$ --- absence of arbitrage --- then $q\in\R^n_{++}$, and
+	writing $q_i=p_im_i$ for a probability $p$ gives
+	$\pi(z)=\E[mz]$, exhibiting $m$ as the \dfn{stochastic discount factor}. The
+	step from ``no arbitrage'' to ``a strictly positive linear functional exists''
+	is not Riesz but a separation theorem, proved in \autoref{ch:convex}; Riesz
+	converts the functional into a vector. See
+	\textcite[Ch.~2]{leroy2000principles}.
+\end{eg}
+
+\begin{eg}[The total differential]\label{eg:total-differential}
+	For $f\colon\R^n\to\R$ differentiable at $x$, the differential
+	\[
+		\diff y=\sum_{i=1}^{n}\pderiv{f}{x_i}(x)\,\diff x_i
+	\]
+	is a linear functional of
+	the displacement $\diff x$. By \autoref{thm:riesz-rn} it is represented by a unique
+	vector, and that vector is by definition the gradient:
+	$\diff y=\ip{\nabla f(x)}{\diff x}$ \autocite[slide 10]{fukuda2026analysis}. This is the
+	cleanest statement of what a gradient is, and it explains why the gradient is a
+	column vector while the derivative $Df(x)$ is a row: the derivative is the
+	functional, the gradient is its Riesz representative.
+\end{eg}
+
+\section{Normed Spaces}\label{sec:met-norm}
+
+\begin{definition}[Norm]\label{def:norm}
+	Let $V$ be a real vector space. A \dfn{norm} is a map
+	$\norm{\cdot}\colon V\to\R$ such that for all $x,y\in V$, $\lambda\in\R$:
+	\begin{enumerate}[(i)]
+		\item $\norm{x}\geq0$;
+		\item $\norm{x}=0$ if and only if $x=0$;
+		\item $\norm{\lambda x}=\abs{\lambda}\norm{x}$ (absolute homogeneity);
+		\item $\norm{x+y}\leq\norm{x}+\norm{y}$ (triangle inequality).
+	\end{enumerate}
+	The pair $(V,\norm{\cdot})$ is a \dfn{normed space}.
+	\nidx{$\|\cdot\|$}{$\norm{x}$, norm}
+\end{definition}
+
+\begin{proposition}[An inner product induces a norm]\label{prop:ip-induces-norm}
+	If $\ip{\cdot}{\cdot}$ is an inner product on $V$, then
+	$\norm{x}\eqdef\sqrt{\ip{x}{x}}$ is a norm.
+\end{proposition}
+
+\begin{proof}
+	(i) and (ii) are positive definiteness; (iii) follows from bilinearity, since
+	$\norm{\lambda x}^2=\lambda^2\norm{x}^2$. For (iv),
+	\[
+		\norm{x+y}^2=\norm{x}^2+2\ip{x}{y}+\norm{y}^2
+		\leq\norm{x}^2+2\norm{x}\norm{y}+\norm{y}^2=(\norm{x}+\norm{y})^2,
+	\]
+	using \autoref{lem:cauchy-schwarz}; taking square roots gives the claim.
+\end{proof}
+
+\begin{proposition}[Reverse triangle inequality]\label{prop:reverse-triangle}
+	In any normed space, $\bigl|\,\norm{x}-\norm{x_0}\,\bigr|\leq\norm{x-x_0}$.
+\end{proposition}
+
+\begin{proof}
+	$\norm{x}=\norm{(x-x_0)+x_0}\leq\norm{x-x_0}+\norm{x_0}$ gives
+	$\norm{x}-\norm{x_0}\leq\norm{x-x_0}$. Exchanging $x$ and $x_0$ and using
+	$\norm{x_0-x}=\norm{x-x_0}$ gives $\norm{x_0}-\norm{x}\leq\norm{x-x_0}$.
+	Together these bound the absolute value.
+\end{proof}
+
+This is Exercise~7.4 of \autocite[slide 20]{fukuda2026analysis}. It is used at
+once in \autoref{ch:continuity} to show that the norm is a continuous function
+--- indeed \autoref{prop:reverse-triangle} says it is Lipschitz with constant
+$1$.
+
+\begin{eg}[Norms used in this volume]\label{eg:norms}
+	On $\R^n$: the Euclidean norm $\norm{x}_2=\bigl(\sum_ix_i^2\bigr)^{1/2}$,
+	induced by the Euclidean inner product; the $\ell^1$ norm
+	$\norm{x}_1=\sum_i\abs{x_i}$; the supremum norm
+	$\norm{x}_\infty=\max_i\abs{x_i}$. On $\Cspace{[a,b]}{\R}$ and on
+	$\Bspace{X}{\R}$: the \dfn{supremum norm}
+	\[
+		\norm{f}_\infty\eqdef\sup_{x}\abs{f(x)},
+	\]
+	which is the norm used for value functions in \autoref{ch:dynamic}
+	\autocite[slides 21--22, 73]{fukuda2026analysis}.
+\end{eg}
+
+\begin{proposition}[The supremum norm is a norm]\label{prop:sup-norm}
+	Let $X$ be a non-empty set and $\Bspace{X}{\R}$ the set of bounded functions
+	$f\colon X\to\R$. Then $\Bspace{X}{\R}$ is a vector space under pointwise
+	operations and $\norm{f}_\infty=\sup_{x\in X}\abs{f(x)}$ is a norm on it.
+\end{proposition}
+
+\begin{proof}
+	Boundedness is preserved by sums and scalar multiples, so $\Bspace{X}{\R}$ is a
+	subspace of $\R^X$, and $\norm{f}_\infty<\infty$ for every $f$ in it. Property
+	(i) is clear. For (ii), $\norm{f}_\infty=0$ forces $\abs{f(x)}=0$ for every $x$,
+	that is $f=0$ --- note that here, unlike in \autoref{rem:l2-quotient}, no
+	almost-everywhere qualification arises. For (iii),
+	$\sup_x\abs{\lambda f(x)}=\abs{\lambda}\sup_x\abs{f(x)}$. For (iv), for each $x$,
+	$\abs{f(x)+g(x)}\leq\abs{f(x)}+\abs{g(x)}\leq\norm{f}_\infty+\norm{g}_\infty$;
+	as the right-hand side does not depend on $x$, it is an upper bound for
+	$\{\abs{(f+g)(x)}\}$, so by \autoref{prop:sup-char} it dominates the supremum.
+\end{proof}
+
+\begin{remark}[Not every norm comes from an inner product]\label{rem:parallelogram}
+	A norm is induced by an inner product if and only if it satisfies the
+	\dfn{parallelogram law}
+	\[
+		\norm{x+y}^2+\norm{x-y}^2=2\norm{x}^2+2\norm{y}^2 .
+	\]
+	Necessity is immediate by expanding both sides. The supremum norm fails it: in
+	$\R^2$ with $x=(1,0)$, $y=(0,1)$ we get
+	$\norm{x+y}_\infty=\norm{x-y}_\infty=1$, so the left side is $2$ while the right
+	side is $4$. Hence $\Bspace{X}{\R}$ with the supremum norm carries no compatible
+	inner product, and no notion of angle. This is why the value-function arguments
+	of \autoref{ch:dynamic} use the contraction mapping theorem, which needs only a
+	metric, rather than a projection argument, which needs an inner product.
+\end{remark}
+
+\section{Metric Spaces}\label{sec:met-metric}
+
+\begin{definition}[Metric]\label{def:metric}
+	Let $X$ be a non-empty set. A \dfn{metric} (or distance) on $X$ is a map
+	$d\colon X\times X\to\R$ such that for all $x,y,z\in X$:
+	\begin{enumerate}[(i)]
+		\item $d(x,y)\geq0$;
+		\item $d(x,y)=0$ if and only if $x=y$;
+		\item $d(x,y)=d(y,x)$ (symmetry);
+		\item $d(x,z)\leq d(x,y)+d(y,z)$ (triangle inequality).
+	\end{enumerate}
+	The pair $(X,d)$ is a \dfn{metric space}. \nidx{$d(\cdot,\cdot)$}{$d(x,y)$, metric}
+\end{definition}
+
+\begin{proposition}[A norm induces a metric]\label{prop:norm-induces-metric}
+	If $(V,\norm{\cdot})$ is a normed space, then $d(x,y)\eqdef\norm{x-y}$ is a
+	metric on $V$.
+\end{proposition}
+
+\begin{proof}
+	(i)--(iii) are immediate from \autoref{def:norm}(i)--(iii), using
+	$\norm{y-x}=\norm{-(x-y)}=\norm{x-y}$. For (iv),
+	$d(x,z)=\norm{(x-y)+(y-z)}\leq\norm{x-y}+\norm{y-z}=d(x,y)+d(y,z)$.
+\end{proof}
+
+Combining \autoref{prop:ip-induces-norm} and \autoref{prop:norm-induces-metric}
+gives the hierarchy of \autocite[slide 25]{fukuda2026analysis}: every inner
+product space is a normed space and every normed space is a metric space. Both
+inclusions are strict --- \autoref{rem:parallelogram} shows the first, and the
+next example the second.
+
+\begin{eg}[A metric that comes from no norm]\label{eg:discrete-metric}
+	On any non-empty set $X$ the \dfn{discrete metric}
+	\[
+		d(x,y)=\begin{cases}0 & x=y\\ 1 & x\neq y\end{cases}
+	\]
+	is a metric. If $X$ is a vector space with more than one point, $d$ is induced
+	by no norm: a norm satisfies $\norm{2x}=2\norm{x}$, so
+	$d(2x,0)=2d(x,0)$, but the discrete metric gives $d(2x,0)=d(x,0)=1$ for any
+	$x\neq0$. More generally, a metric on a vector space comes from a norm if and
+	only if it is translation invariant and absolutely homogeneous.
+
+	The discrete metric is not a curiosity: under it every subset is open, every
+	sequence that converges is eventually constant, and the compact sets are exactly
+	the finite ones. It is the standard source of counterexamples in
+	\autoref{ch:topology}.
+\end{eg}
+
+\begin{eg}[Metrics on economic objects]\label{eg:econ-metrics}
+	\begin{enumerate}[(i)]
+		\item Consumption bundles in $\R^n$: Euclidean metric.
+		\item Consumption \emph{plans} $c\colon[0,\infty)\to\R$ or
+		      $(c_t)_{t\in\N_0}$: supremum metric on $\Bspace{\cdot}{\R}$. The slide's
+		      remark that one chooses ``a consumption function
+		      $c\colon[0,\infty)\to\R$ instead of $(c_1,c_2)\in\R^2$''
+		      \autocite[slide 4]{fukuda2026analysis} is precisely the passage from (i)
+		      to (ii), and it is the passage that makes the infinite-dimensional theory
+		      necessary.
+		\item Value functions $V\colon\R^n\to\R$: supremum metric, under which the
+		      Bellman operator is a contraction (\autoref{thm:blackwell}).
+		\item Probability distributions: many metrics are in use (total variation,
+		      Kolmogorov--Smirnov, Wasserstein), and they are not equivalent in infinite
+		      dimensions; which one is meant must always be stated.
+	\end{enumerate}
+\end{eg}
+
+\begin{definition}[Open ball, bounded set]\label{def:ball-bounded}
+	Let $(X,d)$ be a metric space, $x_0\in X$ and $\lambda>0$. The \dfn{open ball}
+	with centre $x_0$ and radius $\lambda$ is
+	\[
+		\ball{\lambda}{x_0}\eqdef\{x\in X : d(x_0,x)<\lambda\}.
+	\]
+	A set $A\subseteq X$ is \dfn{bounded} if $A=\emptyset$ or $A\subseteq
+		\ball{r}{x_0}$ for some $x_0\in X$ and $r>0$.
+	\nidx{$B_\lambda(x_0)$}{$\ball{\lambda}{x_0}$, open ball}
+\end{definition}
+
+\begin{proposition}\label{prop:bounded-equiv}
+	A set $A\subseteq\R^n$ is bounded in the sense of \autoref{def:ball-bounded} if
+	and only if there exists $\alpha>0$ with $\norm{x}\leq\alpha$ for all $x\in A$.
+\end{proposition}
+
+\begin{proof}
+	If $\norm{x}\leq\alpha$ on $A$, then $A\subseteq\ball{\alpha+1}{0}$. Conversely
+	if $A\subseteq\ball{r}{x_0}$ then for $x\in A$,
+	$\norm{x}\leq\norm{x-x_0}+\norm{x_0}<r+\norm{x_0}$, so
+	$\alpha=r+\norm{x_0}$ works.
+\end{proof}
+
+This settles Exercise~7.20 of \autocite[slide 28]{fukuda2026analysis}. The
+economic instance given there is the budget set: for $p\in\R^n_{++}$ and $m>0$,
+every $x\in\budget(p,m)$ satisfies $x_i\leq m/p_i$, so
+$\norm{x}_\infty\leq m/\min_ip_i$ and $\budget(p,m)$ is bounded. If some
+$p_i=0$, the bound fails and so does the conclusion --- the substantive reason
+for requiring strictly positive prices, flagged already in
+\autoref{eg:consumer-setup}.
+
+\section{Complete Normed and Inner Product Spaces}\label{sec:met-banach}
+
+The definitions below are stated here for completeness of the hierarchy; the
+notion of a Cauchy sequence on which they rest is developed in
+\autoref{ch:topology} and their consequences in \autoref{ch:completeness}.
+
+\begin{definition}[Banach and Hilbert spaces]\label{def:banach-hilbert}
+	A normed space that is complete as a metric space
+	(\autoref{def:complete-space}) is a \dfn{Banach space}. An inner product space
+	that is complete in the induced norm is a \dfn{Hilbert space}.
+\end{definition}
+
+These are Definitions~7.12 and~7.13 of \textcite{fukuda2026notes}, given on
+slide~77 of \autocite{fukuda2026analysis}. The two examples that matter here are
+$L^2$, which is a Hilbert space and is where \autoref{ch:projection} operates,
+and $\Bspace{X}{\R}$ with the supremum norm, which is a Banach space but not a
+Hilbert space by \autoref{rem:parallelogram}, and is where \autoref{ch:dynamic}
+operates.
+
+\begin{remark}[Why completeness is stated at the level of the metric]\label{rem:completeness-level}
+	Completeness is a metric notion: it makes sense in $(X,d)$ without any vector
+	structure. Banach and Hilbert spaces are therefore not new kinds of object but
+	conjunctions --- ``normed and complete'', ``inner product and complete''. This
+	matters when one restricts attention to a subset: a closed subset of a complete
+	metric space is complete (\autoref{prop:closed-subset-complete}), and a closed
+	subset of a Banach space need not be a subspace, but is still a complete metric
+	space. The contraction mapping theorem applies to it regardless, which is what
+	allows \autoref{ch:dynamic} to work on the set of bounded, continuous,
+	\emph{increasing and concave} functions --- a closed subset, not a subspace.
+\end{remark}
+
+\section{Chapter Summary}\label{sec:met-summary}
+
+An inner product supplies length, angle and orthogonality; the Cauchy--Schwarz
+inequality is the statement that the resulting cosine lies in $[-1,1]$, and its
+equality case characterises linear dependence, which in the statistical reading
+is perfect correlation. Every linear functional on $\R^n$ is an inner product
+with a unique vector (\autoref{thm:riesz-rn}); this identification is what turns
+linearity in probabilities into an expected-utility index, linearity of a pricing
+functional into a vector of state prices, and the differential into the gradient.
+A norm forgets angle, a metric forgets the vector structure as well; both
+inclusions in the hierarchy are strict, as the supremum norm and the discrete
+metric show. Boundedness of the budget set requires strictly positive prices.
+Completeness, defined in \autoref{ch:topology}, upgrades normed and inner product
+spaces to Banach and Hilbert spaces, the two settings in which
+Chapters~\ref{ch:projection} and~\ref{ch:dynamic} respectively work.
+
+\begin{exercise}\label{ex:met-1}
+	Prove the polarisation identity
+	$\ip{x}{y}=\tfrac14\bigl(\norm{x+y}^2-\norm{x-y}^2\bigr)$ in any inner product
+	space, and deduce that an inner product is determined by its norm. Combine this
+	with \autoref{rem:parallelogram} to give a complete criterion for when a norm
+	comes from an inner product.
+\end{exercise}
+
+\begin{exercise}\label{ex:met-2}
+	Show that on $\R^n$ the norms $\norm{\cdot}_1$, $\norm{\cdot}_2$ and
+	$\norm{\cdot}_\infty$ satisfy
+	$\norm{x}_\infty\leq\norm{x}_2\leq\norm{x}_1\leq n\norm{x}_\infty$, so that all
+	three induce the same bounded sets and, by \autoref{ch:topology}, the same open
+	sets. Explain why the analogous statement fails on $\Cspace{[0,1]}{\R}$ for
+	$\norm{f}_1=\int_0^1\abs{f}$ versus $\norm{f}_\infty$, and give a sequence
+	witnessing the failure.
+\end{exercise}
+
+\begin{exercise}\label{ex:met-3}
+	Let $W\in M_{n\times n}(\R)$ be symmetric. Show that
+	$\ip{x}{y}_W=x^{\transp}Wy$ is an inner product on $\R^n$ if and only if
+	$W\succ0$, and that positive \emph{semi}definiteness gives only a seminorm.
+	Identify the subspace on which the seminorm vanishes in terms of $\Ker W$.
+\end{exercise}

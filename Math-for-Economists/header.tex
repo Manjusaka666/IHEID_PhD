@@ -1,0 +1,524 @@
+% basics
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyphens]{url}
+% Author-year citations are the default for economics research. For a
+% mathematics-only manuscript, style=numeric or style=alphabetic is an easy
+% local alternative.
+% The backend is bibtex rather than the biblatex default (biber): the biber
+% shipped with the local TeX Live installation is a universal binary whose
+% self-extracting launcher fails on this machine. bibtex is available
+% everywhere and supports the author-year style used here without change.
+\usepackage[backend=bibtex,style=authoryear-comp,maxcitenames=2,maxbibnames=99]{biblatex}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{emptypage}
+\usepackage{subcaption}
+\usepackage[colorlinks=true,linkcolor=NavyBlue,urlcolor=Maroon,citecolor=ForestGreen]{hyperref}
+
+
+\usepackage{amsmath, amsfonts, mathtools, amsthm, amssymb, mathrsfs}
+\usepackage{etoolbox}
+\input{Math.tex}
+\usepackage{geometry}
+% Optional specialist helpers; uncomment only for notes that use them.
+% \usepackage{cancel}
+% \usepackage{systeme}
+
+\usepackage[inline, shortlabels]{enumitem}
+\usepackage{multicol}
+\setlength\multicolsep{0pt}
+
+\usepackage{caption}
+\captionsetup{belowskip=0pt}
+\geometry{a4paper,left=2.54cm,right=2.54cm,top=2.54cm,bottom=2.54cm}
+
+% Optional specialist helper for large table delimiters.
+% \usepackage{bigdelim}
+
+% correct
+\definecolor{correct}{HTML}{009900}
+\newcommand\correct[2]{\ensuremath{\:}{\color{red}{#1}}\ensuremath{\to }{\color{correct}{#2}}\ensuremath{\:}}
+\newcommand\green[1]{{\color{correct}{#1}}}
+
+% hide parts
+\newcommand\hide[1]{}
+
+% si unitx
+\usepackage{siunitx}
+\sisetup{locale = US, detect-all}
+\DeclareSIUnit{\basispoint}{bp}
+\DeclareSIUnit{\percentagepoint}{pp}
+% Vector and matrix helpers are provided centrally by Math.tex.
+
+
+% tikz
+\usepackage{tikz}
+\usetikzlibrary{intersections, angles, quotes, positioning}
+\usetikzlibrary{arrows.meta}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.13}
+
+
+\tikzset{
+	force/.style={thick, {Circle[length=2pt]}-stealth, shorten <=-1pt}
+}
+
+% Algorithm Env
+\usepackage[linesnumbered,lined,vlined,ruled,commentsnumbered,resetcount,algochapter]{algorithm2e}
+\SetKwComment{Comment}{// }{}
+\SetArgSty{textsl}
+\def\algocflineautorefname{Algorithm}
+\counterwithin{algocfline}{chapter}
+
+% Clear out the item autoref name
+\makeatletter
+\def\itemautorefname{\@gobble}
+\makeatother
+
+% theorems
+\usepackage{thmtools}
+\usepackage[framemethod=TikZ]{mdframed}
+
+% The original template contained many near-duplicate colored styles. Keep
+% their source as a reference, but do not activate them by default.
+\iffalse
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{ForestGreen!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=ForestGreen, backgroundcolor=ForestGreen!5,
+			nobreak=false
+		}
+]{thmgreenbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{ForestGreen!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=ForestGreen, backgroundcolor=ForestGreen!8,
+			nobreak=false
+		}
+]{thmgreen2box}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{NavyBlue!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=NavyBlue, backgroundcolor=NavyBlue!5,
+			nobreak=false
+		}
+]{thmbluebox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{TealBlue!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=TealBlue,
+			nobreak=false
+		}
+]{thmblueline}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{RawSienna!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=RawSienna, backgroundcolor=RawSienna!5,
+			nobreak=false
+		}
+]{thmredbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{RawSienna!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=RawSienna, backgroundcolor=RawSienna!8,
+			nobreak=false
+		}
+]{thmred2box}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{SeaGreen!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=SeaGreen, backgroundcolor=SeaGreen!2,
+			nobreak=false
+		}
+]{thmgreen3box}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{WildStrawberry!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=WildStrawberry, backgroundcolor=WildStrawberry!5,
+			nobreak=false
+		}
+]{thmpinkbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{MidnightBlue!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=MidnightBlue, backgroundcolor=MidnightBlue!5,
+			nobreak=false
+		}
+]{thmblue2box}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{Gray!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=Gray, backgroundcolor=Gray!5,
+			nobreak=false
+		}
+]{notgraybox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{Gray!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=Gray,
+			nobreak=false
+		}
+]{notgrayline}
+
+% \declaretheoremstyle[
+% 	headfont=\bfseries\sffamily\color{RawSienna!70!black}, bodyfont=\normalfont,
+% 	numbered=no,
+% 	mdframed={
+% 			linewidth=2pt,
+% 			rightline=false, topline=false, bottomline=false,
+% 			linecolor=RawSienna, backgroundcolor=RawSienna!1,
+% 		},
+% 	qed=\qedsymbol
+% ]{thmproofbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{NavyBlue!70!black}, bodyfont=\normalfont,
+	numbered=no,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=NavyBlue, backgroundcolor=NavyBlue!1,
+			nobreak=false
+		}
+]{thmexplanationbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{WildStrawberry!70!black}, bodyfont=\normalfont,
+	numbered=no,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=WildStrawberry, backgroundcolor=WildStrawberry!1,
+			nobreak=false
+		}
+]{thmanswerbox}
+
+\declaretheoremstyle[
+	headfont=\bfseries\sffamily\color{Violet!70!black}, bodyfont=\normalfont,
+	mdframed={
+			linewidth=2pt,
+			rightline=false, topline=false, bottomline=false,
+			linecolor=Violet, backgroundcolor=Violet!1,
+			nobreak=false
+		}
+]{conjpurplebox}
+\fi
+
+% Four restrained styles cover the research use cases: definitions, formal
+% statements, remarks/notes, and a plain style for examples.
+\mdfsetup{skipabove=.75\baselineskip,skipbelow=.35\baselineskip}
+
+\declaretheoremstyle[
+    headfont=\bfseries\sffamily\color{ForestGreen!70!black},
+    bodyfont=\normalfont,
+    postheadspace=.5em,
+    mdframed={
+        linewidth=1.25pt,
+        rightline=false,topline=false,bottomline=false,
+        linecolor=ForestGreen!70!black,
+        backgroundcolor=ForestGreen!3,
+        nobreak=false
+    }
+]{definitionstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries\sffamily\color{NavyBlue!75!black},
+    bodyfont=\normalfont,
+    postheadspace=.5em,
+    mdframed={
+        linewidth=1.25pt,
+        rightline=false,topline=false,bottomline=false,
+        linecolor=NavyBlue!70!black,
+        backgroundcolor=NavyBlue!2,
+        nobreak=false
+    }
+]{statementstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries\sffamily\color{Gray!70!black},
+    bodyfont=\normalfont,
+    postheadspace=.5em,
+    mdframed={
+        linewidth=1pt,
+        rightline=false,topline=false,bottomline=false,
+        linecolor=Gray!70!black,
+        backgroundcolor=white,
+        nobreak=false
+    }
+]{remarkstyle}
+
+\declaretheoremstyle[
+    headfont=\bfseries\sffamily,
+    bodyfont=\normalfont,
+    postheadspace=.5em,
+    spaceabove=.5\baselineskip,
+    spacebelow=.25\baselineskip
+]{plainstyle}
+
+\declaretheorem[style=definitionstyle, name=Definition, numberwithin=section]{definition}
+\declaretheorem[style=definitionstyle, name=Definition, numbered=no]{definition*}
+\declaretheorem[style=statementstyle, name=Theorem, numberwithin=section]{theorem}
+\declaretheorem[style=statementstyle, name=Theorem, numbered=no]{theorem*}
+\declaretheorem[style=statementstyle, name=Lemma, numberwithin=section]{lemma}
+\declaretheorem[style=statementstyle, name=Proposition, numberwithin=section]{proposition}
+\declaretheorem[style=statementstyle, name=Corollary, numberwithin=section]{corollary}
+\declaretheorem[style=statementstyle, name=Problem, numberwithin=section]{problem}
+\declaretheorem[style=statementstyle, name=Problem, numbered=no]{problem*}
+\declaretheorem[style=statementstyle, name=Claim, numbered=no]{claim}
+\declaretheorem[style=statementstyle, name=Conjecture, numberwithin=section]{conjecture}
+\declaretheorem[style=definitionstyle, name=Assumption, numberwithin=section]{assumption}
+\declaretheorem[style=statementstyle, name=Result, numberwithin=section]{result}
+
+\renewcommand\theHdefinition{\thesection.\arabic {definition}}
+\renewcommand\theHtheorem{\thesection.\arabic {theorem}}
+\renewcommand\theHlemma{\thesection.\arabic {lemma}}
+\renewcommand\theHproposition{\thesection.\arabic {proposition}}
+\renewcommand\theHcorollary{\thesection.\arabic {corollary}}
+\renewcommand\theHproblem{\thesection.\arabic {problem}}
+\renewcommand\theHconjecture{\thesection.\arabic {conjecture}}
+\renewcommand\theHassumption{\thesection.\arabic {assumption}}
+\renewcommand\theHresult{\thesection.\arabic {result}}
+
+% Proofs use the standard amsthm layout: italic label, normal body, and a
+% black square at the end. Keeping the QED stack is important for displays
+% and nested proof-like environments.
+\renewcommand{\qedsymbol}{\ensuremath{\blacksquare}}
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{\par
+	\pushQED{\qed}%
+	\normalfont \topsep-2\p@\@plus6\p@\relax
+	\trivlist
+	\item[\hskip\labelsep
+	            \itshape
+	            #1\@addpunct{.}]\ignorespaces
+		}{%
+		\popQED\endtrivlist\@endpefalse
+}
+\makeatother
+
+% Examples, remarks and exercises are numbered here, unlike in the original
+% template. A reference volume cross-references its counterexamples and its
+% boundary-case remarks as heavily as its theorems, and an unnumbered
+% environment carries no counter for \label to record: \autoref would then
+% resolve to thmtools' internal dummy counter and print a link with no number.
+% The styles themselves are untouched.
+\declaretheorem[style=plainstyle, numberwithin=section, name=Example]{eg}
+\declaretheorem[style=remarkstyle, numberwithin=section, name=Remark]{remark}
+\declaretheorem[style=remarkstyle, numbered=no, name=Note]{note}
+\declaretheorem[style=remarkstyle, numberwithin=section, name=Exercise]{exercise}
+\declaretheorem[style=remarkstyle, numbered=no, name=As previously seen]{prev}
+\declaretheorem[style=remarkstyle, numbered=no, name=Intuition]{intuition}
+\declaretheorem[style=remarkstyle, numbered=no, name=Notation]{notation}
+
+% These two lecture-specific boxes are replaced by compact, unboxed labels.
+% The former tmpexplanation/tmpanswer declarations remain intentionally
+% inactive so a specialized lecture file can restore them if desired.
+\newenvironment{explanation}[1][Explanation]{%
+    \par\medskip\noindent
+    \textbf{\sffamily\color{NavyBlue!70!black}#1.}\enspace\normalfont
+}{\par\medskip}
+\newenvironment{answer}[1][Answer]{%
+    \par\medskip\noindent
+    \textbf{\sffamily\color{ForestGreen!70!black}#1.}\enspace\normalfont
+}{\par\medskip}
+
+\makeatletter
+
+\def\testdateparts#1{\dateparts#1\relax}
+\def\dateparts#1 #2 #3 #4 #5\relax{
+	\marginpar{\small\textsf{\mbox{#1 #2 #3 #5}}}
+}
+
+\def\@lecture{}%
+\newcommand{\lecture}[3]{
+	\ifthenelse{\isempty{#3}}{%
+		\global\def\@lecture{Lecture #1}%
+	}{%
+		\global\def\@lecture{Lecture #1: #3}%
+	}%
+	\section*{\@lecture}
+	\marginpar{\small\textsf{\mbox{#2}}}
+}
+
+\usepackage{pgffor}%
+\newcommand{\lec}[2]{%
+	\foreach \c in {#1,...,#2}{%
+			\IfFileExists{Lectures/lec_\c.tex} {%
+				\input{Lectures/lec_\c.tex}%
+			}{}%
+		}%
+}
+
+% fancy headers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[L]{}
+% The template reserves the right-hand head for \@lecture, which is set by the
+% \lecture macro of dated lecture transcripts. These notes are organised as a
+% reference volume rather than as dated sessions, so the same slot carries the
+% running section title instead; \@lecture and \lecture remain available.
+\fancyhead[R]{\nouppercase{\rightmark}}
+\fancyfoot[L]{}
+\fancyfoot[R]{\thepage}
+\fancyfoot[C]{\leftmark}
+
+\makeatother
+
+% notes
+\usepackage[color=pink]{todonotes}
+\usepackage{marginnote}
+\let\marginpar\marginnote
+
+% Fix some stuff
+% %http://tex.stackexchange.com/questions/76273/multiple-pdfs-with-page-group-included-in-a-single-page-warning
+\pdfsuppresswarningpagegroup=1
+
+% Appendix environment
+\usepackage{appendix}
+% The template targets lecture transcripts, whose top-level divisions read as
+% sections; these notes are a reference volume whose top-level divisions are
+% chapters, so \autoref must name them as such. Appendices keep their own name
+% because hyperref anchors them as appendix.A rather than chapter.A.
+\def\chapterautorefname{Chapter}
+\def\sectionautorefname{Section}
+\def\appendixautorefname{Appendix}
+\renewcommand\appendixname{Appendix}
+\renewcommand\appendixtocname{Appendix}
+\renewcommand\appendixpagename{Appendix}
+% begin appendix autoref patch [\autoref subsections in appendix](https://tex.stackexchange.com/questions/149807/autoref-subsections-in-appendix)
+\makeatletter
+\patchcmd{\hyper@makecurrent}{%
+	\ifx\Hy@param\Hy@chapterstring
+		\let\Hy@param\Hy@chapapp
+	\fi
+}{%
+	\iftoggle{inappendix}{%true-branch
+		% list the names of all sectioning counters here
+		\@checkappendixparam{chapter}%
+		\@checkappendixparam{section}%
+		\@checkappendixparam{subsection}%
+		\@checkappendixparam{subsubsection}%
+		\@checkappendixparam{paragraph}%
+		\@checkappendixparam{subparagraph}%
+	}{}%
+}{}{\errmessage{failed to patch}}
+
+\newcommand*{\@checkappendixparam}[1]{%
+	\def\@checkappendixparamtmp{#1}%
+	\ifx\Hy@param\@checkappendixparamtmp
+		\let\Hy@param\Hy@appendixstring
+	\fi
+}
+\makeatletter
+
+\newtoggle{inappendix}
+\togglefalse{inappendix}
+
+\apptocmd{\appendix}{\toggletrue{inappendix}}{}{\errmessage{failed to patch}}
+\apptocmd{\subappendices}{\toggletrue{inappendix}}{}{\errmessage{failed to patch}}
+% end appendix autoref patch
+
+\setcounter{tocdepth}{1}
+
+% The template leaves @ with catcode letter at the end of the preamble; restore
+% the ordinary catcode before the document body starts.
+\makeatother
+
+%─────Additions for this volume────────────────────────────────────────────────
+% Everything below is specific to "Mathematics for Economists". It adds the two
+% indices required by the volume and the notation that recurs across chapters.
+% No template macro, colour, environment or counter is redefined.
+
+% Two indices: results and defined terms on the one hand, symbols on the other.
+\usepackage{imakeidx}
+\makeindex[name=general,
+    title={Index of Definitions and Results},
+    intoc=true,
+    columns=2]
+\makeindex[name=notation,
+    title={Notation Index},
+    intoc=true,
+    columns=2]
+
+% \dfn{term} sets a term in italics at the point of definition and files it in
+% the general index; \dfnas{sort key}{printed term} handles inflected forms.
+\newcommand{\dfn}[1]{\emph{#1}\index[general]{#1}}
+\newcommand{\dfnas}[2]{\emph{#2}\index[general]{#1}}
+\newcommand{\gidx}[1]{\index[general]{#1}}
+% \nidx{$\symbol$}{gloss} files a symbol in the notation index.
+\newcommand{\nidx}[2]{\index[notation]{#1@#2}}
+
+% Spaces and set-theoretic notation.
+\providecommand{\eqdef}{\mathrel{\vcentcolon=}}
+\newcommand{\comp}[1]{#1^{\mathsf{c}}}
+\newcommand{\closure}[1]{\overline{#1}}
+\newcommand{\ball}[2]{B_{#1}(#2)}
+\newcommand{\ip}[2]{\left\langle #1,#2\right\rangle}
+\newcommand{\restr}[2]{\left.#1\right|_{#2}}
+\newcommand{\transp}{\mathsf{T}}
+\newcommand{\pow}[1]{\mathcal{P}(#1)}
+
+% Analysis, convexity and optimisation.
+\DeclareMathOperator{\ext}{ext}
+\DeclareMathOperator{\conv}{co}
+\DeclareMathOperator{\closedconv}{\overline{co}}
+\DeclareMathOperator{\aff}{aff}
+\DeclareMathOperator{\relint}{ri}
+\DeclareMathOperator{\epi}{epi}
+\DeclareMathOperator{\hyp}{hyp}
+\DeclareMathOperator{\gph}{gr}
+\DeclareMathOperator{\Ker}{Ker}
+\DeclareMathOperator{\Image}{Im}
+\DeclareMathOperator{\Hess}{D^2}
+\DeclareMathOperator*{\esssup}{ess\,sup}
+\newcommand{\st}{\text{subject to}}
+
+% Function spaces used from Chapter 6 onwards.
+\newcommand{\Cspace}[2]{\mathcal{C}(#1,#2)}
+\newcommand{\Bspace}[2]{\mathcal{B}(#1,#2)}
+\newcommand{\Lspace}[1]{\mathcal{L}^{#1}}
+
+% Economic objects that recur in the applications.
+\newcommand{\Lag}{\mathcal{L}}
+\newcommand{\budget}{\mathcal{B}}
+\newcommand{\policy}{h}
+%──────────────────────────────────────────────────────────────────────────────

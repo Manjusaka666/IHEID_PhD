@@ -1,0 +1,467 @@
+% Source: Gerzensee "Real Analysis" slides 12-15 (Matrix Representation Theorem,
+% Jacobian matrix, determinant as area magnification factor).
+% Supplementary: Fukuda (2026), Ch. 4 (Basic Operations of Matrices, pp. 135-156),
+% Ch. 5 (Fundamentals of Vector Spaces, pp. 157-184), and Sec. 10.7 (Quadratic
+% Forms, pp. 363-365).
+% External references actually cited in this chapter: Axler (2024),
+% Ljungqvist-Sargent (2018).
+
+\chapter{Vector Spaces, Linear Maps, and Matrices}\label{ch:linear}
+
+\section{Motivation: Linearity as the First Approximation}\label{sec:lin-motivation}
+
+Linear algebra enters economics along two distinct routes, and it is worth
+separating them because they require different parts of the theory.
+
+The first route is exact. Some economic models are linear by construction: a
+Leontief input--output system, a linear-quadratic control problem, a system of
+linear difference equations describing the dynamics of a linearised
+macroeconomic model, the normal equations of ordinary least squares. Here one
+needs solvability of $Ax=b$, invertibility, rank, and --- for dynamics --- the
+spectrum of $A$.
+
+The second route is approximate, and it is the more pervasive. The central idea
+of differential calculus is that a smooth function is, near a point, well
+approximated by a linear one; the derivative \emph{is} that linear map. The
+Gerzensee slides make this explicit when they present the total differential
+$\diff y=\ip{\nabla f}{\diff x}$ as an inner product and the Jacobian as the matrix
+representing $df$ \autocite[slides 10--15]{fukuda2026analysis}. Every
+comparative-statics computation in economics is the solution of a linear system
+obtained in this way, and the invertibility condition in the implicit function
+theorem (\autoref{thm:implicit-function}) is exactly the requirement that the
+relevant linear system be uniquely solvable.
+
+This chapter develops the theory in the coordinate-free language of vector spaces
+and linear maps, with matrices appearing as coordinate representations. The
+payoff is that the same theorems apply verbatim in the infinite-dimensional
+function spaces of \autoref{ch:completeness} and \autoref{ch:dynamic}, where no
+matrix exists.
+
+\section{Vector Spaces}\label{sec:lin-vs}
+
+\begin{definition}[Vector space]\label{def:vector-space}
+	A \dfn{vector space} over $\R$ is a set $V$ with an addition
+	$+\colon V\times V\to V$ and a scalar multiplication
+	$\cdot\colon\R\times V\to V$ such that $(V,+)$ is an abelian group with neutral
+	element $0$, and for all $\lambda,\mu\in\R$ and $v,w\in V$,
+	\[
+		\lambda(v+w)=\lambda v+\lambda w,\quad
+		(\lambda+\mu)v=\lambda v+\mu v,\quad
+		(\lambda\mu)v=\lambda(\mu v),\quad
+		1\cdot v=v.
+	\]
+	Elements of $V$ are \dfnas{vector}{vector}s.
+\end{definition}
+
+\begin{eg}[Vector spaces used in this volume]\label{eg:vector-spaces}
+	\begin{enumerate}[(i)]
+		\item $\R^n$ with coordinatewise operations. This is the space of commodity
+		      bundles, price vectors, and parameter vectors.
+		\item The set $M_{m\times n}(\R)$ of $m\times n$ real matrices.
+		\item The set $\R^S$ of all functions $f\colon S\to\R$ on a set $S$, with
+		      pointwise operations. When $S=\{1,\dots,n\}$ this is $\R^n$; when
+		      $S=\N$ it is the space of real sequences, the natural home of an
+		      infinite consumption path $(c_t)_{t\in\N_0}$; when $S=\Omega$ is a sample
+		      space it is the space of random variables.
+		\item The set $\Cspace{[a,b]}{\R}$ of continuous real functions on $[a,b]$, and
+		      the set $\Bspace{X}{\R}$ of bounded real functions on a set $X$. These are
+		      the spaces on which the Bellman operator of \autoref{ch:dynamic} acts.
+	\end{enumerate}
+	Items (iii) and (iv) are infinite-dimensional. That is precisely why the
+	coordinate-free treatment is worth the effort.
+\end{eg}
+
+\begin{definition}[Subspace, span, linear independence, basis]\label{def:span-basis}
+	Let $V$ be a vector space over $\R$.
+	\begin{enumerate}[(i)]
+		\item A \dfn{subspace} of $V$ is a non-empty $W\subseteq V$ closed under
+		      addition and scalar multiplication. Every subspace contains $0$.
+		\item The \dfn{span} of $S\subseteq V$ is
+		      $\Span S\eqdef\bigl\{\sum_{i=1}^k\lambda_iv_i : k\in\N,\ \lambda_i\in\R,\
+			      v_i\in S\bigr\}$, with $\Span\emptyset\eqdef\{0\}$. It is the smallest
+		      subspace containing $S$.
+		\item A finite list $v_1,\dots,v_k$ is \dfnas{linearly independent}{linear
+			      independence} if $\sum_i\lambda_iv_i=0$ implies
+		      $\lambda_1=\dots=\lambda_k=0$, and \dfnas{linearly dependent}{linear
+			      dependence} otherwise.
+		\item A \dfn{basis} of $V$ is a linearly independent list spanning $V$. If $V$
+		      has a finite basis it is \dfnas{finite-dimensional}{finite-dimensional
+			      space} and its \dfn{dimension} $\dim V$ is the common length of all its
+		      bases.
+	\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Well-definedness of dimension]\label{thm:dimension-well-defined}
+	In a finite-dimensional vector space, every two bases have the same length, and
+	every linearly independent list can be extended to a basis.
+\end{theorem}
+
+\begin{proof}
+	The engine is the exchange lemma: in a vector space spanned by a list of length
+	$m$, every linearly independent list has length at most $m$. Given that, if
+	$B_1$ and $B_2$ are bases of lengths $m_1$ and $m_2$, then $B_1$ is independent
+	and $B_2$ spans, giving $m_1\leq m_2$; exchanging roles gives $m_2\leq m_1$.
+
+	For the exchange lemma itself, let $w_1,\dots,w_m$ span $V$ and let
+	$v_1,\dots,v_k$ be independent with $k>m$. Adjoin $v_1$ to the spanning list:
+	the list $v_1,w_1,\dots,w_m$ is dependent (since $v_1\in\Span\{w_j\}$), so some
+	$w_j$ lies in the span of its predecessors and can be deleted, leaving a
+	spanning list of length $m$ containing $v_1$. Repeating with
+	$v_2,\dots,v_k$ --- at each step the deleted vector must be some $w_j$ rather
+	than a previously inserted $v_i$, because the $v_i$ are independent --- exhausts
+	the $w_j$ after $m$ steps while $v_{m+1}$ still remains, a contradiction. The
+	extension statement follows by adjoining vectors outside the current span until
+	the span is all of $V$, which terminates by the same length bound. A complete
+	treatment is \textcite[Ch.~2]{axler2024linear}.
+\end{proof}
+
+\section{Linear Maps and their Matrix Representation}\label{sec:lin-maps}
+
+\begin{definition}[Linear map]\label{def:linear-map}
+	Let $V,W$ be vector spaces over $\R$. A map $T\colon V\to W$ is \dfn{linear} if
+	$T(\lambda v+\mu v')=\lambda T(v)+\mu T(v')$ for all $\lambda,\mu\in\R$ and
+	$v,v'\in V$. Its \dfn{kernel} and \dfn{image} are
+	\[
+		\Ker T\eqdef\{v\in V : T(v)=0\},\qquad
+		\Image T\eqdef\{T(v) : v\in V\},
+	\]
+	subspaces of $V$ and $W$ respectively. The \dfn{rank} of $T$ is
+	$\rank T\eqdef\dim\Image T$.
+\end{definition}
+
+\begin{theorem}[Matrix representation theorem]\label{thm:matrix-rep}
+	A map $T\colon\R^n\to\R^m$ is linear if and only if there exists a unique
+	$m\times n$ matrix $A$ with $T(x)=Ax$ for every $x\in\R^n$. Moreover
+	\[
+		A=\bigl[\,T(e^1)\ \ T(e^2)\ \cdots\ T(e^n)\,\bigr],
+	\]
+	where $e^i$ is the $i$-th standard basis vector, so that the $i$-th column of
+	$A$ is $Ae^i=T(e^i)$.
+\end{theorem}
+
+\begin{proof}
+	If $T(x)=Ax$ then linearity is the distributive law for matrix multiplication.
+
+	Conversely, let $T$ be linear and define $A$ by the displayed formula. Writing
+	$x=\sum_{i=1}^n x_ie^i$ and using linearity $n-1$ times,
+	\[
+		T(x)=T\Bigl(\sum_{i=1}^n x_ie^i\Bigr)=\sum_{i=1}^n x_i\,T(e^i)
+		=\bigl[\,T(e^1)\ \cdots\ T(e^n)\,\bigr]\begin{pmatrix}x_1\\\vdots\\x_n\end{pmatrix}
+		=Ax .
+	\]
+	For uniqueness, suppose $Ax=Bx$ for all $x$. Taking $x=e^i$ gives
+	$Ae^i=Be^i$, that is, the $i$-th columns of $A$ and $B$ agree; as this holds for
+	every $i$, $A=B$.
+\end{proof}
+
+This is Theorem~5.1 of \textcite{fukuda2026notes} and is presented on slides
+12--14 of \autocite{fukuda2026analysis}. Two readings of $Ax$ are useful and
+both appear later. Row by row, $(Ax)_i=\ip{a^i}{x}$ where $a^i$ is the $i$-th row
+of $A$; this is the reading under which each row is a linear functional, used in
+\autoref{ch:metric} for the Riesz representation theorem. Column by column,
+$Ax=\sum_i x_i A e^i$ is a linear combination of the columns of $A$ with weights
+$x_i$; this is the reading under which $\Image A$ is the column space, used in
+\autoref{ch:projection} for least squares.
+
+\begin{theorem}[Rank--nullity]\label{thm:rank-nullity}
+	Let $V$ be finite-dimensional and $T\colon V\to W$ linear. Then
+	\[
+		\dim V=\dim\Ker T+\rank T .
+	\]
+\end{theorem}
+
+\begin{proof}
+	Let $u_1,\dots,u_k$ be a basis of $\Ker T$ and extend it, by
+	\autoref{thm:dimension-well-defined}, to a basis
+	$u_1,\dots,u_k,v_1,\dots,v_r$ of $V$, so $\dim V=k+r$. We claim
+	$T(v_1),\dots,T(v_r)$ is a basis of $\Image T$.
+
+	They span: any $T(v)$ with $v=\sum_i\alpha_iu_i+\sum_j\beta_jv_j$ equals
+	$\sum_j\beta_jT(v_j)$ because $T(u_i)=0$. They are independent: if
+	$\sum_j\beta_jT(v_j)=0$ then $T\bigl(\sum_j\beta_jv_j\bigr)=0$, so
+	$\sum_j\beta_jv_j\in\Ker T$ and hence $\sum_j\beta_jv_j=\sum_i\alpha_iu_i$ for
+	some $\alpha_i$; independence of the full basis forces all $\beta_j$ (and
+	$\alpha_i$) to vanish. Therefore $\rank T=r$ and $\dim V=k+r$.
+\end{proof}
+
+\begin{corollary}[Solvability of $Ax=b$]\label{cor:solvability}
+	Let $A$ be $m\times n$ and $b\in\R^m$.
+	\begin{enumerate}[(i)]
+		\item $Ax=b$ has a solution if and only if $b\in\Image A$, equivalently
+		      $\rank[A\ b]=\rank A$.
+		\item If a solution exists, the solution set is $x_0+\Ker A$ for any particular
+		      solution $x_0$; it is a singleton if and only if $\rank A=n$.
+		\item For $m=n$: $A$ is invertible $\iff$ $\rank A=n$ $\iff$ $\Ker A=\{0\}$
+		      $\iff$ $\det A\neq0$ $\iff$ $Ax=b$ has exactly one solution for every $b$.
+	\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+	(i) is the definition of the image. (ii) If $Ax_0=b$ then $Ax=b$ iff
+	$A(x-x_0)=0$. The solution is unique iff $\Ker A=\{0\}$, which by
+	\autoref{thm:rank-nullity} is $\rank A=n$. (iii) For $m=n$,
+	\autoref{thm:rank-nullity} makes $\Ker A=\{0\}$ and $\Image A=\R^n$ equivalent;
+	the equivalence with $\det A\neq0$ is the standard determinant criterion, and
+	invertibility is then existence and uniqueness for every $b$.
+\end{proof}
+
+\begin{remark}[Square matters]\label{rem:square-matters}
+	Part (iii) is a statement about square matrices only. For $m\neq n$ injectivity
+	and surjectivity are genuinely different, and the distinction is economically
+	substantive: in the least-squares problem of \autoref{ch:projection} the design
+	matrix $X$ is $n\times k$ with $n\gg k$, so $Xb=y$ typically has no solution ---
+	which is exactly why one projects instead of solving. In econometrics the
+	condition $\rank X=k$ is the no-perfect-multicollinearity assumption, and by
+	\autoref{cor:solvability}(ii) it is precisely what makes the estimator unique.
+\end{remark}
+
+\section{Determinants and Volume}\label{sec:lin-det}
+
+\begin{definition}[Determinant]\label{def:determinant}
+	The \dfn{determinant} is the unique function
+	$\det\colon M_{n\times n}(\R)\to\R$ that is linear in each column separately,
+	vanishes when two columns coincide, and satisfies $\det I_n=1$. Explicitly
+	\[
+		\det A=\sum_{\sigma\in S_n}\sgn(\sigma)\prod_{i=1}^n a_{\sigma(i)i},
+	\]
+	the sum running over permutations of $\{1,\dots,n\}$.
+\end{definition}
+
+\begin{proposition}[Properties]\label{prop:det-properties}
+	For $A,B\in M_{n\times n}(\R)$: $\det(AB)=\det A\det B$;
+	$\det A^{\transp}=\det A$; $A$ is invertible if and only if $\det A\neq0$, in
+	which case $\det(A^{-1})=(\det A)^{-1}$; and for $\lambda\in\R$,
+	$\det(\lambda A)=\lambda^n\det A$.
+\end{proposition}
+
+The geometric content is what the Gerzensee slides emphasise: $\abs{\det A}$ is
+the factor by which the linear map $x\mapsto Ax$ magnifies $n$-dimensional
+volume, and the sign of $\det A$ records whether orientation is preserved
+\autocite[slide 15]{fukuda2026analysis}. Two consequences are used later.
+
+\begin{eg}[Change of variables]\label{eg:det-jacobian}
+	In the change-of-variables formula for multiple integrals
+	(\autoref{thm:change-of-variables}), the factor $\abs{\det J}$ appears exactly
+	because $J$ is the linear approximation of the substitution and $\abs{\det J}$
+	is its volume magnification. The polar-coordinate computation of the Gaussian
+	integral in \autocite[slides 91--93]{fukuda2026calculus}, where
+	$\diff x\,\diff y=r\,\diff r\,\diff \theta$, is this statement with
+	\[
+		J=\begin{pmatrix}\partial x/\partial r & \partial x/\partial\theta\\
+			\partial y/\partial r & \partial y/\partial\theta\end{pmatrix}
+		=\begin{pmatrix}\cos\theta & -r\sin\theta\\ \sin\theta & r\cos\theta\end{pmatrix},
+		\qquad \det J=r(\cos^2\theta+\sin^2\theta)=r>0 .
+	\]
+	The full derivation is given in \autoref{sec:int-gaussian}.
+\end{eg}
+
+\begin{eg}[Cramer's rule and comparative statics]\label{eg:cramer}
+	If $\det A\neq0$, the unique solution of $Ax=b$ has $i$-th coordinate
+	$x_i=\det A_i/\det A$, where $A_i$ is $A$ with its $i$-th column replaced by
+	$b$. In comparative statics the system $Ax=b$ arises by differentiating
+	equilibrium conditions, $x$ collects the responses of endogenous variables, and
+	$b$ the direct effect of the parameter; Cramer's rule then delivers the sign of
+	an individual response from the signs of two determinants. This is how sign
+	restrictions on a Hessian or a Jacobian translate into comparative-statics
+	predictions in \autoref{ch:calculusn}.
+\end{eg}
+
+\section{Eigenvalues, Diagonalisation, and Symmetric Matrices}\label{sec:lin-spectral}
+
+\begin{definition}[Eigenvalue and eigenvector]\label{def:eigen}
+	Let $A\in M_{n\times n}(\R)$. A scalar $\lambda\in\C$ is an \dfn{eigenvalue} of
+	$A$ if $Av=\lambda v$ for some $v\neq0$; such a $v$ is an \dfn{eigenvector}. The
+	eigenvalues are the roots of the \dfn{characteristic polynomial}
+	$p_A(\lambda)=\det(A-\lambda I)$. The \dfn{spectral radius} is
+	$\rho(A)\eqdef\max\{\abs{\lambda} : \lambda\text{ an eigenvalue of }A\}$.
+\end{definition}
+
+\begin{theorem}[Spectral theorem for symmetric matrices]\label{thm:spectral}
+	Let $A\in M_{n\times n}(\R)$ be symmetric. Then all eigenvalues of $A$ are real,
+	and there is an orthogonal matrix $Q$ (that is, $Q^{\transp}Q=I$) and a diagonal
+	matrix $\Lambda=\diag(\lambda_1,\dots,\lambda_n)$ with
+	$A=Q\Lambda Q^{\transp}$. Equivalently, $\R^n$ has an orthonormal basis of
+	eigenvectors of $A$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+	Reality of the eigenvalues: if $Av=\lambda v$ with $v\in\C^n\setminus\{0\}$,
+	then $\bar v^{\transp}Av=\lambda\bar v^{\transp}v$; taking conjugate transposes
+	and using $A=A^{\transp}=\bar A$ gives
+	$\bar v^{\transp}Av=\bar\lambda\bar v^{\transp}v$; since
+	$\bar v^{\transp}v=\norm{v}^2>0$ we get $\lambda=\bar\lambda$.
+
+	Diagonalisation proceeds by induction on $n$. Let $\lambda_1$ be an eigenvalue
+	with unit eigenvector $q_1$; the subspace $q_1^{\perp}$ is $A$-invariant,
+	because $\ip{q_1}{Aw}=\ip{Aq_1}{w}=\lambda_1\ip{q_1}{w}=0$ for
+	$w\perp q_1$. Applying the induction hypothesis to the restriction of $A$ to
+	$q_1^\perp$, which is symmetric with respect to the induced inner product, and
+	adjoining $q_1$ produces the orthonormal eigenbasis. The full argument, in the
+	form of the real spectral theorem, is \textcite[Ch.~7]{axler2024linear}.
+\end{proof}
+
+\begin{definition}[Quadratic form and definiteness]\label{def:definiteness}
+	Let $A$ be symmetric. The \dfn{quadratic form} associated with $A$ is
+	$q_A(x)=x^{\transp}Ax$. The matrix $A$ is
+	\dfnas{positive definite}{positive definite matrix} ($A\succ0$) if $q_A(x)>0$
+	for all $x\neq0$; \dfnas{positive semidefinite}{positive semidefinite matrix}
+	($A\succeq0$) if $q_A(x)\geq0$ for all $x$; and negative (semi)definite if $-A$
+	is positive (semi)definite. Otherwise $A$ is \dfn{indefinite}.
+\end{definition}
+
+\begin{proposition}[Definiteness via the spectrum]\label{prop:definiteness-eigen}
+	A symmetric $A$ is positive definite if and only if all its eigenvalues are
+	strictly positive, and positive semidefinite if and only if all are
+	non-negative. Moreover
+	\[
+		\lambda_{\min}\norm{x}^2\leq x^{\transp}Ax\leq\lambda_{\max}\norm{x}^2
+		\qquad\text{for all }x\in\R^n,
+	\]
+	where $\lambda_{\min},\lambda_{\max}$ are the smallest and largest eigenvalues.
+\end{proposition}
+
+\begin{proof}
+	Write $A=Q\Lambda Q^{\transp}$ as in \autoref{thm:spectral} and set
+	$y=Q^{\transp}x$. Since $Q$ is orthogonal, $\norm{y}=\norm{x}$ and
+	$x\neq0\iff y\neq0$, and
+	\[
+		x^{\transp}Ax=y^{\transp}\Lambda y=\sum_{i=1}^n\lambda_iy_i^2 .
+	\]
+	If every $\lambda_i>0$ this is strictly positive for $y\neq0$. Conversely, if
+	$\lambda_j\leq0$ for some $j$, taking $y=e^j$, that is $x=Qe^j$, gives
+	$x^{\transp}Ax=\lambda_j\leq0$ with $x\neq0$. The semidefinite case is
+	identical with weak inequalities. The two-sided bound follows from
+	$\lambda_{\min}\sum_iy_i^2\leq\sum_i\lambda_iy_i^2\leq\lambda_{\max}\sum_iy_i^2$.
+\end{proof}
+
+\begin{remark}[Only the symmetric part matters]\label{rem:symmetric-part}
+	For any square $A$, $x^{\transp}Ax=x^{\transp}\bigl(\tfrac12(A+A^{\transp})
+		\bigr)x$, because $x^{\transp}Ax$ is a scalar and hence equals its own
+	transpose $x^{\transp}A^{\transp}x$. A quadratic form therefore determines and
+	is determined by the symmetric part of $A$ alone, and one may always assume $A$
+	symmetric. This is the content of the gradient computation in
+	\autocite[slide 49]{fukuda2026calculus}: for $f(x)=x^{\transp}Ax$,
+	\[
+		\nabla f(x)=(A+A^{\transp})x,
+	\]
+	which reduces to $2Ax$ exactly when $A$ is symmetric. Forgetting the factor
+	$A+A^{\transp}$ is one of the most common errors in matrix differentiation.
+\end{remark}
+
+\begin{proposition}[Leading principal minors]\label{prop:sylvester}
+	Let $A$ be symmetric $n\times n$ and let $D_k$ denote the determinant of its
+	upper-left $k\times k$ submatrix. Then $A\succ0$ if and only if $D_k>0$ for
+	$k=1,\dots,n$; and $A\prec0$ if and only if $(-1)^kD_k>0$ for $k=1,\dots,n$,
+	that is, the leading principal minors alternate in sign starting negative.
+\end{proposition}
+
+\begin{remark}[The semidefinite case is different]\label{rem:semidefinite-minors}
+	The analogous criterion for \emph{semi}definiteness requires all principal
+	minors, not merely the leading ones, to be non-negative. The matrix
+	$A=\begin{psmallmatrix}0&0\\0&-1\end{psmallmatrix}$ has $D_1=D_2=0$, so all
+	leading principal minors are non-negative, yet $A$ is negative semidefinite and
+	not positive semidefinite. This trap matters when checking second-order
+	conditions at a boundary optimum in \autoref{ch:optimization}, where
+	semidefiniteness rather than definiteness is what the theory delivers.
+\end{remark}
+
+\section{Economic Application: Linear Dynamics and Stability}\label{sec:lin-dynamics}
+
+Consider the linear difference system
+\begin{equation}\label{eq:linear-system}
+	x_{t+1}=Ax_t,\qquad x_0\in\R^n\text{ given},
+\end{equation}
+which arises as the linearisation of a nonlinear dynamic model around a steady
+state --- for instance the Ramsey model of \autoref{sec:dyn-ramsey} linearised
+about $(k^\ast,c^\ast)$. Iterating, $x_t=A^tx_0$.
+
+\begin{proposition}[Stability]\label{prop:linear-stability}
+	For system~\eqref{eq:linear-system}: $x_t\to0$ for every $x_0\in\R^n$ if and
+	only if $\rho(A)<1$. If $\rho(A)>1$, then $x_t$ diverges for every $x_0$ outside
+	a proper subspace of $\R^n$.
+\end{proposition}
+
+\begin{proof}[Proof for the diagonalisable case]
+	Suppose $A=P\Lambda P^{-1}$ with $\Lambda=\diag(\lambda_1,\dots,\lambda_n)$.
+	Then $A^t=P\Lambda^tP^{-1}$ with
+	$\Lambda^t=\diag(\lambda_1^t,\dots,\lambda_n^t)$. Writing
+	$z_t=P^{-1}x_t$ decouples the system into $z_{t,i}=\lambda_i^tz_{0,i}$. Each
+	coordinate tends to $0$ for every initial condition if and only if
+	$\abs{\lambda_i}<1$, and grows without bound whenever $\abs{\lambda_i}>1$ and
+	$z_{0,i}\neq0$. The set of $x_0$ with $z_{0,i}=0$ for all $i$ with
+	$\abs{\lambda_i}>1$ --- the stable subspace --- is a proper subspace when some
+	$\abs{\lambda_i}>1$. The non-diagonalisable case is handled by the Jordan form,
+	where a $\lambda$-block of size $k$ contributes terms $t^{j}\lambda^{t}$ with
+	$j<k$; these still tend to $0$ when $\abs{\lambda}<1$, so the criterion is
+	unchanged.
+\end{proof}
+
+\begin{remark}[Saddle-path stability]\label{rem:saddle-path}
+	In macroeconomic models the interesting case is neither $\rho(A)<1$ nor
+	$\rho(A)>1$ but a mixture: some eigenvalues inside the unit circle and some
+	outside. The state vector then splits into predetermined variables, whose
+	initial values are given, and jump variables, whose initial values are chosen.
+	A unique bounded equilibrium path exists when the number of eigenvalues outside
+	the unit circle equals the number of jump variables --- the Blanchard--Kahn
+	count. Economically, the jump variables must be placed on the stable subspace,
+	and the counting condition says that the placement problem has exactly one
+	solution, which by \autoref{cor:solvability}(iii) is a statement about a square
+	invertible system. The recursive treatment is
+	\textcite[Ch.~2]{ljungqvist2018recursive}.
+\end{remark}
+
+\begin{eg}[Leontief input--output]\label{eg:leontief}
+	Let $A\in M_{n\times n}(\R_+)$ have $a_{ij}$ equal to the units of good $i$
+	required per unit of good $j$, and let $d\in\R^n_+$ be final demand. Gross
+	output $x$ must satisfy $x=Ax+d$, that is $(I-A)x=d$. A non-negative solution
+	exists for every $d\in\R^n_+$ if and only if $(I-A)^{-1}$ exists and is
+	non-negative, which holds if and only if $\rho(A)<1$; in that case
+	\[
+		(I-A)^{-1}=\sum_{k=0}^{\infty}A^k,
+	\]
+	the Neumann series, whose $k$-th term is the input requirement generated at the
+	$k$-th round of production. The condition $\rho(A)<1$ is thus the productivity
+	condition that the economy generates a surplus. Convergence of the series is a
+	fixed-point statement: $x\mapsto Ax+d$ is a contraction in a suitable norm, and
+	\autoref{thm:banach-fixed-point} applies. The same series reappears in
+	\autoref{ch:dynamic} as the present-value expansion of a value function.
+\end{eg}
+
+\section{Chapter Summary}\label{sec:lin-summary}
+
+A linear map between finite-dimensional spaces is completely described, once
+bases are fixed, by a matrix whose columns are the images of the basis vectors
+(\autoref{thm:matrix-rep}). Rank--nullity converts questions about solvability
+into questions about dimension (\autoref{thm:rank-nullity},
+\autoref{cor:solvability}); for square matrices, and only for square matrices,
+injectivity, surjectivity, invertibility, and non-vanishing determinant coincide.
+The determinant measures oriented volume magnification, which is why it appears
+in the change-of-variables formula. Symmetric matrices are orthogonally
+diagonalisable with real eigenvalues (\autoref{thm:spectral}), so definiteness of
+a quadratic form is a statement about the sign of the spectrum
+(\autoref{prop:definiteness-eigen}) --- the fact used for second-order conditions
+throughout \autoref{ch:optimization}. Only the symmetric part of a matrix affects
+its quadratic form, and $\nabla(x^{\transp}Ax)=(A+A^{\transp})x$. Stability of a
+linear dynamic system is governed by the spectral radius.
+
+\begin{exercise}\label{ex:lin-1}
+	Verify directly, without invoking \autoref{rem:symmetric-part}, that for
+	$f(x_1,x_2)=a_{11}x_1^2+(a_{12}+a_{21})x_1x_2+a_{22}x_2^2$ one has
+	$\nabla f(x)=(A+A^{\transp})x$, and conclude that two distinct matrices can
+	induce the same quadratic form. (This is Exercise~3.3 of
+	\textcite{fukuda2026notes}; see \autocite[slide 49]{fukuda2026calculus}.)
+\end{exercise}
+
+\begin{exercise}\label{ex:lin-2}
+	Let $X$ be $n\times k$ with $\rank X=k\leq n$. Show that $X^{\transp}X$ is
+	symmetric positive definite, hence invertible. Where is the rank hypothesis
+	used, and what fails without it? (The result is what makes the OLS formula
+	$\hat\beta=(X^{\transp}X)^{-1}X^{\transp}y$ of
+	\autocite[slide 60]{fukuda2026calculus} well posed.)
+\end{exercise}
+
+\begin{exercise}\label{ex:lin-3}
+	Let $A\in M_{n\times n}(\R_+)$ with all row sums strictly less than $1$. Show
+	$\rho(A)<1$, and deduce from \autoref{eg:leontief} that the Leontief system is
+	productive. Interpret the row-sum condition economically.
+\end{exercise}

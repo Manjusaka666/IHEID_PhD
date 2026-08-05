@@ -1,0 +1,58 @@
+% Figures/ramsey-phase.tex
+% Phase diagram of the continuous-time Ramsey problem
+% \eqref{eq:ct-ramsey-constraint} of Chapter \ref{ch:continuoustime}: the loci
+% \dot c=0 and \dot k=0 of Theorem \ref{thm:keynes-ramsey} and the
+% one-dimensional stable manifold of Remark \ref{rem:ct-saddle-path}.
+% Drawn for f(k)=k^{0.3}, delta=0.1, rho=0.05, so that k^*=2^{1/0.7}\approx2.69
+% and k^g=3^{1/0.7}\approx4.80. The stable arm is drawn schematically: it lies
+% below the \dot k=0 locus for k<k^* and above it for k>k^*, which is all that
+% the sign restrictions determine without solving the system numerically.
+\begin{tikzpicture}
+	\begin{axis}[
+			width=11cm, height=7.2cm,
+			axis lines=left,
+			xlabel={$k$}, ylabel={$c$},
+			every axis x label/.style={at={(current axis.right of origin)},anchor=west},
+			every axis y label/.style={at={(current axis.above origin)},anchor=south},
+			xmin=0, xmax=8.4, ymin=0, ymax=1.55,
+			xtick={2.6918,4.8043}, xticklabels={$k^{\ast}$,$k^{g}$},
+			ytick={1.0767}, yticklabels={$c^{\ast}$},
+			tick label style={font=\small},
+			label style={font=\small},
+			clip=false,
+		]
+
+		% ---- the locus \dot k = 0, that is c = f(k) - \delta k ----
+		\addplot[line width=1pt, domain=0.02:8.4, samples=160] {x^0.3 - 0.1*x};
+		\node[anchor=south west, font=\small] at (axis cs:7.0,1.075) {$\dot k=0$};
+
+		% ---- the locus \dot c = 0, that is f'(k) = \rho + \delta ----
+		\addplot[line width=1pt, dashed] coordinates {(2.6918,0) (2.6918,1.55)};
+		\node[anchor=south, font=\small] at (axis cs:2.6918,1.56) {$\dot c=0$};
+
+		% ---- guide lines to the steady state ----
+		\addplot[gray!60, dotted] coordinates {(0,1.0767) (2.6918,1.0767)};
+
+		% ---- the stable manifold ----
+		\addplot[line width=1.1pt, smooth, black!55] coordinates {
+				(0.05,0.13) (0.35,0.50) (0.80,0.72) (1.50,0.90) (2.00,0.97)
+				(2.6918,1.0767) (3.50,1.165) (5.00,1.27) (7.00,1.38) (8.30,1.44)};
+		\node[anchor=north west, font=\small, black!55] at (axis cs:7.05,1.395)
+		{stable arm};
+
+		% ---- steady state ----
+		\filldraw (axis cs:2.6918,1.0767) circle (1.6pt);
+
+		% ---- directional arrows in the four regions ----
+		\draw[->,>=stealth,gray!85] (axis cs:1.45,1.24) -- (axis cs:1.15,1.36);
+		\draw[->,>=stealth,gray!85] (axis cs:1.20,0.42) -- (axis cs:1.55,0.54);
+		\draw[->,>=stealth,gray!85] (axis cs:6.60,1.50) -- (axis cs:6.25,1.40);
+		\draw[->,>=stealth,gray!85] (axis cs:5.60,0.62) -- (axis cs:5.95,0.50);
+
+		% ---- arrows along the stable arm ----
+		\draw[->,>=stealth,black!55,line width=1pt]
+		(axis cs:1.50,0.90) -- (axis cs:1.80,0.945);
+		\draw[->,>=stealth,black!55,line width=1pt]
+		(axis cs:4.20,1.222) -- (axis cs:3.85,1.196);
+	\end{axis}
+\end{tikzpicture}

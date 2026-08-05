@@ -1,0 +1,616 @@
+% Source: Fukuda (2026), Lecture Notes on Mathematics for Economics, Ch. 1
+% ("Fundamentals of Set Theory", pp. 1-56), especially 1.1-1.7 and 1.10-1.11.
+% External references actually cited in this chapter: Corbae et al. (2009), Le
+% Gall (2022), Ok (2007), Rudin (1976).
+
+\chapter{Sets, Relations, Logic, and the Real Number System}\label{ch:sets}
+
+\section{Motivation: Why an Economist Starts with Sets}\label{sec:sets-motivation}
+
+An economic model is a statement about a set of alternatives, a rule for
+comparing them, and a subset of them that is feasible. A consumer facing prices
+$p\in\R^n_{++}$ and wealth $m>0$ chooses from the budget set
+$\budget(p,m)=\{x\in\R^n_+ : \ip{p}{x}\leq m\}$; a firm chooses from a production
+set; a player in a game chooses from a strategy set. The comparison rule is a
+binary relation on the set of alternatives, and the object economists call a
+utility function is a numerical representation of that relation. Every
+subsequent chapter presupposes that these three objects --- a set, a relation, a
+distinguished subset --- have been given a precise meaning.
+
+This chapter therefore does three things. It fixes set-theoretic language
+(\autoref{sec:sets-basic}--\autoref{sec:sets-relations}); it records the forms of
+argument used throughout the volume (\autoref{sec:sets-logic}); and it
+constructs the real number system axiomatically
+(\autoref{sec:sets-reals}), because the single property that distinguishes $\R$
+from $\Q$ --- the least upper bound property --- is what makes every existence
+theorem in later chapters true. The chapter closes with the first substantive
+economic application, the representation of a preference relation by a utility
+function (\autoref{sec:sets-preferences}).
+
+\section{Sets, Operations, and Mappings}\label{sec:sets-basic}
+
+\subsection{Sets and their specification}
+
+We take the notion of a set as primitive: a \dfn{set} is a collection of objects,
+called its \dfnas{element}{elements} or members. We write $a\in A$ when $a$ is an
+element of $A$ and $a\notin A$ otherwise. The set with no elements is the
+\dfnas{empty set}{empty set}, written $\emptyset$.
+\nidx{$\emptyset$}{$\emptyset$, empty set}
+
+A set may be specified by enumeration, as in $\{a_1,\dots,a_n\}$, or by a
+defining property relative to an ambient set, as in
+$\{x\in X : P(x)\}$. The ambient set matters: the collection of all $x$ with
+$P(x)$, taken without an ambient set, is not in general a set, and the
+restriction to subsets of a given set is what avoids the classical paradoxes. All
+constructions in this volume take place inside an ambient set that is either
+named or clear from context.
+
+\begin{definition}[Inclusion and equality]\label{def:inclusion}
+	Let $A$ and $B$ be sets. We say $A$ is a \dfn{subset} of $B$, written
+	$A\subseteq B$, if $a\in A$ implies $a\in B$. We say $A=B$ if $A\subseteq B$ and
+	$B\subseteq A$. If $A\subseteq B$ and $A\neq B$, then $A$ is a \dfn{proper
+		subset} of $B$, written $A\subsetneq B$.
+\end{definition}
+
+The definition of equality dictates the standard proof technique: to establish
+$A=B$ one establishes two inclusions. This is used so often below that it is
+worth naming once.
+
+\begin{definition}[Operations on sets]\label{def:set-ops}
+	Let $A,B$ be subsets of an ambient set $X$, and let $(A_i)_{i\in I}$ be a family
+	of subsets of $X$ indexed by a set $I$.
+	\begin{enumerate}[(i)]
+		\item The \dfn{complement} of $A$ in $X$ is
+		      $\comp{A}\eqdef\{x\in X : x\notin A\}$.
+		\item The \dfn{union} and \dfn{intersection} of the family are
+		      \[
+			      \bigcup_{i\in I}A_i\eqdef\{x\in X : x\in A_i\ \text{for some }i\in I\},
+			      \qquad
+			      \bigcap_{i\in I}A_i\eqdef\{x\in X : x\in A_i\ \text{for all }i\in I\}.
+		      \]
+		\item The \dfn{set difference} is $A\setminus B\eqdef A\cap\comp{B}$.
+		\item The \dfn{Cartesian product} of sets $A_1,\dots,A_n$ is
+		      $\prod_{i=1}^n A_i\eqdef\{(a_1,\dots,a_n) : a_i\in A_i\ \text{for each }i\}$,
+		      the set of ordered $n$-tuples.
+		\item The \dfn{power set} of $X$ is $\pow{X}\eqdef\{A : A\subseteq X\}$.
+	\end{enumerate}
+\end{definition}
+
+The index set $I$ in (ii) is arbitrary: it may be finite, countably infinite, or
+uncountable. This generality is not idle. In \autoref{ch:topology} the collection
+of open sets is required to be closed under arbitrary unions but only under
+finite intersections, and the whole of point-set topology turns on that
+asymmetry.
+
+\begin{proposition}[De Morgan's laws]\label{prop:demorgan}
+	Let $(A_i)_{i\in I}$ be a family of subsets of $X$ with $I\neq\emptyset$. Then
+	\[
+		\comp{\left(\bigcup_{i\in I}A_i\right)}=\bigcap_{i\in I}\comp{A_i},
+		\qquad
+		\comp{\left(\bigcap_{i\in I}A_i\right)}=\bigcup_{i\in I}\comp{A_i}.
+	\]
+\end{proposition}
+
+\begin{proof}
+	For the first identity, $x\in\comp{\left(\bigcup_{i}A_i\right)}$ holds if and
+	only if $x\in X$ and it is not the case that $x\in A_i$ for some $i\in I$; that
+	is, if and only if $x\in X$ and $x\notin A_i$ for every $i\in I$; that is, if and
+	only if $x\in\comp{A_i}$ for every $i$, which is $x\in\bigcap_i \comp{A_i}$.
+
+	The second identity follows from the first applied to the family
+	$(\comp{A_i})_{i\in I}$ together with $\comp{(\comp{A})}=A$: indeed
+	$\comp{\left(\bigcup_i \comp{A_i}\right)}=\bigcap_i A_i$, and taking complements
+	of both sides gives the claim.
+\end{proof}
+
+\begin{remark}
+	The hypothesis $I\neq\emptyset$ is needed. With $I=\emptyset$ the convention
+	$\bigcup_{i\in\emptyset}A_i=\emptyset$ and $\bigcap_{i\in\emptyset}A_i=X$ makes
+	both identities hold, but only because the intersection over the empty family is
+	defined to be the ambient set. Outside an ambient set that convention has no
+	meaning, which is a second reason for insisting on one.
+\end{remark}
+
+\subsection{Mappings}
+
+\begin{definition}[Mapping]\label{def:mapping}
+	Let $A$ and $B$ be sets. A \dfn{mapping} (or function) $f\colon A\to B$ assigns
+	to each $a\in A$ exactly one element $f(a)\in B$. The set $A$ is the
+	\dfn{domain} and $B$ the \dfnas{codomain}{codomain}. For $S\subseteq A$ and
+	$T\subseteq B$,
+	\[
+		f(S)\eqdef\{f(a) : a\in S\}\subseteq B,\qquad
+		f^{-1}(T)\eqdef\{a\in A : f(a)\in T\}\subseteq A
+	\]
+	are the \dfn{image} of $S$ and the \dfn{preimage} of $T$. The set $f(A)$ is the
+	\dfnas{range}{range of a mapping}.
+\end{definition}
+
+The preimage is better behaved than the image, and the difference is the reason
+that continuity is defined in \autoref{ch:continuity} through preimages rather
+than images.
+
+\begin{proposition}[Images and preimages under set operations]\label{prop:image-preimage}
+	Let $f\colon A\to B$, let $(S_i)_{i\in I}$ be subsets of $A$, and let
+	$(T_i)_{i\in I}$ be subsets of $B$ with $I\neq\emptyset$. Then
+	\begin{enumerate}[(i)]
+		\item $f^{-1}\!\left(\bigcup_i T_i\right)=\bigcup_i f^{-1}(T_i)$ and
+		      $f^{-1}\!\left(\bigcap_i T_i\right)=\bigcap_i f^{-1}(T_i)$;
+		\item $f^{-1}(\comp{T})=\comp{\left(f^{-1}(T)\right)}$ for every $T\subseteq B$;
+		\item $f\!\left(\bigcup_i S_i\right)=\bigcup_i f(S_i)$, whereas in general only
+		      $f\!\left(\bigcap_i S_i\right)\subseteq\bigcap_i f(S_i)$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) We have $a\in f^{-1}\!\left(\bigcap_i T_i\right)$ if and only if
+	$f(a)\in T_i$ for every $i$, if and only if $a\in f^{-1}(T_i)$ for every $i$.
+	The union case is identical with ``some'' in place of ``every''.
+
+	(ii) $a\in f^{-1}(\comp{T})$ if and only if $f(a)\notin T$, if and only if
+	$a\notin f^{-1}(T)$.
+
+	(iii) If $b\in f\!\left(\bigcup_i S_i\right)$ then $b=f(a)$ for some
+	$a\in S_{i_0}$, so $b\in f(S_{i_0})$; conversely each $f(S_i)\subseteq
+		f\!\left(\bigcup_j S_j\right)$. For intersections, if $a\in\bigcap_i S_i$ then
+	$f(a)\in f(S_i)$ for every $i$, giving the stated inclusion.
+\end{proof}
+
+\begin{eg}[Failure of equality for images of intersections]\label{eg:image-intersection}
+	Let $f\colon\R\to\R$ be $f(x)=x^2$, $S_1=(-\infty,0)$ and $S_2=(0,\infty)$. Then
+	$S_1\cap S_2=\emptyset$, so $f(S_1\cap S_2)=\emptyset$, while
+	$f(S_1)=f(S_2)=(0,\infty)$, so $\bigcap_i f(S_i)=(0,\infty)$. The inclusion in
+	\autoref{prop:image-preimage}(iii) is therefore strict in general, and it is an
+	equality for all families if and only if $f$ is injective.
+\end{eg}
+
+\begin{definition}[Injection, surjection, bijection]\label{def:inj-surj}
+	A mapping $f\colon A\to B$ is
+	\dfnas{injective}{injective mapping} if $f(a)=f(a')$ implies $a=a'$;
+	\dfnas{surjective}{surjective mapping} if $f(A)=B$; and
+	\dfnas{bijective}{bijective mapping} if it is both. A bijection $f$ has a
+	unique inverse $f^{-1}\colon B\to A$ satisfying $f^{-1}\circ f=\id_A$ and
+	$f\circ f^{-1}=\id_B$.
+\end{definition}
+
+\begin{definition}[Finite, countable, uncountable]\label{def:countable}
+	A set $A$ is \dfn{finite} if $A=\emptyset$ or there is a bijection
+	$\{1,\dots,n\}\to A$ for some $n\in\N$; \dfnas{countably infinite}{countably
+		infinite set} if there is a bijection $\N\to A$; \dfn{countable} if it is finite
+	or countably infinite; and \dfn{uncountable} otherwise.
+\end{definition}
+
+\begin{proposition}\label{prop:countable-union}
+	A countable union of countable sets is countable. The set $\Q$ is countably
+	infinite; the set $\R$ is uncountable.
+\end{proposition}
+
+\begin{proof}
+	The first two assertions are standard diagonal enumerations; see
+	\textcite[Thm.~2.12 and its corollary]{rudin1976principles}. For the third,
+	Cantor's diagonal argument shows that no map $\N\to(0,1)$ is surjective: given
+	$f\colon\N\to(0,1)$ with decimal expansions $f(n)=0.d_{n1}d_{n2}\dots$ (choosing
+	the expansion that does not terminate in all nines), the number
+	$x=0.c_1c_2\dots$ with $c_n=5$ if $d_{nn}\neq5$ and $c_n=4$ otherwise lies in
+	$(0,1)$ and differs from every $f(n)$ in its $n$-th digit. Since
+	$(0,1)\subseteq\R$, the set $\R$ is uncountable.
+\end{proof}
+
+\begin{remark}[Where countability matters in economics]\label{rem:countability-econ}
+	The distinction is not decorative. In \autoref{ch:probability} a probability
+	measure can be assigned to every subset of a countable sample space, but on an
+	uncountable sample space such as $[0,1]$ no countably additive probability
+	measure exists on the full power set that extends length; one must restrict
+	attention to a $\sigma$-algebra of measurable sets
+	\autocite[Ch.~1]{legall2022measure}. The Gerzensee treatment makes exactly this
+	point when it moves from ``an at most countable set $\Omega$''
+	\autocite[slide 3]{fukuda2026probability} to the remark that a continuum
+	sample space requires a $\sigma$-algebra
+	\autocite[slide 37]{fukuda2026analysis}.
+\end{remark}
+
+\section{Relations, Orders, and Preferences}\label{sec:sets-relations}
+
+\begin{definition}[Binary relation]\label{def:relation}
+	A \dfn{binary relation} $R$ on a set $X$ is a subset $R\subseteq X\times X$; one
+	writes $xRy$ for $(x,y)\in R$. The relation is
+	\begin{enumerate}[(i)]
+		\item \dfnas{reflexive}{reflexive relation} if $xRx$ for all $x\in X$;
+		\item \dfnas{complete}{complete relation} if for all $x,y\in X$, $xRy$ or $yRx$
+		      (or both);
+		\item \dfnas{transitive}{transitive relation} if $xRy$ and $yRz$ imply $xRz$;
+		\item \dfnas{symmetric}{symmetric relation} if $xRy$ implies $yRx$;
+		\item \dfnas{antisymmetric}{antisymmetric relation} if $xRy$ and $yRx$ imply
+		      $x=y$.
+	\end{enumerate}
+\end{definition}
+
+Completeness implies reflexivity (take $y=x$), so the two are not independent
+hypotheses. Economics texts frequently list both; nothing is gained by it, and we
+list completeness alone where it is available.
+
+\begin{definition}[Equivalence relation and partition]\label{def:equivalence}
+	An \dfn{equivalence relation} on $X$ is a reflexive, symmetric and transitive
+	relation, usually written $\sim$. For $x\in X$ the \dfn{equivalence class} of
+	$x$ is $[x]\eqdef\{y\in X : y\sim x\}$. A \dfn{partition} of $X$ is a family of
+	non-empty, pairwise disjoint subsets whose union is $X$.
+\end{definition}
+
+\begin{proposition}\label{prop:equivalence-partition}
+	The equivalence classes of an equivalence relation on $X$ form a partition of
+	$X$; conversely, every partition of $X$ arises in this way from exactly one
+	equivalence relation.
+\end{proposition}
+
+\begin{proof}
+	Reflexivity gives $x\in[x]$, so the classes are non-empty and cover $X$. Suppose
+	$[x]\cap[y]\neq\emptyset$ and take $z$ in the intersection. Then $z\sim x$ and
+	$z\sim y$, so by symmetry and transitivity $x\sim y$; hence for any $w\in[x]$ we
+	get $w\sim x\sim y$ and $w\in[y]$, and symmetrically, so $[x]=[y]$. Thus distinct
+	classes are disjoint.
+
+	Conversely, given a partition $\mathcal{P}$, define $x\sim y$ if $x$ and $y$ lie
+	in the same cell. This is reflexive, symmetric and transitive because the cells
+	are non-empty, pairwise disjoint, and cover $X$; and its classes are exactly the
+	cells. Uniqueness holds because the relation is determined by its classes.
+\end{proof}
+
+This proposition is used twice in later chapters: in \autoref{ch:probability}, a
+finite partition $(H_j)_{j=1}^m$ of the sample space is precisely the information
+structure underlying the law of iterated expectations
+\autocite[slide 18]{fukuda2026probability}; and in the theory of choice, the
+indifference relation derived from a preference partitions the consumption set
+into indifference curves.
+
+\subsection{Preference relations}\label{subsec:preferences}
+
+\begin{definition}[Preference relation]\label{def:preference}
+	Let $X$ be a non-empty set of alternatives. A \dfn{preference relation}
+	$\succsim$ on $X$ is a complete and transitive binary relation. Its
+	\dfn{strict part} $\succ$ and \dfn{indifference part} $\sim$ are defined by
+	\[
+		x\succ y \iff \bigl(x\succsim y \text{ and not } y\succsim x\bigr),
+		\qquad
+		x\sim y \iff \bigl(x\succsim y \text{ and } y\succsim x\bigr).
+	\]
+\end{definition}
+
+\begin{proposition}\label{prop:preference-parts}
+	Let $\succsim$ be a preference relation on $X$. Then $\sim$ is an equivalence
+	relation, $\succ$ is transitive and irreflexive, and for all $x,y\in X$ exactly
+	one of $x\succ y$, $y\succ x$, $x\sim y$ holds.
+\end{proposition}
+
+\begin{proof}
+	Reflexivity of $\sim$ follows from completeness. Symmetry is immediate from the
+	definition. For transitivity of $\sim$, if $x\sim y$ and $y\sim z$ then
+	$x\succsim y\succsim z$ gives $x\succsim z$, and $z\succsim y\succsim x$ gives
+	$z\succsim x$.
+
+	For $\succ$: irreflexivity is immediate since $x\succsim x$. For transitivity,
+	suppose $x\succ y$ and $y\succ z$. Transitivity of $\succsim$ gives
+	$x\succsim z$. If also $z\succsim x$, then $z\succsim x\succsim y$ gives
+	$z\succsim y$, contradicting $y\succ z$. Hence $x\succ z$.
+
+	For the trichotomy, completeness gives $x\succsim y$ or $y\succsim x$. If both,
+	then $x\sim y$; if only the first, $x\succ y$; if only the second, $y\succ x$.
+	These three cases are mutually exclusive by construction.
+\end{proof}
+
+\begin{definition}[Utility representation]\label{def:utility-rep}
+	A function $u\colon X\to\R$ \dfnas{represents}{utility representation} the
+	preference relation $\succsim$ if
+	\[
+		x\succsim y \iff u(x)\geq u(y)\qquad\text{for all }x,y\in X.
+	\]
+\end{definition}
+
+\begin{theorem}[Representation on a countable set]\label{thm:utility-countable}
+	Let $X$ be a countable non-empty set and let $\succsim$ be a preference relation
+	on $X$. Then there exists $u\colon X\to\R$ representing $\succsim$, and $u$ may
+	be chosen with $u(X)\subseteq(0,1)$.
+\end{theorem}
+
+\begin{proof}
+	Enumerate $X=\{x_1,x_2,\dots\}$ (finite or infinite) and choose weights
+	$w_n>0$ with $W\eqdef\sum_n w_n<\infty$, for instance $w_n=2^{-n}$. Define
+	\[
+		u(x)\eqdef\frac{1}{W}\sum_{n:\,x\succ x_n}w_n .
+	\]
+	Suppose $x\succsim y$. If $y\succ x_n$ then $x\succ x_n$: indeed
+	$x\succsim y\succsim x_n$ gives $x\succsim x_n$, and were $x_n\succsim x$ we
+	would get $x_n\succsim x\succsim y$, contradicting $y\succ x_n$. Hence
+	$\{n : y\succ x_n\}\subseteq\{n : x\succ x_n\}$ and $u(x)\geq u(y)$.
+
+	Conversely, suppose $u(x)\geq u(y)$ and, for a contradiction, that
+	$y\succ x$. Then as above $\{n : x\succ x_n\}\subseteq\{n : y\succ x_n\}$. The
+	inclusion is strict: since $y\succ x$ and $x=x_{n_0}$ for some $n_0$, we have
+	$n_0\in\{n : y\succ x_n\}$ while $n_0\notin\{n : x\succ x_n\}$ by irreflexivity
+	of $\succ$. As $w_{n_0}>0$, this gives $u(y)>u(x)$, a contradiction. Hence
+	$x\succsim y$.
+
+	Finally $0\leq u\leq1$; replacing $u$ by $(1+u)/3$ places the range in $(0,1)$
+	without disturbing the representation, since the transformation is strictly
+	increasing.
+\end{proof}
+
+\begin{remark}[Why countability is not innocuous]\label{rem:lexicographic}
+	\autoref{thm:utility-countable} fails on uncountable $X$ without further
+	structure. Let $X=\R^2$ with the \dfn{lexicographic preference}
+	\[
+		(x_1,x_2)\succsim(y_1,y_2)
+		\iff
+		x_1>y_1,\ \text{or}\ \bigl(x_1=y_1\ \text{and}\ x_2\geq y_2\bigr).
+	\]
+	This relation is complete and transitive but admits no utility representation.
+	Indeed, suppose $u$ represented it. For each $t\in\R$ we have
+	$(t,1)\succ(t,0)$, so $u(t,1)>u(t,0)$, and we may pick a rational
+	$q(t)\in\bigl(u(t,0),u(t,1)\bigr)$ by \autoref{prop:archimedean}(ii). If
+	$t<t'$ then $(t',0)\succ(t,1)$, so $q(t)<u(t,1)<u(t',0)<q(t')$; hence
+	$t\mapsto q(t)$ is a strictly increasing injection $\R\to\Q$, contradicting
+	\autoref{prop:countable-union}.
+
+	The lesson carries into \autoref{ch:continuity}: a continuous utility
+	representation requires the preference to be continuous, in the sense that the
+	sets $\{y : y\succsim x\}$ and $\{y : x\succsim y\}$ are closed, and
+	lexicographic preference violates exactly this. The general statement is
+	Debreu's theorem; see \textcite[Ch.~2]{ok2007real} and
+	\textcite[Ch.~4]{corbae2009introduction}.
+\end{remark}
+
+\section{Logic and Methods of Proof}\label{sec:sets-logic}
+
+\subsection{Connectives and quantifiers}
+
+For propositions $P,Q$, the implication $P\Rightarrow Q$ is by definition the
+proposition $(\neg P)\vee Q$. This is the source of the ``vacuous truth''
+convention: $P\Rightarrow Q$ is true whenever $P$ is false, regardless of $Q$.
+The truth table is
+\[
+	\begin{array}{cc|ccc}
+		P  & Q  & \neg P & (\neg P)\vee Q & P\Rightarrow Q \\\hline
+		\T & \T & \F     & \T             & \T             \\
+		\T & \F & \F     & \F             & \F             \\
+		\F & \T & \T     & \T             & \T             \\
+		\F & \F & \T     & \T             & \T
+	\end{array}
+\]
+which reproduces the table given in \autocite[slide 40]{fukuda2026analysis}. The
+convention is used there to show that $\emptyset$ is open: the statement ``if
+$x\in\emptyset$ then $\ball{\varepsilon}{x}\subseteq\emptyset$'' is vacuously
+true, so $\emptyset$ satisfies the definition of an open set. That argument
+recurs in \autoref{ch:topology}.
+
+Quantifier order is not commutative and is a frequent source of error. The
+statement
+\[
+	\forall\varepsilon>0\ \exists\delta>0\ \forall x\in A:\ d(x,x_0)<\delta
+	\Rightarrow d(f(x),f(x_0))<\varepsilon
+\]
+defines continuity of $f$ at $x_0$, where $\delta$ may depend on both
+$\varepsilon$ and $x_0$. Moving the quantifier $\forall x_0\in A$ inside, to
+\[
+	\forall\varepsilon>0\ \exists\delta>0\ \forall x_0\in A\ \forall x\in A:\
+	d(x,x_0)<\delta\Rightarrow d(f(x),f(x_0))<\varepsilon,
+\]
+gives uniform continuity, a strictly stronger property
+(\autoref{ch:continuity}). The negation of a quantified statement exchanges
+$\forall$ and $\exists$ and negates the matrix:
+$\neg\bigl(\forall x\, P(x)\bigr)$ is $\exists x\,\neg P(x)$.
+
+\subsection{Three methods of proof}
+
+\begin{proposition}[Principle of mathematical induction]\label{prop:induction}
+	Let $S\subseteq\N$ satisfy $1\in S$ and $n\in S\Rightarrow n+1\in S$. Then
+	$S=\N$.
+\end{proposition}
+
+The principle is equivalent to the well-ordering of $\N$ --- every non-empty
+subset of $\N$ has a least element --- and either may be taken as an axiom.
+Strong induction, from ``$\{1,\dots,n\}\subseteq S$ implies $n+1\in S$'' conclude
+$S=\N$, follows by applying \autoref{prop:induction} to
+$S'=\{n : \{1,\dots,n\}\subseteq S\}$.
+
+\begin{eg}[Induction in a dynamic argument]\label{eg:induction-contraction}
+	The error bound in the contraction mapping theorem
+	(\autoref{thm:banach-fixed-point}) rests on the estimate
+	$d(x_n,x_{n+1})\leq\beta^n d(x_0,x_1)$ for all $n$, which is an induction: the
+	case $n=0$ is trivial, and
+	$d(x_{n+1},x_{n+2})=d(Tx_n,Tx_{n+1})\leq\beta d(x_n,x_{n+1})\leq
+		\beta^{n+1}d(x_0,x_1)$.
+\end{eg}
+
+\emph{Proof by contradiction} establishes $P$ by assuming $\neg P$ and deriving a
+false statement; \emph{proof by contraposition} establishes $P\Rightarrow Q$ by
+establishing $\neg Q\Rightarrow\neg P$, the two being equivalent by the truth
+table above. The uniqueness half of the contraction mapping theorem is a proof by
+contradiction; \autoref{prop:preference-parts} used contraposition twice.
+
+\begin{remark}[A common error]\label{rem:proof-error}
+	``Suppose not; then \dots; hence $P$'' is not a proof by contradiction; it is a
+	proof of $P$ with an unused hypothesis. A genuine argument by contradiction must
+	terminate in a statement known to be false. Confusing the two conceals which
+	hypotheses are actually used, which matters when one later asks whether a
+	hypothesis can be weakened --- the recurring question of
+	\autoref{ch:optimization}.
+\end{remark}
+
+\section{The Real Number System}\label{sec:sets-reals}
+
+The real numbers are characterised, up to isomorphism, by three groups of
+axioms. We state them because the third is used in essentially every existence
+theorem in this volume.
+
+\begin{definition}[Ordered field]\label{def:ordered-field}
+	A \dfn{field} is a set $F$ with operations $+$ and $\cdot$ satisfying the usual
+	commutative, associative and distributive laws, with additive identity $0$,
+	multiplicative identity $1\neq0$, additive inverses, and multiplicative inverses
+	for every element other than $0$. An \dfn{ordered field} is a field with a
+	complete transitive antisymmetric relation $\leq$ such that $x\leq y$ implies
+	$x+z\leq y+z$ for all $z$, and $0\leq x$, $0\leq y$ imply $0\leq xy$.
+\end{definition}
+
+\begin{definition}[Bounds, supremum, infimum]\label{def:sup-inf}
+	Let $A\subseteq\R$ be non-empty. An \dfn{upper bound} for $A$ is $b\in\R$ with
+	$a\leq b$ for all $a\in A$; $A$ is \dfnas{bounded above}{bounded above} if such
+	a $b$ exists. The \dfn{supremum} $\sup A$ is the least upper bound: an upper
+	bound $s$ such that $s\leq b$ for every upper bound $b$. \dfn{Lower bound},
+	\dfnas{bounded below}{bounded below} and \dfn{infimum} $\inf A$ are defined
+	symmetrically. A set bounded above and below is \dfn{bounded}.
+	\nidx{$\sup$}{$\sup A$, supremum}\nidx{$\inf$}{$\inf A$, infimum}
+\end{definition}
+
+\begin{assumption}[Completeness axiom]\label{ass:completeness-axiom}
+	$\R$ is an ordered field in which every non-empty subset that is bounded above
+	has a supremum in $\R$.
+\end{assumption}
+
+This is the \dfnas{least upper bound property}{least upper bound property}. It
+fails in $\Q$: the set $\{q\in\Q : q^2<2\}$ is bounded above in $\Q$ but has no
+least upper bound there. The whole difference between $\Q$ and $\R$, and with it
+every convergence theorem below, rests on this one axiom.
+
+\begin{proposition}[Characterisation of the supremum]\label{prop:sup-char}
+	Let $A\subseteq\R$ be non-empty and bounded above, and let $s\in\R$. Then
+	$s=\sup A$ if and only if
+	\begin{enumerate}[(i)]
+		\item $a\leq s$ for all $a\in A$; and
+		\item for every $\varepsilon>0$ there exists $a\in A$ with $a>s-\varepsilon$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	Suppose $s=\sup A$. Then (i) holds since $s$ is an upper bound. For (ii), if
+	some $\varepsilon>0$ had $a\leq s-\varepsilon$ for all $a\in A$, then
+	$s-\varepsilon$ would be an upper bound smaller than $s$, contradicting
+	leastness.
+
+	Conversely, assume (i) and (ii). By (i), $s$ is an upper bound. Let $b$ be any
+	upper bound and suppose $b<s$. Applying (ii) with $\varepsilon=s-b>0$ produces
+	$a\in A$ with $a>s-(s-b)=b$, contradicting that $b$ is an upper bound. Hence
+	$s\leq b$ for every upper bound $b$, so $s$ is least.
+\end{proof}
+
+Part (ii) is the form in which the supremum is actually used: it converts the
+abstract existence of a least upper bound into the ability to produce elements of
+$A$ arbitrarily close to it. Every ``choose $a_n\in A$ with
+$a_n>\sup A-1/n$'' argument in later chapters is an application of it.
+
+\begin{proposition}[Archimedean property and density of $\Q$]\label{prop:archimedean}
+	\begin{enumerate}[(i)]
+		\item For all $x,y\in\R$ with $x>0$ there exists $n\in\N$ with $nx>y$.
+		\item For all $x<y$ in $\R$ there exists $q\in\Q$ with $x<q<y$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Suppose not: then $A=\{nx : n\in\N\}$ is bounded above by $y$. By
+	\autoref{ass:completeness-axiom} it has a supremum $s$. Since $x>0$, the number
+	$s-x$ is not an upper bound, so $mx>s-x$ for some $m\in\N$, whence
+	$(m+1)x>s$, contradicting that $s$ is an upper bound.
+
+	(ii) Since $y-x>0$, part (i) gives $n\in\N$ with $n(y-x)>1$, that is
+	$ny>nx+1$. Again by (i) there are integers $m_1>nx$ and $m_2>-nx$, so
+	$-m_2<nx<m_1$; let $m$ be the least integer in $\{k\in\Z : -m_2\leq k\leq m_1\}$
+	with $k>nx$, which exists by well-ordering. Then $m-1\leq nx$, so
+	$nx<m\leq nx+1<ny$, and $q=m/n$ satisfies $x<q<y$.
+\end{proof}
+
+\begin{remark}[The extended real line]\label{rem:extended-reals}
+	It is convenient to write $\sup A=+\infty$ when $A$ is unbounded above and
+	$\inf A=-\infty$ when $A$ is unbounded below, and to set
+	$\sup\emptyset=-\infty$, $\inf\emptyset=+\infty$. The resulting object
+	$\overline{\R}=\R\cup\{\pm\infty\}$ is not a field --- $\infty-\infty$ is
+	undefined --- and no algebraic identity may be applied to it without checking
+	that the terms are finite. In optimisation this is not pedantry: the value of an
+	infeasible maximisation problem is $-\infty$ by the convention
+	$\sup\emptyset=-\infty$, whereas the value of a feasible but unbounded problem
+	is $+\infty$, and the two failures call for different remedies.
+\end{remark}
+
+\section{Economic Application: Choice, Feasibility, and the Existence Question}
+\label{sec:sets-preferences}
+
+We can now state, in the language of this chapter, the problem that occupies the
+rest of the volume.
+
+\begin{eg}[The consumer's problem, stated set-theoretically]\label{eg:consumer-setup}
+	Let $X=\R^n_+$ be the \dfn{consumption set}, let $\succsim$ be a preference
+	relation on $X$, and let prices $p\in\R^n_{++}$ and wealth $m>0$ be given. The
+	\dfn{budget set} is
+	\[
+		\budget(p,m)\eqdef\{x\in\R^n_+ : \ip{p}{x}\leq m\}.
+	\]
+	The consumer's problem is to find
+	\[
+		x^\ast\in\budget(p,m)\quad\text{such that}\quad
+		x^\ast\succsim x\ \text{for all } x\in\budget(p,m),
+	\]
+	and the \dfn{demand correspondence} $x^\ast(p,m)$ is the set of all such
+	$x^\ast$.
+\end{eg}
+
+Four questions arise immediately, and each is answered by a theorem in a later
+chapter.
+
+\begin{enumerate}[(a)]
+	\item \emph{Does a maximal element exist?} If $\succsim$ is represented by a
+	      continuous $u$ and $\budget(p,m)$ is compact, the Weierstrass theorem
+	      (\autoref{thm:weierstrass}) gives existence. Compactness of $\budget(p,m)$
+	      requires $p\in\R^n_{++}$: if some $p_i=0$ the set is unbounded and existence
+	      can fail. This is why the strict positivity of prices is a hypothesis and
+	      not a normalisation.
+	\item \emph{Is the maximiser unique?} Uniqueness requires strict quasi-concavity
+	      of $u$, equivalently strict convexity of preferences
+	      (\autoref{ch:convex}).
+	\item \emph{Can it be characterised by first-order conditions?} This requires
+	      differentiability of $u$ and a constraint qualification
+	      (\autoref{ch:optimization}); the Cobb--Douglas case worked in
+	      \autocite[slides 21--32]{fukuda2026optimization} is developed there in full.
+	\item \emph{How does it move with $(p,m)$?} Continuity of $x^\ast(\cdot,\cdot)$
+	      as a correspondence is Berge's maximum theorem
+	      (\autoref{thm:berge-maximum}); its differentiability, where it holds,
+	      follows from the implicit function theorem
+	      (\autoref{thm:implicit-function}).
+\end{enumerate}
+
+The point of listing them together is that they are the same four questions ---
+existence, uniqueness, characterisation, comparative statics --- asked of every
+optimisation problem in economics, including the dynamic ones of
+\autoref{ch:dynamic}, where the object being chosen is an infinite sequence and
+the ``budget set'' is a set of feasible paths.
+
+\section{Chapter Summary}\label{sec:sets-summary}
+
+Sets are specified relative to an ambient set; equality of sets is proved by
+double inclusion; preimages commute with all set operations while images commute
+only with unions. A preference relation is a complete, transitive binary
+relation; its indifference part partitions the alternatives; and it admits a
+utility representation on any countable set, but not in general on an uncountable
+one, as lexicographic preference shows. Implication is $(\neg P)\vee Q$, which
+makes statements with false hypotheses vacuously true --- the device by which
+$\emptyset$ is open. The real numbers form an ordered field with the least upper
+bound property; the working form of that property is
+\autoref{prop:sup-char}(ii), and the Archimedean property and the density of the
+rationals are its first two consequences.
+
+\begin{exercise}\label{ex:sets-1}
+	Show that $f\colon A\to B$ is injective if and only if
+	$f\left(\bigcap_{i\in I}S_i\right)=\bigcap_{i\in I}f(S_i)$ for every non-empty
+	family $(S_i)_{i\in I}$ of subsets of $A$. (One direction is
+	\autoref{eg:image-intersection}; for the other, consider two-element families.)
+\end{exercise}
+
+\begin{exercise}\label{ex:sets-2}
+	Let $\succsim$ be a preference relation on a finite set $X$. Show directly, by
+	induction on the number of elements of $X$, that a $\succsim$-maximal element
+	exists. Where does the argument break down when $X$ is infinite, and which
+	hypothesis of the Weierstrass theorem repairs it?
+\end{exercise}
+
+\begin{exercise}\label{ex:sets-3}
+	Let $A,B\subseteq\R$ be non-empty and bounded above. Prove that
+	$\sup(A+B)=\sup A+\sup B$, where $A+B=\{a+b : a\in A,\ b\in B\}$. Show by
+	example that $\sup(A\cdot B)=\sup A\cdot\sup B$ can fail, and identify a
+	sign condition under which it holds.
+\end{exercise}
