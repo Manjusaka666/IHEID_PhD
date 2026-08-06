@@ -1,0 +1,787 @@
+% Source: Gerzensee "Calculus" slides 3-42 (the two firm problems that frame the
+% chapter; Definition 3.1 of the derivative; the first-order condition and its
+% intuition; the FOC for concave/convex functions and the tangent-line picture;
+% Propositions 3.3-3.6 (linearity, product, quotient with two derivations, chain
+% rule); the derivative of an inverse function; price-taking and price-setting
+% firms, elasticity and the markup, Exercise 11.14; the Taylor coefficient
+% derivation; the exp and log(1+x) expansions; growth accounting, growth rates,
+% the Fisher equation, log-linearization; the risk premium and the variance
+% identity).
+% Supplementary: Fukuda (2026), Ch. 3 (single-variable calculus) and Sec. 11.2,
+% 11.3, 11.7.
+% No external reference is cited in this chapter: every statement is drawn
+% from the Gerzensee slides and the supplementary lecture notes listed above.
+
+\chapter{Differential Calculus in One Variable}
+\label{ch:calculus1}
+
+\section{Motivation: The Two Firm Problems}\label{sec:c1-motivation}
+
+Two problems organise this chapter
+\autocite[slide 3]{fukuda2026calculus}. A price-taking firm solves
+\begin{equation}\label{eq:price-taker}
+	\max_{q\in[0,\infty)}\ pq-c(q),
+\end{equation}
+and a price-setting firm facing inverse demand $P$ solves
+\begin{equation}\label{eq:price-setter}
+	\max_{q\in[0,\infty)}\ P(q)q-c(q).
+\end{equation}
+
+\begin{assumption}[Standing assumptions on the firm]\label{ass:firm}
+	The cost function $c\colon[0,\infty)\to\R$ is differentiable, strictly
+	increasing and strictly convex, with $c(0)=c'(0)=0$ and
+	$\lim_{q\to\infty}c(q)=\lim_{q\to\infty}c'(q)=\infty$. The revenue function
+	$q\mapsto P(q)q$ is concave and differentiable; the leading case is
+	$P(q)=a-bq$ with $a,b>0$.
+\end{assumption}
+
+Each assumption is used at an identifiable point. Differentiability makes the
+first-order condition available; strict convexity of $c$ and concavity of
+revenue make the first-order condition sufficient
+(\autoref{thm:foc-concave}) and the solution unique; $c'(0)=0$ with
+$c'(q)\to\infty$ places the optimum in the interior of $[0,\infty)$, where
+\autoref{thm:fermat} applies; and $c(0)=0$ makes the value of the problem the
+profit rather than profit net of a fixed cost.
+
+\section{The Derivative}\label{sec:c1-derivative}
+
+\begin{definition}[Derivative]\label{def:derivative}
+	Let $f\colon(a,b)\to\R$ with $-\infty\leq a<b\leq\infty$ and let
+	$x_0\in(a,b)$. The function $f$ is \dfnas{differentiability}{differentiable at}
+	$x_0$ if
+	\[
+		f'(x_0)\eqdef\lim_{h\to0}\frac{f(x_0+h)-f(x_0)}{h}
+	\]
+	exists and is finite; the limit is the \dfn{derivative} of $f$ at $x_0$, also
+	written $Df(x_0)$ or $\deriv{f}{x}(x_0)$. It is the slope of the tangent line to
+	the graph of $f$ at $\bigl(x_0,f(x_0)\bigr)$.
+	\nidx{f'(x)}{$f'(x)$, derivative}
+\end{definition}
+
+This is Definition~3.1 of \textcite{fukuda2026notes}
+\autocite[slide 4]{fukuda2026calculus}. That $x_0$ is required to be
+\emph{interior} to the domain is part of the definition: the two-sided limit
+must exist, so the difference quotient must be defined for $h$ of both signs.
+
+\begin{proposition}[Equivalent formulation and continuity]\label{prop:diff-continuous}
+	Let $f\colon(a,b)\to\R$ and $x_0\in(a,b)$. Then $f$ is differentiable at $x_0$
+	with derivative $L$ if and only if
+	\begin{equation}\label{eq:linear-approx}
+		f(x_0+h)=f(x_0)+Lh+r(h),\qquad\text{where}\quad\lim_{h\to0}\frac{r(h)}{h}=0 .
+	\end{equation}
+	In particular, differentiability at $x_0$ implies continuity at $x_0$.
+\end{proposition}
+
+\begin{proof}
+	Define $r(h)\eqdef f(x_0+h)-f(x_0)-Lh$. Then $r(h)/h$ equals the difference
+	quotient minus $L$, so $r(h)/h\to0$ if and only if the difference quotient tends
+	to $L$. For continuity, \eqref{eq:linear-approx} gives
+	$f(x_0+h)-f(x_0)=Lh+r(h)\to0$ as $h\to0$, since $r(h)=h\cdot(r(h)/h)\to0\cdot0$.
+\end{proof}
+
+Formulation \eqref{eq:linear-approx} is the one that generalises: it says that
+$f$ is well approximated near $x_0$ by an affine function, with an error small
+relative to $h$. In one variable the approximating linear map is multiplication
+by a number; in $\R^n$ it is a linear map, and \autoref{def:total-derivative}
+takes \eqref{eq:linear-approx} verbatim as the definition. The converse of the
+last sentence fails: $f(x)=\abs{x}$ is continuous at $0$ and not differentiable
+there, since the difference quotient equals $\sgn(h)$.
+
+\subsection{The first-order condition}
+
+\begin{theorem}[Fermat]\label{thm:fermat}
+	Let $A\subseteq\R$, let $x_0$ be an interior point of $A$ at which
+	$f\colon A\to\R$ is differentiable, and suppose $x_0$ is a local maximiser or a
+	local minimiser of $f$ on $A$. Then $f'(x_0)=0$.
+\end{theorem}
+
+\begin{proof}
+	Suppose $x_0$ is a local maximiser, so there is $\delta>0$ with
+	$\ball{\delta}{x_0}\subseteq A$ and $f(x)\leq f(x_0)$ for
+	$x\in\ball{\delta}{x_0}$. For $0<h<\delta$,
+	\[
+		\frac{f(x_0+h)-f(x_0)}{h}\leq0,
+	\]
+	because the numerator is non-positive and the denominator positive; letting
+	$h\downarrow0$ gives $f'(x_0)\leq0$. For $-\delta<h<0$ the denominator is
+	negative and the quotient is non-negative; letting $h\uparrow0$ gives
+	$f'(x_0)\geq0$. Since $f$ is differentiable at $x_0$ the two one-sided limits
+	coincide with $f'(x_0)$, so $f'(x_0)=0$. The minimiser case follows by applying
+	this to $-f$.
+\end{proof}
+
+A point with $f'(x_0)=0$ is a \dfnas{stationary point}{stationary point}, or
+critical point, of $f$ \autocite[slide 5]{fukuda2026calculus}.
+
+\begin{remark}[Three ways the conclusion fails]\label{rem:foc-failures}
+	Each hypothesis of \autoref{thm:fermat} is indispensable, and each failure has
+	an economic counterpart.
+	\begin{enumerate}[(i)]
+		\item \emph{Not interior.} $f(x)=x$ on $[0,1]$ has its maximum at $x=1$ with
+		      $f'(1)=1\neq0$. The proof used $h$ of both signs, and at a boundary point
+		      only one sign is admissible; the conclusion weakens to the inequality
+		      $f'(1)\geq0$. In economics this is the corner solution, and the
+		      corresponding first-order conditions are the Kuhn--Tucker inequalities of
+		      \autoref{ch:optimization}.
+		\item \emph{Not differentiable.} $f(x)=-\abs{x}$ has a global maximum at
+		      $x=0$ where no derivative exists. Non-differentiable kinks arise in
+		      economics from piecewise-linear tax schedules and from Leontief technology.
+		\item \emph{The condition is necessary, not sufficient.} $f(x)=x^3$ has
+		      $f'(0)=0$ and no local extremum at $0$. Sufficiency requires either a
+		      second-order condition or a global structural hypothesis such as concavity.
+	\end{enumerate}
+\end{remark}
+
+\subsection{Concavity and sufficiency}
+
+\begin{definition}[Concave and convex functions of one variable]\label{def:concave-1d}
+	A function $f\colon I\to\R$ on an interval $I\subseteq\R$ is
+	\dfnas{concave function}{concave} if
+	\[
+		f\bigl(\lambda x+(1-\lambda)y\bigr)\geq\lambda f(x)+(1-\lambda)f(y)
+		\qquad\text{for all }x,y\in I,\ \lambda\in[0,1],
+	\]
+	\dfn{strictly concave} if the inequality is strict whenever $x\neq y$ and
+	$\lambda\in(0,1)$, and \dfnas{convex function}{convex} (respectively strictly
+	convex) if $-f$ is concave (respectively strictly concave). The general theory,
+	in $\R^n$, is \autoref{ch:convex}.
+\end{definition}
+
+\begin{theorem}[Characterisation of differentiable concavity]\label{thm:concave-tangent}
+	Let $f\colon(a,b)\to\R$ be differentiable. The following are equivalent.
+	\begin{enumerate}[(i)]
+		\item $f$ is concave on $(a,b)$.
+		\item $f(x)\leq f(x_0)+f'(x_0)(x-x_0)$ for all $x,x_0\in(a,b)$.
+		\item $f'$ is non-increasing on $(a,b)$.
+	\end{enumerate}
+	If moreover $f$ is twice differentiable, each is equivalent to $f''\leq0$ on
+	$(a,b)$. The strict versions correspond to strict inequality in (ii) for
+	$x\neq x_0$ and to strictly decreasing $f'$; $f''<0$ is sufficient but not
+	necessary for strict concavity, as $f(x)=-x^4$ shows at $x=0$.
+\end{theorem}
+
+\begin{proof}
+	(i)$\Rightarrow$(ii). For $\lambda\in(0,1]$, concavity gives
+	$f\bigl(x_0+\lambda(x-x_0)\bigr)\geq\lambda f(x)+(1-\lambda)f(x_0)$, hence
+	\[
+		\frac{f\bigl(x_0+\lambda(x-x_0)\bigr)-f(x_0)}{\lambda}\geq f(x)-f(x_0).
+	\]
+	Letting $\lambda\downarrow0$, the left side tends to $f'(x_0)(x-x_0)$ by
+	\autoref{def:derivative} applied with $h=\lambda(x-x_0)$.
+
+	(ii)$\Rightarrow$(iii). Apply (ii) twice, at $x_0$ evaluated at $x$ and at $x$
+	evaluated at $x_0$, and add:
+	$0\leq\bigl(f'(x_0)-f'(x)\bigr)(x-x_0)$. For $x>x_0$ this forces
+	$f'(x)\leq f'(x_0)$.
+
+	(iii)$\Rightarrow$(i). Let $x<y$ and $z=\lambda x+(1-\lambda)y$ with
+	$\lambda\in(0,1)$. By the mean value theorem (\autoref{thm:mvt}) there are
+	$\xi_1\in(x,z)$ and $\xi_2\in(z,y)$ with
+	$f(z)-f(x)=f'(\xi_1)(z-x)$ and $f(y)-f(z)=f'(\xi_2)(y-z)$. Since
+	$\xi_1<\xi_2$, (iii) gives $f'(\xi_1)\geq f'(\xi_2)$, so
+	\[
+		\frac{f(z)-f(x)}{z-x}\geq\frac{f(y)-f(z)}{y-z} .
+	\]
+	Substituting $z-x=(1-\lambda)(y-x)$ and $y-z=\lambda(y-x)$ and rearranging gives
+	$f(z)\geq\lambda f(x)+(1-\lambda)f(y)$.
+
+	The twice-differentiable statement is (iii) together with the fact that a
+	differentiable function is non-increasing exactly when its derivative is
+	non-positive, itself a consequence of \autoref{thm:mvt}.
+\end{proof}
+
+\begin{theorem}[The first-order condition is sufficient under concavity]
+	\label{thm:foc-concave}
+	Let $f\colon(a,b)\to\R$ be differentiable and concave. Then $x_0\in(a,b)$ is a
+	global maximiser of $f$ on $(a,b)$ if and only if $f'(x_0)=0$. If $f$ is
+	convex, the same statement holds with ``maximiser'' replaced by ``minimiser''.
+	If $f$ is strictly concave, the maximiser is unique when it exists.
+\end{theorem}
+
+\begin{proof}
+	Necessity is \autoref{thm:fermat}. For sufficiency, suppose $f'(x_0)=0$. By
+	\autoref{thm:concave-tangent}(ii), $f(x)\leq f(x_0)+f'(x_0)(x-x_0)=f(x_0)$ for
+	every $x\in(a,b)$. Uniqueness under strict concavity: if $x_0\neq x_1$ were both
+	maximisers with common value $M$, then
+	$f\bigl(\tfrac12x_0+\tfrac12x_1\bigr)>\tfrac12M+\tfrac12M=M$, contradicting
+	maximality.
+\end{proof}
+
+This is the content of \autocite[slides 7--8]{fukuda2026calculus}. The geometric
+statement --- the tangent line at any point lies above the graph, so a horizontal
+tangent lies above the whole graph --- is the proof, once
+\autoref{thm:concave-tangent} makes ``lies above'' precise.
+
+\subsection{Mean value theorems}
+
+\begin{theorem}[Rolle]\label{thm:rolle}
+	Let $f\colon[a,b]\to\R$ be continuous on $[a,b]$ and differentiable on
+	$(a,b)$, with $f(a)=f(b)$. Then $f'(\xi)=0$ for some $\xi\in(a,b)$.
+\end{theorem}
+
+\begin{proof}
+	$[a,b]$ is compact and $f$ continuous, so by
+	\autoref{cor:weierstrass-continuous} $f$ attains a maximum at some
+	$x_{\max}$ and a minimum at some $x_{\min}$ in $[a,b]$. If both are endpoints
+	then $f$ is constant, since $f(a)=f(b)$ forces $\max f=\min f$, and any
+	$\xi\in(a,b)$ works. Otherwise one of them is interior, and
+	\autoref{thm:fermat} applies there.
+\end{proof}
+
+\begin{theorem}[Mean value theorem]\label{thm:mvt}
+	Let $f\colon[a,b]\to\R$ be continuous on $[a,b]$ and differentiable on
+	$(a,b)$. Then there is $\xi\in(a,b)$ with
+	\[
+		f(b)-f(a)=f'(\xi)(b-a).
+	\]
+\end{theorem}
+
+\begin{proof}
+	Apply \autoref{thm:rolle} to
+	$g(x)\eqdef f(x)-f(a)-\frac{f(b)-f(a)}{b-a}(x-a)$, which is continuous on
+	$[a,b]$, differentiable on $(a,b)$, and satisfies $g(a)=g(b)=0$. Then
+	$0=g'(\xi)=f'(\xi)-\frac{f(b)-f(a)}{b-a}$.
+\end{proof}
+
+The mean value theorem is the device by which local information about $f'$ is
+converted into global information about $f$: it is what makes ``$f'\geq0$ on an
+interval'' imply ``$f$ is non-decreasing there'', a step used without comment
+whenever a comparative-static sign is read off a derivative.
+
+\section{Rules of Differentiation}\label{sec:c1-rules}
+
+\begin{proposition}[Linearity]\label{prop:deriv-linear}
+	If $f,g\colon(a,b)\to\R$ are differentiable at $x$ and $\alpha,\beta\in\R$, then
+	$\alpha f+\beta g$ is differentiable at $x$ and
+	$(\alpha f+\beta g)'(x)=\alpha f'(x)+\beta g'(x)$.
+\end{proposition}
+
+\begin{proof}
+	The difference quotient of $\alpha f+\beta g$ equals
+	$\alpha$ times that of $f$ plus $\beta$ times that of $g$, and limits are linear
+	by \autoref{prop:continuity-algebra}(i).
+\end{proof}
+
+\begin{proposition}[Product rule]\label{prop:deriv-product}
+	If $f,g$ are differentiable at $x$, so is $fg$, and
+	$(fg)'(x)=f'(x)g(x)+f(x)g'(x)$.
+\end{proposition}
+
+\begin{proof}
+	Add and subtract $f(x+h)g(x)$:
+	\[
+		\frac{f(x+h)g(x+h)-f(x)g(x)}{h}
+		=\frac{f(x+h)-f(x)}{h}\,g(x)+f(x+h)\,\frac{g(x+h)-g(x)}{h}.
+	\]
+	As $h\to0$ the first quotient tends to $f'(x)$ and the second to $g'(x)$, while
+	$f(x+h)\to f(x)$ by \autoref{prop:diff-continuous}.
+\end{proof}
+
+The choice of which factor to hold fixed is the substance of the proof: the
+decomposition corresponds to splitting the area increment of a rectangle of sides
+$f$ and $g$ into two strips, and the omitted corner term
+$(f(x+h)-f(x))(g(x+h)-g(x))$ is of order $h^2$
+\autocite[slide 11]{fukuda2026calculus}.
+
+\begin{proposition}[Quotient rule]\label{prop:deriv-quotient}
+	If $f,g$ are differentiable at $x$ and $g(x)\neq0$, then $f/g$ is
+	differentiable at $x$ and
+	\[
+		\left(\frac{f}{g}\right)'(x)=\frac{f'(x)g(x)-f(x)g'(x)}{g(x)^2}.
+	\]
+\end{proposition}
+
+\begin{proof}
+	Since $g$ is continuous at $x$ and $g(x)\neq0$, $g$ is non-zero on a
+	neighbourhood of $x$, so $f/g$ is defined there. Write $h\eqdef f/g$, so
+	$f=gh$. By \autoref{prop:deriv-product}, $f'=g'h+gh'$, whence
+	\[
+		h'=\frac{f'-g'h}{g}=\frac{f'-g'f/g}{g}=\frac{f'g-fg'}{g^2}.
+	\]
+	The step presumes $h$ differentiable; to avoid that, compute directly
+	\[
+		\frac{1}{h}\left(\frac{1}{g(x+h)}-\frac{1}{g(x)}\right)
+		=-\frac{1}{g(x+h)g(x)}\cdot\frac{g(x+h)-g(x)}{h}
+		\;\longrightarrow\;-\frac{g'(x)}{g(x)^2},
+	\]
+	which establishes $(1/g)'=-g'/g^2$, and then apply
+	\autoref{prop:deriv-product} to $f\cdot(1/g)$.
+\end{proof}
+
+Both derivations are those of \autocite[slides 13--14, 16]{fukuda2026calculus};
+the second is logically self-contained, whereas the first assumes what it
+computes and is a mnemonic rather than a proof. The distinction is recorded
+because the first is frequently presented as though it were the second.
+
+\begin{proposition}[Chain rule]\label{prop:chain-rule-1d}
+	Let $f\colon(a,b)\to\R$ and $g\colon(c,d)\to\R$ with $f\bigl((a,b)\bigr)
+		\subseteq(c,d)$. If $f$ is differentiable at $x_0$ and $g$ is differentiable at
+	$f(x_0)$, then $g\circ f$ is differentiable at $x_0$ and
+	\[
+		(g\circ f)'(x_0)=g'\bigl(f(x_0)\bigr)f'(x_0).
+	\]
+\end{proposition}
+
+\begin{proof}
+	Write $y_0=f(x_0)$ and define
+	\[
+		\varphi(y)\eqdef
+		\begin{cases}
+			\dfrac{g(y)-g(y_0)}{y-y_0}, & y\neq y_0, \\[1.5ex]
+			g'(y_0),                    & y=y_0 .
+		\end{cases}
+	\]
+	Then $\varphi$ is continuous at $y_0$ by differentiability of $g$, and
+	$g(y)-g(y_0)=\varphi(y)(y-y_0)$ for \emph{all} $y$, including $y=y_0$. Hence for
+	$h\neq0$,
+	\[
+		\frac{g(f(x_0+h))-g(f(x_0))}{h}
+		=\varphi\bigl(f(x_0+h)\bigr)\cdot\frac{f(x_0+h)-f(x_0)}{h}.
+	\]
+	As $h\to0$, $f(x_0+h)\to y_0$ by continuity of $f$, so the first factor tends to
+	$\varphi(y_0)=g'(y_0)$ by \autoref{prop:sequential-continuity}, and the second
+	to $f'(x_0)$.
+\end{proof}
+
+The auxiliary function $\varphi$ exists to handle the case $f(x_0+h)=f(x_0)$, at
+which the naive multiply-and-divide argument would divide by zero. The naive
+argument is the one behind the suggestive notation
+$\deriv{z}{x}=\deriv{z}{y}\deriv{y}{x}$ of
+\autocite[slide 18]{fukuda2026calculus}; it gives the right answer and is not a
+proof.
+
+\begin{proposition}[Derivative of an inverse function]\label{prop:inverse-derivative}
+	Let $f\colon(a,b)\to\R$ be continuous and strictly monotone, hence injective
+	with continuous inverse $f^{-1}$ on the interval $f\bigl((a,b)\bigr)$. If $f$
+	is differentiable at $x_0$ with $f'(x_0)\neq0$, then $f^{-1}$ is differentiable
+	at $y_0=f(x_0)$ and
+	\[
+		\bigl(f^{-1}\bigr)'(y_0)=\frac{1}{f'\bigl(f^{-1}(y_0)\bigr)}
+		=\frac{1}{f'(x_0)} .
+	\]
+\end{proposition}
+
+\begin{proof}
+	Let $y_k\to y_0$ with $y_k\neq y_0$ and set $x_k\eqdef f^{-1}(y_k)$, so
+	$x_k\neq x_0$ and $x_k\to x_0$ by continuity of $f^{-1}$. Then
+	\[
+		\frac{f^{-1}(y_k)-f^{-1}(y_0)}{y_k-y_0}
+		=\frac{x_k-x_0}{f(x_k)-f(x_0)}
+		=\left(\frac{f(x_k)-f(x_0)}{x_k-x_0}\right)^{-1}
+		\longrightarrow\frac{1}{f'(x_0)},
+	\]
+	the last step by $f'(x_0)\neq0$ and continuity of $t\mapsto1/t$ away from $0$.
+	\autoref{prop:sequential-continuity} converts the sequential statement into the
+	limit.
+\end{proof}
+
+The hypothesis $f'(x_0)\neq0$ cannot be dropped: $f(x)=x^3$ is a strictly
+increasing bijection of $\R$ with $f'(0)=0$, and $f^{-1}(y)=y^{1/3}$ has a
+vertical tangent at $0$. This is the one-dimensional case of the inverse function
+theorem, and the condition $f'(x_0)\neq0$ becomes invertibility of the Jacobian
+in \autoref{thm:inverse-function}. Economically it is the statement that a demand
+function $D$ and an inverse demand function $P$ have reciprocal slopes,
+$P'(q)=1/D'(p)$ at $q=D(p)$ \autocite[slides 19--20]{fukuda2026calculus}.
+
+\section{Taylor Expansion}\label{sec:c1-taylor}
+
+The problem is to approximate $f$ near $x_0$ by a polynomial in $h$,
+\begin{equation}\label{eq:taylor-ansatz}
+	f(x_0+h)\approx\alpha_0+\alpha_1h+\alpha_2h^2+\cdots+\alpha_nh^n .
+\end{equation}
+Setting $h=0$ gives $\alpha_0=f(x_0)$. Differentiating \eqref{eq:taylor-ansatz}
+$k$ times with respect to $h$ and again setting $h=0$ kills every term of degree
+below $k$ and every term of degree above $k$, leaving
+$f^{(k)}(x_0)=k!\,\alpha_k$, so
+\begin{equation}\label{eq:taylor-coefficients}
+	\alpha_k=\frac{f^{(k)}(x_0)}{k!},\qquad k=0,1,\dots,n .
+\end{equation}
+This is the derivation of \autocite[slides 28--31]{fukuda2026calculus}. It
+identifies the coefficients on the assumption that an expansion of the stated
+form exists; it does not establish that one does, nor how large the error is.
+Both are the content of the following theorem.
+
+\begin{theorem}[Taylor's theorem with Lagrange remainder]\label{thm:taylor-1d}
+	Let $n\in\N_0$, let $I\subseteq\R$ be an open interval containing $x_0$, and let
+	$f\colon I\to\R$ be $n+1$ times differentiable on $I$. Define the
+	\dfnas{Taylor polynomial}{Taylor polynomial} of order $n$,
+	\[
+		T_nf(x_0;h)\eqdef\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}h^k .
+	\]
+	Then for every $h$ with $x_0+h\in I$ there exists $\xi$ strictly between $x_0$
+	and $x_0+h$ (or $\xi=x_0$ if $h=0$) such that
+	\begin{equation}\label{eq:lagrange-remainder}
+		f(x_0+h)=T_nf(x_0;h)+\frac{f^{(n+1)}(\xi)}{(n+1)!}\,h^{n+1}.
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Fix $h\neq0$ and let $J$ be the closed interval with endpoints $x_0$ and
+	$x_0+h$. Define $M$ by
+	$f(x_0+h)=T_nf(x_0;h)+M h^{n+1}$, which determines $M$ uniquely since
+	$h\neq0$, and set
+	\[
+		g(t)\eqdef f(t)-\sum_{k=0}^{n}\frac{f^{(k)}(x_0)}{k!}(t-x_0)^k-M(t-x_0)^{n+1},
+		\qquad t\in J .
+	\]
+	By construction $g^{(k)}(x_0)=0$ for $k=0,1,\dots,n$, and $g(x_0+h)=0$ by the
+	choice of $M$. Since $g(x_0)=g(x_0+h)=0$, \autoref{thm:rolle} gives
+	$\xi_1$ strictly between them with $g'(\xi_1)=0$. Since also $g'(x_0)=0$,
+	Rolle applied to $g'$ on the interval with endpoints $x_0$ and $\xi_1$ gives
+	$\xi_2$ with $g''(\xi_2)=0$. Iterating $n+1$ times produces
+	$\xi\eqdef\xi_{n+1}$ strictly between $x_0$ and $x_0+h$ with
+	$g^{(n+1)}(\xi)=0$. But $g^{(n+1)}(t)=f^{(n+1)}(t)-(n+1)!\,M$, so
+	$M=f^{(n+1)}(\xi)/(n+1)!$, which is \eqref{eq:lagrange-remainder}.
+\end{proof}
+
+\begin{corollary}[Peano remainder]\label{cor:peano}
+	If $f$ is $n$ times differentiable at $x_0$, then
+	$f(x_0+h)=T_nf(x_0;h)+o(h^n)$ as $h\to0$; that is, the error divided by $h^n$
+	tends to $0$.
+\end{corollary}
+
+The two remainder forms answer different questions. The Lagrange form
+\eqref{eq:lagrange-remainder} is an exact identity with an unknown evaluation
+point, and it yields \emph{numerical} error bounds once $f^{(n+1)}$ is bounded on
+the relevant interval. The Peano form is an asymptotic statement with no
+evaluation point, and it is the one used when the argument is a limit as a
+parameter goes to zero --- which is the situation in
+\autoref{sec:c1-risk} below.
+
+\begin{eg}[Exponential and logarithm]\label{eg:taylor-exp-log}
+	For $f(x)=e^x$ every derivative is $e^x$ and $f^{(k)}(0)=1$, so
+	\[
+		e^x=1+x+\tfrac12x^2+\tfrac16x^3+\cdots+\tfrac{1}{n!}x^n
+		+\frac{e^{\xi}}{(n+1)!}x^{n+1}.
+	\]
+	For $f(x)=\log(1+x)$ on $(-1,\infty)$, $f'(x)=(1+x)^{-1}$,
+	$f''(x)=-(1+x)^{-2}$, $f'''(x)=2(1+x)^{-3}$, so $f^{(k)}(0)=(-1)^{k-1}(k-1)!$
+	and
+	\[
+		\log(1+x)=x-\tfrac12x^2+\tfrac13x^3-\dots
+		+\frac{(-1)^{n-1}}{n}x^{n}+\frac{(-1)^{n}}{n+1}\frac{x^{n+1}}{(1+\xi)^{n+1}}.
+	\]
+	The first-order truncations $e^x\approx1+x$ and $\log(1+x)\approx x$ carry an
+	error of order $x^2$, with sign determined by the second derivative: the
+	exponential approximation understates and the logarithmic one overstates
+	\autocite[slides 32--36]{fukuda2026calculus}.
+\end{eg}
+
+\subsection{Four uses of the logarithmic approximation}
+
+\begin{eg}[Growth accounting]\label{eg:growth-accounting}
+	Since $(\log f)'=f'/f$ by \autoref{prop:chain-rule-1d}, taking logarithms of
+	the Cobb--Douglas aggregate $Y(t)=A(t)K(t)^\alpha L(t)^{1-\alpha}$ and
+	differentiating in $t$ gives the exact identity
+	\[
+		\frac{Y'(t)}{Y(t)}=\frac{A'(t)}{A(t)}+\alpha\frac{K'(t)}{K(t)}
+		+(1-\alpha)\frac{L'(t)}{L(t)} .
+	\]
+	No approximation is involved: the growth rate of a Cobb--Douglas aggregate is
+	exactly the factor-share-weighted sum of the growth rates of its arguments, and
+	the residual $A'/A$ is what growth accounting measures
+	\autocite[slide 37]{fukuda2026calculus}.
+\end{eg}
+
+\begin{eg}[Log differences as growth rates]\label{eg:log-growth}
+	For a positive sequence $(Y_t)$ with growth rate
+	$r_t=(Y_t-Y_{t-1})/Y_{t-1}$,
+	\[
+		\Delta\log Y_t=\log Y_t-\log Y_{t-1}=\log\!\left(\frac{Y_t}{Y_{t-1}}\right)
+		=\log(1+r_t)\approx r_t .
+	\]
+	By \autoref{eg:taylor-exp-log} the error is $-r_t^2/2+O(r_t^3)$, so log
+	differences \emph{understate} growth, by about half a percentage point at
+	$r_t=10\%$ and by five at $r_t=30\%$. The approximation is a good one at
+	quarterly frequencies and a poor one for hyperinflations
+	\autocite[slide 38]{fukuda2026calculus}.
+\end{eg}
+
+\begin{eg}[Fisher equation]\label{eg:fisher}
+	The exact relation between the nominal rate $i$, the inflation rate $\pi$ and
+	the real rate $r$ is $(1+i)=(1+\pi)(1+r)$. Taking logarithms turns the product
+	into a sum exactly, $\log(1+i)=\log(1+\pi)+\log(1+r)$, and applying
+	$\log(1+x)\approx x$ three times gives the Fisher equation
+	$i\approx\pi+r$. The neglected term is $\pi r$, which is second order in the two
+	rates \autocite[slide 39]{fukuda2026calculus}.
+\end{eg}
+
+\begin{eg}[Log-linearisation]\label{eg:log-linearization}
+	First-order Taylor expansion gives
+	$f(x)\approx f(x_0)+f'(x_0)(x-x_0)$. Writing the absolute change as $x_0$ times
+	the proportional change and using $\log x-\log x_0\approx(x-x_0)/x_0$,
+	\[
+		f(x)\approx f(x_0)+f'(x_0)x_0\cdot\bigl(\log x-\log x_0\bigr).
+	\]
+	The coefficient $f'(x_0)x_0$ is the semi-elasticity of $f$ at $x_0$. This is the
+	step by which a non-linear dynamic model is converted into a linear system in log
+	deviations from steady state, whose stability is then read off the eigenvalues
+	as in \autoref{prop:linear-stability} \autocite[slide 40]{fukuda2026calculus}.
+\end{eg}
+
+\section{Economic Application: The Firm's Problem}\label{sec:c1-firm}
+
+\subsection{The price-taking firm}
+
+\begin{proposition}\label{prop:price-taker}
+	Under \autoref{ass:firm} and for every $p>0$, problem \eqref{eq:price-taker}
+	has a unique solution $q^\ast(p)>0$, characterised by
+	\begin{equation}\label{eq:mc-equals-price}
+		c'(q^\ast)=p,\qquad\text{equivalently}\qquad q^\ast(p)=(c')^{-1}(p).
+	\end{equation}
+	The supply function $q^\ast$ is strictly increasing and differentiable with
+	$\bigl(q^\ast\bigr)'(p)=1/c''\bigl(q^\ast(p)\bigr)>0$ whenever $c$ is twice
+	differentiable with $c''>0$.
+\end{proposition}
+
+\begin{proof}
+	The objective $\pi(q)=pq-c(q)$ is strictly concave, being linear minus strictly
+	convex, and differentiable, with $\pi'(q)=p-c'(q)$. Since $c'(0)=0<p$ and
+	$c'(q)\to\infty$, the continuous strictly increasing function $c'$ takes the
+	value $p$ at exactly one point $q^\ast>0$, by the intermediate value theorem
+	(\autoref{cor:ivt}) and injectivity. At that point $\pi'=0$, and
+	\autoref{thm:foc-concave} makes it the unique global maximiser on $(0,\infty)$;
+	comparison with $\pi(0)=0<\pi(q^\ast)$ rules out the boundary. The supply
+	function is the inverse of $c'$, and its derivative is
+	\autoref{prop:inverse-derivative}.
+\end{proof}
+
+The economic content of \eqref{eq:mc-equals-price} is that the firm equates
+marginal cost to price. The comparative static
+$(q^\ast)'=1/c''>0$ makes precise the sense in which the slope of the supply
+curve is the reciprocal of the curvature of the cost function: a firm with nearly
+linear costs responds strongly to price, one with sharply increasing marginal
+cost hardly at all.
+
+\subsection{The price-setting firm and the markup}
+
+\begin{proposition}\label{prop:markup}
+	Under \autoref{ass:firm}, an interior solution $q^\ast>0$ of
+	\eqref{eq:price-setter} satisfies
+	\begin{equation}\label{eq:lerner}
+		P(q^\ast)\left(1+\frac{1}{\eta}\right)=c'(q^\ast),
+		\qquad\text{equivalently}\qquad
+		P(q^\ast)=\underbrace{\frac{1}{1+\eta^{-1}}}_{\text{markup}}\;c'(q^\ast),
+	\end{equation}
+	where
+	\[
+		\eta\eqdef\restr{\deriv{q}{p}\frac{p}{q}}{q=q^\ast}<0
+	\]
+	is the price elasticity of demand. If $\eta<-1$ the markup exceeds $1$ and
+	$P(q^\ast)>c'(q^\ast)$.
+\end{proposition}
+
+\begin{proof}
+	The objective is $\pi(q)=P(q)q-c(q)$, concave by \autoref{ass:firm}. Its
+	derivative, by \autoref{prop:deriv-product}, is
+	$\pi'(q)=P'(q)q+P(q)-c'(q)$, so \autoref{thm:fermat} gives
+	\begin{equation}\label{eq:mr-equals-mc}
+		\underbrace{P'(q^\ast)q^\ast+P(q^\ast)}_{\text{marginal revenue}}
+		=\underbrace{c'(q^\ast)}_{\text{marginal cost}} .
+	\end{equation}
+	Factoring $P(q^\ast)>0$ out of the left side,
+	\[
+		P(q^\ast)\left(1+\frac{P'(q^\ast)q^\ast}{P(q^\ast)}\right)=c'(q^\ast).
+	\]
+	By \autoref{prop:inverse-derivative} applied to the demand--inverse-demand
+	pair, $P'(q^\ast)=1/D'(p^\ast)$ at $p^\ast=P(q^\ast)$, so
+	\[
+		\frac{P'(q^\ast)q^\ast}{P(q^\ast)}
+		=\deriv{p}{q}\frac{q}{p}
+		=\left(\deriv{q}{p}\frac{p}{q}\right)^{-1}=\frac{1}{\eta},
+	\]
+	which is \eqref{eq:lerner}. Solving for $P(q^\ast)$ gives the markup form, and
+	$\eta<-1$ makes $1+\eta^{-1}\in(0,1)$, hence the markup exceeds $1$.
+\end{proof}
+
+First, \eqref{eq:lerner} is the Lerner condition, usually
+written $\bigl(P-c'\bigr)/P=-1/\eta$; the two forms are algebraically identical.
+Second, the derivation uses the inverse function rule twice over --- once to
+convert $P'$ into $1/D'$ and once implicitly in reading the elasticity in either
+direction --- so \autoref{prop:inverse-derivative} carries the derivation. Third, profit maximisation requires $\eta<-1$: if demand were
+inelastic, marginal revenue $P(1+\eta^{-1})$ would be negative while marginal
+cost is positive, and \eqref{eq:mr-equals-mc} would have no solution. A monopolist
+never operates on the inelastic portion of its demand curve, and this is a
+theorem about \eqref{eq:mr-equals-mc} rather than an assumption.
+
+\begin{eg}[The dual formulation]\label{eg:markup-price-choice}
+	Choosing the price rather than the quantity, the firm solves
+	$\max_{p\geq0}\ pD(p)-c\bigl(D(p)\bigr)$. The first-order condition is
+	$D(p^\ast)+p^\ast D'(p^\ast)-c'\bigl(D(p^\ast)\bigr)D'(p^\ast)=0$; dividing by
+	$D'(p^\ast)<0$ and rearranging gives
+	\[
+		p^\ast=\left(\frac{1}{1+\eta^{-1}}\right)c'\bigl(D(p^\ast)\bigr),
+		\qquad
+		\eta=\restr{\frac{D'(p)p}{D(p)}}{p=p^\ast},
+	\]
+	the same condition as \eqref{eq:lerner}. That the two formulations agree is a
+	consequence of the chain rule and the strict monotonicity of $D$, which makes
+	the change of variable $q=D(p)$ a bijection between the two feasible sets. This
+	is Exercise~11.14 of \textcite{fukuda2026notes}
+	\autocite[slide 25]{fukuda2026calculus}.
+\end{eg}
+
+\section{Economic Application: The Risk Premium}\label{sec:c1-risk}
+
+\paragraph{Environment.} A decision maker with wealth $w$ and utility
+$u\colon\R\to\R$, strictly increasing and twice continuously differentiable,
+faces a gamble $\tilde\varepsilon$ with $\E[\tilde\varepsilon]=0$ and
+$\Var[\tilde\varepsilon]=\sigma^2$. The \dfnas{risk premium}{risk premium}
+$\pi$ is the sure amount whose surrender leaves the decision maker indifferent to
+bearing the gamble:
+\begin{equation}\label{eq:risk-premium-def}
+	u(w-\pi)=\E\bigl[u(w+\tilde\varepsilon)\bigr].
+\end{equation}
+
+The slides derive the approximation by expanding each side and matching
+\autocite[slides 26--27, 41]{fukuda2026calculus}. That derivation is correct in
+its conclusion and incomplete as an argument: it expands the left side to first
+order and the right to second order without saying why the orders may differ, and
+it does not say in what limit the approximation is valid. Both gaps are closed by
+scaling the gamble.
+
+\begin{theorem}[Arrow--Pratt]\label{thm:arrow-pratt}
+	Let $u$ be three times continuously differentiable with $u'>0$ on a
+	neighbourhood of $w$, and let $\tilde z$ be a bounded random variable with
+	$\E[\tilde z]=0$ and $\Var[\tilde z]=1$. For $t>0$ let $\pi(t)$ solve
+	\eqref{eq:risk-premium-def} with $\tilde\varepsilon=t\tilde z$. Then $\pi$ is
+	twice differentiable at $t=0$ with $\pi(0)=\pi'(0)=0$ and
+	\[
+		\pi(t)=\frac{1}{2}\,A(w)\,t^2+o(t^2)
+		\qquad\text{as }t\downarrow0,
+		\qquad\text{where}\quad
+		A(w)\eqdef-\frac{u''(w)}{u'(w)}
+	\]
+	is the \dfnas{absolute risk aversion}{coefficient of absolute risk aversion}.
+	Writing $\sigma^2=t^2$ for the variance of the gamble, this is
+	$\pi\approx\tfrac12A(w)\sigma^2$.
+\end{theorem}
+
+\begin{proof}
+	Define $\Phi(\pi,t)\eqdef u(w-\pi)-\E[u(w+t\tilde z)]$. Boundedness of
+	$\tilde z$ and continuity of $u$ and its derivatives permit differentiation under
+	the expectation on a neighbourhood of $(0,0)$, by
+	\autoref{thm:differentiation-under-integral}. We have $\Phi(0,0)=0$ and
+	$\partial\Phi/\partial\pi=-u'(w)\neq0$ at $(0,0)$, so by the implicit function
+	theorem (\autoref{thm:implicit-function}) there is a twice continuously
+	differentiable $\pi(t)$ near $t=0$ with $\pi(0)=0$ and $\Phi(\pi(t),t)=0$.
+
+	\emph{The order of $\pi$.} Differentiating the identity $\Phi(\pi(t),t)=0$ and
+	using \eqref{eq:ift-derivative},
+	\[
+		\pi'(t)=-\frac{\partial\Phi/\partial t}{\partial\Phi/\partial\pi}
+		=-\frac{\E\bigl[u'(w+t\tilde z)\,\tilde z\bigr]}{u'\bigl(w-\pi(t)\bigr)} .
+	\]
+	At $t=0$ the numerator is $u'(w)\E[\tilde z]=0$, so $\pi'(0)=0$. Since $\pi$ is
+	twice continuously differentiable with $\pi(0)=\pi'(0)=0$,
+	\autoref{thm:taylor-1d} gives $\pi(t)=O(t^2)$ as $t\downarrow0$. This is what
+	licenses the truncation below; it is a conclusion, not an assumption.
+
+	Expand the right-hand side of \eqref{eq:risk-premium-def} with the Lagrange
+	remainder of \autoref{thm:taylor-1d} at order $2$: for each realisation $z$,
+	\[
+		u(w+tz)=u(w)+u'(w)tz+\tfrac12u''(w)t^2z^2+\tfrac16u'''(\xi_z)t^3z^3 .
+	\]
+	Taking expectations and using $\E[\tilde z]=0$, $\E[\tilde z^2]=1$ and
+	boundedness of $\tilde z$ and of $u'''$ near $w$,
+	\[
+		\E\bigl[u(w+t\tilde z)\bigr]=u(w)+\tfrac12u''(w)t^2+O(t^3).
+	\]
+	Expanding the left-hand side at order $2$ in $\pi$,
+	$u(w-\pi)=u(w)-u'(w)\pi+O(\pi^2)$. Equating and using the bound
+	$\pi=O(t^2)$ established above, which makes $O(\pi^2)=O(t^4)$,
+	\[
+		-u'(w)\pi(t)+O(t^4)=\tfrac12u''(w)t^2+O(t^3),
+	\]
+	so $\pi(t)=-\tfrac12\bigl(u''(w)/u'(w)\bigr)t^2+O(t^3)$, which is the claim.
+\end{proof}
+
+\begin{remark}[Why the two sides are expanded to different orders]
+	\label{rem:risk-premium-orders}
+	The theorem explains the asymmetry that the slide derivation leaves implicit.
+	Because $\pi$ is itself of order $t^2$, the term $-u'(w)\pi$ on the left is
+	already of order $t^2$, and the next term $\tfrac12u''(w)\pi^2$ is of order
+	$t^4$, hence negligible at the order retained. On the right the linear term
+	vanishes because $\E[\tilde\varepsilon]=0$, so the leading non-trivial term is
+	the quadratic one. Expanding the left side to first order and the right to
+	second is therefore expanding \emph{both} to order $t^2$: the orders in $\pi$
+	and in $t$ are different bookkeeping for the same expansion.
+\end{remark}
+
+\begin{remark}[The variance identity]\label{rem:variance-identity}
+	The step $\E[\tilde\varepsilon^2]=\sigma^2$ uses
+	$\Var[X]=\E[X^2]-\bigl(\E[X]\bigr)^2$, which follows by expanding
+	$\E\bigl[(X-\E X)^2\bigr]=\E[X^2]-2\E[X]\E[X]+(\E X)^2$ and is
+	\autoref{prop:variance-identity}. It is exactly here that the mean-zero
+	normalisation of the gamble is used; for a gamble with non-zero mean the
+	first-order term does not vanish and the premium contains a term of order $t$
+	that reflects the change in expected wealth rather than risk
+	\autocite[slide 42]{fukuda2026calculus}.
+\end{remark}
+
+\paragraph{Economic reading.} Three consequences. The premium is proportional to
+the variance, so risk aversion of this local kind prices only second moments; a
+gamble's skewness enters at order $t^3$ and is invisible in the approximation.
+The factor of proportionality is $A(w)/2$, a property of preferences alone,
+which is why $A$ is comparable across decision makers and across wealth levels
+while $u''$ alone is not --- $u''$ changes under the affine transformations of
+$u$ that leave preferences unchanged, and the ratio $-u''/u'$ does not. Finally,
+the premium is second order in the size of the gamble: for small gambles a risk
+averse agent is approximately risk neutral, which is the formal statement behind
+the practice of ignoring risk in first-order comparative statics and the reason
+that observed rejections of small-stakes gambles are hard to reconcile with
+expected utility.
+
+\section{Chapter Summary}\label{sec:c1-summary}
+
+The derivative is the coefficient of the best affine approximation
+\eqref{eq:linear-approx}, and differentiability implies continuity but not
+conversely. At an interior maximiser or minimiser of a differentiable function
+the derivative vanishes (\autoref{thm:fermat}); the conclusion fails at
+boundaries, at kinks, and as a sufficient condition. Under concavity the
+first-order condition becomes sufficient and identifies the global maximiser
+(\autoref{thm:foc-concave}), because a differentiable concave function lies
+below each of its tangents. Rolle's theorem and the mean value theorem convert
+information about the derivative into information about the function, and are the
+engine behind both the monotonicity criterion and Taylor's theorem. The
+differentiation rules --- linearity, product, quotient, chain, inverse ---
+are proved here in the forms actually used later, with the inverse rule carrying
+the economic content that demand and inverse demand have reciprocal slopes.
+
+Taylor's theorem states that the polynomial with coefficients
+\eqref{eq:taylor-coefficients} approximates $f$ with an error given exactly by
+\eqref{eq:lagrange-remainder} or asymptotically by
+\autoref{cor:peano}. Applied to $\log(1+x)$ it justifies log differences as
+growth rates, the Fisher equation, and log-linearisation, in each case with a
+quantified second-order error. Applied to the certainty-equivalence condition it
+produces the Arrow--Pratt formula $\pi\approx\tfrac12A(w)\sigma^2$, with the
+orders of expansion on the two sides reconciled by the observation that the
+premium is itself second order in the scale of the gamble. For the firm, the
+first-order condition gives price equal to marginal cost under price taking and
+the Lerner markup condition under price setting, the latter implying that a
+monopolist operates only where demand is elastic.
+
+\begin{exercise}\label{ex:c1-1}
+	Let $c(q)=\tfrac12\gamma q^2$ with $\gamma>0$ and $P(q)=a-bq$ with
+	$a,b>0$. Compute $q^\ast$ and $P(q^\ast)$ for both firm problems, verify
+	\eqref{eq:lerner} directly, and show that the monopoly quantity is exactly half
+	the competitive quantity when $\gamma=0$. Identify where
+	\autoref{ass:firm} fails when $\gamma=0$ and why the conclusion survives anyway.
+\end{exercise}
+
+\begin{exercise}\label{ex:c1-2}
+	Show that a function may be differentiable everywhere with discontinuous
+	derivative, using $f(x)=x^2\sin(1/x)$ for $x\neq0$ and $f(0)=0$. Compute
+	$f'(0)$ from the definition, compute $f'(x)$ for $x\neq0$, and show that
+	$\lim_{x\to0}f'(x)$ does not exist. Explain why this does not contradict
+	\autoref{thm:mvt}.
+\end{exercise}
+
+\begin{exercise}\label{ex:c1-3}
+	For CRRA utility $u(c)=c^{1-\gamma}/(1-\gamma)$ with $\gamma>0$, $\gamma\neq1$,
+	compute $A(w)$ and the coefficient of relative risk aversion $wA(w)$. Show that
+	the risk premium for a multiplicative gamble $w(1+t\tilde z)$ is approximately
+	$\tfrac12\gamma wt^2$, and contrast with \autoref{thm:arrow-pratt}. Verify that
+	$\lim_{\gamma\to1}u(c)$, after subtracting the constant $1/(1-\gamma)$, equals
+	$\log c$.
+\end{exercise}

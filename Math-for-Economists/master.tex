@@ -1,0 +1,67 @@
+\documentclass[a4paper]{report}
+\input{header.tex}
+\author{Prepared for the Swiss Program for Beginning Doctoral Students in Economics\\[0.3em]
+	\normalsize Study Center Gerzensee}
+\title{\textbf{Mathematics for Economists}\\[0.5em]
+	\large A Graduate Reference Volume}
+\date{}
+
+\thispagestyle{empty}
+\addbibresource{reference.bib}
+
+\usepackage{adjustbox}
+\usepackage{centernot}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+	These notes develop the mathematics required for the first year of an economics
+	doctoral program, and somewhat beyond it. They follow the topics of the
+	Mathematics Review Course taught at the Study Center Gerzensee within the Swiss
+	Program for Beginning Doctoral Students in Economics --- probability and
+	conditional expectation, single- and multi-variable calculus, static
+	optimisation, real analysis, and discrete-time dynamic programming --- and
+	extend each of them to the level of rigor at which the results are actually used
+	in microeconomic theory, macroeconomics, and econometrics.
+
+	The treatment is organised around hypotheses: what a theorem requires of the
+	space it is stated on, which of its conclusions survive when a requirement is
+	dropped, and which counterexample shows that the requirement cannot simply be
+	dropped. The economic applications run from the environment and its primitives
+	through the derivation to the comparative statics, and close with the failure
+	the hypotheses are there to exclude.
+\end{abstract}
+
+\newpage
+
+%─────Front matter────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\pagenumbering{roman}
+\input{preface.tex}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+\pagenumbering{arabic}
+%─────Main text───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\lec{1}{16}
+
+\newpage
+%─────Appendix────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\appendix
+\appendixpage{}
+
+\input{appendix.tex}
+
+\newpage
+%─────Reference──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+\pagestyle{plain}
+\printbibliography[heading=bibintoc,title={Bibliography}]
+
+\printindex[general]
+\printindex[notation]
+
+\end{document}

@@ -1,0 +1,850 @@
+% Source: Gerzensee "Real Analysis" slides 58-76 (Cauchy sequences, completeness,
+% the (0,1] counterexample, products and closed subsets, the contraction mapping
+% theorem with its four-step proof and error bound, the list of applications, the
+% sup norm on B(R^n,R), Blackwell's sufficient conditions and their proof).
+% Supplementary: Fukuda (2026), Sec. 8.4 (pp. 278-294), including Prop. 8.20
+% (subspaces of R^n), Prop. 8.21 (Blackwell), Exercises 8.26-8.31 and Remark 8.11.
+% External references actually cited in this chapter: Lucas (1978), Stokey et
+% al. (1989).
+
+\chapter{Completeness, Contractions, and Fixed Points}
+\label{ch:completeness}
+
+\section{Motivation: Proving a Limit Exists Without Knowing It}\label{sec:comp-motivation}
+
+The definition of convergence names the limit. To use it one must already have a
+candidate. In most of the arguments that matter --- iterating a Bellman
+operator, solving a differential equation, constructing an equilibrium price ---
+the object whose existence is at issue is precisely the limit, and there is no
+candidate to name.
+
+Cauchy's condition removes the limit from the statement: it asks only that the
+terms of the sequence eventually be close \emph{to one another}. In a complete
+space that internal condition is enough. Completeness is thus the hypothesis
+that converts a self-referential existence claim into a verifiable one, and it
+is the hypothesis on which the contraction mapping theorem, and with it the
+entire recursive method in macroeconomics, rests.
+
+\section{Cauchy Sequences}\label{sec:comp-cauchy}
+
+\begin{definition}[Cauchy sequence]\label{def:cauchy}
+	A sequence $(x_n)_{n\in\N}$ in a metric space $(X,d)$ is a
+	\dfn{Cauchy sequence} if for every $\varepsilon>0$ there is $n_0\in\N$ such that
+	$m,n\geq n_0$ implies $d(x_m,x_n)<\varepsilon$.
+\end{definition}
+
+\begin{proposition}[Convergent implies Cauchy]\label{prop:convergent-cauchy}
+	Every convergent sequence in a metric space is Cauchy.
+\end{proposition}
+
+\begin{proof}
+	Let $x_n\to x^\ast$ and $\varepsilon>0$. Choose $n_0$ with
+	$d(x^\ast,x_n)<\varepsilon/2$ for $n\geq n_0$. For $m,n\geq n_0$,
+	$d(x_m,x_n)\leq d(x_m,x^\ast)+d(x^\ast,x_n)<\varepsilon$.
+\end{proof}
+
+\begin{proposition}[Cauchy implies bounded]\label{prop:cauchy-bounded}
+	Every Cauchy sequence in a metric space is bounded.
+\end{proposition}
+
+\begin{proof}
+	Take $\varepsilon=1$ and the corresponding $n_0$, so $d(x_{n_0},x_n)<1$ for
+	$n\geq n_0$. Put
+	\[
+		M\eqdef\max\bigl\{1,\ d(x_{n_0},x_1),\ \dots,\ d(x_{n_0},x_{n_0-1})\bigr\},
+	\]
+	a maximum over finitely many numbers. Then $(x_n)\subseteq\ball{M+1}{x_{n_0}}$.
+\end{proof}
+
+These are Propositions~8.14 and~8.15 of \textcite{fukuda2026notes}
+\autocite[slides 58--59]{fukuda2026analysis}.
+
+\begin{lemma}[Cauchy with a convergent subsequence]\label{lem:cauchy-subseq}
+	If a Cauchy sequence has a subsequence converging to $x^\ast$, then the whole
+	sequence converges to $x^\ast$.
+\end{lemma}
+
+\begin{proof}
+	Let $\varepsilon>0$. Choose $n_0$ with $d(x_m,x_n)<\varepsilon/2$ for
+	$m,n\geq n_0$, and choose an index $n_k\geq n_0$ of the subsequence with
+	$d(x^\ast,x_{n_k})<\varepsilon/2$. For $n\geq n_0$,
+	$d(x^\ast,x_n)\leq d(x^\ast,x_{n_k})+d(x_{n_k},x_n)<\varepsilon$.
+\end{proof}
+
+The converse of \autoref{prop:convergent-cauchy} is false in general: the
+implication ``Cauchy $\Rightarrow$ convergent'' is not a theorem about metric
+spaces but a property that some metric spaces have and others lack. That
+property is completeness.
+
+\section{Complete Metric Spaces}\label{sec:comp-complete}
+
+\begin{definition}[Completeness]\label{def:complete-space}
+	A metric space $(X,d)$ is \dfnas{complete metric space}{complete} if every
+	Cauchy sequence in $X$ converges to a limit belonging to $X$. A subset
+	$A\subseteq X$ is complete if $(A,\restr{d}{A\times A})$ is complete.
+\end{definition}
+
+In a complete space the two conditions coincide, and the practical consequence is
+the one stated on \autocite[slide 60]{fukuda2026analysis}: to prove that
+$(x_n)$ has a limit it suffices to prove that $(x_n)$ is Cauchy, a condition
+involving only the terms of the sequence.
+
+\begin{eg}[An incomplete space]\label{eg:incomplete-halfopen}
+	The space $X=(0,1]$ with the metric inherited from $\R$ is not complete. The
+	sequence $x_n=1/n$ is Cauchy --- given $\varepsilon>0$,
+	\autoref{prop:archimedean} supplies $n_0$ with $1/n_0<\varepsilon$, and then
+	$\abs{1/m-1/n}\leq1/n_0<\varepsilon$ for $m,n\geq n_0$ --- but its limit $0$ does
+	not belong to $X$ \autocite[slide 61]{fukuda2026analysis}.
+
+	Nothing about the sequence has changed relative to $\R$; what changed is the
+	ambient set. Completeness is not a property of a sequence but of a space, and it
+	is destroyed by deleting a single point.
+\end{eg}
+
+\begin{theorem}[$\R^n$ is complete]\label{thm:rn-complete}
+	$\R$ is a complete metric space, and so is $\R^n$ for every finite $n$.
+\end{theorem}
+
+\begin{proof}
+	Let $(x_k)$ be Cauchy in $\R$. By \autoref{prop:cauchy-bounded} it is bounded,
+	so by \autoref{thm:bolzano-weierstrass} it has a convergent subsequence, and by
+	\autoref{lem:cauchy-subseq} the whole sequence converges. The limit is a real
+	number, so $\R$ is complete. The case of $\R^n$ is identical, using the
+	$\R^n$ form of \autoref{thm:bolzano-weierstrass}.
+\end{proof}
+
+The chain of implications locates completeness within the logical structure of
+the real numbers: the least upper
+bound property (\autoref{ass:completeness-axiom}) gives monotone convergence
+(\autoref{prop:monotone-convergence}), which with the monotone subsequence lemma
+gives Bolzano--Weierstrass, which with \autoref{lem:cauchy-subseq} gives metric
+completeness. Completeness of $\R$ as a metric space is therefore a theorem, not
+an axiom, once the order-completeness axiom is in place.
+
+\begin{proposition}[Products]\label{prop:product-complete}
+	If $X$ and $Y$ are complete metric spaces, then $X\times Y$ with the metric
+	$d\bigl((x,y),(x',y')\bigr)=\bigl(d_X(x,x')^2+d_Y(y,y')^2\bigr)^{1/2}$ is
+	complete.
+\end{proposition}
+
+\begin{proof}
+	If $(x_k,y_k)$ is Cauchy in the product, then $d_X(x_j,x_k)\leq d((x_j,y_j),(x_k,y_k))$
+	shows $(x_k)$ is Cauchy in $X$, and symmetrically for $(y_k)$. Their limits
+	$x^\ast,y^\ast$ exist by completeness, and
+	$d((x_k,y_k),(x^\ast,y^\ast))\to0$.
+\end{proof}
+
+\begin{proposition}[Complete subsets are exactly the closed ones]
+	\label{prop:closed-subset-complete}
+	Let $X$ be a complete metric space and $A\subseteq X$. Then $A$ is complete if
+	and only if $A$ is closed in $X$.
+\end{proposition}
+
+\begin{proof}
+	($\Leftarrow$) Let $A$ be closed and $(x_n)\subseteq A$ Cauchy. By completeness
+	of $X$ it converges to some $x^\ast\in X$, and by
+	\autoref{thm:closed-sequential} $x^\ast\in A$. So the sequence converges in $A$.
+
+	($\Rightarrow$) Let $A$ be complete and $x^\ast\in\closure A$. By the
+	construction in the proof of \autoref{thm:closed-sequential} there is
+	$(x_n)\subseteq A$ with $x_n\to x^\ast$; this sequence is Cauchy by
+	\autoref{prop:convergent-cauchy}, hence converges to a point of $A$ by
+	completeness of $A$, and by uniqueness of limits
+	(\autoref{prop:sequence-basics}(i)) that point is $x^\ast$. So
+	$\closure A\subseteq A$.
+\end{proof}
+
+This is Proposition~8.19 of \textcite{fukuda2026notes}
+\autocite[slide 62]{fukuda2026analysis}. Note the asymmetry of the hypotheses:
+completeness of the ambient space is used only in one direction, and the
+equivalence is a statement about subsets of a complete space, not about metric
+spaces in general.
+
+\begin{corollary}\label{cor:subspace-complete}
+	Every vector subspace of $\R^n$ is complete, and hence closed.
+\end{corollary}
+
+\begin{proof}
+	Let $V\subseteq\R^n$ be a subspace with basis $v_1,\dots,v_k$ and let $(x_j)$ be
+	Cauchy in $V$. Completing to a basis of $\R^n$ and using
+	\autoref{thm:rn-complete}, $x_j\to x^\ast\in\R^n$. Writing
+	$x_j=\sum_{i=1}^k c^i_jv_i$, the coordinate functionals are linear, hence
+	continuous by \autoref{prop:linear-continuous}(ii), so the coefficient vectors
+	$(c_j)$ converge in $\R^k$ to some $c^\ast$ and $x^\ast=\sum_ic^{i\ast}v_i\in V$.
+	Closedness follows from \autoref{prop:closed-subset-complete}.
+\end{proof}
+
+This is Proposition~8.20 of \textcite[p.~279]{fukuda2026notes}. In infinite
+dimensions the conclusion fails --- the subspace of finitely supported sequences
+is not closed in $\ell^2$ --- and this is one of the practical differences that
+\autoref{ch:projection} must accommodate: the projection theorem is stated for
+closed subspaces because in infinite dimensions ``subspace'' does not imply
+``closed''.
+
+\subsection{Function spaces}
+
+The space in which dynamic programming operates is not $\R^n$. It is a space of
+functions, and its completeness is what the whole method depends on.
+
+\begin{theorem}[The bounded functions are a Banach space]\label{thm:B-complete}
+	Let $S$ be any non-empty set and let $\Bspace{S}{\R}$ be the set of bounded
+	functions $f\colon S\to\R$, equipped with the supremum norm
+	$\norm{f}_\infty=\sup_{s\in S}\abs{f(s)}$. Then $\Bspace{S}{\R}$ is a Banach
+	space.
+\end{theorem}
+
+\begin{proof}
+	That $\norm{\cdot}_\infty$ is a norm is \autoref{prop:sup-norm}. For
+	completeness, let $(f_k)$ be Cauchy in $\Bspace{S}{\R}$.
+
+	\emph{Step 1: pointwise limit.} For each fixed $s\in S$,
+	$\abs{f_j(s)-f_k(s)}\leq\norm{f_j-f_k}_\infty$, so $(f_k(s))_k$ is Cauchy in
+	$\R$ and converges by \autoref{thm:rn-complete}. Define
+	$f(s)\eqdef\lim_kf_k(s)$.
+
+	\emph{Step 2: the convergence is uniform.} Given $\varepsilon>0$, take $k_0$
+	with $\norm{f_j-f_k}_\infty<\varepsilon/2$ for $j,k\geq k_0$. Fix $s$ and
+	$k\geq k_0$, and let $j\to\infty$ in $\abs{f_j(s)-f_k(s)}<\varepsilon/2$; the
+	absolute value is continuous, so $\abs{f(s)-f_k(s)}\leq\varepsilon/2$. The bound
+	is uniform in $s$, so $\norm{f-f_k}_\infty\leq\varepsilon/2<\varepsilon$ for
+	every $k\geq k_0$.
+
+	\emph{Step 3: the limit is bounded.} With $\varepsilon=1$ and the corresponding
+	$k_0$, $\norm{f}_\infty\leq\norm{f-f_{k_0}}_\infty+\norm{f_{k_0}}_\infty
+		\leq1+\norm{f_{k_0}}_\infty<\infty$. Hence $f\in\Bspace{S}{\R}$ and
+	$f_k\to f$ in the supremum norm.
+\end{proof}
+
+\begin{remark}[Supremum-norm convergence is uniform convergence]
+	\label{rem:uniform-convergence}
+	Step 2 is the content of the identification: $\norm{f-f_k}_\infty\to0$ says
+	exactly that $f_k\to f$ uniformly on $S$, that is, with a single $k_0$ serving
+	every $s$ simultaneously. Pointwise convergence alone is a strictly weaker
+	statement and does not preserve continuity: $f_k(s)=s^k$ on $[0,1]$ converges
+	pointwise to the discontinuous limit that is $0$ on $[0,1)$ and $1$ at $1$, and
+	$\norm{f-f_k}_\infty=1$ for every $k$. The supremum norm is chosen for dynamic
+	programming because convergence in it is strong enough to carry
+	continuity, monotonicity and concavity to the limit, as
+	\autoref{cor:invariant-set} exploits.
+\end{remark}
+
+\begin{proposition}[Bounded continuous functions]\label{prop:C-complete}
+	Let $S\subseteq\R^n$. The set $\Cspace{S}{\R}\cap\Bspace{S}{\R}$ of bounded
+	continuous functions is a closed subset of $\Bspace{S}{\R}$, hence a Banach
+	space. If $S$ is compact, every continuous function on $S$ is bounded by
+	\autoref{cor:weierstrass-continuous}, so $\Cspace{S}{\R}$ itself is a Banach
+	space in the supremum norm.
+\end{proposition}
+
+\begin{proof}
+	By \autoref{prop:closed-subset-complete} it suffices to show closedness. Let
+	$f_k\to f$ uniformly with each $f_k$ continuous, fix $s_0\in S$ and
+	$\varepsilon>0$. Choose $k$ with $\norm{f-f_k}_\infty<\varepsilon/3$ and then
+	$\delta>0$ with $\abs{f_k(s)-f_k(s_0)}<\varepsilon/3$ for
+	$s\in\ball{\delta}{s_0}\cap S$. For such $s$,
+	\[
+		\abs{f(s)-f(s_0)}\leq\abs{f(s)-f_k(s)}+\abs{f_k(s)-f_k(s_0)}
+		+\abs{f_k(s_0)-f(s_0)}<\varepsilon .
+	\]
+\end{proof}
+
+\subsection{Compactness in a function space}\label{subsec:comp-ascoli}
+
+Completeness of $\Cspace{K}{\R}$ delivers limits of Cauchy sequences. It does not
+deliver convergent subsequences of bounded sequences, and in an
+infinite-dimensional space the Heine--Borel theorem is false: the closed unit
+ball of $\Cspace{[0,1]}{\R}$ is closed and bounded and not compact. Take
+$f_k(x)=x^{k}$, so that $\norm{f_k}_\infty=1$ for every $k$. Every subsequence
+still converges pointwise to the function equal to $0$ on $[0,1)$ and to $1$ at
+$x=1$, which is discontinuous; a uniform limit of continuous functions is
+continuous by \autoref{prop:C-complete}, so no subsequence converges
+uniformly. This is the same failure that
+\autoref{eg:weierstrass-failures} exhibits for the Weierstrass theorem, and the
+repair is the same: replace boundedness by a condition that controls the whole
+family at once.
+
+\begin{definition}[Equicontinuity]\label{def:equicontinuous}
+	Let $(X,d)$ be a metric space. A family $\mathcal{F}\subseteq\Cspace{X}{\R}$ is
+	\dfn{equicontinuous} if for every $\varepsilon>0$ there is $\delta>0$ such that
+	\[
+		d(x,y)<\delta\quad\Longrightarrow\quad\abs{f(x)-f(y)}<\varepsilon
+		\qquad\text{for every }f\in\mathcal{F}.
+	\]
+	It is \dfnas{uniformly bounded family}{uniformly bounded} if
+	$\sup_{f\in\mathcal{F}}\norm{f}_\infty<\infty$.
+\end{definition}
+
+The quantifier order carries the content: $\delta$ depends on $\varepsilon$ but
+not on $f$, whereas continuity of each member separately would allow $\delta$ to
+shrink as $f$ ranges over the family. The family $\{x\mapsto x^{k}\}_{k\in\N}$
+fails the condition: for any $\delta\in(0,1)$ the pair $x=1$, $y=1-\delta$ gives
+$\abs{f_k(x)-f_k(y)}=1-(1-\delta)^{k}\to1$, so no $\delta$ works for
+$\varepsilon=\tfrac12$.
+
+\begin{theorem}[Arzelà--Ascoli]\label{thm:arzela-ascoli}
+	Let $K\subseteq\R^n$ be compact and $\mathcal{F}\subseteq\Cspace{K}{\R}$. Then
+	$\mathcal{F}$ has compact closure in $(\Cspace{K}{\R},\norm{\cdot}_\infty)$ if
+	and only if $\mathcal{F}$ is uniformly bounded and equicontinuous.
+\end{theorem}
+
+\begin{proof}
+	\emph{Sufficiency.} Let $(f_k)$ be a sequence in $\mathcal{F}$. A compact subset
+	of $\R^n$ has a countable dense subset $\{x^1,x^2,\dots\}$: for each $m$ cover
+	$K$ by finitely many balls of radius $1/m$ and collect the centres. The
+	sequence $(f_k(x^1))_k$ is bounded in $\R$, so by
+	\autoref{thm:bolzano-weierstrass} it has a convergent subsequence
+	$(f_{k}^{1})$; from it extract $(f_{k}^{2})$ converging at $x^2$, and so on.
+	The diagonal sequence $g_j\eqdef f_{j}^{j}$ is, from index $m$ onwards, a
+	subsequence of $(f_k^m)$, so $(g_j(x^m))_j$ converges for every $m$.
+
+	Fix $\varepsilon>0$ and take $\delta$ from equicontinuity for $\varepsilon/3$.
+	Compactness of $K$ gives finitely many points $x^{i_1},\dots,x^{i_p}$ of the
+	dense set with $K\subseteq\bigcup_{l}\ball{\delta}{x^{i_l}}$. Choose $J$ so that
+	$\abs{g_j(x^{i_l})-g_{j'}(x^{i_l})}<\varepsilon/3$ for all $j,j'\geq J$ and all
+	$l\leq p$. Given $x\in K$, pick $l$ with $d(x,x^{i_l})<\delta$; then for
+	$j,j'\geq J$,
+	\[
+		\abs{g_j(x)-g_{j'}(x)}
+		\leq\abs{g_j(x)-g_j(x^{i_l})}+\abs{g_j(x^{i_l})-g_{j'}(x^{i_l})}
+		+\abs{g_{j'}(x^{i_l})-g_{j'}(x)}<\varepsilon,
+	\]
+	the outer terms by equicontinuity. Hence $\norm{g_j-g_{j'}}_\infty\leq
+		\varepsilon$ for $j,j'\geq J$, so $(g_j)$ is Cauchy and converges in
+	$\Cspace{K}{\R}$ by \autoref{prop:C-complete}. Every sequence in $\mathcal{F}$
+	therefore has a uniformly convergent subsequence. Passing to the closure
+	costs one approximation: given $(h_j)$ in $\closure{\mathcal{F}}$, choose
+	$f_j\in\mathcal{F}$ with $\norm{h_j-f_j}_\infty<1/j$, extract
+	$f_{j_i}\to f$ in $\Cspace{K}{\R}$, and note that
+	$\norm{h_{j_i}-f}_\infty\leq 1/j_i+\norm{f_{j_i}-f}_\infty\to0$ with
+	$f\in\closure{\mathcal{F}}$. So $\closure{\mathcal{F}}$ is sequentially
+	compact, hence compact by \autoref{thm:compact-seq-compact}.
+
+	\emph{Necessity.} A compact set in a metric space is bounded, which gives
+	uniform boundedness, and totally bounded, so for $\varepsilon>0$ there are
+	$h_1,\dots,h_N\in\Cspace{K}{\R}$ with every $f\in\mathcal{F}$ within
+	$\varepsilon/3$ of some $h_i$ in supremum norm. Each $h_i$ is uniformly
+	continuous on the compact $K$ by \autoref{thm:heine-cantor}; let $\delta$
+	be the smallest of the finitely many moduli for $\varepsilon/3$. For
+	$d(x,y)<\delta$ and $f$ within $\varepsilon/3$ of $h_i$,
+	\[
+		\abs{f(x)-f(y)}\leq\abs{f(x)-h_i(x)}+\abs{h_i(x)-h_i(y)}
+		+\abs{h_i(y)-f(y)}<\varepsilon. \qedhere
+	\]
+\end{proof}
+
+\begin{corollary}[Uniformly Lipschitz families]\label{cor:lipschitz-compact}
+	Let $K\subseteq\R^n$ be compact and let $\mathcal{F}\subseteq\Cspace{K}{\R}$
+	satisfy $\abs{f(x)-f(y)}\leq L\norm{x-y}$ for every $f\in\mathcal{F}$ and all
+	$x,y\in K$, with a single constant $L$, and $\abs{f(x_0)}\leq M$ for some fixed
+	$x_0\in K$ and every $f$. Then $\mathcal{F}$ has compact closure in
+	$\Cspace{K}{\R}$.
+\end{corollary}
+
+\begin{proof}
+	Equicontinuity holds with $\delta=\varepsilon/L$. Uniform boundedness follows
+	from $\abs{f(x)}\leq\abs{f(x_0)}+L\norm{x-x_0}\leq M+L\diam K$. Apply
+	\autoref{thm:arzela-ascoli}.
+\end{proof}
+
+\begin{remark}[Where this is used]\label{rem:ascoli-uses}
+	\autoref{cor:lipschitz-compact} is the compactness input to existence proofs in
+	continuous time. In \autoref{ch:continuoustime} the admissible state
+	trajectories of $\dot x=f(x,u)$ with controls taking values in a compact set
+	and $f$ bounded on the relevant region are all Lipschitz on $[0,T]$ with the
+	same constant $\sup\norm{f}$ and share the initial value $x(0)=x_0$. The family
+	of admissible trajectories is therefore relatively compact in
+	$\Cspace{[0,T]}{\R^{n}}$, and a maximising sequence has a uniformly convergent
+	subsequence; \autoref{rem:ct-existence} states the conclusion this yields and
+	the extra convexity hypothesis needed to keep the limit admissible.
+
+	The theorem is also what makes a family of value functions or policy functions
+	generated by varying a parameter relatively compact, which is the standard route
+	to continuity of an equilibrium in a parameter when no explicit formula is
+	available. Boundedness alone never suffices, as $\sin(k\cdot)$ shows.
+\end{remark}
+
+\section{The Contraction Mapping Theorem}\label{sec:comp-contraction}
+
+\begin{definition}[Contraction]\label{def:contraction}
+	Let $(X,d)$ be a metric space. A map $T\colon X\to X$ is a
+	\dfnas{contraction mapping}{contraction} with \dfn{modulus} $\beta$ if there is
+	$\beta\in[0,1)$ with
+	\[
+		d(Tx,Ty)\leq\beta\,d(x,y)\qquad\text{for all }x,y\in X .
+	\]
+	A point $x^\ast\in X$ with $Tx^\ast=x^\ast$ is a \dfnas{fixed
+		point}{fixed point} of $T$.
+	\nidx{T}{$T$, operator; $Tx$, its value at $x$}
+\end{definition}
+
+Two features of the definition deserve emphasis. The modulus must be strictly
+less than $1$ and must be uniform over all pairs $x,y$. The weaker condition
+$d(Tx,Ty)<d(x,y)$ for $x\neq y$ --- a \emph{contractive} map --- does not
+suffice: on $X=[1,\infty)$ the map $Tx=x+1/x$ satisfies it, is a self-map of a
+complete space, and has no fixed point, because the implicit modulus approaches
+$1$ as $x\to\infty$.
+
+\begin{theorem}[Banach contraction mapping theorem]\label{thm:banach-fixed-point}
+	Let $(X,d)$ be a non-empty complete metric space and let $T\colon X\to X$ be a
+	contraction with modulus $\beta\in[0,1)$. Then $T$ has exactly one fixed point
+	$x^\ast\in X$. Moreover, for any $x_0\in X$ the sequence of iterates
+	$x_n\eqdef Tx_{n-1}=T^nx_0$ converges to $x^\ast$, and
+	\begin{equation}\label{eq:contraction-error}
+		d(x_n,x^\ast)\leq\frac{\beta^n}{1-\beta}\,d(x_0,Tx_0)
+		\qquad\text{for every }n\in\N_0 .
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	\emph{Step 1: the iterates are Cauchy.} Fix $x_0\in X$ and define
+	$x_n=Tx_{n-1}$. Applying the contraction property $k$ times,
+	$d(x_k,x_{k+1})=d(Tx_{k-1},Tx_k)\leq\beta\,d(x_{k-1},x_k)\leq\dots\leq
+		\beta^k d(x_0,x_1)$. For $m>n$, the triangle inequality applied $m-n-1$ times
+	gives
+	\[
+		d(x_n,x_m)\leq\sum_{k=n}^{m-1}d(x_k,x_{k+1})
+		\leq\sum_{k=n}^{m-1}\beta^kd(x_0,x_1)
+		=\beta^n\,\frac{1-\beta^{m-n}}{1-\beta}\,d(x_0,x_1)
+		\leq\frac{\beta^n}{1-\beta}\,d(x_0,x_1),
+	\]
+	where the geometric sum is finite because $\beta<1$. Given $\varepsilon>0$,
+	since $\beta^n\to0$ there is $n_0$ with
+	$\beta^{n}d(x_0,x_1)/(1-\beta)<\varepsilon$ for $n\geq n_0$, and then
+	$d(x_n,x_m)<\varepsilon$ for all $m,n\geq n_0$. So $(x_n)$ is Cauchy.
+
+	\emph{Step 2: the limit exists.} $X$ is complete, so
+	$x^\ast\eqdef\lim_nx_n$ exists in $X$.
+
+	\emph{Step 3: the limit is a fixed point.} $T$ is continuous: given
+	$\varepsilon>0$, take $\delta=\varepsilon$ (if $\beta=0$, any $\delta$); then
+	$d(x,y)<\delta$ implies $d(Tx,Ty)\leq\beta d(x,y)<\varepsilon$. Hence, by
+	\autoref{prop:sequential-continuity},
+	\[
+		Tx^\ast=T\Bigl(\lim_{n\to\infty}x_n\Bigr)=\lim_{n\to\infty}Tx_n
+		=\lim_{n\to\infty}x_{n+1}=x^\ast .
+	\]
+
+	\emph{Step 4: uniqueness.} If $Tx^\ast=x^\ast$ and $Ty^\ast=y^\ast$, then
+	$d(x^\ast,y^\ast)=d(Tx^\ast,Ty^\ast)\leq\beta\,d(x^\ast,y^\ast)$. If
+	$d(x^\ast,y^\ast)>0$ this yields $1\leq\beta$, contradicting $\beta<1$. Hence
+	$d(x^\ast,y^\ast)=0$ and $x^\ast=y^\ast$.
+
+	\emph{Step 5: the error bound.} Let $m\to\infty$ in the Step 1 estimate
+	$d(x_n,x_m)\leq\beta^n(1-\beta)^{-1}d(x_0,x_1)$. The metric is continuous in
+	each argument --- an immediate consequence of the triangle inequality --- so the
+	left-hand side tends to $d(x_n,x^\ast)$, giving
+	\eqref{eq:contraction-error} with $x_1=Tx_0$.
+\end{proof}
+
+This is Theorem~8.3 of \textcite[p.~284]{fukuda2026notes}, proved over
+\autocite[slides 64--72]{fukuda2026analysis}; the proof above follows those
+steps, with the geometric sum and the passage to the limit in Step 5 written out.
+
+\begin{remark}[What each hypothesis buys]\label{rem:contraction-hypotheses}
+	Completeness is used once, in Step 2, and only to produce the limit; it is
+	responsible for \emph{existence}. The strict inequality $\beta<1$ is used twice:
+	in Step 1 to sum the geometric series, and in Step 4, where it is responsible for
+	\emph{uniqueness}. The self-map property $T(X)\subseteq X$ is used implicitly
+	throughout, in defining the iterates. Dropping any one of the three destroys a
+	different part of the conclusion: on the complete space $\R$ the isometry
+	$Tx=x+1$ ($\beta=1$) has no fixed point; on the incomplete space $(0,1]$ the
+	contraction $Tx=x/2$ has none either, though its iterates are Cauchy.
+\end{remark}
+
+\begin{remark}[The error bound is what makes the theorem computational]
+	\label{rem:error-bound}
+	Inequality \eqref{eq:contraction-error} is an \emph{a priori} bound: it is
+	computable from the first iteration alone, before the iteration is run. It
+	converts the theorem from an existence statement into an algorithm with a stopping
+	rule, since $n\geq\log\bigl(\varepsilon(1-\beta)/d(x_0,Tx_0)\bigr)/\log\beta$
+	guarantees accuracy $\varepsilon$. Convergence is geometric at rate $\beta$, so
+	the discount factor of a dynamic program is simultaneously an economic parameter
+	and the convergence rate of the algorithm that solves it: a model with
+	$\beta=0.99$ needs roughly $\log(0.5)/\log(0.99)\approx69$ times as many
+	iterations per digit as one with $\beta=0.5$.
+\end{remark}
+
+\subsection{Three refinements}
+
+\begin{corollary}[Iterates of a contraction]\label{cor:power-contraction}
+	Let $X$ be a non-empty complete metric space and $T\colon X\to X$ a map such
+	that $T^N$ is a contraction for some $N\in\N$. Then $T$ has a unique fixed
+	point.
+\end{corollary}
+
+\begin{proof}
+	By \autoref{thm:banach-fixed-point}, $T^N$ has a unique fixed point $x^\ast$.
+	Then $T^N(Tx^\ast)=T(T^Nx^\ast)=Tx^\ast$, so $Tx^\ast$ is also a fixed point of
+	$T^N$; by uniqueness $Tx^\ast=x^\ast$. Conversely any fixed point of $T$ is a
+	fixed point of $T^N$, hence equals $x^\ast$.
+\end{proof}
+
+This is Exercise~8.30 of \textcite[p.~290]{fukuda2026notes}. It matters because
+operators that are not contractions can have contracting powers: in a dynamic
+program with periodic structure, or in a Markov chain whose transition matrix has
+zero entries, the one-step operator may fail the modulus condition while the
+$N$-step operator satisfies it.
+
+\begin{corollary}[Properties inherited by the fixed point]\label{cor:invariant-set}
+	Let $X$ be a complete metric space, $T\colon X\to X$ a contraction with fixed
+	point $x^\ast$, and let $Y\subseteq X$ be non-empty and closed with
+	$T(Y)\subseteq Y$. Then $x^\ast\in T(Y)\subseteq Y$.
+\end{corollary}
+
+\begin{proof}
+	$Y$ is closed in a complete space, hence complete by
+	\autoref{prop:closed-subset-complete}, and $T$ restricted to $Y$ is a
+	contraction of $Y$ into itself. By \autoref{thm:banach-fixed-point} applied to
+	$\restr{T}{Y}$ there is a fixed point in $Y$; by uniqueness in $X$ it equals
+	$x^\ast$. Finally $x^\ast=Tx^\ast\in T(Y)$.
+\end{proof}
+
+\begin{remark}[How to prove that a value function is concave]\label{rem:property-P}
+	\autoref{cor:invariant-set} is the standard route to qualitative properties of
+	an object defined only as a fixed point. Let $P$ be a property, and let
+	$Y=\{x\in X : x\text{ has }P\}$. If $Y$ is closed and $T$ preserves $P$, in the
+	sense that $T(Y)\subseteq Y$, then the fixed point has $P$. In
+	\autoref{ch:dynamic} this is applied three times over, with $X=\Cspace{S}{\R}$
+	and $P$ successively ``increasing'', ``concave'' and ``strictly concave''. The
+	closedness requirement is why the supremum norm is the right one:
+	the pointwise limit of increasing functions is increasing and of concave
+	functions is concave, and uniform convergence implies pointwise convergence, so
+	both sets are closed in $\Bspace{S}{\R}$. Strict concavity is \emph{not} a
+	closed property --- $f_k(s)=-s^2/k$ is strictly concave with uniform limit $0$
+	--- and must be obtained by a separate argument
+	\autocite[Remark 8.11, p.~290]{fukuda2026notes}.
+\end{remark}
+
+\begin{proposition}[Comparison of fixed points]\label{prop:fixed-point-comparison}
+	Let $X$ be a complete metric space and let $S,T\colon X\to X$ be contractions
+	with a common modulus $\beta\in[0,1)$ and fixed points $x_S,x_T$. If
+	$d(Sx,Tx)\leq a$ for all $x\in X$, then
+	\[
+		d(x_S,x_T)\leq\frac{a}{1-\beta}.
+	\]
+\end{proposition}
+
+\begin{proof}
+	$d(x_S,x_T)=d(Sx_S,Tx_T)\leq d(Sx_S,Tx_S)+d(Tx_S,Tx_T)
+		\leq a+\beta\,d(x_S,x_T)$. Rearranging and dividing by $1-\beta>0$ gives the
+	bound.
+\end{proof}
+
+This is Exercise~8.29 of \textcite[p.~290]{fukuda2026notes}. It is the
+stability result behind numerical dynamic programming: if the true Bellman
+operator and its discretised approximation differ by at most $a$ uniformly, the
+computed value function differs from the true one by at most $a/(1-\beta)$.
+The factor $(1-\beta)^{-1}$ is an amplification, and it is large exactly when
+the discount factor is close to $1$.
+
+\section{Blackwell's Sufficient Conditions}\label{sec:comp-blackwell}
+
+Verifying the contraction inequality directly for a Bellman operator requires
+comparing two suprema, which is awkward. Blackwell's conditions replace that
+comparison with two structural properties that can be read off the problem.
+
+For $f,g\in\Bspace{S}{\R}$ write $f\leq g$ to mean $f(s)\leq g(s)$ for every
+$s\in S$, and for $\alpha\in\R$ let $f+\alpha$ denote the function
+$s\mapsto f(s)+\alpha$.
+
+\begin{theorem}[Blackwell]\label{thm:blackwell}
+	Let $S$ be a non-empty set and let $T\colon\Bspace{S}{\R}\to\Bspace{S}{\R}$
+	satisfy
+	\begin{enumerate}[(i)]
+		\item \dfnas{monotonicity (Blackwell)}{monotonicity}: $f\leq g$ implies
+		      $Tf\leq Tg$; and
+		\item \dfnas{discounting (Blackwell)}{discounting}: there is
+		      $\beta\in[0,1)$ such that
+		      $T(f+\alpha)(s)\leq (Tf)(s)+\beta\alpha$ for every
+		      $f\in\Bspace{S}{\R}$, every $\alpha\geq0$ and every $s\in S$.
+	\end{enumerate}
+	Then $T$ is a contraction with modulus $\beta$ on
+	$\bigl(\Bspace{S}{\R},\norm{\cdot}_\infty\bigr)$, and therefore has a unique
+	fixed point, reached from any starting point by iteration.
+\end{theorem}
+
+\begin{proof}
+	Let $f,g\in\Bspace{S}{\R}$. For every $s$,
+	$g(s)-f(s)\leq\abs{g(s)-f(s)}\leq\norm{f-g}_\infty$, so
+	\[
+		g\leq f+\norm{f-g}_\infty .
+	\]
+	Applying monotonicity and then discounting with
+	$\alpha=\norm{f-g}_\infty\geq0$,
+	\[
+		Tg\;\leq\;T\bigl(f+\norm{f-g}_\infty\bigr)\;\leq\;Tf+\beta\norm{f-g}_\infty .
+	\]
+	Interchanging the roles of $f$ and $g$ gives
+	$Tf\leq Tg+\beta\norm{f-g}_\infty$. The two inequalities together say that
+	$\abs{(Tf)(s)-(Tg)(s)}\leq\beta\norm{f-g}_\infty$ for every $s\in S$, and
+	taking the supremum over $s$ on the left yields
+	$\norm{Tf-Tg}_\infty\leq\beta\norm{f-g}_\infty$. Since $\Bspace{S}{\R}$ is
+	complete by \autoref{thm:B-complete}, \autoref{thm:banach-fixed-point} applies.
+\end{proof}
+
+This is Proposition~8.20 of the slides and Proposition~8.21 of
+\textcite[p.~289]{fukuda2026notes}; the proof is the one sketched on
+\autocite[slide 76]{fukuda2026analysis}.
+
+\begin{remark}[The conditions are sufficient, not necessary]\label{rem:blackwell-sufficient}
+	A contraction on $\Bspace{S}{\R}$ need not be monotone: on
+	$\Bspace{S}{\R}$ with $S$ a single point, $Tf=-\tfrac12f$ is a contraction with
+	modulus $\tfrac12$ and reverses order. What Blackwell's conditions provide is a
+	criterion adapted to operators that arise from maximisation, for which both
+	properties are transparent. Monotonicity of a Bellman operator says that a
+	pointwise higher continuation value cannot lower today's optimised value, which
+	holds because the same feasible choices remain available. Discounting says that
+	adding a constant $\alpha$ to every continuation value raises today's value by
+	at most $\beta\alpha$, which holds because the constant enters only through the
+	discounted continuation term. Neither statement requires knowing the maximiser.
+\end{remark}
+
+\begin{eg}[Blackwell in $\R^n$]\label{eg:blackwell-rn}
+	Equip $\R^n$ with $\norm{x}_\infty=\max_i\abs{x_i}$ and let
+	$T\colon\R^n\to\R^n$ satisfy monotonicity ($x\leq y$ componentwise implies
+	$Tx\leq Ty$) and discounting ($T(x+\alpha\mathbf1)\leq Tx+\beta\alpha\mathbf1$
+	for $\alpha\geq0$, where $\mathbf1=(1,\dots,1)^\transp$). The proof of
+	\autoref{thm:blackwell} applies verbatim with $S=\{1,\dots,n\}$, since
+	$\Bspace{\{1,\dots,n\}}{\R}=\R^n$ with the supremum norm. This is
+	Exercise~8.26 of \textcite[p.~290]{fukuda2026notes}, and it is the finite-state
+	case: a Markov decision problem with $n$ states, where the Bellman operator is a
+	map of $\R^n$ into itself and value iteration is a matrix--vector recursion.
+\end{eg}
+
+\section{Economic Applications}\label{sec:comp-applications}
+
+\subsection{The Bellman operator}\label{subsec:comp-bellman}
+
+\paragraph{Environment.} A planner observes a state $s\in S$, chooses an action
+$a$ from a feasible set $\Gamma(s)\subseteq A$, receives a period return
+$r(s,a)$, and moves to the state $g(s,a)$ next period. Future returns are
+discounted at $\beta\in(0,1)$. The problem is
+\begin{equation}\label{eq:sequence-problem}
+	\sup_{(a_t)_{t\geq0}}\ \sum_{t=0}^{\infty}\beta^tr(s_t,a_t)
+	\qquad\st\quad a_t\in\Gamma(s_t),\quad s_{t+1}=g(s_t,a_t),\quad s_0\text{ given}.
+\end{equation}
+
+\paragraph{The operator.} Define $T$ on $\Bspace{S}{\R}$ by
+\begin{equation}\label{eq:bellman-operator}
+	(Tv)(s)\eqdef\sup_{a\in\Gamma(s)}\Bigl\{r(s,a)+\beta\,v\bigl(g(s,a)\bigr)\Bigr\}.
+\end{equation}
+
+\begin{proposition}[The Bellman operator is a contraction]\label{prop:bellman-contraction}
+	Suppose $r$ is bounded, $\Gamma(s)\neq\emptyset$ for every $s$, and
+	$\beta\in[0,1)$. Then $T$ maps $\Bspace{S}{\R}$ into itself and is a contraction
+	with modulus $\beta$; consequently \eqref{eq:bellman-operator} has a unique
+	bounded solution $v^\ast$, and $T^nv_0\to v^\ast$ uniformly from any bounded
+	$v_0$.
+\end{proposition}
+
+\begin{proof}
+	\emph{Self-map.} If $\abs{r}\leq M_r$ and $\norm{v}_\infty\leq M_v$, then the
+	expression in braces lies in $[-M_r-\beta M_v,\,M_r+\beta M_v]$ for every
+	admissible $a$, so its supremum over the non-empty set $\Gamma(s)$ is finite and
+	bounded by $M_r+\beta M_v$ uniformly in $s$. Hence $Tv\in\Bspace{S}{\R}$.
+
+	\emph{Monotonicity.} If $v\leq w$ then for every $s$ and every
+	$a\in\Gamma(s)$, $r(s,a)+\beta v(g(s,a))\leq r(s,a)+\beta w(g(s,a))$; taking
+	suprema over the same set $\Gamma(s)$ preserves the inequality, so
+	$Tv\leq Tw$.
+
+	\emph{Discounting.} For $\alpha\geq0$,
+	\[
+		\bigl(T(v+\alpha)\bigr)(s)
+		=\sup_{a\in\Gamma(s)}\bigl\{r(s,a)+\beta v(g(s,a))+\beta\alpha\bigr\}
+		=(Tv)(s)+\beta\alpha,
+	\]
+	since an additive constant passes through a supremum. The required inequality
+	holds with equality.
+
+	Apply \autoref{thm:blackwell}.
+\end{proof}
+
+\paragraph{Scope of the fixed-point argument.} The theorem establishes that the
+functional equation has exactly one bounded solution and that value iteration
+converges to it geometrically, with the error after $n$ steps bounded by
+\eqref{eq:contraction-error}. It does not by itself establish that $v^\ast$ is
+the value of the sequence problem \eqref{eq:sequence-problem} --- that
+equivalence requires a separate argument, given in \autoref{ch:dynamic} --- nor
+that an optimal policy exists, which requires the supremum in
+\eqref{eq:bellman-operator} to be attained and hence the Weierstrass theorem
+(\autoref{thm:weierstrass}) applied to $\Gamma(s)$. Boundedness of $r$ is
+restrictive: it excludes logarithmic utility on an unbounded state space, for
+which a weighted supremum norm is used instead
+\autocite[Sec.~4.3]{stokey1989recursive}.
+
+\subsection{Asset pricing}\label{subsec:comp-lucas}
+
+In the Lucas tree economy the price of a claim to a dividend stream satisfies
+\begin{equation}\label{eq:lucas-operator}
+	p(s)=\beta\,\E\bigl[\,m(s,s')\{d(s')+p(s')\}\mid s\,\bigr],
+\end{equation}
+where $s$ is the current state, $d$ the dividend and $m$ a positive stochastic
+discount factor. Define $(Tp)(s)$ as the right-hand side. If
+$\beta\,\sup_s\E[m(s,s')\mid s]\eqdef\bar\beta<1$ and $d$ is bounded, then for
+bounded $p,q$,
+\[
+	\abs{(Tp)(s)-(Tq)(s)}
+	=\beta\,\bigl|\E[m(s,s')\{p(s')-q(s')\}\mid s]\bigr|
+	\leq\bar\beta\,\norm{p-q}_\infty,
+\]
+using positivity of $m$ and the conditional Jensen inequality of
+\autoref{prop:conditional-jensen}. So $T$ is a contraction on
+$\Bspace{S}{\R}$ and \eqref{eq:lucas-operator} has a unique bounded price
+function. Uniqueness here is an economic statement: it rules out rational
+bubbles among bounded price functions. Bubbles reappear precisely when the
+boundedness restriction is dropped, since the homogeneous equation
+$b(s)=\beta\E[m b(s')\mid s]$ then admits non-zero solutions
+\autocite{lucas1978asset}.
+
+\subsection{The steady-state Kalman filter}\label{subsec:comp-kalman}
+
+\paragraph{Environment.} A hidden state follows
+$\theta_{t+1}=\rho\,\theta_t+\eta_{t+1}$ with $\rho\in(-1,1)$ and
+$\eta_{t+1}\sim N(0,\tau_2)$, and is observed each period through a signal
+$y_t=\theta_t+\varepsilon_t$ with $\varepsilon_t\sim N(0,\tau_1^{-1})$, all
+shocks independent. Following the source exercise, $\tau_2$ is the
+\emph{variance} of the state innovation and $\tau_1$ the \emph{precision} of the
+signal. An observer forms Bayesian beliefs about $\theta_t$ from the signal
+history; let $x_t$ denote the variance of that belief \emph{before} seeing
+$y_t$.
+
+\paragraph{Recursion.} Normal--normal updating (\autoref{thm:normal-updating})
+adds precisions: after observing $y_t$ the posterior variance is
+$\bigl(x_t^{-1}+\tau_1\bigr)^{-1}$. The transition then scales the variance by
+$\rho^2$ and adds the innovation variance $\tau_2$, so $x_{t+1}=T(x_t)$ with
+\begin{equation}\label{eq:riccati}
+	T(x)=\rho^2\bigl(x^{-1}+\tau_1\bigr)^{-1}+\tau_2
+	=\frac{\rho^2x}{1+\tau_1x}+\tau_2,
+	\qquad x\in\R_{++} .
+\end{equation}
+This is the scalar Riccati equation of the Kalman filter.
+
+\begin{proposition}[The Riccati operator is a contraction]\label{prop:riccati-contraction}
+	Let $\rho\in(-1,1)$ and $\tau_1,\tau_2>0$. Then $T$ in \eqref{eq:riccati} maps
+	$\R_{++}$ into itself and is a contraction with modulus $\rho^2\in[0,1)$.
+	Consequently the conditional variance converges, from any initial belief, to the
+	unique fixed point
+	\begin{equation}\label{eq:riccati-fixed-point}
+		x^\ast=\frac{(\rho^2+\tau_1\tau_2-1)+\sqrt{(1-\rho^2-\tau_1\tau_2)^2+4\tau_1\tau_2}}{2\tau_1}\,,
+	\end{equation}
+	the unique positive root of $\tau_1x^2+(1-\rho^2-\tau_1\tau_2)x-\tau_2=0$.
+\end{proposition}
+
+\begin{proof}
+	\emph{Self-map.} For $x>0$ both terms of $\rho^2x/(1+\tau_1x)+\tau_2$ are
+	non-negative and the second is strictly positive, so $T(x)\geq\tau_2>0$.
+
+	\emph{Contraction.} For $x,y>0$,
+	\[
+		T(x)-T(y)=\rho^2\left(\frac{x}{1+\tau_1x}-\frac{y}{1+\tau_1y}\right)
+		=\frac{\rho^2(x-y)}{(1+\tau_1x)(1+\tau_1y)},
+	\]
+	after clearing the common denominator and cancelling the terms in $\tau_1xy$.
+	Since $\tau_1>0$ and $x,y>0$, the denominator exceeds $1$, so
+	$\abs{T(x)-T(y)}\leq\rho^2\abs{x-y}$ with $\rho^2<1$. The set
+	$[\tau_2,\rho^2\tau_1^{-1}+\tau_2]$ is closed, non-empty, and invariant under
+	$T$, hence complete by \autoref{prop:closed-subset-complete};
+	\autoref{thm:banach-fixed-point} applies on it, and
+	\autoref{cor:invariant-set} places the fixed point there.
+
+	\emph{Fixed point.} Setting $x=\rho^2x/(1+\tau_1x)+\tau_2$ and multiplying by
+	$1+\tau_1x>0$ gives $x+\tau_1x^2=\rho^2x+\tau_2+\tau_1\tau_2x$, that is
+	$\tau_1x^2+(1-\rho^2-\tau_1\tau_2)x-\tau_2=0$. The product of the two roots is
+	$-\tau_2/\tau_1<0$, so exactly one root is positive, and it is
+	\eqref{eq:riccati-fixed-point}. As a check, $\rho=0$ gives
+	$\tau_1x^2+(1-\tau_1\tau_2)x-\tau_2=(\tau_1x+1)(x-\tau_2)=0$, hence
+	$x^\ast=\tau_2$: with no persistence, yesterday's signal is worthless and the
+	conditional variance is the innovation variance.
+\end{proof}
+
+\paragraph{Economic content.} First, uncertainty neither vanishes
+nor explodes. However long the observer has been learning, the conditional
+variance settles at $x^\ast>0$: new innovations arrive at exactly the rate at
+which signals resolve old ones. Permanent learning does not produce perfect
+information, which is why models of learning about a persistent fundamental
+sustain non-degenerate belief dispersion indefinitely.
+
+Second, the rate of convergence is $\rho^2$, the square of the persistence.
+Beliefs about a near-random-walk state ($\rho\to1$) converge to their steady
+state arbitrarily slowly, so the transitional dynamics of learning are
+economically relevant over long horizons precisely when the fundamental is
+persistent.
+
+Third, comparative statics are read off
+\eqref{eq:riccati-fixed-point} through the quadratic. Write
+$F(x)\eqdef\tau_1x^2+(1-\rho^2-\tau_1\tau_2)x-\tau_2$, so that $F(x^\ast)=0$ and
+$F'(x^\ast)>0$ at the larger root. Since
+$\partial F/\partial\rho^2=-x^\ast<0$, the implicit function theorem
+(\autoref{thm:implicit-function}) gives
+$\partial x^\ast/\partial\rho^2=x^\ast/F'(x^\ast)>0$: a more persistent state is
+harder to track, not easier. Likewise
+$\partial F/\partial\tau_1=x^\ast(x^\ast-\tau_2)$, which is strictly positive
+because $x^\ast=\rho^2x^\ast/(1+\tau_1x^\ast)+\tau_2>\tau_2$; hence
+$\partial x^\ast/\partial\tau_1<0$ and a more precise signal lowers
+steady-state uncertainty, without qualification. This is Exercise~8.27 of
+\textcite[p.~290]{fukuda2026notes}, with the interpretation supplied.
+
+\subsection{Input--output systems revisited}\label{subsec:comp-leontief}
+
+\autoref{eg:leontief} solved $x=Ax+d$ by a Neumann series under
+$\rho(A)<1$. \autoref{thm:banach-fixed-point} gives the same conclusion with a
+different argument and a computable error bound: if $\norm{A}<1$ in some
+operator norm, then $Tx=Ax+d$ satisfies
+$\norm{Tx-Ty}=\norm{A(x-y)}\leq\norm{A}\norm{x-y}$, so $T$ is a contraction on
+the complete space $\R^n$ and the iteration $x_{k+1}=Ax_k+d$ converges to the
+unique solution from any starting point, with
+$\norm{x_k-x^\ast}\leq\norm{A}^k(1-\norm{A})^{-1}\norm{x_1-x_0}$. The two
+hypotheses are not identical: $\rho(A)\leq\norm{A}$ always, so the spectral
+condition is weaker, and by \autoref{cor:power-contraction} the gap is exactly
+accounted for by passing to a power of $T$, since $\rho(A)<1$ implies
+$\norm{A^N}<1$ for some $N$.
+
+\section{Chapter Summary}\label{sec:comp-summary}
+
+A Cauchy sequence is one whose terms cluster without reference to any limit; every
+convergent sequence is Cauchy and every Cauchy sequence is bounded, but the
+converse of the first implication holds only in complete spaces. $\R^n$ is
+complete, as a consequence of the least upper bound axiom via
+Bolzano--Weierstrass; a subset of a complete space is complete exactly when it is
+closed (\autoref{prop:closed-subset-complete}); the bounded functions on any set
+form a Banach space under the supremum norm (\autoref{thm:B-complete}), and the
+bounded continuous functions form a closed subspace of it.
+
+A contraction on a non-empty complete metric space has exactly one fixed point,
+reached by iteration from any starting point at geometric rate $\beta$ with the
+computable error bound \eqref{eq:contraction-error}. Completeness delivers
+existence and $\beta<1$ delivers uniqueness; each is indispensable. Three
+refinements extend the reach of the theorem: a map with a contracting power has a
+unique fixed point; a closed invariant set contains the fixed point, which is how
+qualitative properties of value functions are established; and fixed points of
+uniformly close contractions are within $a/(1-\beta)$ of each other, which bounds
+the error of numerical approximation. Blackwell's monotonicity and discounting
+conditions are sufficient for the contraction property and are verifiable
+directly on operators defined by maximisation, which is what makes them the
+standard tool for Bellman operators, asset-pricing operators and Bayesian
+updating recursions.
+
+\begin{exercise}\label{ex:comp-1}
+	Let $X$ be a complete normed space and $T\colon X\to X$ a contraction with
+	modulus $\beta$. Show that for every $y\in X$ there is a unique $x\in X$ with
+	$Tx-x=y$, and that the solution map $y\mapsto x$ is Lipschitz with constant
+	$(1-\beta)^{-1}$. Interpret the second statement as a stability property of the
+	linear system $x=Ax+d$ with respect to perturbations of $d$
+	\autocite[Ex.~8.31]{fukuda2026notes}.
+\end{exercise}
+
+\begin{exercise}\label{ex:comp-2}
+	Show that $Tx=x+1/x$ on $[1,\infty)$ satisfies $\abs{Tx-Ty}<\abs{x-y}$ for all
+	$x\neq y$ and has no fixed point, and that $Tx=\sqrt{1+x^2}$ on $\R$ does the
+	same. Identify the supremum of $\abs{Tx-Ty}/\abs{x-y}$ in each case and explain
+	why \autoref{thm:banach-fixed-point} does not apply.
+\end{exercise}
+
+\begin{exercise}\label{ex:comp-3}
+	Let $S=\{1,\dots,n\}$ and let $Q$ be an $n\times n$ row-stochastic matrix. Show
+	that $Tv=r+\beta Qv$ is a contraction on $(\R^n,\norm{\cdot}_\infty)$ with
+	modulus $\beta$, that its fixed point is $v^\ast=(I-\beta Q)^{-1}r$, and that
+	$I-\beta Q$ is invertible for every $\beta\in[0,1)$. Verify Blackwell's two
+	conditions for $T$ directly, and explain which property of $Q$ delivers each.
+\end{exercise}

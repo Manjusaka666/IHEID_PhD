@@ -1,0 +1,433 @@
+% Source: material deferred from the main text.
+% A supplies the proof of Theorem 11.7 of Fukuda (2026, p. 419), stated as
+% \autoref{thm:implicit-function} in Chapter 8 and there attributed to
+% Rudin (1976, Thm 9.28); the construction is the contraction-mapping argument
+% advertised on Gerzensee "Real Analysis" slide 65.
+% B collects the matrix-differentiation identities used in Chapters 8, 11 and 14,
+% several of which appear on Gerzensee "Calculus" slides 45-54 without derivation.
+% C gives the multivariate normal distribution and its conditional law, of which
+% the bivariate and scalar results of Chapter 14 are special cases; see
+% Fukuda (2026), Sec. 9.6.4 (pp. 326-328).
+% External references actually cited in this chapter: Ash-Dol{\'e}ans-Dade
+% (1999), Axler (2024).
+
+\chapter{The Implicit Function Theorem}\label{app:ift}
+
+\autoref{thm:implicit-function} was stated in \autoref{ch:calculusn} and its
+proof deferred. It is given here in full, because the theorem carries the
+comparative statics of every model in this volume and because the argument is the
+most substantial application of \autoref{thm:banach-fixed-point} outside dynamic
+programming.
+
+\section{Two Lemmas}\label{sec:app-ift-lemmas}
+
+\begin{lemma}[Neumann invertibility]\label{lem:neumann}
+	Let $M\in M_{m\times m}(\R)$ satisfy $\norm{I-M}<1$ in the operator norm. Then
+	$M$ is invertible, $M^{-1}=\sum_{j=0}^{\infty}(I-M)^{j}$, and
+	$\norm{M^{-1}}\leq\bigl(1-\norm{I-M}\bigr)^{-1}$.
+\end{lemma}
+
+\begin{proof}
+	Write $N\eqdef I-M$ and $q\eqdef\norm{N}<1$. Submultiplicativity of the operator
+	norm gives $\norm{N^{j}}\leq q^{j}$, so the partial sums
+	$S_k\eqdef\sum_{j=0}^{k}N^{j}$ satisfy
+	$\norm{S_k-S_l}\leq\sum_{j=l+1}^{k}q^{j}\leq q^{l+1}/(1-q)$ for $k>l$ and are
+	therefore Cauchy. The space $M_{m\times m}(\R)$, identified with $\R^{m^{2}}$,
+	is complete by \autoref{thm:rn-complete}, so $S_k\to S$ for some matrix $S$
+	with $\norm{S}\leq\sum_{j\geq0}q^{j}=(1-q)^{-1}$. Since
+	$S_k(I-N)=(I-N)S_k=I-N^{k+1}$ and $\norm{N^{k+1}}\leq q^{k+1}\to0$, passing to
+	the limit gives $SM=MS=I$.
+\end{proof}
+
+\begin{lemma}[Mean value inequality]\label{lem:mvi}
+	Let $U\subseteq\R^{m}$ be open and convex and let $\Phi\colon U\to\R^{m}$ be
+	continuously differentiable with $\norm{D\Phi(z)}\leq\kappa$ for every $z\in U$.
+	Then $\norm{\Phi(z_1)-\Phi(z_2)}\leq\kappa\norm{z_1-z_2}$ for all
+	$z_1,z_2\in U$.
+\end{lemma}
+
+\begin{proof}
+	Convexity places the segment $s\mapsto z_2+s(z_1-z_2)$, $s\in[0,1]$, inside $U$.
+	The map $s\mapsto\Phi\bigl(z_2+s(z_1-z_2)\bigr)$ is continuously differentiable
+	with derivative $D\Phi\bigl(z_2+s(z_1-z_2)\bigr)(z_1-z_2)$ by
+	\autoref{thm:chain-rule}, so applying \autoref{thm:ftc} to each coordinate,
+	\[
+		\Phi(z_1)-\Phi(z_2)
+		=\int_{0}^{1}D\Phi\bigl(z_2+s(z_1-z_2)\bigr)(z_1-z_2)\,\diff s .
+	\]
+	Taking norms and using the triangle inequality for integrals gives the bound.
+	The scalar mean value theorem (\autoref{thm:mvt}) cannot be applied coordinate
+	by coordinate here, since each coordinate would produce its own intermediate
+	point and no single point serves for all of them; the integral form avoids the
+	difficulty, and that is why it is stated separately.
+\end{proof}
+
+\section{Proof of the Theorem}\label{sec:app-ift-proof}
+
+\begin{proof}[Proof of \autoref{thm:implicit-function}]
+	Write $A\eqdef\nabla_yf(\bar x,\bar y)$, invertible by hypothesis, and define
+	\begin{equation}\label{eq:ift-phi}
+		\Phi(x,y)\eqdef y-A^{-1}f(x,y),\qquad(x,y)\in\Lambda .
+	\end{equation}
+	Because $A^{-1}$ is injective, $f(x,y)=0$ if and only if $\Phi(x,y)=y$: the
+	solutions of the system are the fixed points of $\Phi(x,\cdot)$.
+
+	\emph{Step 1: $\Phi(x,\cdot)$ is a contraction.} Differentiating
+	\eqref{eq:ift-phi} in $y$ gives
+	$\nabla_y\Phi(x,y)=I-A^{-1}\nabla_yf(x,y)$, which vanishes at
+	$(\bar x,\bar y)$. Since $f$ is continuously differentiable, $\nabla_yf$ is
+	continuous, so there are $r>0$ and $\delta>0$ with
+	$\closure{\ball{\delta}{\bar x}}\times\closure{\ball{r}{\bar y}}\subseteq\Lambda$
+	and
+	\begin{equation}\label{eq:ift-half}
+		\norm{I-A^{-1}\nabla_yf(x,y)}\leq\tfrac12
+		\qquad\text{whenever }\norm{x-\bar x}\leq\delta,\ \norm{y-\bar y}\leq r .
+	\end{equation}
+	\autoref{lem:mvi}, applied on the convex set $\ball{r}{\bar y}$ and extended to
+	its closure by continuity, gives
+	\begin{equation}\label{eq:ift-contraction}
+		\norm{\Phi(x,y_1)-\Phi(x,y_2)}\leq\tfrac12\norm{y_1-y_2},
+		\qquad y_1,y_2\in\closure{\ball{r}{\bar y}},\ \norm{x-\bar x}\leq\delta .
+	\end{equation}
+
+	\emph{Step 2: the ball is invariant.} Since $f(\bar x,\bar y)=0$ we have
+	$\Phi(\bar x,\bar y)=\bar y$, and $x\mapsto\Phi(x,\bar y)$ is continuous, so
+	after shrinking $\delta$ we may assume
+	$\norm{\Phi(x,\bar y)-\bar y}\leq r/2$ for $\norm{x-\bar x}\leq\delta$. For such
+	$x$ and any $y\in\closure{\ball{r}{\bar y}}$,
+	\[
+		\norm{\Phi(x,y)-\bar y}
+		\leq\norm{\Phi(x,y)-\Phi(x,\bar y)}+\norm{\Phi(x,\bar y)-\bar y}
+		\leq\tfrac12\norm{y-\bar y}+\tfrac{r}{2}\leq r,
+	\]
+	so $\Phi(x,\cdot)$ maps $\closure{\ball{r}{\bar y}}$ into itself.
+
+	\emph{Step 3: existence and uniqueness of $e$.} The set
+	$\closure{\ball{r}{\bar y}}$ is closed in the complete space $\R^{m}$, hence
+	complete by \autoref{prop:closed-subset-complete}. By
+	\eqref{eq:ift-contraction} and Step 2, $\Phi(x,\cdot)$ is a contraction of
+	modulus $\tfrac12$ of that set into itself, so
+	\autoref{thm:banach-fixed-point} supplies a unique fixed point, called $e(x)$.
+	Setting $\Gamma\eqdef\ball{\delta}{\bar x}$ gives
+	$e\colon\Gamma\to\closure{\ball{r}{\bar y}}$ with $f(x,e(x))=0$, which is (i);
+	uniqueness of the fixed point at $x=\bar x$ forces $e(\bar x)=\bar y$, which is
+	(ii). Uniqueness also yields the final claim of the theorem: inside
+	$\Gamma\times\ball{r}{\bar y}$ the solution set of $f=0$ is exactly the graph of
+	$e$.
+
+	\emph{Step 4: (iii).} Estimate \eqref{eq:ift-half} says
+	$\norm{I-A^{-1}\nabla_yf(x,y)}\leq\tfrac12<1$, so \autoref{lem:neumann} makes
+	$A^{-1}\nabla_yf(x,y)$ invertible and hence $\nabla_yf(x,y)$ invertible
+	throughout the box, in particular at $(x,e(x))$.
+
+	\emph{Step 5: $e$ is Lipschitz.} For $x_1,x_2\in\Gamma$, using
+	$e(x_i)=\Phi(x_i,e(x_i))$ and then \eqref{eq:ift-contraction},
+	\[
+		\norm{e(x_1)-e(x_2)}
+		\leq\underbrace{\norm{\Phi(x_1,e(x_1))-\Phi(x_1,e(x_2))}}
+		_{\leq\frac12\norm{e(x_1)-e(x_2)}}
+		+\norm{\Phi(x_1,e(x_2))-\Phi(x_2,e(x_2))},
+	\]
+	and the second term equals
+	$\norm{A^{-1}\bigl[f(x_2,e(x_2))-f(x_1,e(x_2))\bigr]}
+		\leq\norm{A^{-1}}M\norm{x_1-x_2}$, where $M$ is the supremum of
+	$\norm{\nabla_xf}$ over the closed box --- finite by
+	\autoref{cor:weierstrass-continuous} --- and \autoref{lem:mvi} is applied in the
+	$x$ variable. Rearranging,
+	\begin{equation}\label{eq:ift-lipschitz}
+		\norm{e(x_1)-e(x_2)}\leq L\norm{x_1-x_2},\qquad L\eqdef2\norm{A^{-1}}M ;
+	\end{equation}
+	in particular $e$ is continuous.
+
+	\emph{Step 6: differentiability and (iv).} Fix $x\in\Gamma$ and write
+	$y\eqdef e(x)$, $B\eqdef\nabla_yf(x,y)$ --- invertible by Step 4 --- and
+	$C\eqdef\nabla_xf(x,y)$. For small $h$ put $k\eqdef e(x+h)-e(x)$, so
+	$\norm{k}\leq L\norm{h}$ by \eqref{eq:ift-lipschitz}. Differentiability of $f$
+	at $(x,y)$ gives
+	\[
+		0=f(x+h,y+k)-f(x,y)=Ch+Bk+o\bigl(\norm{h}+\norm{k}\bigr),
+	\]
+	and $\norm{h}+\norm{k}\leq(1+L)\norm{h}$ converts the remainder into
+	$o(\norm{h})$. Multiplying by $B^{-1}$,
+	\[
+		k=-B^{-1}Ch+o(\norm{h}),
+	\]
+	which is precisely the statement that $e$ is differentiable at $x$ with
+	$De(x)=-B^{-1}C$, that is \eqref{eq:ift-derivative}. Continuity of $De$ follows
+	because $x\mapsto\nabla_yf(x,e(x))$ and $x\mapsto\nabla_xf(x,e(x))$ are
+	continuous, by continuity of $Df$ and of $e$, and because matrix inversion is
+	continuous on the invertible matrices --- itself a consequence of
+	\autoref{lem:neumann}. Hence $e$ is continuously differentiable.
+\end{proof}
+
+\begin{remark}[Deriving the inverse function theorem]\label{rem:ift-implies-inverse}
+	\autoref{thm:inverse-function} follows by applying
+	\autoref{thm:implicit-function} to $F(z,x)\eqdef g(x)-z$ on
+	$\R^{n}\times A$ at the point $\bigl(g(\bar x),\bar x\bigr)$: here the
+	derivative in the second block is $\nabla_xF=Dg(\bar x)$, nonsingular by
+	hypothesis, so there is a continuously differentiable $e$ with $g(e(z))=z$ near
+	$g(\bar x)$, and \eqref{eq:ift-derivative} gives
+	$De(z)=-\bigl[Dg(e(z))\bigr]^{-1}(-I)=\bigl[Dg(e(z))\bigr]^{-1}$.
+\end{remark}
+
+\chapter{Matrix Differentiation}\label{app:matrix-calculus}
+
+The identities below are used repeatedly in
+Chapters~\ref{ch:calculusn},~\ref{ch:projection} and~\ref{ch:probability}. All
+vectors are columns, gradients of scalar functions are columns, and $Df$ denotes
+the Jacobian, so that $Df(x)=\nabla f(x)^{\transp}$ for scalar $f$. This
+convention is the one fixed in the front matter, and it is the only source of
+transposition errors in what follows.
+
+\section{Linear and Quadratic Forms}\label{sec:app-quadratic}
+
+\begin{proposition}\label{prop:matrix-derivatives}
+	Let $a\in\R^{n}$, $A\in M_{n\times n}(\R)$, $B\in M_{m\times n}(\R)$,
+	$x\in\R^{n}$ and $y\in\R^{n}$.
+	\begin{enumerate}[(i)]
+		\item $\nabla\bigl(\ip{a}{x}\bigr)=a$ and $D(Bx)=B$.
+		\item $\nabla\bigl(x^{\transp}Ax\bigr)=(A+A^{\transp})x$; in particular
+		      $\nabla\bigl(x^{\transp}Ax\bigr)=2Ax$ when $A$ is symmetric, and
+		      $\nabla\norm{x}^{2}=2x$.
+		\item $\Hess\bigl(x^{\transp}Ax\bigr)=A+A^{\transp}$, a constant matrix.
+		\item If $\varphi(x)\eqdef f(Bx)$ with $f$ differentiable, then
+		      $\nabla\varphi(x)=B^{\transp}\nabla f(Bx)$.
+		\item $\nabla_x\bigl(x^{\transp}Ay\bigr)=Ay$ and
+		      $\nabla_y\bigl(x^{\transp}Ay\bigr)=A^{\transp}x$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) $\ip{a}{x}=\sum_ia_ix_i$ has $\partial/\partial x_j=a_j$; the $i$-th
+	coordinate of $Bx$ is $\sum_jB_{ij}x_j$, whose partial derivative in $x_j$ is
+	$B_{ij}$.
+
+	(ii) Writing $q(x)=\sum_{i,j}A_{ij}x_ix_j$,
+	\[
+		\pderiv{q}{x_k}=\sum_{j}A_{kj}x_j+\sum_{i}A_{ik}x_i
+		=\bigl(Ax\bigr)_k+\bigl(A^{\transp}x\bigr)_k,
+	\]
+	the two sums arising from the occurrences of $x_k$ in the first and in the
+	second factor. Taking $A=I$ gives $\nabla\norm{x}^{2}=2x$.
+
+	(iii) Differentiate (ii) once more: $x\mapsto(A+A^{\transp})x$ is linear with
+	Jacobian $A+A^{\transp}$ by (i).
+
+	(iv) \autoref{thm:chain-rule} gives $D\varphi(x)=Df(Bx)B$, and transposing,
+	$\nabla\varphi(x)=B^{\transp}\nabla f(Bx)$. The transpose is where the
+	convention matters: $Df$ is a row and $\nabla f$ a column.
+
+	(v) $x^{\transp}Ay=\sum_{i,j}x_iA_{ij}y_j$ is linear in $x$ for fixed $y$ with
+	coefficient vector $Ay$, and linear in $y$ for fixed $x$ with coefficient
+	vector $A^{\transp}x$; apply (i).
+\end{proof}
+
+\begin{eg}[Where each identity is used]\label{eg:matrix-uses}
+	Identity (ii) with symmetric $A$ produced \eqref{eq:quadratic-gradient} and the
+	second-order conditions of \autoref{thm:second-order-conditions}. Identity (iv)
+	with $f=\norm{\cdot}^{2}$ gives the least-squares normal equations: minimising
+	$\norm{y-X\beta}^{2}$ over $\beta$ has gradient
+	$-2X^{\transp}(y-X\beta)$, whose vanishing is
+	$X^{\transp}X\beta=X^{\transp}y$, the calculus route to
+	\autoref{prop:ols-calculus} and the algebraic counterpart of the projection
+	argument of \autoref{prop:ols-projection}. Identity (iii) shows that the Hessian
+	of a quadratic form is constant, so a quadratic objective is concave globally or
+	not at all --- which is why \autoref{thm:hessian-convexity} needs to be checked
+	only once for such objectives rather than at every point.
+\end{eg}
+
+\section{Inverse, Trace and Determinant}\label{sec:app-inverse}
+
+\begin{proposition}\label{prop:matrix-derivatives-2}
+	Let $X\in M_{n\times n}(\R)$ be invertible and $A\in M_{n\times n}(\R)$.
+	\begin{enumerate}[(i)]
+		\item If $t\mapsto X(t)$ is differentiable with $X(t)$ invertible, then
+		      \begin{equation}\label{eq:deriv-inverse-matrix}
+			      \deriv{}{t}X(t)^{-1}
+			      =-X(t)^{-1}\Bigl(\deriv{}{t}X(t)\Bigr)X(t)^{-1}.
+		      \end{equation}
+		\item $\partial\tr(AX)/\partial X=A^{\transp}$, entrywise.
+		\item $\partial\log\det X/\partial X=(X^{-1})^{\transp}$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Differentiate $X(t)X(t)^{-1}=I$ by the product rule
+	(\autoref{prop:deriv-product}, applied entrywise), obtaining
+	$\dot XX^{-1}+X\deriv{}{t}(X^{-1})=0$, and multiply on the left by $X^{-1}$.
+
+	(ii) $\tr(AX)=\sum_{i,j}A_{ij}X_{ji}$, whose partial derivative in $X_{ji}$ is
+	$A_{ij}$; assembling these into the matrix indexed by $(j,i)$ gives
+	$A^{\transp}$.
+
+	(iii) Jacobi's formula $\diff(\det X)=\det X\cdot\tr\bigl(X^{-1}\,\diff X\bigr)$,
+	a consequence of the cofactor expansion of \autoref{def:determinant}, gives
+	$\diff\log\det X=\tr\bigl(X^{-1}\,\diff X\bigr)$; comparing with (ii) at
+	$A=X^{-1}$ gives the stated gradient. A derivation of Jacobi's formula is in
+	\textcite[Ch.~10]{axler2024linear}.
+\end{proof}
+
+Identity \eqref{eq:deriv-inverse-matrix} is the matrix analogue of
+$\deriv{}{t}(1/x)=-\dot x/x^{2}$, and it is what the Riccati recursion
+\eqref{eq:riccati-recursion} and the comparative statics formula
+\eqref{eq:ift-derivative} reduce to in the scalar case. Identity (iii) is the
+first-order condition of Gaussian maximum likelihood with respect to a covariance
+matrix, and it is the reason the log-likelihood is concave in the precision
+matrix rather than in the covariance matrix.
+
+\chapter{The Multivariate Normal Distribution}\label{app:normal}
+
+\autoref{thm:normal-updating} and \autoref{prop:bivariate-normal} are the scalar
+and bivariate cases of one statement, recorded here in general form because
+econometric and macroeconomic applications use it with several signals and
+several states at once.
+
+\section{Definition and Affine Images}\label{sec:app-mvn}
+
+\begin{definition}[Multivariate normal]\label{def:mvn}
+	A random vector $X=(X_1,\dots,X_n)^{\transp}$ is \dfnas{multivariate normal distribution}{multivariate
+		normal} with mean $\mu\in\R^{n}$ and
+	covariance $\Sigma\succ0$, written $X\sim\mathcal{N}(\mu,\Sigma)$, if it has
+	density
+	\begin{equation}\label{eq:mvn-density}
+		f(x)=\frac{1}{(2\pi)^{n/2}(\det\Sigma)^{1/2}}
+		\exp\Bigl(-\tfrac12(x-\mu)^{\transp}\Sigma^{-1}(x-\mu)\Bigr),
+		\qquad x\in\R^{n}.
+	\end{equation}
+	\nidx{mvn}{$\mathcal{N}(\mu,\Sigma)$, multivariate normal distribution}
+\end{definition}
+
+That \eqref{eq:mvn-density} integrates to one is
+\autoref{prop:gaussian-integral} combined with the substitution
+$z=\Sigma^{-1/2}(x-\mu)$, whose Jacobian determinant is
+$(\det\Sigma)^{-1/2}$ by \autoref{thm:change-of-variables}; the symmetric square
+root $\Sigma^{1/2}=Q\Lambda^{1/2}Q^{\transp}$ exists by \autoref{thm:spectral}
+and has strictly positive diagonal $\Lambda^{1/2}$ by
+\autoref{prop:definiteness-eigen}.
+
+\begin{proposition}[Affine images and the moment generating function]\label{prop:mvn-affine}
+	Let $X\sim\mathcal{N}(\mu,\Sigma)$, $b\in\R^{m}$ and $B\in M_{m\times n}(\R)$ of
+	rank $m$. Then
+	\begin{equation}\label{eq:mvn-affine}
+		b+BX\sim\mathcal{N}\bigl(b+B\mu,\ B\Sigma B^{\transp}\bigr),
+		\qquad
+		\E\bigl[e^{\ip{t}{X}}\bigr]
+		=\exp\Bigl(\ip{t}{\mu}+\tfrac12t^{\transp}\Sigma t\Bigr)
+		\quad\text{for }t\in\R^{n}.
+	\end{equation}
+	In particular every linear combination $\ip{a}{X}$ is univariate normal with
+	mean $\ip{a}{\mu}$ and variance $a^{\transp}\Sigma a$.
+\end{proposition}
+
+\begin{proof}
+	For the moment generating function, complete the square in the exponent of
+	\eqref{eq:mvn-density}: with $\nu\eqdef\mu+\Sigma t$,
+	\[
+		\ip{t}{x}-\tfrac12(x-\mu)^{\transp}\Sigma^{-1}(x-\mu)
+		=\ip{t}{\mu}+\tfrac12t^{\transp}\Sigma t
+		-\tfrac12(x-\nu)^{\transp}\Sigma^{-1}(x-\nu),
+	\]
+	as multiplying out both sides and using the symmetry of $\Sigma^{-1}$ verifies.
+	Integrating the remaining Gaussian kernel gives $1$ and leaves the stated
+	formula. For the affine image, the moment generating function of $b+BX$ at
+	$s\in\R^{m}$ is
+	\[
+		\E\bigl[e^{\ip{s}{b+BX}}\bigr]
+		=e^{\ip{s}{b}}\,\E\bigl[e^{\ip{B^{\transp}s}{X}}\bigr]
+		=\exp\Bigl(\ip{s}{b+B\mu}+\tfrac12s^{\transp}B\Sigma B^{\transp}s\Bigr),
+	\]
+	which is the moment generating function of
+	$\mathcal{N}(b+B\mu,B\Sigma B^{\transp})$; a distribution on $\R^{m}$ whose
+	moment generating function is finite on a neighbourhood of the origin is
+	determined by it \autocite[Ch.~5]{ash1999probability}. The rank condition keeps
+	$B\Sigma B^{\transp}$ positive definite.
+\end{proof}
+
+\begin{corollary}[Uncorrelated implies independent]\label{cor:mvn-independence}
+	Let $(X_1^{\transp},X_2^{\transp})^{\transp}\sim\mathcal{N}(\mu,\Sigma)$, with
+	$\Sigma$ partitioned into blocks $\Sigma_{11},\Sigma_{12},\Sigma_{21},
+		\Sigma_{22}$ conformably. Then $X_1$ and $X_2$ are independent if and only if
+	$\Sigma_{12}=0$.
+\end{corollary}
+
+\begin{proof}
+	Independence implies zero covariance for any square-integrable pair, by
+	\autoref{prop:expectation-properties}(iv). Conversely, if $\Sigma_{12}=0$ then
+	$\Sigma$ and $\Sigma^{-1}$ are block diagonal and
+	$\det\Sigma=\det\Sigma_{11}\det\Sigma_{22}$, so \eqref{eq:mvn-density} factors
+	into the product of the two marginal densities.
+\end{proof}
+
+The corollary is false without joint normality. Let $Z$ be standard normal and
+let $S$ be independent of $Z$ with $\Prob(S=1)=\Prob(S=-1)=\tfrac12$. Then $SZ$
+is standard normal and
+$\Cov(Z,SZ)=\E[S]\E[Z^{2}]=0$, yet $\abs{Z}=\abs{SZ}$, so the two are far from
+independent. The pair $(Z,SZ)$ is not jointly normal, since $Z+SZ$ equals $0$
+with probability $\tfrac12$ and no non-degenerate normal variable has an atom.
+
+\section{The Conditional Law}\label{sec:app-mvn-conditional}
+
+\begin{theorem}[Conditional distribution]\label{thm:mvn-conditional}
+	Let $(X_1^{\transp},X_2^{\transp})^{\transp}$ be multivariate normal with mean
+	$(\mu_1^{\transp},\mu_2^{\transp})^{\transp}$ and covariance blocks
+	$\Sigma_{11},\Sigma_{12},\Sigma_{21},\Sigma_{22}$, with $\Sigma_{22}$
+	invertible. Then
+	\begin{equation}\label{eq:mvn-conditional}
+		X_1\mid X_2=x_2\ \sim\
+		\mathcal{N}\Bigl(\mu_1+\Sigma_{12}\Sigma_{22}^{-1}(x_2-\mu_2),\
+		\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}\Bigr).
+	\end{equation}
+	The conditional mean is affine in $x_2$ and the conditional covariance does not
+	depend on $x_2$.
+\end{theorem}
+
+\begin{proof}
+	Set $Z\eqdef X_1-\Sigma_{12}\Sigma_{22}^{-1}X_2$. By \autoref{prop:mvn-affine}
+	the pair $(Z^{\transp},X_2^{\transp})^{\transp}$ is an affine image of
+	$(X_1^{\transp},X_2^{\transp})^{\transp}$ and is therefore jointly normal, and
+	\[
+		\Cov(Z,X_2)=\Sigma_{12}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{22}=0 .
+	\]
+	\autoref{cor:mvn-independence} makes $Z$ independent of $X_2$. Hence,
+	conditionally on $X_2=x_2$, the vector
+	$X_1=Z+\Sigma_{12}\Sigma_{22}^{-1}x_2$ is $Z$ shifted by a constant, so its
+	conditional law is normal with mean
+	\[
+		\E[Z]+\Sigma_{12}\Sigma_{22}^{-1}x_2
+		=\mu_1-\Sigma_{12}\Sigma_{22}^{-1}\mu_2+\Sigma_{12}\Sigma_{22}^{-1}x_2
+	\]
+	and covariance
+	\[
+		\Var(Z)=\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+		-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}
+		+\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{22}\Sigma_{22}^{-1}\Sigma_{21}
+		=\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21},
+	\]
+	which together give \eqref{eq:mvn-conditional}.
+\end{proof}
+
+\begin{remark}[Recovering the results of \autoref{ch:probability}]
+	\label{rem:mvn-specialisation}
+	Take the blocks to be scalars with $X_1=Y$ and $X_2=X$. Then
+	$\Sigma_{12}\Sigma_{22}^{-1}=\Cov(X,Y)/\Var(X)$ and
+	\eqref{eq:mvn-conditional} is \eqref{eq:gaussian-conditional}, so
+	\autoref{prop:bivariate-normal} is the bivariate case.
+
+	Take instead $X_1=X\sim\mathcal{N}(\mu_x,\sigma_x^{2})$ and
+	$X_2=Y=X+\varepsilon$ with
+	$\varepsilon\sim\mathcal{N}(0,\sigma_\varepsilon^{2})$ independent of $X$. The
+	pair is jointly normal by \autoref{prop:mvn-affine}, with
+	$\Sigma_{11}=\Sigma_{12}=\sigma_x^{2}$ and
+	$\Sigma_{22}=\sigma_x^{2}+\sigma_\varepsilon^{2}$, so
+	\eqref{eq:mvn-conditional} gives conditional mean
+	$\mu_x+\frac{\sigma_x^{2}}{\sigma_x^{2}+\sigma_\varepsilon^{2}}(y-\mu_x)$ and
+	conditional variance
+	$\sigma_x^{2}-\frac{\sigma_x^{4}}{\sigma_x^{2}+\sigma_\varepsilon^{2}}
+		=\frac{\sigma_x^{2}\sigma_\varepsilon^{2}}
+		{\sigma_x^{2}+\sigma_\varepsilon^{2}}$, which is
+	\eqref{eq:normal-updating}. The completing-the-square derivation given there is
+	therefore an instance of the orthogonalisation argument used above, and the
+	statement that precisions add is the identity
+	$\bigl(\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1}\Sigma_{21}\bigr)^{-1}
+		=\sigma_x^{-2}+\sigma_\varepsilon^{-2}$ in this parametrisation.
+\end{remark}

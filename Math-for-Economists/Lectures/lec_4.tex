@@ -1,0 +1,548 @@
+% Source: Gerzensee "Real Analysis" slides 26-48 (open balls, bounded sets,
+% interior/closure, open and closed sets, topology axioms, the sigma-algebra
+% remark, sequences, subsequences, limits, monotone subsequences,
+% Bolzano-Weierstrass, coordinatewise convergence).
+% Supplementary: Fukuda (2026), Sec. 7.2-7.3 (pp. 214-238) and Sec. 8.1
+% (Compact Sets, pp. 261-270).
+% External references actually cited in this chapter: Aliprantis-Border
+% (2006), Rudin (1976).
+
+\chapter[Topology of Metric Spaces]{Topology of Metric Spaces: Open Sets, Sequences, and Compactness}
+\label{ch:topology}
+
+\section{Motivation: What ``Nearby'' Has to Mean}\label{sec:top-motivation}
+
+Three of the most-used theorems in economic theory --- that a continuous function
+on a compact set attains its maximum, that a bounded sequence has a convergent
+subsequence, and that a contraction on a complete space has a unique fixed point
+--- are statements about which sets contain their limit points and which
+sequences converge. This chapter builds that vocabulary.
+
+The order of business follows the slides
+\autocite[slides 26--48]{fukuda2026analysis}: open balls, then interior and
+closure, then the three axioms that isolate what a topology is, then sequences
+and their limits, then the two results that make compactness usable ---
+Bolzano--Weierstrass and Heine--Borel. Throughout, $(X,d)$ is a metric space; the
+specialisation to $\R^n$ is stated whenever it is genuinely used, because several
+of the results below are false in general metric spaces and knowing which is the
+point of stating them abstractly.
+
+\section{Open and Closed Sets}\label{sec:top-openclosed}
+
+\begin{definition}[Interior, closure, boundary]\label{def:interior-closure}
+	Let $(X,d)$ be a metric space and $A\subseteq X$.
+	\begin{enumerate}[(i)]
+		\item A point $a\in X$ is \dfnas{interior point}{interior to} $A$ if
+		      $\ball{\varepsilon}{a}\subseteq A$ for some $\varepsilon>0$. The
+		      \dfn{interior} $\Int A$ is the set of interior points of $A$; by
+		      definition $\Int A\subseteq A$. The set $A$ is \dfnas{open set}{open} if
+		      $A=\Int A$.
+		\item A point $a\in X$ is a \dfnas{point of closure}{point of closure} of $A$
+		      if $A\cap\ball{\varepsilon}{a}\neq\emptyset$ for every $\varepsilon>0$.
+		      The \dfn{closure} $\closure{A}$ is the set of points of closure; by
+		      definition $A\subseteq\closure{A}$. The set $A$ is \dfnas{closed
+			      set}{closed} if $A=\closure{A}$.
+		\item The \dfn{boundary} is $\partial A\eqdef\closure{A}\setminus\Int A$.
+	\end{enumerate}
+	\nidx{$\Int A$}{$\Int A$, interior}\nidx{$\overline{A}$}{$\closure{A}$, closure}
+\end{definition}
+
+\begin{eg}[Closure can add points that are ``reached but not attained'']
+	\label{eg:closure-1overn}
+	In $\R$ with $d(x,y)=\abs{x-y}$ let $A=\{1/n : n\in\N\}$. Then $0\in\closure A$:
+	for any $\varepsilon>0$, \autoref{prop:archimedean} supplies $n$ with
+	$1/n<\varepsilon$, so $1/n\in A\cap\ball{\varepsilon}{0}$. Since $0\notin A$,
+	$A$ is not closed, and $\closure A=A\cup\{0\}$. Also $\Int A=\emptyset$, since
+	every ball around $1/n$ contains irrational numbers. This is Example~7.1 of
+	\textcite{fukuda2026notes}, illustrated on
+	\autocite[slide 33]{fukuda2026analysis}.
+\end{eg}
+
+\begin{proposition}[Duality of interior and closure]\label{prop:interior-closure-duality}
+	For every $A\subseteq X$,
+	\[
+		\comp{\bigl(\closure{A}\bigr)}=\Int\bigl(\comp{A}\bigr),
+		\qquad\text{equivalently}\qquad
+		\comp{\bigl(\Int A\bigr)}=\closure{\bigl(\comp{A}\bigr)} .
+	\]
+	Consequently $A$ is open if and only if $\comp{A}$ is closed, and $A$ is closed
+	if and only if $\comp{A}$ is open.
+\end{proposition}
+
+\begin{proof}
+	A point $a$ fails to be a point of closure of $A$ if and only if some
+	$\varepsilon>0$ has $A\cap\ball{\varepsilon}{a}=\emptyset$, that is
+	$\ball{\varepsilon}{a}\subseteq\comp{A}$, that is $a\in\Int(\comp{A})$. This is
+	the first identity; the second follows by applying the first to $\comp{A}$ and
+	taking complements.
+
+	For the consequence: $A$ open means $A=\Int A$, hence
+	$\comp{A}=\comp{(\Int A)}=\closure{(\comp{A})}$, which is $\comp A$ closed; and
+	conversely.
+\end{proof}
+
+This is Proposition~7.5 and Corollary~7.1 of \textcite{fukuda2026notes}
+\autocite[slide 35]{fukuda2026analysis}. Almost every proof about closed sets
+below is obtained by complementing a proof about open sets.
+
+\begin{proposition}[Open balls are open]\label{prop:ball-open}
+	In any metric space, $\ball{\lambda}{a}$ is open.
+\end{proposition}
+
+\begin{proof}
+	Let $x\in\ball{\lambda}{a}$ and put $\rho\eqdef d(a,x)<\lambda$, so
+	$\lambda-\rho>0$. For $y\in\ball{\lambda-\rho}{x}$ the triangle inequality gives
+	\[
+		d(a,y)\leq d(a,x)+d(x,y)<\rho+(\lambda-\rho)=\lambda,
+	\]
+	so $y\in\ball{\lambda}{a}$. Hence $\ball{\lambda-\rho}{x}\subseteq
+		\ball{\lambda}{a}$ and $x\in\Int\ball{\lambda}{a}$. As $x$ was arbitrary,
+	$\ball{\lambda}{a}=\Int\ball{\lambda}{a}$.
+\end{proof}
+
+\begin{proposition}[$\Int A$ is open and $\closure{A}$ is closed]\label{prop:int-open}
+	For every $A\subseteq X$: $\Int A$ is open, $\closure{A}$ is closed, $\Int A$ is
+	the largest open set contained in $A$, and $\closure A$ is the smallest closed
+	set containing $A$.
+\end{proposition}
+
+\begin{proof}
+	Let $a\in\Int A$, so $\ball{\varepsilon}{a}\subseteq A$ for some
+	$\varepsilon>0$. By \autoref{prop:ball-open}, every $x\in\ball{\varepsilon}{a}$
+	has a ball $\ball{\delta}{x}\subseteq\ball{\varepsilon}{a}\subseteq A$, so
+	$x\in\Int A$; hence $\ball{\varepsilon}{a}\subseteq\Int A$ and $\Int A$ is open.
+	Applying this to $\comp A$ and using \autoref{prop:interior-closure-duality}
+	shows $\closure A$ is closed.
+
+	If $G\subseteq A$ is open then every $a\in G$ has a ball inside $G\subseteq A$,
+	so $G\subseteq\Int A$; this is maximality. The statement for $\closure A$
+	follows by complementation.
+\end{proof}
+
+\begin{theorem}[The three axioms of a topology]\label{thm:topology-axioms}
+	Let $\mathcal{O}$ denote the collection of open subsets of a metric space
+	$(X,d)$. Then
+	\begin{enumerate}[(i)]
+		\item the union of any subfamily of $\mathcal{O}$ belongs to $\mathcal{O}$;
+		\item the intersection of any \emph{finite} subfamily of $\mathcal{O}$ belongs
+		      to $\mathcal{O}$;
+		\item $\emptyset\in\mathcal{O}$ and $X\in\mathcal{O}$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i) Let $(G_i)_{i\in I}\subseteq\mathcal O$ and $x\in G=\bigcup_iG_i$. Then
+	$x\in G_{i_0}$ for some $i_0$, and openness of $G_{i_0}$ supplies
+	$\varepsilon>0$ with $\ball{\varepsilon}{x}\subseteq G_{i_0}\subseteq G$.
+
+	(ii) Let $G_1,\dots,G_n\in\mathcal O$ and $x\in G=\bigcap_{i=1}^nG_i$. For each
+	$i$ pick $\varepsilon_i>0$ with $\ball{\varepsilon_i}{x}\subseteq G_i$ and set
+	$\varepsilon=\min\{\varepsilon_1,\dots,\varepsilon_n\}$. Then $\varepsilon>0$
+	--- this is where finiteness is used --- and
+	$\ball{\varepsilon}{x}\subseteq\ball{\varepsilon_i}{x}\subseteq G_i$ for every
+	$i$, so $\ball{\varepsilon}{x}\subseteq G$.
+
+	(iii) For $X$: any $\varepsilon$ works since $\ball{\varepsilon}{x}\subseteq X$
+	always. For $\emptyset$: the statement ``$x\in\emptyset$ implies
+	$\ball{\varepsilon}{x}\subseteq\emptyset$'' is vacuously true, by the truth
+	table of \autoref{sec:sets-logic}.
+\end{proof}
+
+\begin{eg}[Infinitely many open sets can intersect in a closed set]
+	\label{eg:infinite-intersection}
+	In $\R$, $\bigcap_{n\in\N}\left(-\tfrac1n,\tfrac1n\right)=\{0\}$, an
+	intersection of open sets that is not open. The minimum in the proof of
+	\autoref{thm:topology-axioms}(ii) becomes an infimum equal to $0$, and the
+	argument collapses. Dually, $\bigcup_{n\in\N}\left[\tfrac1n,1\right]=(0,1]$ is a
+	union of closed sets that is not closed.
+\end{eg}
+
+\begin{definition}[Topological space]\label{def:topological-space}
+	Let $X$ be a set. A collection $\mathcal{O}\subseteq\pow{X}$ satisfying
+	(i)--(iii) of \autoref{thm:topology-axioms} is a \dfn{topology} on $X$, the pair
+	$(X,\mathcal{O})$ is a \dfn{topological space}, and the members of
+	$\mathcal{O}$ are the open sets. A topology arising from a metric as above is
+	\dfnas{metrisable topology}{metrisable}.
+\end{definition}
+
+\begin{remark}[Two abstractions of the same list of axioms]\label{rem:topology-sigma-algebra}
+	Compare \autoref{def:topological-space} with the definition of a
+	$\sigma$-algebra: a collection $\mathcal{F}\subseteq\pow{\Omega}$ containing
+	$\emptyset$ and $\Omega$, closed under complementation, and closed under
+	\emph{countable} unions. The two are different closure requirements on a
+	collection of sets, and the difference is exactly where the two theories
+	diverge: topology tolerates arbitrary unions but only finite intersections;
+	measure theory tolerates countable unions and countable intersections but
+	requires complements. On $\R$ the Borel $\sigma$-algebra is generated by the
+	open sets, which is how the two are linked
+	\autocite[slide 37]{fukuda2026analysis}. The parallel between the two
+	definitions of ``measurable/continuous via preimages'' drawn there ---
+	$f$ is continuous if $f^{-1}(B)$ is open whenever $B$ is open; $X$ is a random
+	variable if $X^{-1}(B)$ is measurable whenever $B$ is measurable --- is made
+	precise in \autoref{thm:continuity-preimage} and
+	\autoref{def:random-variable}.
+\end{remark}
+
+\section{Sequences and Limits}\label{sec:top-sequences}
+
+\begin{definition}[Sequence, subsequence, limit]\label{def:sequence}
+	A \dfn{sequence} in $X$ is a map $\N\to X$, written $(x_n)_{n\in\N}$. If
+	$\tau\colon\N\to\N$ is strictly increasing, then $(x_{\tau(n)})_{n\in\N}$ is a
+	\dfn{subsequence}, usually written $(x_{n_k})_{k\in\N}$.
+
+	The sequence \dfnas{convergent sequence}{converges} to $x^\ast\in X$, written
+	$x_n\to x^\ast$ or $x^\ast=\lim_{n\to\infty}x_n$, if for every $\varepsilon>0$
+	there is $n_0\in\N$ such that $n\geq n_0$ implies $d(x^\ast,x_n)<\varepsilon$.
+\end{definition}
+
+\begin{proposition}[Basic facts]\label{prop:sequence-basics}
+	Let $(x_n)$ be a sequence in a metric space $X$.
+	\begin{enumerate}[(i)]
+		\item A limit, if it exists, is unique.
+		\item If $x_n\to x^\ast$ then every subsequence converges to $x^\ast$.
+		\item A convergent sequence is bounded.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) If $x_n\to x$ and $x_n\to y$, then for every $\varepsilon>0$ we may choose
+	$n$ with $d(x,x_n)<\varepsilon/2$ and $d(y,x_n)<\varepsilon/2$, so
+	$d(x,y)\leq d(x,x_n)+d(x_n,y)<\varepsilon$. As $\varepsilon>0$ was arbitrary,
+	$d(x,y)=0$, hence $x=y$.
+
+	(ii) Since $\tau$ is strictly increasing, $\tau(k)\geq k$ by induction. Given
+	$\varepsilon>0$ take $n_0$ from the definition; for $k\geq n_0$ we have
+	$\tau(k)\geq k\geq n_0$, so $d(x^\ast,x_{\tau(k)})<\varepsilon$.
+
+	(iii) Take $\varepsilon=1$ and the corresponding $n_0$. Then
+	$d(x^\ast,x_n)<1$ for $n\geq n_0$, and setting
+	$M\eqdef\max\{1,d(x^\ast,x_1),\dots,d(x^\ast,x_{n_0-1})\}$ gives
+	$(x_n)\subseteq\ball{M+1}{x^\ast}$; the maximum is over a finite set and hence
+	finite.
+\end{proof}
+
+Parts (ii) and (iii) are Exercises~7.30 and~7.31 of
+\autocite[slide 43]{fukuda2026analysis}.
+
+\begin{theorem}[Sequential characterisation of closedness]\label{thm:closed-sequential}
+	A set $A\subseteq X$ is closed if and only if the limit of every convergent
+	sequence of elements of $A$ lies in $A$.
+\end{theorem}
+
+\begin{proof}
+	($\Rightarrow$) Let $A$ be closed, $(x_n)\subseteq A$ and $x_n\to x^\ast$. For
+	every $\varepsilon>0$ there is $n$ with $x_n\in\ball{\varepsilon}{x^\ast}$, and
+	$x_n\in A$, so $A\cap\ball{\varepsilon}{x^\ast}\neq\emptyset$. Hence
+	$x^\ast\in\closure A=A$.
+
+	($\Leftarrow$) Suppose the stated condition holds and let
+	$x^\ast\in\closure A$. For each $n\in\N$ the set
+	$A\cap\ball{1/n}{x^\ast}$ is non-empty; pick $x_n$ in it. Then
+	$d(x^\ast,x_n)<1/n\to0$, so $x_n\to x^\ast$ with $(x_n)\subseteq A$, and the
+	hypothesis gives $x^\ast\in A$. Hence $\closure A\subseteq A$, and the reverse
+	inclusion always holds.
+\end{proof}
+
+This is Proposition~7.11 of \textcite{fukuda2026notes}
+\autocite[slide 43]{fukuda2026analysis}. It converts a statement about balls into
+a statement about sequences, and it is the form in which closedness is checked in
+practice.
+
+\subsection{Monotone subsequences and Bolzano--Weierstrass}
+
+\begin{proposition}[Every real sequence has a monotone subsequence]\label{prop:monotone-subseq}
+	Every sequence $(x_n)_{n\in\N}$ in $\R$ has a subsequence that is increasing or
+	a subsequence that is decreasing (possibly both).
+\end{proposition}
+
+\begin{proof}
+	Call $m\in\N$ a \emph{peak} if $x_m>x_n$ for all $n>m$, and let
+	$S\eqdef\{m\in\N : m\text{ is a peak}\}$.
+
+	If $S$ is infinite, enumerate it increasingly as $n_1<n_2<\cdots$. For each $k$,
+	since $n_k$ is a peak and $n_{k+1}>n_k$, we get $x_{n_k}>x_{n_{k+1}}$; hence
+	$(x_{n_k})$ is strictly decreasing.
+
+	If $S$ is finite, let $N$ exceed every element of $S$ and set $n_1\eqdef N$.
+	Since $n_1$ is not a peak, there is $n_2>n_1$ with $x_{n_2}\geq x_{n_1}$; since
+	$n_2>N$ is not a peak either, there is $n_3>n_2$ with $x_{n_3}\geq x_{n_2}$, and
+	so on. This produces an increasing subsequence.
+\end{proof}
+
+This is Proposition~7.12 of \textcite{fukuda2026notes}; the argument is the one
+sketched on \autocite[slides 45--46]{fukuda2026analysis}, made explicit.
+
+\begin{proposition}[Monotone convergence]\label{prop:monotone-convergence}
+	An increasing sequence in $\R$ that is bounded above converges to
+	$\sup_n x_n$; a decreasing sequence bounded below converges to $\inf_n x_n$.
+\end{proposition}
+
+\begin{proof}
+	Let $(x_n)$ be increasing and bounded above and put $s\eqdef\sup_nx_n$, which
+	exists by \autoref{ass:completeness-axiom}. Given $\varepsilon>0$,
+	\autoref{prop:sup-char}(ii) supplies $n_0$ with $x_{n_0}>s-\varepsilon$. For
+	$n\geq n_0$, monotonicity and the upper-bound property give
+	$s-\varepsilon<x_{n_0}\leq x_n\leq s$, so $\abs{s-x_n}<\varepsilon$. The
+	decreasing case follows by applying this to $(-x_n)$.
+\end{proof}
+
+\begin{theorem}[Bolzano--Weierstrass]\label{thm:bolzano-weierstrass}
+	Every bounded sequence in $\R$ has a convergent subsequence. More generally,
+	every bounded sequence in $\R^n$ has a convergent subsequence.
+\end{theorem}
+
+\begin{proof}
+	In $\R$: by \autoref{prop:monotone-subseq} extract a monotone subsequence, which
+	inherits boundedness, and apply \autoref{prop:monotone-convergence}.
+
+	In $\R^n$: let $(x_m)_{m\in\N}$ be bounded, with coordinates
+	$x_m=(x^1_m,\dots,x^n_m)$. Each coordinate sequence is bounded in $\R$, since
+	$\abs{x^i_m}\leq\norm{x_m}$. Apply the one-dimensional case to
+	$(x^1_m)_m$ to get a subsequence along which the first coordinate converges;
+	apply it again, along that subsequence, to the second coordinate; and so on. As
+	$n$ is finite, after $n$ extractions we obtain a single subsequence along which
+	every coordinate converges. By \autoref{prop:coordinatewise} the subsequence
+	converges in $\R^n$.
+\end{proof}
+
+\begin{proposition}[Coordinatewise convergence]\label{prop:coordinatewise}
+	A sequence $(x_m)$ in $\R^n$ converges if and only if each coordinate sequence
+	$(x^i_m)_m$ converges in $\R$, and then
+	$\lim_mx_m=(\lim_mx^1_m,\dots,\lim_mx^n_m)$.
+\end{proposition}
+
+\begin{proof}
+	If $x_m\to x^\ast$, then $\abs{x^i_m-x^{i\ast}}\leq\norm{x_m-x^\ast}\to0$ for
+	each $i$. Conversely, if $x^i_m\to x^{i\ast}$ for each $i$, then given
+	$\varepsilon>0$ choose $n_i$ with $\abs{x^i_m-x^{i\ast}}<\varepsilon/\sqrt n$
+	for $m\geq n_i$; for $m\geq\max_in_i$,
+	$\norm{x_m-x^\ast}=\bigl(\sum_i\abs{x^i_m-x^{i\ast}}^2\bigr)^{1/2}<\varepsilon$.
+\end{proof}
+
+This is Proposition~7.14 of \textcite{fukuda2026notes}
+\autocite[slide 48]{fukuda2026analysis}. The finiteness of $n$ is essential: the
+argument in \autoref{thm:bolzano-weierstrass} performs $n$ successive
+extractions, and in an infinite-dimensional space it cannot be completed. Indeed
+Bolzano--Weierstrass \emph{fails} there, as \autoref{eg:no-bw-infinite} shows.
+
+\begin{eg}[Bolzano--Weierstrass fails in infinite dimensions]\label{eg:no-bw-infinite}
+	In the space of square-summable sequences with
+	$\norm{x}^2=\sum_ix_i^2$, consider the orthonormal vectors
+	$e^1,e^2,\dots$, where $e^k$ has a $1$ in position $k$ and zeros elsewhere. Then
+	$\norm{e^k}=1$ for all $k$, so the sequence is bounded, while
+	$\norm{e^j-e^k}=\sqrt2$ for $j\neq k$, so no subsequence is Cauchy and hence
+	none converges. Bounded and closed therefore does not imply compact outside
+	finite dimensions, which is why \autoref{thm:heine-borel} is stated for $\R^n$
+	and why the fixed-point arguments of \autoref{ch:dynamic} use completeness and
+	contraction rather than compactness.
+\end{eg}
+
+\section{Compactness}\label{sec:top-compact}
+
+\begin{definition}[Compactness]\label{def:compact}
+	Let $(X,d)$ be a metric space and $K\subseteq X$.
+	\begin{enumerate}[(i)]
+		\item An \dfn{open cover} of $K$ is a family $(G_i)_{i\in I}$ of open sets with
+		      $K\subseteq\bigcup_{i\in I}G_i$. The set $K$ is \dfn{compact} if every
+		      open cover of $K$ admits a finite subcover, that is, a finite
+		      $J\subseteq I$ with $K\subseteq\bigcup_{i\in J}G_i$.
+		\item $K$ is \dfnas{sequentially compact set}{sequentially compact} if every
+		      sequence in $K$ has a subsequence converging to a point of $K$.
+	\end{enumerate}
+\end{definition}
+
+\begin{theorem}[Compactness and sequential compactness agree in metric spaces]
+	\label{thm:compact-seq-compact}
+	In a metric space, a set is compact if and only if it is sequentially compact.
+\end{theorem}
+
+The proof is standard and somewhat long; see
+\textcite[Thm.~3.28 and its converse]{rudin1976principles} or
+\textcite[Sec.~8.1]{fukuda2026notes}. In general \emph{topological} spaces the
+two notions differ, which is one reason for staying within metric spaces
+throughout this volume.
+
+\begin{proposition}[Compact implies closed and bounded]\label{prop:compact-closed-bounded}
+	In any metric space, a compact set is closed and bounded.
+\end{proposition}
+
+\begin{proof}
+	Boundedness: fix $x_0\in X$; the balls $\ball{n}{x_0}$, $n\in\N$, cover $K$, and
+	a finite subcover is contained in the largest of them.
+
+	Closedness: let $x^\ast\in\closure K$ and take a sequence
+	$(x_n)\subseteq K$ with $x_n\to x^\ast$, as in the proof of
+	\autoref{thm:closed-sequential}. By sequential compactness
+	(\autoref{thm:compact-seq-compact}) some subsequence converges to a point of
+	$K$; by \autoref{prop:sequence-basics}(ii) that limit is $x^\ast$. Hence
+	$x^\ast\in K$ and $K$ is closed by \autoref{thm:closed-sequential}.
+\end{proof}
+
+\begin{theorem}[Heine--Borel]\label{thm:heine-borel}
+	A subset of $\R^n$ is compact if and only if it is closed and bounded.
+\end{theorem}
+
+\begin{proof}
+	Necessity is \autoref{prop:compact-closed-bounded}. For sufficiency, let
+	$K\subseteq\R^n$ be closed and bounded and let $(x_m)\subseteq K$. Boundedness
+	and \autoref{thm:bolzano-weierstrass} give a convergent subsequence
+	$x_{m_k}\to x^\ast$; closedness and \autoref{thm:closed-sequential} give
+	$x^\ast\in K$. So $K$ is sequentially compact, hence compact by
+	\autoref{thm:compact-seq-compact}.
+\end{proof}
+
+\begin{remark}[The equivalence is special to $\R^n$]\label{rem:heine-borel-fails}
+	\autoref{eg:no-bw-infinite} exhibits a closed bounded set --- the closed unit
+	ball of an infinite-dimensional space --- that is not compact. In fact the
+	closed unit ball of a normed space is compact if and only if the space is
+	finite-dimensional (Riesz's lemma; see
+	\textcite[Ch.~5]{aliprantis2006infinite}). Whenever a proof in economics invokes
+	``closed and bounded, hence compact'', the underlying space must be checked to
+	be finite-dimensional.
+\end{remark}
+
+\begin{proposition}[Stability properties]\label{prop:compact-stability}
+	\begin{enumerate}[(i)]
+		\item A closed subset of a compact set is compact.
+		\item A finite union of compact sets is compact; an arbitrary intersection of
+		      compact sets is compact.
+		\item A finite product of compact sets is compact in the product metric.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Let $F\subseteq K$ be closed with $K$ compact, and let $(x_n)\subseteq F$.
+	Compactness of $K$ gives a subsequence converging to some $x^\ast\in K$;
+	closedness of $F$ and \autoref{thm:closed-sequential} give $x^\ast\in F$.
+
+	(ii) For a finite union, a sequence in $\bigcup_{j=1}^mK_j$ has infinitely many
+	terms in some $K_{j_0}$, and that subsequence has a further subsequence
+	converging in $K_{j_0}$. An intersection of compact sets is a closed subset
+	(by \autoref{prop:compact-closed-bounded} and
+	\autoref{prop:interior-closure-duality}) of any one of them, so (i) applies.
+
+	(iii) Extract successively in each coordinate, as in the proof of
+	\autoref{thm:bolzano-weierstrass}; finiteness of the number of factors is what
+	makes the extraction terminate.
+\end{proof}
+
+\begin{eg}[The budget set is compact]\label{eg:budget-compact}
+	For $p\in\R^n_{++}$ and $m>0$,
+	$\budget(p,m)=\{x\in\R^n_+:\ip{p}{x}\leq m\}$ is compact. It is bounded, as
+	shown after \autoref{prop:bounded-equiv}. It is closed: if
+	$(x_k)\subseteq\budget(p,m)$ and $x_k\to x^\ast$, then
+	$x^\ast\in\R^n_+$ because each coordinate is a limit of non-negative numbers,
+	and $\ip{p}{x^\ast}=\lim_k\ip{p}{x_k}\leq m$ by continuity of the inner product
+	(\autoref{prop:linear-continuous}). \autoref{thm:heine-borel} applies.
+
+	Every hypothesis is doing work. If $p_i=0$ for some $i$ the set is unbounded. If
+	the constraint were $\ip{p}{x}<m$ the set would not be closed and the supremum
+	of a strictly increasing utility would not be attained. If consumption were not
+	restricted to $\R^n_+$, the set would again be unbounded whenever some $p_i<0$.
+	The existence half of \autoref{eg:consumer-setup} rests on this
+	proposition, via the Weierstrass theorem of \autoref{ch:continuity}.
+\end{eg}
+
+\section{Connectedness}\label{sec:top-connected}
+
+\begin{definition}[Connected set]\label{def:connected}
+	A metric space $X$ is \dfn{connected} if the only subsets of $X$ that are both
+	open and closed are $\emptyset$ and $X$; equivalently, $X$ cannot be written as
+	the union of two disjoint non-empty open sets. A subset $A\subseteq X$ is
+	connected if it is connected as a metric space in the induced metric.
+\end{definition}
+
+\begin{proposition}\label{prop:connected-interval}
+	A subset of $\R$ is connected if and only if it is an interval, that is, if
+	$x,y\in A$ and $x<z<y$ imply $z\in A$. Every convex subset of $\R^n$ is
+	connected.
+\end{proposition}
+
+\begin{proof}
+	\emph{Connected $\Rightarrow$ interval.} If $A$ is not an interval, take
+	$x<z<y$ with $x,y\in A$ and $z\notin A$; then $A\cap(-\infty,z)$ and
+	$A\cap(z,\infty)$ are disjoint, non-empty, relatively open, and cover $A$, so
+	$A$ is not connected.
+
+	\emph{Interval $\Rightarrow$ connected.} This direction is proved from the
+	supremum property of $\R$ (\autoref{ass:completeness-axiom}), not from the
+	connectedness of $[0,1]$, which is the same statement. Let $A$ be an interval
+	and suppose $A=U\cup W$ with $U,W$ relatively open, disjoint and non-empty. Pick
+	$x\in U$ and $y\in W$; without loss of generality $x<y$, and $[x,y]\subseteq A$
+	because $A$ is an interval. Put
+	\[
+		s\eqdef\sup\bigl\{t\in[x,y] : [x,t]\subseteq U\bigr\},
+	\]
+	the set being non-empty, since $x$ belongs to it, and bounded above by $y$; so
+	$s$ is a real number lying in $[x,y]\subseteq A$. Since $A=U\cup W$, either
+	$s\in W$ or $s\in U$.
+
+	Suppose $s\in W$. Relative openness gives $\varepsilon>0$ with
+	$A\cap(s-\varepsilon,s+\varepsilon)\subseteq W$, and the definition of the
+	supremum gives $t\in[x,y]$ with $s-\varepsilon<t\leq s$ and $[x,t]\subseteq U$.
+	Then $t\in A\cap(s-\varepsilon,s+\varepsilon)\subseteq W$ and $t\in U$, so
+	$t\in U\cap W=\emptyset$.
+
+	Suppose instead $s\in U$, and take $\varepsilon>0$ with
+	$A\cap(s-\varepsilon,s+\varepsilon)\subseteq U$ and $t$ as above. Put
+	$s'\eqdef\min\{s+\varepsilon/2,\ y\}$. Every point of $[t,s']$ lies in
+	$[x,y]\subseteq A$ and in $(s-\varepsilon,s+\varepsilon)$, hence in $U$;
+	together with $[x,t]\subseteq U$ this gives $[x,s']\subseteq U$ and therefore
+	$s'\leq s$. If $s<y$ then $s'>s$, a contradiction; so $s=y$ and $y\in U$,
+	contradicting $y\in W$.
+
+	Both cases are impossible, so no such decomposition exists and $A$ is
+	connected.
+
+	\emph{Convex sets in $\R^n$.} Let $C\subseteq\R^n$ be convex and non-empty and
+	suppose $C=U\cup W$ with $U,W$ relatively open, disjoint and non-empty. Pick
+	$x\in U$, $y\in W$ and consider $\gamma(t)\eqdef(1-t)x+ty$, which is continuous
+	and maps $[0,1]$ into $C$. Then $\gamma^{-1}(U)$ and $\gamma^{-1}(W)$ are
+	relatively open in $[0,1]$ by \autoref{thm:continuity-preimage}, disjoint,
+	non-empty and cover $[0,1]$, contradicting connectedness of the interval
+	$[0,1]$ just established.
+\end{proof}
+
+Connectedness is what makes the intermediate value theorem true, and hence what
+underlies both the existence of an interior solution between two boundary
+regimes and Debreu's continuous utility representation theorem alluded to in
+\autoref{rem:lexicographic}.
+
+\section{Chapter Summary}\label{sec:top-summary}
+
+Open sets are those equal to their interior, closed sets those equal to their
+closure, and the two notions are exchanged by complementation. The open sets are
+closed under arbitrary unions and finite intersections and contain
+$\emptyset$ and $X$; abstracting these three properties gives a topology, and the
+countable-union-plus-complement variant gives a $\sigma$-algebra. A set is closed
+if and only if it contains the limits of its convergent sequences. Every bounded
+real sequence has a monotone, hence convergent, subsequence
+(\autoref{thm:bolzano-weierstrass}); by coordinatewise extraction the same holds
+in $\R^n$, and the argument requires $n$ to be finite. Compactness is equivalent
+to sequential compactness in metric spaces, implies closed and bounded always,
+and is equivalent to closed and bounded exactly in $\R^n$
+(\autoref{thm:heine-borel}). The budget set with strictly positive prices is
+compact, which is the hypothesis under which \autoref{ch:continuity} produces an
+optimal consumption bundle.
+
+\begin{exercise}\label{ex:top-1}
+	Show that $\partial A=\closure{A}\cap\closure{\comp A}$, that
+	$\partial A$ is always closed, and that $A$ is closed if and only if
+	$\partial A\subseteq A$. Compute $\Int A$, $\closure A$ and $\partial A$ for
+	$A=\Q\cap[0,1]$ in $\R$, and comment on which of the three is empty.
+\end{exercise}
+
+\begin{exercise}\label{ex:top-2}
+	Prove that in the discrete metric of \autoref{eg:discrete-metric} every subset
+	is both open and closed, that a sequence converges if and only if it is
+	eventually constant, and that a set is compact if and only if it is finite.
+	Which hypothesis of \autoref{thm:heine-borel} fails for an infinite bounded set
+	in this metric?
+\end{exercise}
+
+\begin{exercise}\label{ex:top-3}
+	Let $K\subseteq\R^n$ be compact and non-empty. Show that $\sup K$ and $\inf K$
+	are attained coordinatewise, that is, for each $i$ there exist
+	$x,y\in K$ with $x_i=\max\{z_i : z\in K\}$ and $y_i=\min\{z_i: z\in K\}$. Give an
+	example of a closed but unbounded $K\subseteq\R$ for which the conclusion fails.
+\end{exercise}
