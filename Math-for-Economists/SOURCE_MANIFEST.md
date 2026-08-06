@@ -7,9 +7,9 @@ notes are the numbers printed on the slides themselves.
 
 Source areas:
 
-- `/Users/jfu/IHEID/Gerzensee/Math Camp/Slides/` — 6 files
-- `/Users/jfu/IHEID/Gerzensee/Math Camp/Supplementary/` — 37 files
-- `/Users/jfu/Downloads/PhD Math/` — 12 files
+- `Gerzensee/Math Camp/Slides/` — 6 files
+- `Gerzensee/Math Camp/Supplementary/` — 37 files
+- `PhD Math/` — 12 files
 
 Nothing in any source area was modified.
 
