@@ -19,8 +19,7 @@
 \section{Motivation: Least Squares Is Not About Calculus}\label{sec:proj-motivation}
 
 \autoref{prop:ols-calculus} solved the least-squares problem by setting a
-gradient to zero. The solution was correct and the method was, in a precise
-sense, beside the point. Writing $\mathbf1=(1,\dots,1)^{\transp}$,
+gradient to zero. The solution is correct, and it conceals the structure that generalises. Writing $\mathbf1=(1,\dots,1)^{\transp}$,
 $x=(x_1,\dots,x_n)^{\transp}$ and $y=(y_1,\dots,y_n)^{\transp}$ in $\R^n$, the
 objective is
 \begin{equation}\label{eq:ols-norm}
@@ -53,8 +52,8 @@ $H=\R^n$ and $H=L^2$.
 	\[
 		A^{\perp}\eqdef\{x\in H : \ip{x}{a}=0\ \text{for all }a\in A\} .
 	\]
-	A set $A$ is \dfnas{orthogonal}{orthogonal set} if $\ip{x}{y}=0$ for all
-	distinct $x,y\in A$, and \dfnas{orthonormal}{orthonormal set} if in addition
+	A set $A$ is \dfnas{orthogonal set}{orthogonal} if $\ip{x}{y}=0$ for all
+	distinct $x,y\in A$, and \dfnas{orthonormal set}{orthonormal} if in addition
 	$\norm{x}=1$ for every $x\in A$.
 	\nidx{Aperp}{$A^{\perp}$, orthogonal complement}
 \end{definition}
@@ -219,8 +218,8 @@ decomposition of total variation used in \autoref{eq:anova} below.
 This is Theorem~9.2 of \textcite[p.~302]{fukuda2026notes}. The hypothesis that
 $M$ be \emph{closed} cannot be dropped, and in infinite dimensions it is not
 automatic: by \autoref{cor:subspace-complete} every subspace of $\R^n$ is closed,
-but the subspace of finitely supported sequences in $L^2$ is dense and proper, so
-its orthogonal complement is $\{0\}$ and no decomposition of the stated form
+but the subspace of finitely supported sequences in $\ell^2$ is dense and proper,
+so its orthogonal complement is $\{0\}$ and no decomposition of the stated form
 exists.
 
 \begin{proposition}[The projection operator]\label{prop:projection-operator}
@@ -273,6 +272,14 @@ self-adjointness added because it is what identifies the projection matrix in
 	of it is $f(x)f(u)-f(u)f(x)=0$; taking the inner product with $u\in M^{\perp}$
 	gives $f(x)-f(u)\ip{u}{x}=0$, that is $f(x)=\ip{f(u)u}{x}$. So $a=f(u)u$ works.
 	Uniqueness: if $\ip{a}{x}=\ip{a'}{x}$ for all $x$, take $x=a-a'$.
+
+	\emph{The norm.} Write $\norm{f}\eqdef\sup\{\abs{f(x)} : \norm{x}\leq1\}$ for
+	the operator norm. Cauchy--Schwarz (\autoref{lem:cauchy-schwarz}) gives
+	$\abs{f(x)}=\abs{\ip{a}{x}}\leq\norm{a}\norm{x}$, so
+	$\norm{f}\leq\norm{a}$. For the reverse inequality: if $a=0$ then $f\equiv0$ and
+	both norms vanish; otherwise $x\eqdef a/\norm{a}$ has $\norm{x}=1$ and
+	$f(x)=\ip{a}{a}/\norm{a}=\norm{a}$, so $\norm{f}\geq\norm{a}$. Hence
+	$\norm{f}=\norm{a}$, and the supremum defining $\norm{f}$ is attained.
 \end{proof}
 
 This is Theorem~9.3 of \textcite[p.~304]{fukuda2026notes} and the promised
@@ -331,7 +338,7 @@ $k\leq n$ is the requirement of at least as many observations as parameters,
 which is forced because $k$ independent vectors cannot live in $\R^n$ with $k>n$
 by \autoref{thm:dimension-well-defined}.
 
-\subsection{Gram--Schmidt and QR}
+\subsection{Gram--Schmidt and QR}\label{subsec:proj-qr}
 
 \begin{proposition}[Gram--Schmidt]\label{prop:gram-schmidt}
 	Let $v_1,\dots,v_k\in H$ be linearly independent. Define recursively
@@ -426,7 +433,7 @@ problem is \eqref{eq:ols-norm}.
 	\autoref{prop:pythagoras} apply.
 \end{proof}
 
-\paragraph{What the geometry explains.} Four things that the calculus derivation
+\paragraph{Consequences of the projection reading.} Four things that the calculus derivation
 leaves opaque.
 
 First, the normal equations \eqref{eq:normal-equations-geometric} are not
@@ -464,13 +471,27 @@ $y$ is normal, by the linear-image property of the Gaussian family.
 	$y_i=1+3x_i+\varepsilon_i$, and computes $\hat\beta$ from
 	\eqref{eq:ols-matrix}. The accompanying programs
 	--- \path{regression.m} for \textsc{Matlab}, \path{regression_Octave.m}, and
-	\path{regression_Python.py} --- fix the random seed, build
-	$X=[\mathbf1\ \ x]$, and evaluate
+	\path{regression_Python.py} --- build $X=[\mathbf1\ \ x]$ and evaluate
 	\verb|inv(X'*X)*X'*y|, comparing the result with the built-in
-	\verb|regress|. The exercise is worth performing once for the sake of a single
-	observation: $\hat\beta$ is a random vector, being a fixed linear map applied to
-	the random $y$, and its realisation differs from the true $(1,3)^{\transp}$ by an
-	amount that is itself the projection of the error vector $\varepsilon$,
+	\verb|regress| in \textsc{Matlab} and with \verb|numpy.linalg.lstsq| in Python.
+	All three fix a seed --- \verb|rng(0)| in the \textsc{Matlab} and Octave
+	versions, \verb|np.random.seed(1)| in the Python one --- but the three
+	generators are different implementations, so the draws are not comparable
+	across languages and the three realisations of $\hat\beta$ are not meant to
+	agree. What agrees within each program is the hand-coded normal-equation
+	solution and the library routine. Executed on \textsc{Matlab} R2025b,
+	\path{regression.m} returns $\hat\beta=(0.955343,2.940044)^{\transp}$ from
+	both routes, agreeing to $1.6\times10^{-15}$; \path{regression_Python.py}
+	returns $\hat\beta=(1.023019,3.021874)^{\transp}$ from both. The Octave
+	variant, translated line by line into \textsc{Matlab} syntax and run there,
+	reproduces the \textsc{Matlab} figures exactly, as its seed and construction
+	are identical. Its second \verb|fprintf| is labelled ``\verb|regress|'' but
+	prints \verb|beta_hat| rather than \verb|beta_hat_2|, so the comparison it
+	advertises is not the one it displays; the two vectors coincide to
+	$1.6\times10^{-15}$, so the printed numbers are right for the wrong reason.
+
+	The realisation differs from the true $(1,3)^{\transp}$ by an amount that is
+	itself the projection of the error vector $\varepsilon$,
 	\[
 		\hat\beta-\beta=\bigl(X^{\transp}X\bigr)^{-1}X^{\transp}\varepsilon .
 	\]

@@ -8,7 +8,9 @@
 % programming applications presuppose (Optimization slides 21, Dynamic
 % Programming slides 12-24).
 % External references actually cited in this chapter: Aliprantis-Border
-% (2006), Ok (2007).
+% (2006), Ok (2007), Rockafellar (1970).
+% Danskin's theorem is added to make precise the differentiability claim about
+% value functions that the Berge section states informally.
 
 \chapter{Correspondences, the Maximum Theorem and Fixed Points}
 \label{ch:maximum}
@@ -24,7 +26,7 @@ indifferent over a whole face of the budget set, and the demand \emph{set} moves
 discontinuously as relative prices cross the ratio at which the linear
 indifference curves are parallel to the budget line. In game theory the best
 response to a mixed strategy is generically a vertex of the simplex but is a
-whole face whenever the player is indifferent, and indifference is exactly what
+whole face whenever the player is indifferent, and indifference is what
 characterises equilibrium in mixed strategies. Nothing can be said about the
 existence of equilibrium if the objects being compared are required to be
 single-valued.
@@ -53,7 +55,7 @@ uniqueness and no constructive procedure.
 	A \dfnas{correspondence}{correspondence} $\varphi\colon X\rightrightarrows Y$
 	from a set $X$ into a set $Y$ is a function $\varphi\colon X\to\pow(Y)$ into the
 	power set of $Y$; with each $x\in X$ it associates a subset $\varphi(x)$ of $Y$.
-	Its \dfnas{graph}{graph of a correspondence} is
+	Its \dfnas{graph of a correspondence}{graph} is
 	\[
 		\gph\varphi\eqdef\{(x,y)\in X\times Y : y\in\varphi(x)\}\subseteq X\times Y,
 	\]
@@ -64,11 +66,10 @@ uniqueness and no constructive procedure.
 \end{definition}
 
 The definition permits $\varphi(x)=\emptyset$; $\varphi$ is
-\dfnas{non-empty-valued}{non-empty-valued correspondence} if
+\dfnas{non-empty-valued correspondence}{non-empty-valued} if
 $\varphi(x)\neq\emptyset$ for every $x$. A function $f\colon X\to Y$ is the
 single-valued correspondence $x\mapsto\{f(x)\}$, so every statement below
-specialises to a statement about functions, and the specialisation is worth
-checking each time. Identifying $\varphi$ with $\gph\varphi$ also identifies it
+specialises to a statement about functions. Identifying $\varphi$ with $\gph\varphi$ also identifies it
 with a binary relation from $X$ to $Y$ in the sense of
 \autoref{ch:sets}, which is the reason the graph, rather than the map into
 $\pow(Y)$, is the object one topologises.
@@ -88,8 +89,8 @@ $\pow(Y)$, is the object one topologises.
 	\end{equation}
 	By \autoref{eg:budget-compact} the budget set is compact when $p\gg0$, and it is
 	convex as the intersection of $\R^2_+$ with a half-space, so $B$ is
-	compact-valued, closed-valued and convex-valued. The associated \dfnas{demand
-		correspondence}{demand correspondence}
+	compact-valued, closed-valued and convex-valued. The associated \dfnas{demand correspondence}{demand
+		correspondence}
 	\begin{equation}\label{eq:demand-correspondence}
 		D(p,m)\eqdef\argmax_{x\in B(p,m)}\ u(x)
 	\end{equation}
@@ -114,9 +115,9 @@ the whole value or merely part of it is required to land in the target set. The
 distinction is the source of the two distinct notions of continuity.
 
 \begin{definition}[Upper and lower inverse]\label{def:corr-inverse}
-	Let $\varphi\colon X\rightrightarrows Y$ and $A\subseteq Y$. The \dfnas{upper
-		inverse}{upper inverse} (or strong inverse) and \dfnas{lower inverse}{lower
-		inverse} (or weak inverse) of $A$ are
+	Let $\varphi\colon X\rightrightarrows Y$ and $A\subseteq Y$. The \dfnas{upper inverse}{upper
+		inverse} (or strong inverse) and \dfnas{lower
+		inverse}{lower inverse} (or weak inverse) of $A$ are
 	\begin{equation}\label{eq:corr-inverses}
 		\varphi^{u}(A)\eqdef\{x\in X : \varphi(x)\subseteq A\},
 		\qquad
@@ -177,10 +178,10 @@ forces two continuity concepts rather than one.
 \begin{definition}[Upper and lower hemicontinuity]\label{def:hemicontinuity}
 	Let $X,Y$ be topological spaces and $\varphi\colon X\rightrightarrows Y$.
 	\begin{enumerate}[(i)]
-		\item $\varphi$ is \dfnas{upper hemicontinuous}{upper hemicontinuity} at
+		\item $\varphi$ is \dfnas{upper hemicontinuity}{upper hemicontinuous} at
 		      $x\in X$ if for every open $U\supseteq\varphi(x)$ there is an open
 		      neighbourhood $V$ of $x$ with $\varphi(z)\subseteq U$ for every $z\in V$.
-		\item $\varphi$ is \dfnas{lower hemicontinuous}{lower hemicontinuity} at
+		\item $\varphi$ is \dfnas{lower hemicontinuity}{lower hemicontinuous} at
 		      $x\in X$ if for every open $U$ with $\varphi(x)\cap U\neq\emptyset$ there is
 		      an open neighbourhood $V$ of $x$ with $\varphi(z)\cap U\neq\emptyset$ for
 		      every $z\in V$.
@@ -190,12 +191,21 @@ forces two continuity concepts rather than one.
 	\end{enumerate}
 \end{definition}
 
-Read the two conditions as restrictions on how the value set may move. Upper
-hemicontinuity forbids the value from suddenly \emph{expanding}: an open set
-that contains $\varphi(x)$ still contains $\varphi(z)$ for $z$ near $x$. Lower
-hemicontinuity forbids it from suddenly \emph{contracting}: any part of
-$\varphi(x)$ that an open set reaches is still reached by $\varphi(z)$ for $z$
-near $x$. Neither implies the other.
+Both conditions compare the values at points \emph{near} $x$ with the value
+\emph{at} $x$, and neither restricts $\varphi(x)$ itself. Upper hemicontinuity
+says that the nearby values do not stick out: they are contained in any
+prescribed open set around $\varphi(x)$ once $z$ is close enough, so no point of
+$\varphi(z)$ can stay at a fixed distance from $\varphi(x)$ as $z\to x$. Lower
+hemicontinuity says that the nearby values do not leave gaps: they meet every
+open set that $\varphi(x)$ meets, so every point of $\varphi(x)$ is approximated
+by points of $\varphi(z)$. In the sequential form of
+\autoref{thm:uhc-sequential} and \autoref{thm:lhc-sequential} the asymmetry is
+plainest: upper hemicontinuity constrains the limits of arbitrary selections
+$y_n\in\varphi(x_n)$ to lie in $\varphi(x)$, while lower hemicontinuity requires
+each $y\in\varphi(x)$ to be the limit of some such selection. A value set that is
+large at $x$ and small nearby therefore satisfies the first and violates the
+second, and one that is small at $x$ and large nearby does the reverse, as
+\autoref{eg:hemicontinuity-independent} shows. Neither implies the other.
 
 \begin{proposition}[Global characterisations]\label{prop:hemicontinuity-global}
 	Let $\varphi\colon X\rightrightarrows Y$ between topological spaces.
@@ -245,9 +255,16 @@ near $x$. Neither implies the other.
 	misses $\varphi(z)=\{0\}$ for every $z<1$. Symmetrically $\psi$ is lower
 	hemicontinuous everywhere but not upper hemicontinuous at $x=1$: the open set
 	$U=[0,\tfrac12)$ contains $\psi(1)$ but contains no $\psi(z)$ with $z<1$. The
-	constant correspondence $\gamma$ is continuous. The value set of $\varphi$
-	explodes at $x=1$ in the sense forbidden by lower hemicontinuity only in the
-	limit from the left, and the value set of $\psi$ implodes there. The three
+	constant correspondence $\gamma$ is continuous.
+
+	The two failures are the two ways a jump at $x=1$ can go. For $\varphi$ the
+	value at $1$ is larger than every value nearby; nearby values therefore cannot
+	stick out of a neighbourhood of $\varphi(1)$, and upper hemicontinuity survives,
+	while the part of $\varphi(1)$ away from $0$ is approximated by nothing, and
+	lower hemicontinuity fails. For $\psi$ the value at $1$ is smaller than every
+	value nearby; every point of $\psi(1)$ is trivially approximated, and lower
+	hemicontinuity survives, while the nearby values stick out of any small
+	neighbourhood of $\psi(1)=\{0\}$, and upper hemicontinuity fails. The three
 	graphs are drawn in \autoref{fig:hemicontinuity}.
 \end{eg}
 
@@ -256,9 +273,11 @@ near $x$. Neither implies the other.
 	\input{Figures/hemicontinuity.tex}
 	\caption[Upper and lower hemicontinuity are independent]{The graphs of the
 		three correspondences of \autoref{eg:hemicontinuity-independent}. Shading
-		marks the values; a dashed edge is not part of the graph. Upper
-		hemicontinuity fails when the value set explodes in the limit, lower
-		hemicontinuity when it implodes.}
+		marks the values; a dashed edge is not part of the graph. In (a) the value
+		at $x=1$ is larger than the neighbouring values, which is compatible with
+		upper hemicontinuity and destroys lower hemicontinuity; in (b) it is
+		smaller, and the two verdicts are exchanged. Both properties compare
+		$\varphi(z)$ for $z$ near $1$ with $\varphi(1)$, not the reverse.}
 	\label{fig:hemicontinuity}
 \end{figure}
 
@@ -290,7 +309,7 @@ unbounded set.
 
 \begin{definition}[Closed graph]\label{def:closed-graph}
 	A correspondence $\varphi\colon X\rightrightarrows Y$ between topological spaces
-	\dfnas{has a closed graph}{closed graph} if $\gph\varphi$ is closed in
+	\dfnas{closed graph}{has a closed graph} if $\gph\varphi$ is closed in
 	$X\times Y$ with the product topology.
 \end{definition}
 
@@ -324,7 +343,7 @@ unbounded set.
 	not closed.
 \end{proof}
 
-\begin{remark}[Compactness of $Y$ is not decoration]\label{rem:closed-graph-compact}
+\begin{remark}[Where compactness of $Y$ is used]\label{rem:closed-graph-compact}
 	Without compactness of $Y$ a closed graph does not give upper hemicontinuity.
 	Take $X=Y=\R$ and $\varphi(x)=\{1/x\}$ for $x\neq0$, $\varphi(0)=\{0\}$. The
 	graph is the hyperbola together with the origin, which is closed in $\R^2$, but
@@ -509,19 +528,45 @@ through sequences.
 	$x_k\to x$. Apply \autoref{thm:lhc-sequential}.
 \end{proof}
 
-\begin{eg}[Both hypotheses on the parameters are needed]\label{eg:budget-failures}
-	Lower hemicontinuity fails at $m=0$. Take $n=1$, $p=1$ fixed, and
-	$m_k=0$ for all $k$ with $m=0$: here $B(1,0)=\{0\}$ and the correspondence is
-	continuous. The genuine failure is at a zero price. Take $n=2$ and
-	$p^{k}=(1,1/k)$, $m=1$. Then $B(p^{k},1)$ is the triangle with vertices
-	$(0,0)$, $(1,0)$, $(0,k)$, which grows without bound, while
-	$B\bigl((1,0),1\bigr)=\{x\in\R^{2}_{+} : x_1\leq1\}$ is unbounded and not
-	compact. Upper hemicontinuity in the sense of \autoref{thm:uhc-sequential}
-	fails because the criterion presupposes compact values. Economically: when a
-	good is free, the budget set ceases to be compact and Weierstrass no longer
-	delivers a demand, which is why general equilibrium existence proofs either
-	bound consumption sets artificially or work only on the interior of the price
-	simplex and control the boundary separately.
+\begin{eg}[The two boundaries of $\R^n_{++}\times\R_{++}$]
+	\label{eg:budget-failures}
+	\autoref{prop:budget-continuous} is stated on
+	$\R^{n}_{++}\times\R_{++}$. The two boundaries behave differently.
+
+	\emph{Zero wealth is harmless.} The conclusion extends to $m=0$. Upper
+	hemicontinuity: the boundedness argument of the proof needs only
+	$p\gg0$ and $m_k\leq\bar m$, and the limit $x$ of a convergent subsequence
+	satisfies $\ip{p}{x}\leq0$, hence $x=0\in B(p,0)$. Lower hemicontinuity:
+	$B(p,0)=\{0\}$ and $0\in B(p_k,m_k)$ for every $k$, so the constant sequence
+	$x_k\eqdef0$ suffices. So $B$ is continuous on $\R^n_{++}\times\R_+$, and the
+	restriction $m>0$ in \autoref{prop:budget-continuous} is a convenience of the
+	proof rather than a boundary of the result.
+
+	\emph{Zero prices are not.} Take $n=2$, $p^{k}=(1,1/k)\to p=(1,0)$ and
+	$m=1$. Then $B(p^{k},1)$ is the triangle with vertices $(0,0)$, $(1,0)$,
+	$(0,k)$, while $B\bigl((1,0),1\bigr)=\{x\in\R^{2}_{+} : x_1\leq1\}$ is closed
+	and unbounded, hence not compact. Compact-valuedness therefore fails, and with
+	it both \autoref{thm:uhc-sequential}, whose statement presupposes compact
+	values, and the hypotheses of Berge's theorem
+	(\autoref{thm:berge-maximum}). This is a loss of the tools, not by itself a
+	proof that upper hemicontinuity fails; what does fail, and is the substantive
+	point, is existence: a strictly increasing $u$ has no maximiser on the
+	unbounded set $B\bigl((1,0),1\bigr)$, so demand is undefined at a zero price.
+	General-equilibrium existence proofs respond either by bounding consumption
+	sets artificially or by working on the interior of the price simplex and
+	handling the boundary separately.
+
+	\emph{Where lower hemicontinuity genuinely fails.} The budget correspondence on
+	$\R^n_+$ is lower hemicontinuous because $0$ is always available and always
+	cheapest. Replace the consumption set by
+	$X\eqdef\{x\in\R^2_+ : x_1\geq1\}$, a subsistence requirement, and set
+	$B_X(p,m)\eqdef\{x\in X : \ip{p}{x}\leq m\}$. At $p=(1,1)$ and $m=1$ one has
+	$B_X(p,1)=\{(1,0)\}$, whereas $B_X(p,1-1/k)=\emptyset$ for every $k$, since
+	$x_1\geq1$ and $x_2\geq0$ force $\ip{p}{x}\geq1$. No selection converges to
+	$(1,0)$, so $B_X$ is not lower hemicontinuous at $(p,1)$. The failure is
+	exactly the absence of a \dfnas{cheaper point}{cheaper point}: some $x\in X$
+	with $\ip{p}{x}<m$. That condition, and not positivity of wealth, is what
+	lower hemicontinuity of a budget correspondence rests on.
 \end{eg}
 
 \section{Berge's Theorem of the Maximum}\label{sec:berge}
@@ -579,8 +624,8 @@ continuity of the constraint correspondence.
 	Let $X,Y$ be topological spaces, let
 	$\varphi\colon X\rightrightarrows Y$ be continuous with non-empty compact
 	values, and let $f\colon\gph\varphi\to\R$ be continuous. Define the
-	\dfnas{value function}{value function} and the \dfnas{argmax
-		correspondence}{argmax correspondence}
+	\dfnas{value function}{value function} and the \dfnas{argmax correspondence}{argmax
+		correspondence}
 	\begin{equation}\label{eq:berge-objects}
 		m(x)\eqdef\max_{y\in\varphi(x)}f(x,y),
 		\qquad
@@ -589,9 +634,8 @@ continuity of the constraint correspondence.
 	Then
 	\begin{enumerate}[(i)]
 		\item $m$ is continuous on $X$;
-		\item $\mu$ is non-empty- and compact-valued;
-		\item if $Y$ is Hausdorff, or if $f$ extends continuously to $X\times Y$, then
-		      $\mu$ is upper hemicontinuous.
+		\item $\mu$ is non-empty- and compact-valued; and
+		\item $\mu$ is upper hemicontinuous.
 	\end{enumerate}
 \end{theorem}
 
@@ -601,27 +645,48 @@ continuity of the constraint correspondence.
 	make $m$ both lower and upper semicontinuous, hence continuous by
 	\autoref{cor:semicontinuity-continuity}.
 
-	(ii) This is \autoref{prop:argmax-compact} applied on the non-empty compact set
-	$\varphi(x)$ to the continuous function $f(x,\cdot)$.
+	(ii) Fix $x$. The map $y\mapsto(x,y)$ is continuous from $\varphi(x)$ into
+	$\gph\varphi$, so $f(x,\cdot)$ is continuous on the non-empty compact set
+	$\varphi(x)$ and attains its maximum there by \autoref{thm:weierstrass}; thus
+	$\mu(x)\neq\emptyset$. Moreover $\mu(x)=\{y\in\varphi(x) : f(x,y)\geq m(x)\}$
+	is closed in $\varphi(x)$, hence compact.
 
-	(iii) Suppose first that $f$ extends continuously to $X\times Y$. Then
-	$\psi(x)\eqdef\{y\in Y : f(x,y)=m(x)\}$ has closed graph, being the zero set of
-	the continuous function $(x,y)\mapsto f(x,y)-m(x)$ on $X\times Y$, and
-	$\mu=\varphi\cap\psi$, so \autoref{prop:corr-operations}(iii) applies.
+	(iii) Fix $x_0\in X$ and an open $U\subseteq Y$ with $\mu(x_0)\subseteq U$. Put
+	$K\eqdef\varphi(x_0)\setminus U$, a closed subset of the compact set
+	$\varphi(x_0)$ and therefore compact. If $K=\emptyset$, then
+	$\varphi(x_0)\subseteq U$ and upper hemicontinuity of $\varphi$ supplies an open
+	$N\ni x_0$ with $\mu(z)\subseteq\varphi(z)\subseteq U$ for $z\in N$.
 
-	Suppose instead that $Y$ is Hausdorff. By
-	\autoref{cor:closed-subcorrespondence} it suffices to show that $\gph\mu$ is
-	closed. Let $(x_n,y_n)\in\gph\mu$ with $(x_n,y_n)\to(x,y)$. First,
-	$y\in\varphi(x)$: otherwise, since $Y$ is Hausdorff and $\varphi(x)$ is compact,
-	there are disjoint open sets $V\ni y$ and $W\supseteq\varphi(x)$, and upper
-	hemicontinuity puts $y_n\in\varphi(x_n)\subseteq W$ for large $n$ while
-	$y_n\in V$ for large $n$, contradicting $V\cap W=\emptyset$. Then, using
-	continuity of $m$ from (i) and of $f$,
-	\[
-		m(x)=\lim_{n\to\infty}m(x_n)=\lim_{n\to\infty}f(x_n,y_n)=f(x,y),
-	\]
-	so $y\in\mu(x)$.
+	Suppose $K\neq\emptyset$. Every $y\in K$ lies in $\varphi(x_0)$ but not in
+	$\mu(x_0)$, so $f(x_0,y)<m(x_0)$; since $f(x_0,\cdot)$ is continuous on the
+	compact set $K$ it attains a maximum there, and hence there is
+	$\varepsilon>0$ with
+	\begin{equation}\label{eq:berge-gap}
+		f(x_0,y)<m(x_0)-2\varepsilon\qquad\text{for all }y\in K .
+	\end{equation}
+	The set $W\eqdef\{(x,y)\in\gph\varphi : f(x,y)<m(x)-\varepsilon\}$ is open in
+	$\gph\varphi$, because $f$ is continuous on $\gph\varphi$ and $m$ is continuous
+	on $X$ by (i), and \eqref{eq:berge-gap} puts $\{x_0\}\times K$ inside $W$. For
+	each $y\in K$ choose open $U_y\ni x_0$ in $X$ and $V_y\ni y$ in $Y$ with
+	$(U_y\times V_y)\cap\gph\varphi\subseteq W$. Compactness of $K$ gives
+	$y_1,\dots,y_r$ with $K\subseteq V\eqdef\bigcup_{i\leq r}V_{y_i}$; set
+	$N_1\eqdef\bigcap_{i\leq r}U_{y_i}$, an open neighbourhood of $x_0$, and note
+	that $(N_1\times V)\cap\gph\varphi\subseteq W$.
+
+	Since $\varphi(x_0)\subseteq U\cup V$ and $U\cup V$ is open, upper
+	hemicontinuity of $\varphi$ supplies an open $N_2\ni x_0$ with
+	$\varphi(z)\subseteq U\cup V$ for $z\in N_2$. Let $z\in N_1\cap N_2$ and
+	$y\in\mu(z)$. Then $y\in\varphi(z)\subseteq U\cup V$. Were $y\in V$, then
+	$(z,y)\in(N_1\times V)\cap\gph\varphi\subseteq W$ would give
+	$f(z,y)<m(z)-\varepsilon$, contradicting $f(z,y)=m(z)$. Hence $y\in U$, so
+	$\mu(z)\subseteq U$ for every $z\in N_1\cap N_2$.
 \end{proof}
+
+The argument is purely topological: no metric, no sequences and no separation
+axiom on $Y$ enters, so the theorem holds as stated for arbitrary topological
+spaces. In $\R^n$ the conclusion can also be reached through
+\autoref{cor:closed-subcorrespondence}, since $\gph\mu$ is then closed, but that
+route needs the sequential criteria and is available only in the metric setting.
 
 \begin{remark}[$\mu$ is not lower hemicontinuous]\label{rem:berge-not-lhc}
 	Upper hemicontinuity is the strongest conclusion available. Let $X=[0,1]$,
@@ -660,7 +725,7 @@ continuity of the constraint correspondence.
 
 \begin{proof}
 	\autoref{prop:budget-continuous} and \autoref{thm:berge-maximum} give the first
-	two claims, $\R^{n}_{+}$ being Hausdorff as a metric space. If $u$ is strictly
+	two claims, with $f(x,y)\eqdef u(y)$ as the objective. If $u$ is strictly
 	quasiconcave, \autoref{prop:strict-quasi-unique} makes $D$ single-valued, and by
 	\autoref{prop:hemicontinuity-global} a single-valued upper hemicontinuous
 	correspondence is a continuous function.
@@ -670,7 +735,7 @@ The corollary is the theoretical warrant for the comparative statics performed
 throughout demand theory. Without it, an expression such as
 $\partial x^{\ast}/\partial p$ could not be assumed even to exist, and the
 observation of \autoref{rem:comparative-statics-ift} --- that the implicit
-function theorem delivers differentiability from a nonsingular bordered Hessian
+function theorem delivers differentiability from a non-singular bordered Hessian
 --- would have nothing to be applied to. \autoref{cor:demand-uhc} also shows what
 is available without any differentiability at all: continuity of $v$ and upper
 hemicontinuity of $D$ come from compactness and continuity alone.
@@ -698,13 +763,162 @@ hemicontinuity of $D$ come from compactness and continuity alone.
 
 Maximisation over an unconstrained variable therefore preserves concavity. This
 is what makes the value function of a concave dynamic programme concave, and hence
---- by \autoref{prop:convex-continuous} and \autoref{thm:concave-gradient} ---
-continuous on the interior and differentiable wherever the maximiser is unique.
-The corresponding statement for constrained problems requires the constraint
-correspondence to have a convex graph, not merely convex values; the budget
-correspondence \eqref{eq:budget-correspondence} has a convex graph in $(x,m)$ for
-fixed $p$, which is why the indirect utility function is convex in $p$ and
-concave in $m$ in the appropriate senses.
+--- by \autoref{prop:convex-continuous} --- continuous on the interior of its
+domain.
+
+Differentiability is a separate matter, and it does not follow from uniqueness of
+the maximiser. Consider
+\[
+	V(\alpha)\eqdef\max\{x\in\R : x\leq\alpha,\ x\leq1\}=\min\{\alpha,1\}.
+\]
+The objective is linear, the constraints are affine, the maximiser
+$x^\ast(\alpha)=\min\{\alpha,1\}$ is unique for every $\alpha$, and $V$ is
+concave; yet $V$ is not differentiable at $\alpha=1$, where the binding
+constraint changes. Concavity delivers a non-empty superdifferential at every
+interior point and differentiability exactly where that superdifferential is a
+singleton, which is a condition on the whole family of supporting affine
+functions rather than on the argmax. The theorems that do convert regularity of
+the objective into differentiability of the value --- Danskin's theorem, the
+envelope theorem \autoref{thm:envelope}, and Benveniste--Scheinkman
+(\autoref{thm:benveniste-scheinkman}) --- all assume differentiability of the objective in the
+parameter and interiority of the maximiser, and the example above satisfies
+neither at $\alpha=1$.
+
+\autoref{thm:danskin} makes the first of these precise and shows exactly how much
+regularity of the value function a smooth objective delivers when the maximiser
+is not unique.
+
+\begin{theorem}[Danskin]\label{thm:danskin}
+	Let $X\subseteq\R^{n}$ be open, $U$ a non-empty compact metric space, and
+	$\varphi\colon X\times U\to\R$ continuous with the partial gradient
+	$\nabla_{x}\varphi$ existing and continuous on $X\times U$. Put
+	\[
+		V(x)\eqdef\max_{u\in U}\varphi(x,u),
+		\qquad M(x)\eqdef\argmax_{u\in U}\varphi(x,u).
+	\]
+	Then $V$ is locally Lipschitz on $X$, $M(x)$ is non-empty and compact, and for
+	every $x\in X$ and $d\in\R^{n}$ the one-sided directional derivative exists and
+	\begin{equation}\label{eq:danskin}
+		V'(x;d)\eqdef\lim_{t\downarrow0}\frac{V(x+td)-V(x)}{t}
+		=\max_{u\in M(x)}\ \ip{\nabla_{x}\varphi(x,u)}{d} .
+	\end{equation}
+	If $M(x)=\{u^{\ast}\}$ is a singleton, then $V$ is differentiable at $x$ with
+	$\nabla V(x)=\nabla_{x}\varphi(x,u^{\ast})$.
+\end{theorem}
+
+\begin{proof}
+	Non-emptiness and compactness of $M(x)$, and continuity and upper
+	hemicontinuity of $V$ and $M$, are \autoref{thm:berge-maximum} applied to the
+	constant correspondence $\Gamma\equiv U$.
+
+	\emph{Local Lipschitz property.} Let $K\subseteq X$ be compact and convex with
+	$x\in\Int K$, and put $L\eqdef\max_{K\times U}\norm{\nabla_{x}\varphi}$, finite
+	by \autoref{cor:weierstrass-continuous} on the compact $K\times U$. For
+	$y,z\in K$,
+	\[
+		\abs{V(y)-V(z)}\leq\max_{u\in U}\abs{\varphi(y,u)-\varphi(z,u)}\leq L\norm{y-z},
+	\]
+	the first inequality because $\abs{\max_ua(u)-\max_ub(u)}\leq\max_u\abs{a(u)-b(u)}$
+	and the second by the mean value theorem along the segment $[z,y]\subseteq K$.
+
+	\emph{Lower bound in \eqref{eq:danskin}.} Fix $u\in M(x)$. For small $t>0$,
+	\[
+		V(x+td)-V(x)\geq\varphi(x+td,u)-\varphi(x,u)
+		=t\ip{\nabla_{x}\varphi(x,u)}{d}+o(t),
+	\]
+	so $\liminf_{t\downarrow0}\bigl(V(x+td)-V(x)\bigr)/t
+		\geq\ip{\nabla_{x}\varphi(x,u)}{d}$; take the maximum over $u\in M(x)$.
+
+	\emph{Upper bound.} Let $t_k\downarrow0$ realise the limit superior and choose
+	$u_k\in M(x+t_kd)$. The mean value theorem applied to
+	$s\mapsto\varphi(x+sd,u_k)$ gives $\theta_k\in(0,1)$ with
+	\[
+		\frac{V(x+t_kd)-V(x)}{t_k}\leq\frac{\varphi(x+t_kd,u_k)-\varphi(x,u_k)}{t_k}
+		=\ip{\nabla_{x}\varphi(x+\theta_kt_kd,u_k)}{d}.
+	\]
+	By compactness of $U$, pass to a subsequence with $u_k\to\bar u$; upper
+	hemicontinuity of $M$ together with \autoref{thm:closed-graph} gives
+	$\bar u\in M(x)$, and continuity of $\nabla_{x}\varphi$ gives
+	$\ip{\nabla_{x}\varphi(x+\theta_kt_kd,u_k)}{d}\to
+		\ip{\nabla_{x}\varphi(x,\bar u)}{d}$. Hence the limit superior is at most
+	$\max_{u\in M(x)}\ip{\nabla_{x}\varphi(x,u)}{d}$, and \eqref{eq:danskin}
+	follows.
+
+	\emph{Differentiability under uniqueness.} Write $g\eqdef\nabla_{x}\varphi(x,u^{\ast})$,
+	so that \eqref{eq:danskin} reads $V'(x;d)=\ip{g}{d}$ for every $d$. Suppose $V$
+	were not differentiable at $x$ with derivative $g$. Then there are
+	$\varepsilon>0$ and $h_k\to0$, $h_k\neq0$, with
+	\begin{equation}\label{eq:danskin-contradiction}
+		\bigl\lvert V(x+h_k)-V(x)-\ip{g}{h_k}\bigr\rvert\geq\varepsilon\norm{h_k}.
+	\end{equation}
+	Write $h_k=t_kd_k$ with $t_k=\norm{h_k}\downarrow0$ and $\norm{d_k}=1$; by
+	compactness of the unit sphere, pass to a subsequence with $d_k\to d$. The
+	local Lipschitz bound gives
+	$\abs{V(x+t_kd_k)-V(x+t_kd)}\leq Lt_k\norm{d_k-d}=o(t_k)$, while the
+	directional derivative along the fixed direction $d$ gives
+	$V(x+t_kd)-V(x)=t_k\ip{g}{d}+o(t_k)$. Therefore
+	\[
+		V(x+h_k)-V(x)-\ip{g}{h_k}
+		=t_k\ip{g}{d-d_k}+o(t_k)=o(t_k),
+	\]
+	since $d_k\to d$, contradicting \eqref{eq:danskin-contradiction}.
+\end{proof}
+
+\begin{remark}[What Danskin adds, and what it does not]\label{rem:danskin-reading}
+	Formula \eqref{eq:danskin} holds with no convexity and no uniqueness: the value
+	function of a smooth family always has one-sided directional derivatives, and
+	they are computed by freezing the maximiser and differentiating the objective.
+	What multiplicity of maximisers costs is two-sidedness. Taking $d$ and $-d$ in
+	\eqref{eq:danskin},
+	\[
+		V'(x;d)+V'(x;-d)=\max_{u\in M(x)}\ip{\nabla_{x}\varphi(x,u)}{d}
+		-\min_{u\in M(x)}\ip{\nabla_{x}\varphi(x,u)}{d}\geq0,
+	\]
+	with equality for every $d$ if and only if $\nabla_{x}\varphi(x,\cdot)$ is
+	constant on $M(x)$. A kink in the value function is therefore not caused by
+	multiplicity of the maximiser as such, but by disagreement among the maximisers
+	about the marginal effect of the parameter. In the example $V(\alpha)=\min\{\alpha,1\}$
+	above the maximiser is unique at every $\alpha$, and the kink at $\alpha=1$ comes
+	instead from the failure of the constraint set to be described by a fixed compact
+	$U$ independent of the parameter, which is the hypothesis Danskin's theorem
+	imposes and \autoref{thm:berge-maximum} relaxes.
+
+	When each $\varphi(\cdot,u)$ is convex, $V$ is convex by
+	\autoref{prop:convex-function-operations}, and every
+	$\nabla_{x}\varphi(x,u)$ with $u\in M(x)$ is a subgradient of $V$ at $x$: for
+	any $y$,
+	\[
+		V(y)\geq\varphi(y,u)\geq\varphi(x,u)+\ip{\nabla_{x}\varphi(x,u)}{y-x}
+		=V(x)+\ip{\nabla_{x}\varphi(x,u)}{y-x},
+	\]
+	using \autoref{thm:concave-gradient} for the middle inequality. Since
+	$\partial V(x)$ is closed and convex by \autoref{thm:subgradient-exists}, it
+	contains $\conv\{\nabla_{x}\varphi(x,u) : u\in M(x)\}$. Equality of the two sets
+	is the identification of $V'(x;\cdot)$ with the support function of
+	$\partial V(x)$ and is proved in
+	\textcite[Sec.~23]{rockafellar1970convex}; it is not used below.
+\end{remark}
+
+For constrained problems, concavity of the value function in the parameter needs
+the constraint correspondence to have a convex \emph{graph}, not merely convex
+values. The budget correspondence \eqref{eq:budget-correspondence} has a convex
+graph in $(x,m)$ for fixed $p$, so if $u$ is concave then $v(p,\cdot)$ is concave
+in wealth. In prices the graph is not convex, and the conclusion available is
+different in kind: $v$ is quasiconvex in $(p,m)$ jointly (\autoref{ex:cvx-2}),
+homogeneous of degree zero in $(p,m)$, non-increasing in each price and
+non-decreasing in wealth. It need not be convex in $p$. Take $n=1$ and
+$u(x)=-x^{-2}$ on $(0,\infty)$, which is strictly increasing and strictly
+concave since $u'(x)=2x^{-3}>0$ and $u''(x)=-6x^{-4}<0$. Demand exhausts the
+budget, so $x(p,m)=m/p$ and
+\[
+	v(p,m)=-\Bigl(\frac{p}{m}\Bigr)^{2},
+	\qquad
+	\frac{\partial^{2}v}{\partial p^{2}}=-\frac{2}{m^{2}}<0,
+\]
+strictly concave in $p$. It remains quasiconvex, being monotone in a single
+variable. Convexity in $p$ does occur --- $u(x)=\log x$ gives
+$v(p,m)=\log m-\log p$ with $\partial^{2}v/\partial p^{2}=p^{-2}>0$ --- but it
+is a feature of the particular utility function and not a general property.
 
 \section{Fixed-Point Theorems}\label{sec:fixed-points}
 
@@ -747,8 +961,8 @@ must check in applications.
 \begin{theorem}[Kakutani]\label{thm:kakutani}
 	Let $X\subseteq\R^{n}$ be non-empty, compact and convex, and let
 	$\varphi\colon X\rightrightarrows X$ be non-empty-valued, convex-valued and have
-	a closed graph. Then $\varphi$ has a \dfnas{fixed point}{fixed point of a
-		correspondence}: some $x\in X$ with $x\in\varphi(x)$.
+	a closed graph. Then $\varphi$ has a \dfnas{fixed point of a
+		correspondence}{fixed point}: some $x\in X$ with $x\in\varphi(x)$.
 \end{theorem}
 
 By \autoref{thm:closed-graph} the closed-graph hypothesis is, on a compact $X$,
@@ -771,7 +985,7 @@ simplicial subdivisions and applies Brouwer to each, is in
 	compact values, but $x\in\varphi(x)$ never holds. A cleaner instance is
 	$X=[0,1]$ with $\varphi(x)=\{1\}$ for $x<\tfrac12$, $\varphi(1/2)=\{0,1\}$ and
 	$\varphi(x)=\{0\}$ for $x>\tfrac12$: the graph is closed, the values are compact
-	and non-empty, and only convexity at $x=\tfrac12$ fails, which is exactly where
+	and non-empty, and only convexity at $x=\tfrac12$ fails, which is where
 	a fixed point would have to be.
 
 	\emph{Closed graph.} $X=[0,1]$ with $\varphi(x)=\{1\}$ for $x<\tfrac12$ and
@@ -850,8 +1064,8 @@ demand: $Z_i(p)$ is the quantity of good $i$ demanded in aggregate, net of the
 aggregate endowment, at prices $p$.
 
 \begin{assumption}[Excess demand]\label{ass:excess-demand}
-	$Z$ is continuous on $\Delta^{n-1}$ and satisfies \dfnas{Walras'
-		law}{Walras' law} $\ip{p}{Z(p)}=0$ for every $p\in\Delta^{n-1}$.
+	$Z$ is continuous on $\Delta^{n-1}$ and satisfies \dfnas{Walras' law}{Walras'
+		law} $\ip{p}{Z(p)}=0$ for every $p\in\Delta^{n-1}$.
 \end{assumption}
 
 Walras' law is the aggregate budget identity: each consumer spends exactly their
@@ -920,16 +1134,20 @@ equilibrium: a good in strict excess supply must be free.
 A correspondence is a map into subsets, identified with its graph. Because a
 correspondence has two inverse images --- the upper inverse demanding containment
 of the whole value, the lower inverse demanding only non-empty intersection ---
-there are two continuity notions. Upper hemicontinuity, equivalent to openness
-of upper inverses of open sets and, on compact ranges, to closedness of the
-graph, forbids the value from exploding; lower hemicontinuity forbids it from
-imploding. In finite dimensions both are checked by sequences: upper
-hemicontinuity says every selection along a convergent sequence of parameters
-has a subsequence converging into the limit value, lower hemicontinuity says
-every point of the limit value is the limit of some selection.
+there are two continuity notions, both comparing the values near a point with the
+value at it. Upper hemicontinuity, equivalent to openness of upper inverses of
+open sets and, on compact ranges, to closedness of the graph, keeps the nearby
+values inside any prescribed neighbourhood of the value at the point; lower
+hemicontinuity requires the nearby values to reach every part of it. In finite
+dimensions both are checked by sequences: upper hemicontinuity says every
+selection along a convergent sequence of parameters has a subsequence converging
+into the limit value, lower hemicontinuity says every point of the limit value is
+the limit of some selection.
 
 The budget correspondence is continuous with compact convex values at strictly
-positive prices and positive income, and fails to be so when a price is zero.
+positive prices, wealth zero included, and loses compact-valuedness when a price
+is zero; lower hemicontinuity is what fails when the consumption set admits no
+point cheaper than the wealth level.
 Berge's theorem of the maximum then yields, for a continuous objective on the
 graph of a continuous compact-valued constraint correspondence, a continuous
 value function and an upper hemicontinuous compact-valued argmax; lower
@@ -937,13 +1155,15 @@ hemicontinuity of the argmax is false in general, and the counterexample is
 ties in the objective. Applied to the consumer, this gives continuity of indirect
 utility and upper hemicontinuity of Marshallian demand, single-valued and
 continuous under strict quasiconcavity. Maximising out a variable preserves
-concavity of the objective in the remaining parameters.
+concavity of the objective in the remaining parameters, but not
+differentiability, which requires the separate hypotheses of the envelope and
+Benveniste--Scheinkman theorems.
 
 Existence of equilibrium comes from fixed points. Brouwer's theorem gives a fixed
 point of a continuous self-map of a non-empty compact convex set; Kakutani's
 extends this to correspondences that are non-empty- and convex-valued with a
 closed graph. Kakutani applied to the best-response correspondence gives Nash
-equilibrium in mixed strategies, convex-valuedness being exactly the linearity of
+equilibrium in mixed strategies, convex-valuedness being the linearity of
 expected utility in own strategy. Brouwer applied to a normalised t\^atonnement
 map gives Walrasian equilibrium prices from continuity of excess demand and
 Walras' law. Neither theorem gives uniqueness, and neither gives an algorithm ---

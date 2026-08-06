@@ -58,7 +58,7 @@ them as the definition.
 	\begin{enumerate}[(i)]
 		\item $\R^n$ with $\ip{x}{y}=x^{\transp}y=\sum_ix_iy_i$.
 		\item $\R^n$ with $\ip{x}{y}_W=x^{\transp}Wy$ for a symmetric $W\succ0$. This is
-		      an inner product precisely because $W$ is positive definite
+		      an inner product because $W$ is positive definite
 		      (\autoref{prop:definiteness-eigen}), and it is the metric under which
 		      generalised least squares is an orthogonal projection.
 		\item $\Lspace{2}(\R)=\bigl\{f\colon\R\to\R \text{ measurable}:
@@ -75,7 +75,7 @@ them as the definition.
 	On $\Lspace{2}$ the map $\ip{f}{g}=\int fg$ satisfies (ii) and (iii) but only
 	half of (i): $\ip{f}{f}=0$ forces $f=0$ almost everywhere, not everywhere. The
 	slide's hedge that ``roughly, the inner product satisfies the properties''
-	\autocite[slide 7]{fukuda2026analysis} refers to exactly this. The remedy is
+	\autocite[slide 7]{fukuda2026analysis} refers to this. The remedy is
 	standard: work with the quotient of $\Lspace{2}$ by the subspace of functions
 	vanishing almost everywhere, writing $L^2$ for the quotient, whose elements are
 	equivalence classes under the relation of \autoref{prop:equivalence-partition}.
@@ -193,7 +193,7 @@ economic readings follow.
 	the pricing functional $\pi\colon\R^n\to\R$ is linear --- which is exactly the
 	law of one price plus portfolio additivity. By \autoref{thm:riesz-rn} there is a
 	unique $q\in\R^n$ with $\pi(z)=\ip{q}{z}=\sum_iq_iz_i$; the $q_i$ are
-	\dfnas{state prices}{state price}. If moreover $\pi(z)>0$ whenever
+	\dfnas{state price}{state prices}. If moreover $\pi(z)>0$ whenever
 	$z\geq0$, $z\neq0$ --- absence of arbitrage --- then $q\in\R^n_{++}$, and
 	writing $q_i=p_im_i$ for a probability $p$ gives
 	$\pi(z)=\E[mz]$, exhibiting $m$ as the \dfn{stochastic discount factor}. The

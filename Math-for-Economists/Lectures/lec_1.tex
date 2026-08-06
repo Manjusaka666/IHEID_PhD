@@ -17,7 +17,7 @@ utility function is a numerical representation of that relation. Every
 subsequent chapter presupposes that these three objects --- a set, a relation, a
 distinguished subset --- have been given a precise meaning.
 
-This chapter therefore does three things. It fixes set-theoretic language
+This chapter fixes set-theoretic language
 (\autoref{sec:sets-basic}--\autoref{sec:sets-relations}); it records the forms of
 argument used throughout the volume (\autoref{sec:sets-logic}); and it
 constructs the real number system axiomatically
@@ -73,6 +73,7 @@ worth naming once.
 		      $\prod_{i=1}^n A_i\eqdef\{(a_1,\dots,a_n) : a_i\in A_i\ \text{for each }i\}$,
 		      the set of ordered $n$-tuples.
 		\item The \dfn{power set} of $X$ is $\pow{X}\eqdef\{A : A\subseteq X\}$.
+		      \nidx{powerset}{$\pow{X}$, power set of $X$}
 	\end{enumerate}
 \end{definition}
 
@@ -123,7 +124,7 @@ asymmetry.
 		f^{-1}(T)\eqdef\{a\in A : f(a)\in T\}\subseteq A
 	\]
 	are the \dfn{image} of $S$ and the \dfn{preimage} of $T$. The set $f(A)$ is the
-	\dfnas{range}{range of a mapping}.
+	\dfnas{range of a mapping}{range}.
 \end{definition}
 
 The preimage is better behaved than the image, and the difference is the reason
@@ -166,17 +167,17 @@ than images.
 
 \begin{definition}[Injection, surjection, bijection]\label{def:inj-surj}
 	A mapping $f\colon A\to B$ is
-	\dfnas{injective}{injective mapping} if $f(a)=f(a')$ implies $a=a'$;
-	\dfnas{surjective}{surjective mapping} if $f(A)=B$; and
-	\dfnas{bijective}{bijective mapping} if it is both. A bijection $f$ has a
+	\dfnas{injective mapping}{injective} if $f(a)=f(a')$ implies $a=a'$;
+	\dfnas{surjective mapping}{surjective} if $f(A)=B$; and
+	\dfnas{bijective mapping}{bijective} if it is both. A bijection $f$ has a
 	unique inverse $f^{-1}\colon B\to A$ satisfying $f^{-1}\circ f=\id_A$ and
 	$f\circ f^{-1}=\id_B$.
 \end{definition}
 
 \begin{definition}[Finite, countable, uncountable]\label{def:countable}
 	A set $A$ is \dfn{finite} if $A=\emptyset$ or there is a bijection
-	$\{1,\dots,n\}\to A$ for some $n\in\N$; \dfnas{countably infinite}{countably
-		infinite set} if there is a bijection $\N\to A$; \dfn{countable} if it is finite
+	$\{1,\dots,n\}\to A$ for some $n\in\N$; \dfnas{countably
+		infinite set}{countably infinite} if there is a bijection $\N\to A$; \dfn{countable} if it is finite
 	or countably infinite; and \dfn{uncountable} otherwise.
 \end{definition}
 
@@ -197,12 +198,12 @@ than images.
 \end{proof}
 
 \begin{remark}[Where countability matters in economics]\label{rem:countability-econ}
-	The distinction is not decorative. In \autoref{ch:probability} a probability
+	Countability decides what can be measured. In \autoref{ch:probability} a probability
 	measure can be assigned to every subset of a countable sample space, but on an
 	uncountable sample space such as $[0,1]$ no countably additive probability
 	measure exists on the full power set that extends length; one must restrict
 	attention to a $\sigma$-algebra of measurable sets
-	\autocite[Ch.~1]{legall2022measure}. The Gerzensee treatment makes exactly this
+	\autocite[Ch.~1]{legall2022measure}. The Gerzensee treatment makes this
 	point when it moves from ``an at most countable set $\Omega$''
 	\autocite[slide 3]{fukuda2026probability} to the remark that a continuum
 	sample space requires a $\sigma$-algebra
@@ -215,12 +216,12 @@ than images.
 	A \dfn{binary relation} $R$ on a set $X$ is a subset $R\subseteq X\times X$; one
 	writes $xRy$ for $(x,y)\in R$. The relation is
 	\begin{enumerate}[(i)]
-		\item \dfnas{reflexive}{reflexive relation} if $xRx$ for all $x\in X$;
-		\item \dfnas{complete}{complete relation} if for all $x,y\in X$, $xRy$ or $yRx$
+		\item \dfnas{reflexive relation}{reflexive} if $xRx$ for all $x\in X$;
+		\item \dfnas{complete relation}{complete} if for all $x,y\in X$, $xRy$ or $yRx$
 		      (or both);
-		\item \dfnas{transitive}{transitive relation} if $xRy$ and $yRz$ imply $xRz$;
-		\item \dfnas{symmetric}{symmetric relation} if $xRy$ implies $yRx$;
-		\item \dfnas{antisymmetric}{antisymmetric relation} if $xRy$ and $yRx$ imply
+		\item \dfnas{transitive relation}{transitive} if $xRy$ and $yRz$ imply $xRz$;
+		\item \dfnas{symmetric relation}{symmetric} if $xRy$ implies $yRx$;
+		\item \dfnas{antisymmetric relation}{antisymmetric} if $xRy$ and $yRx$ imply
 		      $x=y$.
 	\end{enumerate}
 \end{definition}
@@ -298,7 +299,7 @@ into indifference curves.
 \end{proof}
 
 \begin{definition}[Utility representation]\label{def:utility-rep}
-	A function $u\colon X\to\R$ \dfnas{represents}{utility representation} the
+	A function $u\colon X\to\R$ \dfnas{utility representation}{represents} the
 	preference relation $\succsim$ if
 	\[
 		x\succsim y \iff u(x)\geq u(y)\qquad\text{for all }x,y\in X.
@@ -353,7 +354,7 @@ into indifference curves.
 	The lesson carries into \autoref{ch:continuity}: a continuous utility
 	representation requires the preference to be continuous, in the sense that the
 	sets $\{y : y\succsim x\}$ and $\{y : x\succsim y\}$ are closed, and
-	lexicographic preference violates exactly this. The general statement is
+	lexicographic preference violates this. The general statement is
 	Debreu's theorem; see \textcite[Ch.~2]{ok2007real} and
 	\textcite[Ch.~4]{corbae2009introduction}.
 \end{remark}
@@ -482,8 +483,8 @@ every convergence theorem below, rests on this one axiom.
 \begin{proof}
 	Suppose $s=\sup A$. Then (i) holds since $s$ is an upper bound. For (ii), if
 	some $\varepsilon>0$ had $a\leq s-\varepsilon$ for all $a\in A$, then
-	$s-\varepsilon$ would be an upper bound smaller than $s$, contradicting
-	leastness.
+	$s-\varepsilon$ would be an upper bound smaller than $s$, contradicting the
+	minimality of $s$ among upper bounds.
 
 	Conversely, assume (i) and (ii). By (i), $s$ is an upper bound. Let $b$ be any
 	upper bound and suppose $b<s$. Applying (ii) with $\varepsilon=s-b>0$ produces
@@ -522,7 +523,7 @@ $a_n>\sup A-1/n$'' argument in later chapters is an application of it.
 	$\sup\emptyset=-\infty$, $\inf\emptyset=+\infty$. The resulting object
 	$\overline{\R}=\R\cup\{\pm\infty\}$ is not a field --- $\infty-\infty$ is
 	undefined --- and no algebraic identity may be applied to it without checking
-	that the terms are finite. In optimisation this is not pedantry: the value of an
+	that the terms are finite. The convention separates two failures in optimisation: the value of an
 	infeasible maximisation problem is $-\infty$ by the convention
 	$\sup\emptyset=-\infty$, whereas the value of a feasible but unbounded problem
 	is $+\infty$, and the two failures call for different remedies.
@@ -574,7 +575,7 @@ chapter.
 	      (\autoref{thm:implicit-function}).
 \end{enumerate}
 
-The point of listing them together is that they are the same four questions ---
+These are the same four questions ---
 existence, uniqueness, characterisation, comparative statics --- asked of every
 optimisation problem in economics, including the dynamic ones of
 \autoref{ch:dynamic}, where the object being chosen is an infinite sequence and

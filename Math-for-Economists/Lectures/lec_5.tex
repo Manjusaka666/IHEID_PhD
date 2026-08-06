@@ -22,8 +22,7 @@ The Weierstrass theorem gives the standard sufficient conditions: a compact
 feasible set and enough continuity of the objective. \autoref{ch:topology}
 supplied compactness. This chapter supplies continuity, and then weakens it as
 far as the existence conclusion permits --- to upper semicontinuity for maxima
-and lower semicontinuity for minima. The weakening is not decoration. Indirect
-utility functions, value functions of dynamic programs and profit functions
+and lower semicontinuity for minima. Indirect utility functions, value functions of dynamic programs and profit functions
 arise as suprema of families of continuous functions, and
 \autoref{prop:sup-semicontinuous} shows that such suprema are in general only
 semicontinuous.
@@ -36,10 +35,10 @@ metrics are in play --- the Euclidean metric on the domain and on the codomain
 
 \begin{definition}[Relative topology]\label{def:relative-topology}
 	Let $A\subseteq X$ with $(X,d)$ a metric space. A set $U\subseteq A$ is
-	\dfnas{open relative to $A$}{relatively open set} if $U=G\cap A$ for some open
+	\dfnas{relatively open set}{open relative to $A$} if $U=G\cap A$ for some open
 	$G\subseteq X$; equivalently, if for every $x\in U$ there is $\varepsilon>0$
 	with $\ball{\varepsilon}{x}\cap A\subseteq U$. Relative closedness is defined
-	analogously. This is exactly the topology induced by restricting $d$ to
+	analogously. This is the topology induced by restricting $d$ to
 	$A\times A$, so ``relatively open in $A$'' and ``open in the metric space
 	$(A,\restr{d}{A\times A})$'' are the same statement.
 \end{definition}
@@ -50,14 +49,14 @@ hypotheses.
 
 \begin{definition}[Continuity]\label{def:continuity}
 	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$. The mapping $f$ is
-	\dfnas{continuous at}{continuity} $x_0\in A$ if for every $\varepsilon>0$ there
+	\dfnas{continuity}{continuous at} $x_0\in A$ if for every $\varepsilon>0$ there
 	is $\delta>0$ such that
 	\[
 		x\in A\ \text{and}\ d(x_0,x)<\delta
 		\quad\Longrightarrow\quad
 		d\bigl(f(x_0),f(x)\bigr)<\varepsilon .
 	\]
-	It is \dfnas{continuous on $A$}{continuous mapping} if it is continuous at every
+	It is \dfnas{continuous mapping}{continuous on $A$} if it is continuous at every
 	point of $A$.
 \end{definition}
 
@@ -143,7 +142,7 @@ consequence of linearity, not of the specific bound.
 \end{proof}
 
 Part (iii) is Exercise~7.34 of \autocite[slide 56]{fukuda2026analysis}. The
-restriction to \emph{finitely} many functions is essential and is exactly what
+restriction to \emph{finitely} many functions is essential and is what
 fails in \autoref{eg:sup-not-usc}; the induction consumes one step per function
 and cannot be run to infinity.
 
@@ -285,14 +284,14 @@ along which $f$ has different limits, as in
 \begin{definition}[Uniform, Lipschitz and H\"older continuity]\label{def:uniform-continuity}
 	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$.
 	\begin{enumerate}[(i)]
-		\item $f$ is \dfnas{uniformly continuous}{uniform continuity} on $A$ if for
+		\item $f$ is \dfnas{uniform continuity}{uniformly continuous} on $A$ if for
 		      every $\varepsilon>0$ there is $\delta>0$, \emph{depending only on
 			      $\varepsilon$}, such that $x,y\in A$ and $d(x,y)<\delta$ imply
 		      $d(f(x),f(y))<\varepsilon$.
-		\item $f$ is \dfnas{Lipschitz continuous}{Lipschitz continuity} with constant
+		\item $f$ is \dfnas{Lipschitz continuity}{Lipschitz continuous} with constant
 		      $L\geq0$ if $d(f(x),f(y))\leq L\,d(x,y)$ for all $x,y\in A$. If
 		      $L<1$ the map is a contraction (\autoref{def:contraction}).
-		\item $f$ is \dfnas{H\"older continuous}{Holder continuity@H\"older continuity}
+		\item $f$ is \dfnas{Holder continuity@H\"older continuity}{H\"older continuous}
 		      of order $\alpha\in(0,1]$ if $d(f(x),f(y))\leq L\,d(x,y)^\alpha$ for all
 		      $x,y\in A$.
 	\end{enumerate}
@@ -335,17 +334,17 @@ bounded uniformly over a state space in \autoref{ch:dynamic}.
 \section{Semicontinuity}\label{sec:cont-semi}
 
 Continuity is more than existence of optima requires. The following weakening
-isolates exactly what is needed, and it is the form in which the hypothesis is
+isolates what is needed, and it is the form in which the hypothesis is
 verifiable for the value functions that arise in economics.
 
 \begin{definition}[Semicontinuity]\label{def:semicontinuity}
 	Let $A\subseteq\R^n$ and $f\colon A\to\R$.
 	\begin{enumerate}[(i)]
-		\item $f$ is \dfnas{lower semicontinuous}{lower semicontinuity} (lsc) if
+		\item $f$ is \dfnas{lower semicontinuity}{lower semicontinuous} (lsc) if
 		      $f^{-1}\bigl((\lambda,\infty)\bigr)=\{x\in A : f(x)>\lambda\}$ is open
 		      relative to $A$ for every $\lambda\in\R$; equivalently, if every lower
 		      section $\{x\in A: f(x)\leq\lambda\}$ is closed relative to $A$.
-		\item $f$ is \dfnas{upper semicontinuous}{upper semicontinuity} (usc) if $-f$
+		\item $f$ is \dfnas{upper semicontinuity}{upper semicontinuous} (usc) if $-f$
 		      is lower semicontinuous; equivalently, if every upper section
 		      $\{x\in A: f(x)\geq\lambda\}$ is closed relative to $A$.
 	\end{enumerate}
@@ -382,12 +381,25 @@ verifiable for the value functions that arise in economics.
 	backwards.
 \end{proof}
 
-This is Proposition~8.10 of \textcite[p.~271]{fukuda2026notes}. The verbal
-statement is worth fixing: at a point of lower semicontinuity the function
+This is Proposition~8.10 of \textcite[p.~271]{fukuda2026notes}. Verbally: at a
+point of lower semicontinuity the function
 cannot \emph{drop} suddenly as one moves away from $x_0$, and at a point of upper
 semicontinuity it cannot \emph{jump up}. A jump downward is compatible with
 upper semicontinuity, which is why the maximum of a usc function can sit exactly
-at the top of a jump.
+at the top of a jump. \autoref{fig:semicontinuity} draws the two cases.
+
+\begin{figure}[htbp]
+	\centering
+	\input{Figures/semicontinuity.tex}
+	\caption[Upper and lower semicontinuity at a jump]{%
+		The two ways a jump can be closed, for a function equal to $a$ on one side
+		of $x_0$ and to $b>a$ on the other. In (a) the value at $x_0$ is $b$, so
+		$\limsup_{x\to x_0}f(x)=b=f(x_0)$ and the function is upper semicontinuous
+		at $x_0$; it is not lower semicontinuous, since
+		$\liminf_{x\to x_0}f(x)=a<b$. In (b) the value at $x_0$ is $a$ and the two
+		conclusions are exchanged. Filled circles mark the value taken at $x_0$.}
+	\label{fig:semicontinuity}
+\end{figure}
 
 \begin{corollary}\label{cor:semicontinuity-continuity}
 	$f$ is continuous if and only if it is both lower and upper semicontinuous.
@@ -415,14 +427,23 @@ at the top of a jump.
 \end{proposition}
 
 \begin{proof}
-	Suppose $f$ is lsc and $(x_k,z_k)\to(x,z)$ with $f(x_k)\leq z_k$. By
+	Suppose $f$ is lsc and $(x_k,z_k)\to(x,z)$ in $A\times\R$ with $f(x_k)\leq z_k$.
 	\autoref{prop:semicontinuity-pointwise} gives
 	$f(x)\leq\liminf_kf(x_k)\leq\liminf_kz_k=z$, so that $(x,z)\in\epi f$; now
-	apply \autoref{thm:closed-sequential}. Conversely, if $\epi f$ is closed and
-	$x_k\to x$, put $\ell\eqdef\liminf_kf(x_k)$ and pass to a subsequence along
-	which $f(x_{k_j})\to\ell$. Then $(x_{k_j},f(x_{k_j}))\in\epi f$ converges to
-	$(x,\ell)$, so $(x,\ell)\in\epi f$, that is $f(x)\leq\ell$. The hypograph
-	statement follows by applying this to $-f$.
+	apply \autoref{thm:closed-sequential}.
+
+	Conversely, let $\epi f$ be closed and $x_k\to x$ in $A$; we must show
+	$f(x)\leq\ell$, where $\ell\eqdef\liminf_kf(x_k)\in[-\infty,+\infty]$. If
+	$\ell=+\infty$ there is nothing to prove. If $\ell=-\infty$, choose a
+	subsequence with $f(x_{k_j})\to-\infty$; then for each fixed $z\in\R$ one has
+	$f(x_{k_j})\leq z$ for all large $j$, so $(x_{k_j},z)\in\epi f$, and
+	$(x_{k_j},z)\to(x,z)$ forces $(x,z)\in\epi f$, that is $f(x)\leq z$. As
+	$z\in\R$ was arbitrary this contradicts $f(x)\in\R$, so the case
+	$\ell=-\infty$ does not arise. There remains $\ell\in\R$: pass to a
+	subsequence along which $f(x_{k_j})\to\ell$, so that
+	$(x_{k_j},f(x_{k_j}))\in\epi f$ converges to $(x,\ell)\in A\times\R$; closedness
+	gives $(x,\ell)\in\epi f$, that is $f(x)\leq\ell$. The hypograph statement
+	follows by applying this to $-f$.
 \end{proof}
 
 This is Proposition~8.12 of \textcite[p.~273]{fukuda2026notes}. The epigraph
@@ -471,7 +492,7 @@ set.
 	feasible set indexed by a parameter, and the general theory delivers only one of
 	the two semicontinuity properties for free. Establishing the other requires
 	additional structure --- compactness of the feasible correspondence and
-	continuity of the objective, which is exactly the content of Berge's theorem in
+	continuity of the objective, which is the content of Berge's theorem in
 	\autoref{thm:berge-maximum}.
 \end{eg}
 
@@ -538,8 +559,7 @@ set.
 	By \autoref{cor:semicontinuity-continuity} the function is both lsc and usc;
 	apply both parts of \autoref{thm:weierstrass}.
 
-	A second proof, independent of semicontinuity, is worth recording because it
-	generalises differently. By \autoref{prop:continuous-compact} the image $f(A)$
+	A second proof avoids semicontinuity altogether and generalises differently. By \autoref{prop:continuous-compact} the image $f(A)$
 	is a compact subset of $\R$, hence closed and bounded by
 	\autoref{thm:heine-borel}. Boundedness gives finite
 	$M\eqdef\sup f(A)$ and $m\eqdef\inf f(A)$, and by
@@ -564,11 +584,23 @@ given there.
 		\item \emph{Non-compact domain, not closed.} $f(x)=x$ on $[0,1)$ is continuous
 		      and bounded, and attains no maximum: the supremum $1$ is not in the image
 		      because the point at which it would be attained is not in the domain.
-		\item \emph{Infinite dimensions.} On the closed unit ball of the space of
-		      \autoref{eg:no-bw-infinite}, the continuous functional
-		      $x\mapsto\sum_k2^{-k}x_k$ has supremum not attained on the set of
-		      finitely supported points, illustrating that the closed bounded set is not
-		      compact and that \autoref{thm:weierstrass} does not apply.
+		\item \emph{Infinite dimensions.} Let $B$ be the closed unit ball of the
+		      space $\ell^2$ of \autoref{eg:no-bw-infinite} and define
+		      $f\colon B\to\R$ by
+		      $f(x)=\sum_{k\geq1}\bigl(1-\tfrac1k\bigr)x_k^2$. The series converges
+		      because $\sum_kx_k^2\leq1$, and $f$ is continuous on $B$: for
+		      $x,y\in B$,
+		      $\abs{f(x)-f(y)}\leq\sum_k\abs{x_k-y_k}\abs{x_k+y_k}
+			      \leq\norm{x-y}\norm{x+y}\leq2\norm{x-y}$ by Cauchy--Schwarz. Its
+		      supremum is $1$, since $f(e^k)=1-1/k$, and the supremum is not attained:
+		      $f(x)=1$ would force $\sum_kx_k^2/k\leq\sum_kx_k^2-f(x)\leq0$, hence
+		      $x=0$ and $f(x)=0$. The domain is closed and bounded but, by
+		      \autoref{eg:no-bw-infinite}, not compact, and
+		      \autoref{thm:weierstrass} does not apply. No \emph{linear} functional
+		      would serve as the example: every continuous linear functional on
+		      $\ell^2$ is $x\mapsto\ip{a}{x}$ for some $a\in\ell^2$
+		      (\autoref{thm:riesz-rn} is the finite-dimensional case) and attains its
+		      supremum over $B$ at $a/\norm{a}$.
 	\end{enumerate}
 \end{eg}
 
@@ -632,7 +664,7 @@ represented by a utility function $u\colon\R^n_+\to\R$.
 	\autoref{prop:argmax-compact}(i).
 \end{proof}
 
-\paragraph{What the hypotheses mean economically.} Strict positivity of every
+\paragraph{Economic content of the hypotheses.} Strict positivity of every
 price is what bounds the budget set: a free good can be consumed without limit,
 and if utility is strictly increasing in it, no optimum exists. Positive wealth
 guarantees a non-degenerate problem, though $m=0$ is admissible and yields
@@ -644,7 +676,7 @@ threshold violates upper semicontinuity, and then the supremum of utility over
 the budget set may fail to be attained even though the budget set is compact,
 exactly as in \autoref{eg:weierstrass-failures}(i).
 
-\paragraph{What the theorem does not deliver.} Three things.
+\paragraph{Uniqueness, interiority and continuity.}
 
 First, uniqueness. \autoref{prop:demand-exists} produces a non-empty compact
 solution \emph{set}. With linear utility $u(x)=\ip{a}{x}$ and prices
@@ -664,22 +696,100 @@ not aggregate into joint continuity. The budget set itself moves with
 $(p,m)$; establishing that the value moves continuously and that the solution
 set moves upper hemicontinuously is Berge's maximum theorem
 (\autoref{thm:berge-maximum}), which requires the budget correspondence to be
-both upper and lower hemicontinuous. That the budget correspondence is
-lower hemicontinuous fails at $m=0$, which is the technical reason the
-Walrasian demand correspondence is well behaved only for $m>0$.
+both upper and lower hemicontinuous. Both hold on $\R^{n}_{++}\times\R_{+}$,
+zero wealth included, by \autoref{prop:budget-continuous} and
+\autoref{eg:budget-failures}; what breaks the argument is a price falling to
+zero, and what breaks lower hemicontinuity is the absence of a point strictly
+inside the budget set.
 
-\begin{remark}[Why upper semicontinuity is the right hypothesis]
-	\label{rem:usc-natural}
-	Preferences, not utility functions, are the primitive. A preference relation
-	$\succsim$ on $\R^n_+$ has \dfnas{closed upper contour sets}{upper contour set}
-	if $\{y : y\succsim x\}$ is closed for every $x$; this is a statement about the
-	preference relation alone. If $u$ represents $\succsim$, then the upper contour
-	set at $x$ is $\{y : u(y)\geq u(x)\}$, so closed upper contour sets are exactly
-	upper semicontinuity of $u$ in the sense of \autoref{def:semicontinuity}(ii).
-	The hypothesis of \autoref{prop:demand-exists} is therefore a restriction on
-	preferences and is invariant to the choice of representing utility function,
-	whereas an assumption such as differentiability of $u$ is not.
-\end{remark}
+\subsection{Preferences without a utility function}\label{subsec:cont-preferences}
+
+Preferences, not utility functions, are the primitive. Three statements about
+them are often run together, and they are distinct.
+
+Let $\succsim$ be a complete and transitive preference relation on a set
+$X\subseteq\R^n$. Say that $\succsim$ has \dfnas{upper contour set}{closed upper contour
+	sets} if $U(x)\eqdef\{y\in X : y\succsim x\}$ is closed
+relative to $X$ for every $x\in X$. This is a property of $\succsim$ alone. A
+function $u\colon X\to\R$ \dfn{represents} $\succsim$ if $u(y)\geq u(x)$ exactly
+when $y\succsim x$.
+
+\begin{proposition}[Semicontinuity of a representation and of the relation]
+	\label{prop:usc-preferences}
+	Let $u\colon X\to\R$ represent $\succsim$.
+	\begin{enumerate}[(i)]
+		\item If $u$ is upper semicontinuous, then $\succsim$ has closed upper
+		      contour sets.
+		\item The converse fails: $\succsim$ may have closed upper contour sets while
+		      $u$ is not upper semicontinuous.
+		\item If $u$ is upper semicontinuous and $\varphi\colon I\to\R$ is
+		      \emph{strictly} increasing and continuous on an interval
+		      $I\supseteq u(X)$, then $\varphi\circ u$ is upper semicontinuous and
+		      represents $\succsim$. Weak monotonicity is not enough: a constant
+		      $\varphi$ merges all utility levels and represents the indifference
+		      relation instead.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) $U(x)=\{y : u(y)\geq u(x)\}$, an upper section of $u$, closed by
+	\autoref{def:semicontinuity}(ii).
+
+	(ii) Take $X=[0,1]$ and let $\succsim$ be the usual order, represented by the
+	continuous function $u(x)=x$, so that $U(x)=[x,1]$ is closed for every $x$. Let
+	$\varphi(t)=t$ for $t\leq\tfrac12$ and $\varphi(t)=t+1$ for $t>\tfrac12$, which
+	is increasing on $[0,1]$, and put $\tilde u\eqdef\varphi\circ u$. Then
+	$\tilde u$ represents the same $\succsim$, but
+	$\{\tilde u\geq1\}=(\tfrac12,1]$ is not closed, so $\tilde u$ is not upper
+	semicontinuous.
+
+	(iii) That $\varphi\circ u$ represents $\succsim$ is immediate from strict
+	monotonicity of $\varphi$. For upper semicontinuity, let $x_k\to x_0$ in $X$
+	and fix $\varepsilon>0$ with $u(x_0)+\varepsilon\in I$. Upper semicontinuity of
+	$u$ gives $u(x_k)<u(x_0)+\varepsilon$ for all large $k$, whence
+	$\varphi(u(x_k))\leq\varphi(u(x_0)+\varepsilon)$ and
+	$\limsup_k\varphi(u(x_k))\leq\varphi(u(x_0)+\varepsilon)$. Letting
+	$\varepsilon\downarrow0$ and using continuity of $\varphi$ at $u(x_0)$ gives
+	$\limsup_k\varphi(u(x_k))\leq\varphi(u(x_0))$. If instead $u(x_0)$ is the right
+	endpoint of $I$, then $u(x_k)\leq u(x_0)$ for every $k$ and the same conclusion
+	is immediate. Apply
+	\autoref{prop:semicontinuity-pointwise}.
+\end{proof}
+
+The distinction matters because upper semicontinuity of a \emph{particular}
+representation is not an ordinal property, whereas closedness of the upper
+contour sets is. The gap does not, however, affect the existence question, which
+can be settled for $\succsim$ directly.
+
+\begin{proposition}[Existence of a greatest element]\label{prop:greatest-element}
+	Let $K\subseteq\R^n$ be non-empty and compact and let $\succsim$ be a complete
+	and transitive relation on $K$ with closed upper contour sets. Then the set
+	\[
+		G\eqdef\{x^\ast\in K : x^\ast\succsim y\ \text{for all }y\in K\}
+	\]
+	of $\succsim$-greatest elements of $K$ is non-empty and compact.
+\end{proposition}
+
+\begin{proof}
+	For $y\in K$ the set $U(y)=\{x\in K : x\succsim y\}$ is closed in $K$, hence
+	compact by \autoref{prop:compact-stability}(i), and non-empty because
+	$y\in U(y)$ by completeness. Given finitely many $y_1,\dots,y_m\in K$,
+	completeness and transitivity produce an index $j$ with $y_j\succsim y_i$ for
+	all $i$ --- take a maximal element of a finite set under a complete transitive
+	relation, obtained by induction on $m$ --- and then
+	$y_j\in\bigcap_{i\leq m}U(y_i)$, so every finite subfamily of $(U(y))_{y\in K}$
+	has non-empty intersection. \autoref{lem:finite-intersection} gives
+	$G=\bigcap_{y\in K}U(y)\neq\emptyset$, and $G$ is an intersection of closed
+	subsets of the compact set $K$, hence compact.
+\end{proof}
+
+\autoref{prop:demand-exists} is the special case $K=\budget(p,m)$ with
+$\succsim$ represented by an upper semicontinuous $u$; the argument above shows
+that the utility function is a convenience rather than a necessity, and that the
+substantive hypotheses are compactness of the feasible set and closedness of the
+upper contour sets. What a utility representation buys is the machinery of
+\autoref{ch:calculusn} and \autoref{ch:optimization}, which needs a real-valued
+objective to differentiate.
 
 \section{Chapter Summary}\label{sec:cont-summary}
 

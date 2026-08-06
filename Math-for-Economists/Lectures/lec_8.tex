@@ -44,7 +44,7 @@ function theorem.
 
 \begin{definition}[Partial derivative and gradient]\label{def:partial}
 	Let $f\colon A\to\R$ with $A\subseteq\R^n$ and let $x$ be interior to $A$. For
-	$i\in\{1,\dots,n\}$ the \dfnas{$i$th partial derivative}{partial derivative} of
+	$i\in\{1,\dots,n\}$ the \dfnas{partial derivative}{$i$th partial derivative} of
 	$f$ at $x$ is
 	\[
 		\frac{\partial f}{\partial x_i}(x)\eqdef
@@ -117,7 +117,7 @@ comparative statics.
 
 \begin{definition}[Differentiability and the total derivative]\label{def:total-derivative}
 	Let $A\subseteq\R^n$ be open and $f\colon A\to\R$. The function $f$ is
-	\dfnas{differentiable at}{differentiability!in several variables} $x_0\in A$ if
+	\dfnas{differentiability!in several variables}{differentiable at} $x_0\in A$ if
 	there is a vector $\nabla f(x_0)\in\R^n$ such that
 	\begin{equation}\label{eq:frechet}
 		\beta_{x_0}(u)\eqdef
@@ -182,8 +182,10 @@ product rather than an abstract linear map.
 	$\nabla f(x_0)$.
 \end{proof}
 
-The converse fails in both of the ways that matter, and the two counterexamples
-are worth stating because each corresponds to a real modelling error.
+Each implication in \autoref{prop:differentiable-implies} is strictly one-way.
+The next three examples exhibit, in turn, partial derivatives without continuity,
+continuity and partial derivatives without directional derivatives in the
+remaining directions, and all directional derivatives without differentiability.
 
 \begin{eg}[Partials without continuity]\label{eg:partials-no-continuity}
 	Let $f\colon\R^2\to\R$ be $f(x_1,x_2)=0$ if $x_1x_2=0$ and $f(x_1,x_2)=1$
@@ -216,9 +218,53 @@ are worth stating because each corresponds to a real modelling error.
 	\]
 	Along $(x,y)=(h,h)$ this ratio equals $\tfrac12$ for every $h\neq0$, so the
 	limit is not $0$ and $f$ is not differentiable at the origin
-	\autocite[Rem.~11.3, p.~374]{fukuda2026notes}. The obstruction is directional:
-	$f$ has a directional derivative in every direction but they do not fit together
-	into a linear functional.
+	\autocite[Rem.~11.3, p.~374]{fukuda2026notes}.
+
+	Here the failure is already visible in the directional derivatives. For a
+	direction $v=(a,b)$,
+	\[
+		\frac{f(tv)-f(0)}{t}=\frac{t^2ab}{\abs{t}\sqrt{a^2+b^2}}\cdot\frac1t
+		=\sgn(t)\,\frac{ab}{\sqrt{a^2+b^2}},
+	\]
+	so the two-sided limit as $t\to0$ exists only when $ab=0$: apart from the two
+	coordinate axes, this $f$ has no directional derivative at all.
+\end{eg}
+
+\begin{eg}[All directional derivatives without differentiability]
+	\label{eg:directional-not-linear}
+	The stronger failure --- every directional derivative exists, yet $f$ is not
+	differentiable --- needs a different function. Let
+	\[
+		f(x,y)=
+		\begin{cases}
+			\dfrac{x^3}{x^2+y^2}, & (x,y)\neq(0,0), \\[1.5ex]
+			0,                    & (x,y)=(0,0).
+		\end{cases}
+	\]
+	Since $\abs{f(x,y)}\leq\abs{x}$, the function is continuous at the origin. For
+	$v=(a,b)\neq0$ and $t\neq0$,
+	\[
+		\frac{f(tv)-f(0)}{t}
+		=\frac1t\cdot\frac{t^3a^3}{t^2(a^2+b^2)}=\frac{a^3}{a^2+b^2},
+	\]
+	which does not depend on $t$; the directional derivative
+	$D_vf(0,0)=a^3/(a^2+b^2)$ therefore exists for every $v$. In particular
+	$\partial f/\partial x(0,0)=1$ and $\partial f/\partial y(0,0)=0$, so the only
+	candidate for a gradient is $(1,0)$. But $v\mapsto D_vf(0,0)$ is not linear:
+	with $v=(1,0)$ and $w=(0,1)$ one has $D_{v+w}f(0,0)=\tfrac12$ while
+	$D_vf(0,0)+D_wf(0,0)=1$. By \autoref{prop:differentiable-implies} the map
+	$v\mapsto D_vf(0,0)$ would have to equal $\ip{\nabla f(0,0)}{\cdot}$ and hence
+	be linear, so $f$ is not differentiable at the origin.
+
+	The two examples separate two distinct obstructions. In
+	\autoref{eg:no-differentiability} the one-dimensional restrictions of $f$ are
+	themselves badly behaved; here each restriction to a line is differentiable and
+	the failure is only that the derivatives along different lines do not assemble
+	into a linear functional. Both are ruled out by
+	\autoref{prop:c1-differentiable}, and the economic reading is the same: a
+	comparative-statics exercise conducted one variable at a time can be internally
+	consistent along every ray and still fail to describe the response to a joint
+	perturbation.
 \end{eg}
 
 \begin{proposition}[Continuous partials suffice]\label{prop:c1-differentiable}
@@ -380,15 +426,15 @@ The economic reading is that the gradient of a utility function is orthogonal to
 the indifference curve and points in the direction of steepest preference
 increase, and that the marginal rate of substitution between goods $i$ and $j$ is
 the ratio $\bigl(\partial u/\partial x_i\bigr)\big/\bigl(\partial u/\partial
-	x_j\bigr)$ precisely because the level set is orthogonal to the gradient. This is
+	x_j\bigr)$ because the level set is orthogonal to the gradient. This is
 Proposition~11.6 of \textcite[p.~385]{fukuda2026notes}.
 
 \subsection{Homogeneous functions}
 
 \begin{definition}[Homogeneity]\label{def:homogeneous}
 	Let $X\subseteq\R^n$ be a cone, that is $\lambda x\in X$ whenever $x\in X$ and
-	$\lambda>0$. A function $f\colon X\to\R$ is \dfnas{homogeneous of degree
-		$k$}{homogeneous function} if $f(\lambda x)=\lambda^kf(x)$ for all $x\in X$ and
+	$\lambda>0$. A function $f\colon X\to\R$ is \dfnas{homogeneous function}{homogeneous of degree
+		$k$} if $f(\lambda x)=\lambda^kf(x)$ for all $x\in X$ and
 	$\lambda>0$.
 \end{definition}
 
@@ -506,10 +552,9 @@ This is the content of \autocite[slide 52]{fukuda2026calculus}.
 Symmetry is not automatic without the continuity hypothesis; the standard
 counterexample is $f(x,y)=xy(x^2-y^2)/(x^2+y^2)$ with $f(0,0)=0$, for which the
 two mixed partials at the origin are $-1$ and $+1$. See
-\textcite[Thm.~9.41]{rudin1976principles}. In economics symmetry of the Hessian
-is not a technicality: it is the source of the Slutsky symmetry conditions and of
-the reciprocity relations that make the Hessian of an expenditure function
-testable.
+\textcite[Thm.~9.41]{rudin1976principles}. Symmetry of the Hessian is what
+produces the Slutsky symmetry conditions and the reciprocity relations that make
+the Hessian of an expenditure function testable.
 
 \begin{theorem}[Second-order Taylor expansion]\label{thm:taylor-n}
 	Let $A\subseteq\R^n$, let $\bar x\in\Int A$, and let $f\colon A\to\R$ be twice
@@ -616,13 +661,13 @@ This is Theorem~11.6 of \textcite[p.~415]{fukuda2026notes}.
 	Let $\Lambda\subseteq\R^n\times\R^m$ be open and $f\colon\Lambda\to\R^m$
 	continuously differentiable. Let $(\bar x,\bar y)\in\Lambda$ satisfy
 	$f(\bar x,\bar y)=0$ and suppose the $m\times m$ matrix
-	$\nabla_yf(\bar x,\bar y)$ is nonsingular. Then there are an open neighbourhood
+	$\nabla_yf(\bar x,\bar y)$ is non-singular. Then there are an open neighbourhood
 	$\Gamma\subseteq\R^n$ of $\bar x$ and a continuously differentiable map
 	$e\colon\Gamma\to\R^m$ such that
 	\begin{enumerate}[(i)]
 		\item $(x,e(x))\in\Lambda$ and $f\bigl(x,e(x)\bigr)=0$ for all $x\in\Gamma$;
 		\item $e(\bar x)=\bar y$;
-		\item $\nabla_yf\bigl(x,e(x)\bigr)$ is nonsingular for all $x\in\Gamma$; and
+		\item $\nabla_yf\bigl(x,e(x)\bigr)$ is non-singular for all $x\in\Gamma$; and
 		\item for all $x\in\Gamma$,
 		      \begin{equation}\label{eq:ift-derivative}
 			      De(x)=-\bigl[\nabla_yf\bigl(x,e(x)\bigr)\bigr]^{-1}
@@ -641,7 +686,7 @@ closed ball, by continuity of $Df$, and \autoref{thm:banach-fixed-point} applies
 on that complete set, with \autoref{cor:invariant-set} keeping the fixed point
 inside the ball; the regularity of $e$ then follows from the regularity of $f$.
 It is carried out in full in \autoref{app:ift}, where it is placed because it is
-long and purely technical, and because it is exactly the use of the contraction
+long and purely technical, and because it is the use of the contraction
 mapping theorem advertised on \autocite[slide 65]{fukuda2026analysis}; the
 classical treatment is \textcite[Thm.~9.28]{rudin1976principles}.
 
@@ -651,14 +696,14 @@ differentiating the identity $f(x,e(x))=0$ with respect to $x$ using
 \[
 	\nabla_xf\bigl(x,e(x)\bigr)+\nabla_yf\bigl(x,e(x)\bigr)De(x)=0,
 \]
-and solving, which is legitimate precisely because (iii) guarantees the inverse
+and solving, which is legitimate because (iii) guarantees the inverse
 exists. The differentiation is valid only once $e$ is known to be
 differentiable, which is why (iv) is a conclusion of the theorem and not a
 derivation of it.
 
 \begin{corollary}[Inverse function theorem]\label{thm:inverse-function}
 	Let $A\subseteq\R^n$ be open, $g\colon A\to\R^n$ continuously differentiable,
-	and $\bar x\in A$ with $Dg(\bar x)$ nonsingular. Then there are open
+	and $\bar x\in A$ with $Dg(\bar x)$ non-singular. Then there are open
 	neighbourhoods $U\ni\bar x$ and $V\ni g(\bar x)$ such that
 	$\restr{g}{U}\colon U\to V$ is a bijection with continuously differentiable
 	inverse, and
@@ -672,14 +717,14 @@ derivation of it.
 	Apply \autoref{thm:implicit-function} to $f(y,x)\eqdef g(x)-y$ on
 	$\R^n\times A$, at the point $(g(\bar x),\bar x)$. Here the roles are exchanged:
 	the ``parameter'' is $y$ and the ``unknown'' is $x$, and
-	$\nabla_xf=Dg(\bar x)$ is nonsingular by hypothesis. The implicit function
+	$\nabla_xf=Dg(\bar x)$ is non-singular by hypothesis. The implicit function
 	$e$ is the local inverse, and \eqref{eq:ift-derivative} gives
 	$De(y)=-[Dg]^{-1}(-I)=[Dg]^{-1}$.
 \end{proof}
 
 For $n=1$ this is \autoref{prop:inverse-derivative}, with $Dg(\bar x)\neq0$ in
 place of $f'(x_0)\neq0$. The theorem is local and cannot be made global: the map
-$g(x_1,x_2)=(e^{x_1}\cos x_2,e^{x_1}\sin x_2)$ has everywhere nonsingular
+$g(x_1,x_2)=(e^{x_1}\cos x_2,e^{x_1}\sin x_2)$ has everywhere non-singular
 Jacobian and is not injective, being $2\pi$-periodic in $x_2$.
 
 \begin{remark}[Comparative statics is the implicit function theorem]
@@ -688,7 +733,7 @@ Jacobian and is not injective, being $2\pi$-periodic in $x_2$.
 	$y\in\R^m$ and an exogenous vector $x\in\R^n$ satisfy $m$ equilibrium conditions
 	$f(x,y)=0$ --- first-order conditions, market-clearing conditions, or both. At a
 	reference equilibrium $(\bar x,\bar y)$ one asks how $y$ responds to $x$. The
-	theorem answers three questions at once, and it is worth separating them.
+	theorem answers three separate questions.
 
 	\emph{Does an equilibrium exist nearby?} Yes, and it varies continuously: this is
 	conclusion (i)--(ii).
@@ -706,9 +751,19 @@ Jacobian and is not injective, being $2\pi$-periodic in $x_2$.
 	a maximum --- which is the source of the standard sign restrictions on
 	comparative statics.
 
-	The condition that can fail is nonsingularity of $\nabla_yf$. At such a point
-	the equilibrium is not locally unique, comparative statics are undefined, and
-	the model is at a bifurcation.
+	The condition that can fail is non-singularity of $\nabla_yf$. What follows from
+	its failure is only that the theorem is silent: the hypotheses no longer
+	deliver a locally unique solution branch, and \eqref{eq:ift-derivative} has no
+	meaning because the matrix to be inverted is singular. It does \emph{not}
+	follow that the equilibrium is non-unique, or that comparative statics fail to
+	exist. Take $n=m=1$ and $f(x,y)=y^3-x$ at $(\bar x,\bar y)=(0,0)$: here
+	$\partial f/\partial y=3y^2$ vanishes at the origin, yet $f(x,y)=0$ has the
+	unique global solution $y=x^{1/3}$, which is continuous everywhere and
+	differentiable away from $0$. The correct reading is that a singular
+	$\nabla_yf$ marks the points at which the implicit function theorem stops
+	certifying anything, so that uniqueness, smoothness and the sign of the
+	response must be established by other means --- and it is among such points,
+	not at every such point, that multiplicity and bifurcation can occur.
 \end{remark}
 
 \section{Economic Application: The Representative Firm}\label{sec:cn-firm}
@@ -817,9 +872,9 @@ $x_i$, minimise the sum of squared residuals \eqref{eq:ols-problem}.
 	Cramer's rule (\autoref{eg:cramer}) yields \eqref{eq:ols-solution}.
 \end{proof}
 
-\paragraph{What is and is not established.} The calculus route delivers existence,
+\paragraph{Scope of the calculus route.} The calculus route delivers existence,
 uniqueness and a formula, and it makes the role of the data condition explicit:
-$\sum_i(x_i-\bar x)^2>0$ is simultaneously the nondegeneracy condition on the
+$\sum_i(x_i-\bar x)^2>0$ is simultaneously the non-degeneracy condition on the
 regressors, the invertibility condition for the normal equations, and the
 positive definiteness condition for the Hessian. It is the two-variable case of
 the no-perfect-multicollinearity condition of \autoref{rem:square-matters}.
@@ -841,9 +896,12 @@ Partial derivatives differentiate along the coordinate axes; the total derivativ
 requires a single linear map to approximate the increment in every direction at
 once. In one variable the two notions coincide; in several they do not, and the
 gap is genuine: a function can have all partial derivatives at a point and be
-discontinuous there (\autoref{eg:partials-no-continuity}), or be continuous with
-all partials and still fail to be differentiable
-(\autoref{eg:no-differentiability}). Continuity of the partials is sufficient
+discontinuous there (\autoref{eg:partials-no-continuity}), be continuous with all
+partials and still lack directional derivatives off the axes
+(\autoref{eg:no-differentiability}), or possess every directional derivative and
+still fail to be differentiable because those derivatives are not linear in the
+direction (\autoref{eg:directional-not-linear}). Continuity of the partials is
+sufficient
 (\autoref{prop:c1-differentiable}), which is why $C^1$ is the standard working
 hypothesis. Differentiability delivers continuity, all directional derivatives,
 the chain rule in matrix form \eqref{eq:chain-rule}, orthogonality of the
@@ -859,19 +917,23 @@ or concavity is exactly semidefiniteness of the Hessian everywhere.
 
 The implicit function theorem converts a system of equilibrium conditions into a
 locally unique, continuously differentiable solution mapping with derivative
-\eqref{eq:ift-derivative}; it is the theorem underlying essentially all
-differentiable comparative statics, and its hypothesis --- nonsingularity of the
-Jacobian in the endogenous variables --- is exactly what fails at a bifurcation.
+\eqref{eq:ift-derivative}; it is the theorem underlying differentiable
+comparative statics, and where its hypothesis --- non-singularity of the Jacobian
+in the endogenous variables --- fails, the theorem certifies nothing, though a
+well-behaved solution branch may still exist (\autoref{rem:comparative-statics-ift}).
 Applied to the constant-returns firm, the first-order conditions determine the
 capital--labour ratio, exhaust output through Euler's identity, and leave scale
 indeterminate, the last fact readable from the singular Hessian.
 
 \begin{exercise}\label{ex:cn-1}
-	Let $f(x,y)=x^3y/(x^4+y^2)$ for $(x,y)\neq(0,0)$ and $f(0,0)=0$. Show that the
-	directional derivative of $f$ at the origin exists and equals $0$ in every
-	direction, yet $f$ is not continuous at the origin. Locate the failure relative
-	to \autoref{prop:differentiable-implies}, and explain why this is not a
-	counterexample to it.
+	Let $f\colon\R^2\to\R$ take the value $1$ on the region
+	$\{(x,y) : 0<y<x^2\}$ and the value $0$ elsewhere. Show that for every
+	$v\in\R^2$ the directional derivative $D_vf(0,0)$ exists and equals $0$, so
+	that $v\mapsto D_vf(0,0)$ is linear, and yet $f$ is not continuous at the
+	origin. (Consider the curve $t\mapsto(t,t^2/2)$.) Conclude that neither the
+	existence of all directional derivatives nor their linearity in $v$ implies
+	differentiability, and locate the step of
+	\autoref{prop:differentiable-implies} that this example does not contradict.
 \end{exercise}
 
 \begin{exercise}\label{ex:cn-2}

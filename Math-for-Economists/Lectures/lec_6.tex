@@ -79,7 +79,7 @@ property is completeness.
 \section{Complete Metric Spaces}\label{sec:comp-complete}
 
 \begin{definition}[Completeness]\label{def:complete-space}
-	A metric space $(X,d)$ is \dfnas{complete}{complete metric space} if every
+	A metric space $(X,d)$ is \dfnas{complete metric space}{complete} if every
 	Cauchy sequence in $X$ converges to a limit belonging to $X$. A subset
 	$A\subseteq X$ is complete if $(A,\restr{d}{A\times A})$ is complete.
 \end{definition}
@@ -113,8 +113,8 @@ involving only the terms of the sequence.
 	$\R^n$ form of \autoref{thm:bolzano-weierstrass}.
 \end{proof}
 
-The chain of implications is worth making explicit, because it locates
-completeness within the logical structure of the real numbers: the least upper
+The chain of implications locates completeness within the logical structure of
+the real numbers: the least upper
 bound property (\autoref{ass:completeness-axiom}) gives monotone convergence
 (\autoref{prop:monotone-convergence}), which with the monotone subsequence lemma
 gives Bolzano--Weierstrass, which with \autoref{lem:cauchy-subseq} gives metric
@@ -223,7 +223,7 @@ functions, and its completeness is what the whole method depends on.
 	statement and does not preserve continuity: $f_k(s)=s^k$ on $[0,1]$ converges
 	pointwise to the discontinuous limit that is $0$ on $[0,1)$ and $1$ at $1$, and
 	$\norm{f-f_k}_\infty=1$ for every $k$. The supremum norm is chosen for dynamic
-	programming precisely because convergence in it is strong enough to carry
+	programming because convergence in it is strong enough to carry
 	continuity, monotonicity and concavity to the limit, as
 	\autoref{cor:invariant-set} exploits.
 \end{remark}
@@ -248,22 +248,132 @@ functions, and its completeness is what the whole method depends on.
 	\]
 \end{proof}
 
-The three-term split is the standard device for transferring a property from the
-approximants to the limit, and each of the three terms is controlled by a
-different hypothesis: the outer two by uniformity of the convergence, the middle
-one by continuity of $f_k$.
+\subsection{Compactness in a function space}\label{subsec:comp-ascoli}
+
+Completeness of $\Cspace{K}{\R}$ delivers limits of Cauchy sequences. It does not
+deliver convergent subsequences of bounded sequences, and in an
+infinite-dimensional space the Heine--Borel theorem is false: the closed unit
+ball of $\Cspace{[0,1]}{\R}$ is closed and bounded and not compact. Take
+$f_k(x)=x^{k}$, so that $\norm{f_k}_\infty=1$ for every $k$. Every subsequence
+still converges pointwise to the function equal to $0$ on $[0,1)$ and to $1$ at
+$x=1$, which is discontinuous; a uniform limit of continuous functions is
+continuous by \autoref{prop:C-complete}, so no subsequence converges
+uniformly. This is the same failure that
+\autoref{eg:weierstrass-failures} exhibits for the Weierstrass theorem, and the
+repair is the same: replace boundedness by a condition that controls the whole
+family at once.
+
+\begin{definition}[Equicontinuity]\label{def:equicontinuous}
+	Let $(X,d)$ be a metric space. A family $\mathcal{F}\subseteq\Cspace{X}{\R}$ is
+	\dfn{equicontinuous} if for every $\varepsilon>0$ there is $\delta>0$ such that
+	\[
+		d(x,y)<\delta\quad\Longrightarrow\quad\abs{f(x)-f(y)}<\varepsilon
+		\qquad\text{for every }f\in\mathcal{F}.
+	\]
+	It is \dfnas{uniformly bounded family}{uniformly bounded} if
+	$\sup_{f\in\mathcal{F}}\norm{f}_\infty<\infty$.
+\end{definition}
+
+The quantifier order carries the content: $\delta$ depends on $\varepsilon$ but
+not on $f$, whereas continuity of each member separately would allow $\delta$ to
+shrink as $f$ ranges over the family. The family $\{x\mapsto x^{k}\}_{k\in\N}$
+fails the condition: for any $\delta\in(0,1)$ the pair $x=1$, $y=1-\delta$ gives
+$\abs{f_k(x)-f_k(y)}=1-(1-\delta)^{k}\to1$, so no $\delta$ works for
+$\varepsilon=\tfrac12$.
+
+\begin{theorem}[Arzelà--Ascoli]\label{thm:arzela-ascoli}
+	Let $K\subseteq\R^n$ be compact and $\mathcal{F}\subseteq\Cspace{K}{\R}$. Then
+	$\mathcal{F}$ has compact closure in $(\Cspace{K}{\R},\norm{\cdot}_\infty)$ if
+	and only if $\mathcal{F}$ is uniformly bounded and equicontinuous.
+\end{theorem}
+
+\begin{proof}
+	\emph{Sufficiency.} Let $(f_k)$ be a sequence in $\mathcal{F}$. A compact subset
+	of $\R^n$ has a countable dense subset $\{x^1,x^2,\dots\}$: for each $m$ cover
+	$K$ by finitely many balls of radius $1/m$ and collect the centres. The
+	sequence $(f_k(x^1))_k$ is bounded in $\R$, so by
+	\autoref{thm:bolzano-weierstrass} it has a convergent subsequence
+	$(f_{k}^{1})$; from it extract $(f_{k}^{2})$ converging at $x^2$, and so on.
+	The diagonal sequence $g_j\eqdef f_{j}^{j}$ is, from index $m$ onwards, a
+	subsequence of $(f_k^m)$, so $(g_j(x^m))_j$ converges for every $m$.
+
+	Fix $\varepsilon>0$ and take $\delta$ from equicontinuity for $\varepsilon/3$.
+	Compactness of $K$ gives finitely many points $x^{i_1},\dots,x^{i_p}$ of the
+	dense set with $K\subseteq\bigcup_{l}\ball{\delta}{x^{i_l}}$. Choose $J$ so that
+	$\abs{g_j(x^{i_l})-g_{j'}(x^{i_l})}<\varepsilon/3$ for all $j,j'\geq J$ and all
+	$l\leq p$. Given $x\in K$, pick $l$ with $d(x,x^{i_l})<\delta$; then for
+	$j,j'\geq J$,
+	\[
+		\abs{g_j(x)-g_{j'}(x)}
+		\leq\abs{g_j(x)-g_j(x^{i_l})}+\abs{g_j(x^{i_l})-g_{j'}(x^{i_l})}
+		+\abs{g_{j'}(x^{i_l})-g_{j'}(x)}<\varepsilon,
+	\]
+	the outer terms by equicontinuity. Hence $\norm{g_j-g_{j'}}_\infty\leq
+		\varepsilon$ for $j,j'\geq J$, so $(g_j)$ is Cauchy and converges in
+	$\Cspace{K}{\R}$ by \autoref{prop:C-complete}. Every sequence in $\mathcal{F}$
+	therefore has a uniformly convergent subsequence. Passing to the closure
+	costs one approximation: given $(h_j)$ in $\closure{\mathcal{F}}$, choose
+	$f_j\in\mathcal{F}$ with $\norm{h_j-f_j}_\infty<1/j$, extract
+	$f_{j_i}\to f$ in $\Cspace{K}{\R}$, and note that
+	$\norm{h_{j_i}-f}_\infty\leq 1/j_i+\norm{f_{j_i}-f}_\infty\to0$ with
+	$f\in\closure{\mathcal{F}}$. So $\closure{\mathcal{F}}$ is sequentially
+	compact, hence compact by \autoref{thm:compact-seq-compact}.
+
+	\emph{Necessity.} A compact set in a metric space is bounded, which gives
+	uniform boundedness, and totally bounded, so for $\varepsilon>0$ there are
+	$h_1,\dots,h_N\in\Cspace{K}{\R}$ with every $f\in\mathcal{F}$ within
+	$\varepsilon/3$ of some $h_i$ in supremum norm. Each $h_i$ is uniformly
+	continuous on the compact $K$ by \autoref{thm:heine-cantor}; let $\delta$
+	be the smallest of the finitely many moduli for $\varepsilon/3$. For
+	$d(x,y)<\delta$ and $f$ within $\varepsilon/3$ of $h_i$,
+	\[
+		\abs{f(x)-f(y)}\leq\abs{f(x)-h_i(x)}+\abs{h_i(x)-h_i(y)}
+		+\abs{h_i(y)-f(y)}<\varepsilon. \qedhere
+	\]
+\end{proof}
+
+\begin{corollary}[Uniformly Lipschitz families]\label{cor:lipschitz-compact}
+	Let $K\subseteq\R^n$ be compact and let $\mathcal{F}\subseteq\Cspace{K}{\R}$
+	satisfy $\abs{f(x)-f(y)}\leq L\norm{x-y}$ for every $f\in\mathcal{F}$ and all
+	$x,y\in K$, with a single constant $L$, and $\abs{f(x_0)}\leq M$ for some fixed
+	$x_0\in K$ and every $f$. Then $\mathcal{F}$ has compact closure in
+	$\Cspace{K}{\R}$.
+\end{corollary}
+
+\begin{proof}
+	Equicontinuity holds with $\delta=\varepsilon/L$. Uniform boundedness follows
+	from $\abs{f(x)}\leq\abs{f(x_0)}+L\norm{x-x_0}\leq M+L\diam K$. Apply
+	\autoref{thm:arzela-ascoli}.
+\end{proof}
+
+\begin{remark}[Where this is used]\label{rem:ascoli-uses}
+	\autoref{cor:lipschitz-compact} is the compactness input to existence proofs in
+	continuous time. In \autoref{ch:continuoustime} the admissible state
+	trajectories of $\dot x=f(x,u)$ with controls taking values in a compact set
+	and $f$ bounded on the relevant region are all Lipschitz on $[0,T]$ with the
+	same constant $\sup\norm{f}$ and share the initial value $x(0)=x_0$. The family
+	of admissible trajectories is therefore relatively compact in
+	$\Cspace{[0,T]}{\R^{n}}$, and a maximising sequence has a uniformly convergent
+	subsequence; \autoref{rem:ct-existence} states the conclusion this yields and
+	the extra convexity hypothesis needed to keep the limit admissible.
+
+	The theorem is also what makes a family of value functions or policy functions
+	generated by varying a parameter relatively compact, which is the standard route
+	to continuity of an equilibrium in a parameter when no explicit formula is
+	available. Boundedness alone never suffices, as $\sin(k\cdot)$ shows.
+\end{remark}
 
 \section{The Contraction Mapping Theorem}\label{sec:comp-contraction}
 
 \begin{definition}[Contraction]\label{def:contraction}
 	Let $(X,d)$ be a metric space. A map $T\colon X\to X$ is a
-	\dfnas{contraction}{contraction mapping} with \dfn{modulus} $\beta$ if there is
+	\dfnas{contraction mapping}{contraction} with \dfn{modulus} $\beta$ if there is
 	$\beta\in[0,1)$ with
 	\[
 		d(Tx,Ty)\leq\beta\,d(x,y)\qquad\text{for all }x,y\in X .
 	\]
-	A point $x^\ast\in X$ with $Tx^\ast=x^\ast$ is a \dfnas{fixed point}{fixed
-		point} of $T$.
+	A point $x^\ast\in X$ with $Tx^\ast=x^\ast$ is a \dfnas{fixed
+		point}{fixed point} of $T$.
 	\nidx{T}{$T$, operator; $Tx$, its value at $x$}
 \end{definition}
 
@@ -396,7 +506,7 @@ $N$-step operator satisfies it.
 	sense that $T(Y)\subseteq Y$, then the fixed point has $P$. In
 	\autoref{ch:dynamic} this is applied three times over, with $X=\Cspace{S}{\R}$
 	and $P$ successively ``increasing'', ``concave'' and ``strictly concave''. The
-	closedness requirement is exactly why the supremum norm is the right one:
+	closedness requirement is why the supremum norm is the right one:
 	the pointwise limit of increasing functions is increasing and of concave
 	functions is concave, and uniform convergence implies pointwise convergence, so
 	both sets are closed in $\Bspace{S}{\R}$. Strict concavity is \emph{not} a
@@ -441,9 +551,9 @@ $s\mapsto f(s)+\alpha$.
 	Let $S$ be a non-empty set and let $T\colon\Bspace{S}{\R}\to\Bspace{S}{\R}$
 	satisfy
 	\begin{enumerate}[(i)]
-		\item \dfnas{monotonicity}{monotonicity (Blackwell)}: $f\leq g$ implies
+		\item \dfnas{monotonicity (Blackwell)}{monotonicity}: $f\leq g$ implies
 		      $Tf\leq Tg$; and
-		\item \dfnas{discounting}{discounting (Blackwell)}: there is
+		\item \dfnas{discounting (Blackwell)}{discounting}: there is
 		      $\beta\in[0,1)$ such that
 		      $T(f+\alpha)(s)\leq (Tf)(s)+\beta\alpha$ for every
 		      $f\in\Bspace{S}{\R}$, every $\alpha\geq0$ and every $s\in S$.
@@ -550,7 +660,7 @@ discounted at $\beta\in(0,1)$. The problem is
 	Apply \autoref{thm:blackwell}.
 \end{proof}
 
-\paragraph{What this establishes and what it does not.} It establishes that the
+\paragraph{Scope of the fixed-point argument.} The theorem establishes that the
 functional equation has exactly one bounded solution and that value iteration
 converges to it geometrically, with the error after $n$ steps bounded by
 \eqref{eq:contraction-error}. It does not by itself establish that $v^\ast$ is
@@ -648,7 +758,7 @@ This is the scalar Riccati equation of the Kalman filter.
 	conditional variance is the innovation variance.
 \end{proof}
 
-\paragraph{Economic content.} Three readings. First, uncertainty neither vanishes
+\paragraph{Economic content.} First, uncertainty neither vanishes
 nor explodes. However long the observer has been learning, the conditional
 variance settles at $x^\ast>0$: new innovations arrive at exactly the rate at
 which signals resolve old ones. Permanent learning does not produce perfect

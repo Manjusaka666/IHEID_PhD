@@ -116,21 +116,21 @@ software; slides 10–11 the surrounding PhD curriculum.
 | Chapter file | Slides | Supplementary reference volume | External references cited |
 |---|---|---|---|
 | `lec_1.tex` — Sets, Relations, Logic, and the Real Number System | none directly; presupposed by every deck | Ch. 1, Sec. 1.1–1.7, 1.10–1.11 (pp. 1–56) | Corbae–Stinchcombe–Zeman, Le Gall (2022), Ok, Rudin |
-| `lec_2.tex` — Vector Spaces, Linear Maps, and Matrices | Real Analysis 12–15 | Ch. 4 (pp. 135–156), Ch. 5 (pp. 157–184), Sec. 10.7 (pp. 363–365) | Axler, Ljungqvist–Sargent |
+| `lec_2.tex` — Vector Spaces, Linear Maps, and Matrices | Real Analysis 12–15 | Ch. 4 (pp. 135–156), Ch. 5 (pp. 157–184), Sec. 10.7 (pp. 363–365) | Axler, Ljungqvist–Sargent, Meyer (2000) |
 | `lec_3.tex` — Inner Products, Norms, and Metric Spaces | Real Analysis 5–11, 16–26, 77 | Sec. 7.1 (pp. 201–214), Def. 7.12–7.13 (p. 293) | LeRoy–Werner |
 | `lec_4.tex` — Topology of Metric Spaces | Real Analysis 26–48 | Sec. 7.2–7.3 (pp. 214–238), Sec. 8.1 (pp. 261–270) | Aliprantis–Border, Rudin |
 | `lec_5.tex` — Continuity, Semicontinuity, and the Weierstrass Theorem | Real Analysis 49–57 | Sec. 7.4.2 (pp. 239–252), Sec. 7.5 (pp. 254–256), Sec. 8.1 (pp. 261–270), Sec. 8.3 (pp. 271–278) | Rudin |
 | `lec_6.tex` — Completeness, Contractions, and Fixed Points | Real Analysis 58–76; DP 12–18 | Sec. 8.4 (pp. 278–294), incl. Prop. 8.20–8.21 | Lucas (1978), Stokey–Lucas–Prescott |
 | `lec_7.tex` — Differential Calculus in One Variable | Calculus 3–42 | Ch. 3, Sec. 11.2, 11.3, 11.7 | none; slides and reference volume only |
 | `lec_8.tex` — Differential Calculus in Several Variables | Calculus 43–54 | Ch. 11 (Def. 11.1, Prop. 11.3–11.6, Thm 11.1–11.7) | Rudin |
-| `lec_9.tex` — Convexity and Separation | Calculus 7–8, 52; Optimization 10–18 | Ch. 6, Ch. 10 (Thm 10.1–10.3, 10.9), Sec. 7.6, 9.1, 10.6.2, 11.3 | Aliprantis–Border, Boyd–Vandenberghe, Rockafellar |
+| `lec_9.tex` — Convexity and Separation | Calculus 7–8, 52; Optimization 10–18 | Ch. 6, Ch. 10 (Thm 10.1–10.3, 10.9), Sec. 7.6, 9.1, 10.6.2, 11.3 | Aliprantis–Border, Boyd–Vandenberghe (§3.3 p. 90), Rockafellar (§23, §25) |
 | `lec_10.tex` — Integration | Calculus 65–98 | Ch. 3 (integration), Sec. 3.6 (Leibniz) | Le Gall (2022), Rudin |
 | `lec_11.tex` — Projection, Orthogonality, and Least Squares | Calculus 55–64 | Ch. 9 (Thm 9.1–9.4, Sec. 9.4–9.5) | none; slides and reference volume only |
-| `lec_12.tex` — Constrained Optimisation | Optimization 3–44 | Ch. 12 (pp. 423–464), Sec. 13.4.1 (pp. 479–484), Thm 10.9 | Boyd–Vandenberghe, Mangasarian, Milgrom–Segal |
-| `lec_13.tex` — Correspondences, the Maximum Theorem and Fixed Points | none | Ch. 13 (pp. 465–484), Sec. 8.2 (pp. 270–271) | Aliprantis–Border, Ok |
+| `lec_12.tex` — Constrained Optimisation | Optimization 3–44 | Ch. 12 (pp. 423–464), Sec. 13.4.1 (pp. 479–484), Thm 10.9 | Boyd–Vandenberghe, Mangasarian, Milgrom–Segal, Nash (1950) |
+| `lec_13.tex` — Correspondences, the Maximum Theorem and Fixed Points | none | Ch. 13 (pp. 465–484), Sec. 8.2 (pp. 270–271) | Aliprantis–Border, Ok, Rockafellar |
 | `lec_14.tex` — Probability and Conditional Expectation | Probability 3–32; Calculus 85–93 | Sec. 2.1–2.5 (pp. 57–82), Sec. 9.6 (pp. 323–332) | Brockwell–Davis, Gelman et al., Grossman–Stiglitz, Kyle, Le Gall (2022), O'Hara |
 | `lec_15.tex` — Discrete-Time Dynamic Programming | DP 2–62 | Ch. 15 (Sec. 15.1.1–15.1.4, 15.2) | Bellman, Benveniste–Scheinkman, Rockafellar, Stokey–Lucas–Prescott |
-| `lec_16.tex` — Continuous-Time Dynamic Optimisation | none | Ch. 16 (pp. 563–575), Prop. 7.30 (p. 288) | none; slides and reference volume only |
+| `lec_16.tex` — Continuous-Time Dynamic Optimisation | none | Ch. 16 (pp. 563–575), Prop. 7.30 (p. 288) | Amann–Escher II, Cesari (1983), Halkin (1974), Kamien–Schwartz, Pontryagin et al. (1962), Seierstad–Sydsæter (1987) |
 | `appendix.tex` A — The Implicit Function Theorem | Calculus 65 | Thm 11.7 (p. 419) | — |
 | `appendix.tex` B — Matrix Differentiation | Calculus 49 | Ch. 3, 11 | Axler |
 | `appendix.tex` C — The Multivariate Normal Distribution | Probability 22–32; Calculus 85–93 | Sec. 2.5 | Ash–Doléans-Dade |
@@ -191,3 +191,82 @@ the correspondence — "outside the unit circle" becomes "positive real part".
 ("optimization"). The notes use British spelling throughout, including in
 chapter titles. Source titles quoted in the bibliography keep the spelling of the
 original.
+
+---
+
+## 5. Material added beyond the slides and the reference volume
+
+Each item below is present because a statement elsewhere in the volume needs it,
+not for its own sake. The dependency is named in each case.
+
+| Location | Added material | Why it is here |
+|---|---|---|
+| §2.6 | Singular value decomposition, Moore–Penrose pseudoinverse, operator norm, condition number, $\kappa(A^{\transp}A)=\kappa(A)^2$ | Ch. 11 forms $X^{\transp}X$ and inverts it; the accompanying regression programs do the same. Without the conditioning result the numerical remark in Ch. 11 and the collinearity discussion have no content. |
+| §2.7 | Non-negative matrices, Perron–Frobenius (stated; parts (i)–(iii) cited to Meyer Ch. 8), stochastic-matrix and Hawkins–Simon corollaries (proved) | Ch. 6 §6.5 solves the Leontief system, Ch. 14 and Ch. 15 use stationary distributions of finite Markov chains, and §15.7 needs $(I-\beta P_h)^{-1}\ge0$. |
+| §6.3.2 | Equicontinuity, Arzelà–Ascoli (proved), uniformly Lipschitz corollary | Ch. 16's existence remark needs compactness in $\mathcal{C}([t_0,t_1],\R^n)$; Ch. 5's infinite-dimensional Weierstrass failure is the same phenomenon. |
+| §9.6 | Subgradients, existence at interior points, optimality condition, subdifferential versus gradient, Fenchel conjugate, Fenchel–Young, biconjugate, profit function as conjugate and Hotelling's lemma | Ch. 13 §13.5 asserts that concavity gives a non-empty superdifferential and that differentiability is a singleton subdifferential; that assertion was previously unsupported. |
+| §13.5 | Danskin's theorem with proof, and the reading of a kink as disagreement among maximisers | The same section previously named Danskin's theorem without stating it. |
+| §14.7 | Modes of convergence and their hierarchy (proved), monotone/Fatou/dominated convergence (stated, Le Gall Thm 2.4 p. 21, Thm 2.8 p. 25, Thm 2.11 p. 30), weak and strong LLN, CLT, asymptotic normality of least squares, martingales, optional stopping | The chapter's inequalities section already derived convergence in probability of sample means; the conditional-expectation construction in §14.4 uses dominated convergence; §9.7 and §15.8 are martingale statements in disguise. |
+| §15.4 | Weighted-norm contraction theorem (proved) | Assumption 15.4.1(iii) fails for log and CRRA returns; the remark on unbounded returns previously only pointed at the literature. |
+| §15.4.1 | Policy iteration: algorithm, monotone improvement, geometric bound, finite termination | The accompanying programs all use value function iteration; the comparison is what makes their iteration counts interpretable. |
+| §16.3 | Existence of an optimal control: the Arzelà–Ascoli compactness argument, the chattering counterexample, the Filippov–Cesari convexity condition | The chapter states only necessary conditions; without this the reader has no statement about when an optimum exists. |
+| §9.7 | Proper/closed/convex terminology, Fenchel–Moreau (stated, Rockafellar Thm. 12.2), the $-\sqrt{x}$ example showing $f^{\ast\ast}=f$ without a subgradient | §9.6's biconjugate proposition proves one direction only; the profit-function application needs the exact scope of $c^{\ast\ast}=c$. |
+| §14.7 | Continuous mapping, Slutsky and the delta method, with Slutsky and the delta method proved and the continuous mapping theorem cited to Corbae–Stinchcombe–Zeman Thm. 9.4.3 p. 562 | The asymptotic normality of OLS previously joined an almost sure limit to a distributional limit without a theorem licensing it. |
+| §15.2 | Remark distinguishing $\mathcal{B}(X,\R)$, $\mathcal{C}_b(X)$ and the bounded measurable functions as domains for the Bellman operator | The chapter had used $\mathcal{B}$ for two different spaces and cited the wrong completeness theorem. |
+| §15.4.1 | Measurable-selection remark: what Berge does and does not supply, with the measurable maximum theorem cited to Aliprantis–Border Thm. 18.19 | Policy improvement asks for a selection from an argmax correspondence; Berge gives upper hemicontinuity, not a selector. |
+| §15.6 | Lemma verifying Assumption 15.1.1 for the growth model on an invariant compact state space, and the remark on utility unbounded at zero consumption with the consumption-floor construction | Proposition 15.6.1 invoked Theorem 15.4.2, whose hypotheses the Ramsey problem does not satisfy as posed. |
+| Figures | `svd-ellipse.tex`, `semicontinuity.tex`, `hemicontinuity.tex`, `separation.tex`, `subgradient.tex`, `vfi-error.tex`, `pi-vs-vi.tex`, `cake-paths.tex`, `ramsey-phase.tex` | The first five illustrate definitions that are hard to read from the formula alone. `vfi-error.tex` plots measured output of `DP_cake_eating.m` against its closed form under two encodings of the infeasible cells; `pi-vs-vi.tex` plots the two dynamic-programming algorithms on a randomly generated 40-state problem and is the numerical content of Theorem 15.3.3(ii); `ramsey-phase.tex` carries the computed global stable manifold of Remark 16.6.2 rather than a sketch of it. Coordinates for those three were computed in MATLAB R2025b; `cake-paths.tex` and the two loci of `ramsey-phase.tex` are closed forms evaluated by `pgfplots` itself. Every figure is drawn with `tikz`/`pgfplots` inside the document, so all nine carry the volume's own fonts and line weights rather than an imported raster. |
+
+---
+
+## 6. Programs: what was executed and what was observed
+
+Every claim in the text about an accompanying program was obtained by running a
+copy of it; the originals in `Supplementary/codes/` were not modified.
+
+| Program | Environment | Observed output |
+|---|---|---|
+| `regression.m` | MATLAB R2025b | `rng(0)`; $\hat\beta=(0.955343, 2.940044)$ from both the normal equations and `regress` |
+| `regression_Python.py` | Python 3 + NumPy | `np.random.seed(1)`; $\hat\beta=(1.023019, 3.021874)$ from both routes |
+| `regression_Octave.m` | MATLAB R2025b, on a line-by-line syntax translation | `rng(0)`; $\hat\beta=(0.955343, 2.940044)$, identical to `regression.m`. Its second `fprintf` is labelled `regress` but prints `beta_hat`, not `beta_hat_2`; the two agree to $1.6\times10^{-15}$ |
+| `consumer_choice_fmincon.m` | MATLAB R2025b | $x^\ast=(0.700,0.300)$, objective $0.54288$, multiplier $0.54288$ |
+| `consumer_choice_python.py` | Python 3 + SciPy | $x^\ast=(0.700,0.300)$, objective $0.54285$, multiplier $0.54295$ |
+| `two_periods_consumption_fmincon.m` | MATLAB R2025b | $c^\ast=(0.526,0.497)$, objective $-1.27044$, multiplier $1.90000$ |
+| `two_periods_consumption_python.py` | Python 3 + SciPy | same allocation, objective $-1.27044$, multiplier $1.90002$ |
+| `Nash_bargaining_fmincon.m` | MATLAB R2025b | $u^\ast=(0.7071,0.7071)$; source solves the **circular** frontier $u_1^2+u_2^2\le1$, not a linear one |
+| `Nash_bargaining_python.py` | Python 3 + SciPy | $u^\ast=(0.7071,0.7071)$, multiplier $0.50000$ |
+| `DP_cake_eating.m` | MATLAB R2025b | converged in 279 iterations, 1.041850 s |
+| `DP_cake_eating_CRRA.m` | MATLAB R2025b | converged in 199 iterations |
+| `DP_cake_eating_plot_iterations.m` | MATLAB R2025b | 0.112116 s |
+| `deterministic_Ramsey_growth.m` | MATLAB R2025b | converged in 211 iterations |
+| `Lucas_Tree_DP.m` | MATLAB R2025b | converged in 180 iterations |
+| `consumer_choice_sqp_Octave.m` | MATLAB R2025b, translation | $x^\ast=(0.700000,0.300000)$, utility $0.542881$, budget multiplier $0.542881$, both bound multipliers $0$; matches the closed form $\alpha^\alpha(1-\alpha)^{1-\alpha}=0.542881$ |
+| `two_periods_consumption_sqp_Octave.m` | MATLAB R2025b, translation | $c^\ast=(0.526316,0.497368)$, lifetime utility $-1.270436$, multiplier $1.900000$; matches $c_1=1/(1+\beta)$, $\lambda=1+\beta$ |
+| `Nash_bargaining_sqp_Octave.m` | MATLAB R2025b, translation | $u^\ast=(0.707107,0.707107)$, product $0.500000$, multiplier $0.500000$; the frontier in the source is the circle $u_1^2+u_2^2\le1$ |
+| `Lucas_Tree_DP_Octave.m` | MATLAB R2025b, translation | converged in 180 iterations, 0.0939 s; $\max\lvert p-\beta y/(1-\beta)\rvert=0.004896$, relative $0.0103\%$ |
+| independent replication of `DP_cake_eating.m` | Python 3 + NumPy | 255 iterations; value error 12.06 at $w=0.001$, $\le0.33$ on $w\ge0.1$; policy error $\le0.00122$ above the first node; reported consumption $-0.999$ at the first node |
+| repaired `DP_cake_eating.m` ($-\infty$ on infeasible cells plus the analytic value at the lowest node) | MATLAB R2025b | 51 iterations; consumption $0$ at the lowest node; value error $\le0.0238$ on $w\ge0.1$ and $0.00236$ at $w=1$; policy error $\le5.75\times10^{-4}$, one grid spacing. Observed error ratio $\exp(-0.162519)=\beta$ to five decimals |
+
+**The Octave variants.** No Octave interpreter is installed on this machine, and
+none is available to install here. Each Octave source was instead translated
+into MATLAB syntax line by line — `pkg load statistics` deleted, `endfunction`
+→ `end`, `rng("default")` → `rng('default')`, and `sqp(x0,phi,[],h,lb,ub)` →
+`fmincon` with the `sqp` algorithm and the constraint $h(x)\ge0$ written as
+$-h(x)\le0$ — and run in MATLAB R2025b. Nothing else was altered and the
+originals were not touched. The translations are recorded above as
+translations, not as runs of the Octave sources: the numbers verify what the
+sources compute, not the behaviour of Octave's own `sqp` implementation.
+
+**Where the code lives.** Everything run for the figures and for the numbers
+quoted about the programs is kept in `Figures/matlab/`, beside the figures it
+produces, so that each plotted curve can be regenerated:
+
+| Script | What it produces |
+|---|---|
+| `vfi_error_data.m` | `vfi-error.dat`, the four series of `Figures/vfi-error.tex`, and every number quoted in Remark 15.6.3: iteration counts 279 and 51, the errors under each encoding, the measured contraction ratio, and the demonstration that $-\infty$ alone drives all 2000 nodes to $-\infty$ |
+| `pi_vs_vi_data.m` | `pi-vs-vi.dat`, the three series of `Figures/pi-vs-vi.tex`, together with the checks that the policy iterates dominate the value iterates at every step and that the value iterates stay under the envelope $\beta^m\lVert W_0-V\rVert_\infty$ |
+| `ramsey_saddle_data.m` | `ramsey-saddle.dat`, the stable arm of `Figures/ramsey-phase.tex`, with the steady state, the Jacobian, $\lambda_s=-0.181458$, $\lambda_u=0.231458$, the eigenvector slope, and the checks that the computed arm is invariant under the flow and sits on the correct side of the $\dot k=0$ locus |
+| `octave_variants_check.m` | The MATLAB translations of the five Octave sources, in one file, with the closed-form comparison for each |
+
+The tables inside `vfi-error.tex`, `pi-vs-vi.tex` and `ramsey-phase.tex` are the
+`.dat` files verbatim; the header of each figure names its generator.

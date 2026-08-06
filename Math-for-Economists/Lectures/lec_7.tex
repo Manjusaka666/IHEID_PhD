@@ -47,7 +47,7 @@ profit rather than profit net of a fixed cost.
 
 \begin{definition}[Derivative]\label{def:derivative}
 	Let $f\colon(a,b)\to\R$ with $-\infty\leq a<b\leq\infty$ and let
-	$x_0\in(a,b)$. The function $f$ is \dfnas{differentiable at}{differentiability}
+	$x_0\in(a,b)$. The function $f$ is \dfnas{differentiability}{differentiable at}
 	$x_0$ if
 	\[
 		f'(x_0)\eqdef\lim_{h\to0}\frac{f(x_0+h)-f(x_0)}{h}
@@ -136,13 +136,13 @@ critical point, of $f$ \autocite[slide 5]{fukuda2026calculus}.
 
 \begin{definition}[Concave and convex functions of one variable]\label{def:concave-1d}
 	A function $f\colon I\to\R$ on an interval $I\subseteq\R$ is
-	\dfnas{concave}{concave function} if
+	\dfnas{concave function}{concave} if
 	\[
 		f\bigl(\lambda x+(1-\lambda)y\bigr)\geq\lambda f(x)+(1-\lambda)f(y)
 		\qquad\text{for all }x,y\in I,\ \lambda\in[0,1],
 	\]
 	\dfn{strictly concave} if the inequality is strict whenever $x\neq y$ and
-	$\lambda\in(0,1)$, and \dfnas{convex}{convex function} (respectively strictly
+	$\lambda\in(0,1)$, and \dfnas{convex function}{convex} (respectively strictly
 	convex) if $-f$ is concave (respectively strictly concave). The general theory,
 	in $\R^n$, is \autoref{ch:convex}.
 \end{definition}
@@ -445,7 +445,7 @@ The two remainder forms answer different questions. The Lagrange form
 point, and it yields \emph{numerical} error bounds once $f^{(n+1)}$ is bounded on
 the relevant interval. The Peano form is an asymptotic statement with no
 evaluation point, and it is the one used when the argument is a limit as a
-parameter goes to zero --- which is exactly the situation in
+parameter goes to zero --- which is the situation in
 \autoref{sec:c1-risk} below.
 
 \begin{eg}[Exponential and logarithm]\label{eg:taylor-exp-log}
@@ -514,7 +514,7 @@ parameter goes to zero --- which is exactly the situation in
 		f(x)\approx f(x_0)+f'(x_0)x_0\cdot\bigl(\log x-\log x_0\bigr).
 	\]
 	The coefficient $f'(x_0)x_0$ is the semi-elasticity of $f$ at $x_0$. This is the
-	step by which a nonlinear dynamic model is converted into a linear system in log
+	step by which a non-linear dynamic model is converted into a linear system in log
 	deviations from steady state, whose stability is then read off the eigenvalues
 	as in \autoref{prop:linear-stability} \autocite[slide 40]{fukuda2026calculus}.
 \end{eg}
@@ -594,12 +594,11 @@ cost hardly at all.
 	$\eta<-1$ makes $1+\eta^{-1}\in(0,1)$, hence the markup exceeds $1$.
 \end{proof}
 
-Three observations. First, \eqref{eq:lerner} is the Lerner condition, usually
+First, \eqref{eq:lerner} is the Lerner condition, usually
 written $\bigl(P-c'\bigr)/P=-1/\eta$; the two forms are algebraically identical.
 Second, the derivation uses the inverse function rule twice over --- once to
 convert $P'$ into $1/D'$ and once implicitly in reading the elasticity in either
-direction --- so \autoref{prop:inverse-derivative} is not a technicality here but
-the substance. Third, profit maximisation requires $\eta<-1$: if demand were
+direction --- so \autoref{prop:inverse-derivative} carries the derivation. Third, profit maximisation requires $\eta<-1$: if demand were
 inelastic, marginal revenue $P(1+\eta^{-1})$ would be negative while marginal
 cost is positive, and \eqref{eq:mr-equals-mc} would have no solution. A monopolist
 never operates on the inelastic portion of its demand curve, and this is a
@@ -653,7 +652,7 @@ scaling the gamble.
 		\qquad\text{where}\quad
 		A(w)\eqdef-\frac{u''(w)}{u'(w)}
 	\]
-	is the \dfnas{coefficient of absolute risk aversion}{absolute risk aversion}.
+	is the \dfnas{absolute risk aversion}{coefficient of absolute risk aversion}.
 	Writing $\sigma^2=t^2$ for the variance of the gamble, this is
 	$\pi\approx\tfrac12A(w)\sigma^2$.
 \end{theorem}
@@ -667,6 +666,17 @@ scaling the gamble.
 	theorem (\autoref{thm:implicit-function}) there is a twice continuously
 	differentiable $\pi(t)$ near $t=0$ with $\pi(0)=0$ and $\Phi(\pi(t),t)=0$.
 
+	\emph{The order of $\pi$.} Differentiating the identity $\Phi(\pi(t),t)=0$ and
+	using \eqref{eq:ift-derivative},
+	\[
+		\pi'(t)=-\frac{\partial\Phi/\partial t}{\partial\Phi/\partial\pi}
+		=-\frac{\E\bigl[u'(w+t\tilde z)\,\tilde z\bigr]}{u'\bigl(w-\pi(t)\bigr)} .
+	\]
+	At $t=0$ the numerator is $u'(w)\E[\tilde z]=0$, so $\pi'(0)=0$. Since $\pi$ is
+	twice continuously differentiable with $\pi(0)=\pi'(0)=0$,
+	\autoref{thm:taylor-1d} gives $\pi(t)=O(t^2)$ as $t\downarrow0$. This is what
+	licenses the truncation below; it is a conclusion, not an assumption.
+
 	Expand the right-hand side of \eqref{eq:risk-premium-def} with the Lagrange
 	remainder of \autoref{thm:taylor-1d} at order $2$: for each realisation $z$,
 	\[
@@ -678,8 +688,8 @@ scaling the gamble.
 		\E\bigl[u(w+t\tilde z)\bigr]=u(w)+\tfrac12u''(w)t^2+O(t^3).
 	\]
 	Expanding the left-hand side at order $2$ in $\pi$,
-	$u(w-\pi)=u(w)-u'(w)\pi+O(\pi^2)$. Equating and using $\pi=O(t^2)$, which
-	makes $O(\pi^2)=O(t^4)$,
+	$u(w-\pi)=u(w)-u'(w)\pi+O(\pi^2)$. Equating and using the bound
+	$\pi=O(t^2)$ established above, which makes $O(\pi^2)=O(t^4)$,
 	\[
 		-u'(w)\pi(t)+O(t^4)=\tfrac12u''(w)t^2+O(t^3),
 	\]

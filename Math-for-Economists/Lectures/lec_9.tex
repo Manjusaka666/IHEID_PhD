@@ -11,13 +11,17 @@
 % concavity; Prop. 11.7, differentiable quasiconcavity).
 % External references actually cited in this chapter: Aliprantis-Border
 % (2006), Boyd-Vandenberghe (2004), Rockafellar (1970).
+% Section on subgradients and conjugate duality extends the slides' convexity
+% material; it supplies the superdifferential language used in lec_13 and the
+% conjugate reading of the profit function.
 
 \chapter{Convexity and Separation}
 \label{ch:convex}
 
-\section{Motivation: What Convexity Buys}\label{sec:cvx-motivation}
+\section{Motivation: The Uses of Convexity}\label{sec:cvx-motivation}
 
-Convexity does three things that nothing else in this volume does.
+Three consequences of convexity are used throughout the volume, and nothing else
+delivers them.
 
 It converts local information into global information. A stationary point of a
 concave function is a global maximiser (\autoref{thm:foc-concave-n}), so the
@@ -39,7 +43,7 @@ prices under no arbitrage, and of Lagrange multipliers in
 \section{Convex Sets}\label{sec:cvx-sets}
 
 \begin{definition}[Convex set]\label{def:convex-set}
-	A subset $C$ of a real vector space $X$ is \dfnas{convex}{convex set} if
+	A subset $C$ of a real vector space $X$ is \dfnas{convex set}{convex} if
 	\[
 		\lambda x+(1-\lambda)y\in C
 		\qquad\text{for all }x,y\in C\text{ and }\lambda\in[0,1] .
@@ -61,7 +65,7 @@ prices under no arbitrage, and of Lagrange multipliers in
 		      of ``convex preferences''.
 		\item A production set $Y\subseteq\R^n$ is convex when the technology admits
 		      time-sharing between any two feasible plans, and convexity of $Y$ is
-		      exactly what excludes increasing returns.
+		      what excludes increasing returns.
 	\end{enumerate}
 \end{eg}
 
@@ -194,13 +198,13 @@ carry over verbatim, and only the existence argument changes.
 
 \begin{definition}[Convexity and concavity]\label{def:convex-function}
 	Let $C\subseteq\R^n$ be convex. A function $f\colon C\to\R$ is
-	\dfnas{convex}{convex function!on $\R^n$} if
+	\dfnas{convex function!on $\R^n$}{convex} if
 	\[
 		f\bigl(\lambda x+(1-\lambda)y\bigr)\leq\lambda f(x)+(1-\lambda)f(y)
 		\qquad\text{for all }x,y\in C,\ \lambda\in[0,1],
 	\]
 	\dfn{strictly convex} if the inequality is strict for $x\neq y$ and
-	$\lambda\in(0,1)$, and \dfnas{concave}{concave function!on $\R^n$}
+	$\lambda\in(0,1)$, and \dfnas{concave function!on $\R^n$}{concave}
 	(respectively strictly concave) if $-f$ is convex (respectively strictly
 	convex).
 \end{definition}
@@ -318,7 +322,7 @@ horizontal tangent certifies a global maximum.
 
 \begin{definition}[Quasiconcavity]\label{def:quasiconcave}
 	Let $C\subseteq\R^n$ be convex. A function $f\colon C\to\R$ is
-	\dfnas{quasiconcave}{quasiconcave function} if every upper contour set
+	\dfnas{quasiconcave function}{quasiconcave} if every upper contour set
 	$\{x\in C : f(x)\geq\alpha\}$ is convex, equivalently if
 	\[
 		f\bigl(\lambda x+(1-\lambda)y\bigr)\geq\min\{f(x),f(y)\}
@@ -394,13 +398,13 @@ concavity and treats quasiconcavity separately.
 		\qquad a\in\R^n\setminus\{0\},\ \alpha\in\R,
 	\]
 	equivalently an affine subspace of dimension $n-1$. It determines the two
-	closed \dfnas{half-spaces}{half-space} $\{\ip{a}{x}\geq\alpha\}$ and
-	$\{\ip{a}{x}\leq\alpha\}$. The hyperplane \dfnas{separates}{separating
-		hyperplane} $A$ and $B$ if
+	closed \dfnas{half-space}{half-spaces} $\{\ip{a}{x}\geq\alpha\}$ and
+	$\{\ip{a}{x}\leq\alpha\}$. The hyperplane \dfnas{separating
+		hyperplane}{separates} $A$ and $B$ if
 	\[
 		\ip{a}{x}\geq\alpha\geq\ip{a}{y}\qquad\text{for all }x\in A,\ y\in B,
 	\]
-	and \dfnas{strictly separates}{strict separation} them if both inequalities can
+	and \dfnas{strict separation}{strictly separates} them if both inequalities can
 	be taken strict with a gap, that is if $\sup_{y\in B}\ip{a}{y}<\alpha<
 		\inf_{x\in A}\ip{a}{x}$.
 \end{definition}
@@ -583,7 +587,7 @@ which is the Lagrangian inequality of the Kuhn--Tucker theorem. Condition
 \eqref{eq:slater} is Slater's constraint qualification, and
 \autoref{eg:slater-fails} shows what goes wrong without it.
 
-\begin{eg}[Slater's condition is not decorative]\label{eg:slater-fails}
+\begin{eg}[Failure of Slater's condition]\label{eg:slater-fails}
 	Take $n=1$, $m=1$, $g_1(x)=-x^2$, and $f(x)=x$. The constraint set is
 	$\{x : -x^2\geq0\}=\{0\}$, and \eqref{eq:slater} fails: no $x$ has $-x^2>0$. The
 	system \eqref{eq:farkas-system} indeed has no solution, since it requires
@@ -593,61 +597,378 @@ which is the Lagrangian inequality of the Kuhn--Tucker theorem. Condition
 	existence of a multiplier at the constrained optimum $x=0$.
 \end{eg}
 
-\section{Economic Applications}\label{sec:cvx-applications}
+\section{Subgradients and Conjugate Duality}\label{sec:cvx-subgradient}
 
-\subsection{Supporting prices}\label{subsec:cvx-welfare}
+\autoref{thm:concave-gradient} characterises concavity by the gradient inequality
+and assumes differentiability. Value functions, profit functions and indirect
+utility functions are convex or concave by construction and differentiable only
+under further hypotheses, as \autoref{sec:berge} shows. The subgradient
+replaces the gradient by the whole family of supporting affine functions, and it
+exists wherever the function is convex, differentiable or not.
 
-\paragraph{Environment.} An economy has $n$ commodities, a single consumer with
-convex preferences represented by a quasiconcave, locally non-satiated utility
-$u\colon\R^n_+\to\R$, and an aggregate production set $Y\subseteq\R^n$ that is
-convex and contains $0$. An allocation is a pair $(x,y)$ with
-$x\in\R^n_+$, $y\in Y$ and $x\leq\omega+y$, where $\omega\in\R^n_+$ is the
-endowment.
+\begin{definition}[Subgradient and supergradient]\label{def:subgradient}
+	Let $C\subseteq\R^n$ be convex and $f\colon C\to\R$ convex. A vector
+	$v\in\R^n$ is a \dfnas{subgradient}{subgradient} of $f$ at $x\in C$ if
+	\begin{equation}\label{eq:subgradient}
+		f(y)\geq f(x)+\ip{v}{y-x}\qquad\text{for every }y\in C .
+	\end{equation}
+	The set of subgradients is the \dfnas{subdifferential}{subdifferential}
+	$\partial f(x)$. For concave $g$, a \dfnas{supergradient}{supergradient} at $x$
+	is a $v$ with $g(y)\leq g(x)+\ip{v}{y-x}$ for every $y\in C$, and the
+	\dfnas{superdifferential}{superdifferential} is
+	$\bar\partial g(x)=-\partial(-g)(x)$.
+	\nidx{partialf@$\partial f(x)$}{$\partial f(x)$, subdifferential}
+\end{definition}
 
-\begin{proposition}[Second welfare theorem, one-consumer case]\label{prop:second-welfare}
-	Let $(x^\ast,y^\ast)$ be a Pareto efficient allocation with
-	$x^\ast\in\R^n_{++}$. Suppose $u$ is quasiconcave and continuous and $Y$ is
-	convex. Then there is a price vector $p\in\R^n\setminus\{0\}$ such that
+Inequality \eqref{eq:subgradient} makes sense for an arbitrary
+$f\colon\R^n\to\R\cup\{+\infty\}$ at a point $x\in\dom f$, with $y$ ranging over
+all of $\R^n$, and $\partial f(x)$ is defined by it in that generality
+throughout \autoref{subsec:cvx-conjugate}. The requirement is global: the affine
+function must lie below $f$ everywhere, not merely near $x$. Without convexity
+the set is frequently empty --- $f(x)=-x^{2}$ has $\partial f(x)=\emptyset$ at
+every $x$ --- and the results below that assume $\partial f(x)\neq\emptyset$ are
+assuming something.
+
+Geometrically, $v\in\partial f(x)$ says that the affine function
+$y\mapsto f(x)+\ip{v}{y-x}$ lies below $f$ and touches it at $x$; equivalently,
+$(v,-1)$ is normal to a hyperplane supporting $\epi f$ at $(x,f(x))$.
+
+\begin{theorem}[Existence of subgradients]\label{thm:subgradient-exists}
+	Let $C\subseteq\R^n$ be convex, $f\colon C\to\R$ convex, and $x\in\Int C$. Then
+	$\partial f(x)$ is non-empty, convex and compact.
+\end{theorem}
+
+\begin{proof}
+	\emph{Non-emptiness.} The set $\epi f\subseteq\R^{n+1}$ is convex by
+	\autoref{prop:convex-epigraph}(i), and $(x,f(x))\in\partial(\epi f)$, since
+	$(x,f(x)-\varepsilon)\notin\epi f$ for every $\varepsilon>0$. By
+	\autoref{thm:supporting-hyperplane} there is
+	$(a,\beta)\in\R^{n}\times\R$, not both zero, with
+	\begin{equation}\label{eq:epi-support}
+		\ip{a}{y}+\beta z\leq\ip{a}{x}+\beta f(x)\qquad\text{for all }(y,z)\in\epi f .
+	\end{equation}
+	Taking $y=x$ and $z\to+\infty$, which is admissible because
+	$(x,z)\in\epi f$ for every $z\geq f(x)$, forces $\beta\leq0$. If $\beta=0$ then
+	$\ip{a}{y-x}\leq0$ for every $y\in C$; since $x\in\Int C$, the point
+	$y=x+\varepsilon a$ lies in $C$ for small $\varepsilon>0$ and gives
+	$\varepsilon\norm{a}^2\leq0$, hence $a=0$, contradicting $(a,\beta)\neq0$. So
+	$\beta<0$, and dividing \eqref{eq:epi-support} by $-\beta$ and setting
+	$v\eqdef a/(-\beta)$ gives, with $z=f(y)$,
+	$f(y)\geq f(x)+\ip{v}{y-x}$ for every $y\in C$.
+
+	\emph{Convexity and closedness.} For each fixed $y$, \eqref{eq:subgradient} is a
+	closed half-space condition on $v$, and $\partial f(x)$ is the intersection over
+	$y\in C$ of these half-spaces, hence closed and convex by
+	\autoref{prop:convex-operations}.
+
+	\emph{Boundedness.} Choose $r>0$ with $\closure{\ball{r}{x}}\subseteq C$. By
+	\autoref{prop:convex-continuous}, $f$ is continuous on $C$, so
+	$M\eqdef\max_{\closure{\ball{r}{x}}}f$ is finite by
+	\autoref{cor:weierstrass-continuous}. For $v\in\partial f(x)$ with $v\neq0$,
+	take $y=x+rv/\norm{v}$ in \eqref{eq:subgradient}:
+	$M\geq f(y)\geq f(x)+r\norm{v}$, so $\norm{v}\leq(M-f(x))/r$.
+\end{proof}
+
+\begin{figure}[htbp]
+	\centering
+	\input{Figures/subgradient.tex}
+	\caption[The subdifferential at a kink]{%
+		The convex function $f(x)=\max\{1.5-x,\,2x-1.5\}$ and three of the affine
+		functions supporting it at the kink $x_0=1$. Every slope between the
+		one-sided derivatives $-1$ and $2$ gives a supporting line, so
+		$\partial f(x_0)=[-1,2]$; at every other point the supporting line is unique
+		and equals the tangent. By \autoref{prop:subdiff-gradient} and its converse,
+		non-differentiability and multiplicity of supporting slopes are the same
+		thing.}
+	\label{fig:subgradient}
+\end{figure}
+
+\begin{proposition}[Subgradients and optimality]\label{prop:subgradient-optimal}
+	Let $C$ be convex and $f\colon C\to\R$ convex. Then $x^\ast\in C$ minimises $f$
+	over $C$ if and only if $0\in\partial f(x^\ast)$.
+\end{proposition}
+
+\begin{proof}
+	Both statements read $f(y)\geq f(x^\ast)$ for every $y\in C$, the second by
+	putting $v=0$ in \eqref{eq:subgradient}.
+\end{proof}
+
+The proposition replaces ``the derivative vanishes'' by ``zero is one of the
+slopes of the supporting affine functions'', and it holds with no
+differentiability and no interiority. It is the form in which first-order
+conditions survive at kinks --- a piecewise-linear cost function, a portfolio
+problem with proportional transaction costs, a utility function with a
+subsistence kink.
+
+\begin{proposition}[Subdifferential and gradient]\label{prop:subdiff-gradient}
+	Let $C\subseteq\R^n$ be open and convex and $f\colon C\to\R$ convex. If $f$ is
+	differentiable at $x\in C$ then $\partial f(x)=\{\nabla f(x)\}$.
+\end{proposition}
+
+\begin{proof}
+	By \autoref{thm:concave-gradient} applied to the convex function $f$, the
+	gradient inequality $f(y)\geq f(x)+\ip{\nabla f(x)}{y-x}$ holds, so
+	$\nabla f(x)\in\partial f(x)$. Conversely let $v\in\partial f(x)$ and fix
+	$d\in\R^n$. For small $t>0$, \eqref{eq:subgradient} with $y=x+td$ gives
+	$\bigl(f(x+td)-f(x)\bigr)/t\geq\ip{v}{d}$; letting $t\downarrow0$ and using
+	differentiability, $\ip{\nabla f(x)}{d}\geq\ip{v}{d}$. Applying this to $d$ and
+	to $-d$ gives $\ip{\nabla f(x)-v}{d}=0$ for every $d$, so $v=\nabla f(x)$.
+\end{proof}
+
+The converse also holds: a convex function whose subdifferential at an interior
+point is a singleton is differentiable there. The proof requires the theory of
+directional derivatives of convex functions and is not reproduced here; it is
+\textcite[Thm.~25.1]{rockafellar1970convex}, in the section on
+differentiability of convex functions. Both directions together say that
+non-differentiability of a convex function is precisely multiplicity of
+supporting slopes, which is how \autoref{sec:berge} reads the kink in a value
+function at a point where the binding constraint changes.
+
+\subsection{The conjugate function}\label{subsec:cvx-conjugate}
+
+Extended-real-valued convex analysis uses three adjectives that are easy to
+confuse. Call $f\colon\R^n\to\R\cup\{\pm\infty\}$ \dfnas{proper function}{proper}
+if it never takes $-\infty$ and $\dom f\eqdef\{x : f(x)<+\infty\}$ is non-empty;
+\nidx{domf}{$\dom f$, effective domain of $f$}
+\dfnas{closed function}{closed} if $\epi f$ is a closed subset of
+$\R^{n+1}$, equivalently if $f$ is lower semicontinuous; and convex if $\epi f$
+is convex, which for a proper $f$ is \autoref{def:convex-function} on $\dom f$.
+A proper convex $f$ is automatically continuous on $\Int(\dom f)$ by
+\autoref{prop:convex-continuous}, so closedness is a condition on the boundary
+of the domain alone.
+
+\begin{definition}[Fenchel conjugate]\label{def:conjugate}
+	Let $f\colon\R^n\to\R\cup\{+\infty\}$ with $\dom f\eqdef\{x : f(x)<\infty\}$
+	non-empty. Its \dfnas{conjugate function}{conjugate} is
+	\begin{equation}\label{eq:conjugate}
+		f^{\ast}(y)\eqdef\sup_{x\in\dom f}\ \bigl\{\ip{y}{x}-f(x)\bigr\},
+		\qquad y\in\R^n .
+	\end{equation}
+	\nidx{fstar@$f^{\ast}$}{$f^{\ast}$, Fenchel conjugate}
+\end{definition}
+
+\begin{proposition}[Elementary properties]\label{prop:conjugate-properties}
+	Let $f$ be as in \autoref{def:conjugate}, so that $f$ is proper: it never
+	takes the value $-\infty$ and $\dom f\neq\emptyset$. Convexity of $f$ is
+	\emph{not} assumed, and $\partial f$ is the global subdifferential defined
+	after \autoref{def:subgradient}.
 	\begin{enumerate}[(i)]
-		\item $u(x)>u(x^\ast)$ implies $\ip{p}{x}\geq\ip{p}{x^\ast}$; and
-		\item $\ip{p}{y}\leq\ip{p}{y^\ast}$ for all $y\in Y$.
+		\item $f^{\ast}$ is convex and lower semicontinuous as an extended-real
+		      function on $\R^n$, with values in $\R\cup\{+\infty\}$.
+		\item \emph{(Fenchel--Young)} $f(x)+f^{\ast}(y)\geq\ip{x}{y}$ for all
+		      $x\in\dom f$ and $y\in\R^n$.
+		\item Equality holds in (ii) if and only if $y\in\partial f(x)$.
+		\item $f^{\ast\ast}\leq f$ everywhere, with equality at every $x$ at which
+		      $\partial f(x)\neq\emptyset$. The converse fails: on
+		      $f(x)=-\sqrt{x}$ for $x\geq0$ and $f(x)=+\infty$ for $x<0$, which is
+		      convex and lower semicontinuous, so that $f^{\ast\ast}=f$ everywhere,
+		      one has $\partial f(0)=\emptyset$, because $-\sqrt y\geq vy$ for all
+		      $y>0$ would force $v\leq-1/\sqrt y\to-\infty$.
 	\end{enumerate}
 \end{proposition}
 
 \begin{proof}
-	Let $B\eqdef\{x\in\R^n_+ : u(x)>u(x^\ast)\}$, convex by quasiconcavity of $u$
-	and \autoref{def:quasiconcave}, and let
-	$A\eqdef\omega+Y$, convex because $Y$ is. Efficiency of
-	$(x^\ast,y^\ast)$ says exactly that no point of $A$ dominates a point of $B$
-	componentwise; setting $C\eqdef A-\R^n_+$, which is convex by
-	\autoref{prop:convex-operations}(ii), efficiency gives
-	$B\cap\Int C=\emptyset$. Since $B$ and $\Int C$ are disjoint convex sets,
-	\autoref{thm:separation-1} supplies $p\neq0$ and $\alpha$ with
-	$\ip{p}{x}\geq\alpha\geq\ip{p}{z}$ for $x\in B$ and $z\in\Int C$. Continuity of
-	$u$ makes $x^\ast$ a limit of points of $B$, so
-	$\ip{p}{x^\ast}\geq\alpha$; and $x^\ast\in\closure C$ gives
-	$\ip{p}{x^\ast}\leq\alpha$. Hence $\alpha=\ip{p}{x^\ast}$, which is (i). For
-	(ii), $\omega+y-x^\ast\in C$ for every $y\in Y$ after subtracting a
-	non-negative vector, and the same inequality applies.
+	(i) For each fixed $x$, $y\mapsto\ip{y}{x}-f(x)$ is affine, hence convex and
+	continuous; a pointwise supremum of convex functions is convex by
+	\autoref{prop:convex-function-operations} and lower semicontinuous by
+	\autoref{prop:sup-semicontinuous}.
+
+	(ii) is the definition of the supremum: $f^{\ast}(y)\geq\ip{y}{x}-f(x)$.
+
+	(iii) Equality says that the supremum in \eqref{eq:conjugate} is attained at
+	$x$, that is $\ip{y}{z}-f(z)\leq\ip{y}{x}-f(x)$ for every $z\in\dom f$, which
+	rearranges to $f(z)\geq f(x)+\ip{y}{z-x}$ for every $z$, that is
+	$y\in\partial f(x)$.
+
+	(iv) By (ii), $f(x)\geq\ip{x}{y}-f^{\ast}(y)$ for every $y$, so
+	$f(x)\geq\sup_y\{\ip{x}{y}-f^{\ast}(y)\}=f^{\ast\ast}(x)$. If
+	$y_0\in\partial f(x)$ then (iii) gives $f(x)=\ip{x}{y_0}-f^{\ast}(y_0)
+		\leq f^{\ast\ast}(x)$, and the two inequalities combine to equality.
 \end{proof}
 
-\paragraph{Reading the hypotheses.} Convexity of $Y$ is what makes the theorem
-true, and it fails under increasing returns: with a non-convex production set an
-efficient allocation need not be supportable by any price vector, which is the
-formal basis of the case for regulation of natural monopoly. Quasiconcavity of
-$u$ --- convexity of preferences --- plays the same role on the consumption
-side; without it the separating hyperplane at $x^\ast$ may cut through the
-preferred set, and the consumer facing $p$ would choose a different bundle.
-Neither convexity assumption can be weakened to something merely topological:
-\autoref{thm:separation-1} is a theorem about convex sets and there is no
-version of it for arbitrary disjoint sets.
+By \autoref{thm:subgradient-exists}, a finite convex $f$ has
+$\partial f(x)\neq\emptyset$ at every interior point of its domain, so
+$f^{\ast\ast}=f$ on $\Int(\dom f)$. In general $f^{\ast\ast}$ is the largest
+convex lower semicontinuous function below $f$, the closed convex hull of $f$,
+and the conjugate cannot distinguish $f$ from $f^{\ast\ast}$: the map
+$f\mapsto f^{\ast}$ factors through $f^{\ast\ast}$, since
+$f^{\ast}=f^{\ast\ast\ast}$. The general statement, including the boundary
+behaviour that the example above illustrates, is
+\textcite[Sec.~3.3, p.~90]{boyd2004convex}. The clean form of that statement is
+the following.
 
-Note also what \autoref{prop:second-welfare} does \emph{not} say. It gives
-$\ip{p}{x}\geq\ip{p}{x^\ast}$ for strictly preferred $x$, which is
-cost-minimisation, not utility maximisation. Upgrading it to
-``$x^\ast$ maximises $u$ subject to $\ip{p}{x}\leq\ip{p}{x^\ast}$'' requires that
-the budget set have a cheaper point, which is the standard cheaper-point
-condition and fails when $\ip{p}{x^\ast}=\min_{x\geq0}\ip{p}{x}=0$.
+\begin{theorem}[Fenchel--Moreau]\label{thm:fenchel-moreau}
+	Let $f\colon\R^n\to\R\cup\{+\infty\}$ be proper. Then $f^{\ast\ast}=f$ if and
+	only if $f$ is convex and closed.
+\end{theorem}
+
+Sufficiency of convexity and closedness is what
+\autoref{prop:conjugate-properties}(iv) fails to reach: the proof identifies
+$f^{\ast\ast}$ with the supremum of all affine functions below $f$ and then uses
+the separating hyperplane theorem in $\R^{n+1}$ to show that a closed convex
+epigraph is the intersection of the closed half-spaces containing it, including
+at boundary points where no subgradient exists. That last step is the part not
+reproduced here; it is \textcite[Thm.~12.2]{rockafellar1970convex}. Necessity is
+immediate, since $f^{\ast\ast}$ is convex and closed by
+\autoref{prop:conjugate-properties}(i) applied to $f^{\ast}$.
+
+\subsection{Economic application: the profit function}\label{subsec:cvx-profit}
+
+Let a competitive firm have cost function $c\colon\R^n_+\to\R$, where $c(q)$ is
+the minimum cost of producing the output vector $q$, and let $p\in\R^n_{++}$ be
+the vector of output prices. Its profit function is
+\begin{equation}\label{eq:profit-conjugate}
+	\pi(p)\eqdef\sup_{q\geq0}\ \bigl\{\ip{p}{q}-c(q)\bigr\}=c^{\ast}(p),
+\end{equation}
+the conjugate of the cost function, where $c$ is extended by $+\infty$ off
+$\R^n_+$. Four conclusions follow from \autoref{prop:conjugate-properties} alone.
+
+\emph{Convexity of profit in prices.} By (i), $\pi$ is convex and lower
+semicontinuous in $p$ whether or not $c$ is convex, that is, whether or not the
+technology exhibits non-increasing returns. Convexity of the profit function is a
+theorem about maximisation, not a hypothesis about the firm; the economic reading
+is that a firm facing a mean-preserving spread in prices is better off in
+expectation, because it can adjust $q$ after observing $p$.
+
+\emph{Price equals marginal cost.} By (iii), $q^\ast$ attains the supremum in
+\eqref{eq:profit-conjugate} if and only if $p\in\partial c(q^\ast)$. Where $c$ is
+differentiable this is $p=\nabla c(q^\ast)$; where $c$ has a kink, as with a
+capacity constraint, it is the statement that $p$ lies in the interval between
+the left and right marginal costs, and the firm's supply is flat over that
+interval of prices.
+
+\emph{Hotelling's lemma.} If $c$ is proper, convex and lower semicontinuous,
+then $c^{\ast\ast}=c$ and $q\in\partial\pi(p)$ if and only if
+$p\in\partial c(q)$, so $\partial\pi(p)$ is the set of profit-maximising output
+vectors. Suppose in addition that $p\in\Int(\dom\pi)$, so that profit is finite
+in a neighbourhood of $p$ and \autoref{thm:subgradient-exists} applies to $\pi$
+there. Combining with \autoref{prop:subdiff-gradient} and its converse, $\pi$ is
+differentiable at $p$ if and only if the profit-maximising output is unique, and
+then
+\begin{equation}\label{eq:hotelling}
+	\nabla\pi(p)=q^\ast(p),
+\end{equation}
+the supply function. Differentiating once more, $Dq^\ast(p)=\Hess\pi(p)$ is
+symmetric and positive semidefinite by \autoref{thm:hessian-convexity}, which is
+the statement that own-price supply responses are non-negative and cross-price
+responses are symmetric. These are the restrictions that producer theory tests,
+and they are consequences of maximisation with no assumption on the technology
+beyond what makes $\pi$ twice differentiable.
+
+\emph{What price data cannot reveal.} Since $c^{\ast}=c^{\ast\ast\ast}$, the
+cost function $c$ and its closed convex hull $c^{\ast\ast}$ generate the same
+profit function, so no observation of supply behaviour at any price vector
+distinguishes them. What that leaves unobserved is precisely the set where
+$c>c^{\ast\ast}$, which by (iv) contains no point with a supporting affine
+function. If the technology has a region of increasing returns, an output level
+$q$ in that region is never a global profit maximiser at any price: were it one,
+$p\in\partial c(q)$ would hold for some $p$ and (iv) would give
+$c(q)=c^{\ast\ast}(q)$. Output levels at which $c=c^{\ast\ast}$ can lie in a
+locally non-convex region --- the endpoints of the interval spanned by the
+convex hull are of this kind --- so the statement is about supporting
+hyperplanes, not about local curvature. The
+same algebra explains why the expenditure function determines only the convex
+hull of the upper contour sets of a utility function, which is the duality
+statement of consumer theory.
+
+\section{Economic Applications}\label{sec:cvx-applications}
+
+\subsection{Supporting prices}\label{subsec:cvx-welfare}
+
+\paragraph{Environment.} An economy has $n$ commodities, an endowment
+$\omega\in\R^n_+$, a single consumer with preferences represented by
+$u\colon\R^n_+\to\R$, and an aggregate production set $Y\subseteq\R^n$ with
+$0\in Y$. An \dfn{allocation} is a pair $(x,y)$ with $x\in\R^n_+$ and $y\in Y$;
+it is \dfnas{attainable allocation}{attainable} if $x\leq\omega+y$. An attainable
+allocation $(x^\ast,y^\ast)$ is \dfnas{efficient allocation}{efficient} if no
+attainable $(x,y)$ satisfies $u(x)>u(x^\ast)$. Utility is \dfnas{local non-satiation}{locally
+	non-satiated} if every ball around every $x\in\R^n_+$
+contains a point $x'\in\R^n_+$ with $u(x')>u(x)$.
+
+Write $C\eqdef(\omega+Y)-\R^n_+$ for the set of consumption vectors that the
+technology and the endowment make available, disposal permitted. Since
+$0\in Y$, $C$ contains $\omega-\R^n_+$, so $\Int C\neq\emptyset$.
+
+\begin{theorem}[Supporting prices for an efficient allocation]\label{prop:second-welfare}
+	Let $u$ be quasiconcave and locally non-satiated and let $Y$ be convex, and let
+	$(x^\ast,y^\ast)$ be an efficient allocation. Then there is a price vector
+	$p\in\R^n_+\setminus\{0\}$ such that
+	\begin{enumerate}[(i)]
+		\item $u(x)>u(x^\ast)$ implies $\ip{p}{x}\geq\ip{p}{x^\ast}$ for
+		      $x\in\R^n_+$;
+		\item $\ip{p}{y}\leq\ip{p}{y^\ast}$ for every $y\in Y$; and
+		\item $\ip{p}{\omega+y^\ast-x^\ast}=0$, so unused resources are free.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	Put $B\eqdef\{x\in\R^n_+ : u(x)>u(x^\ast)\}$, which is convex by
+	quasiconcavity of $u$ and \autoref{def:quasiconcave} and non-empty by local
+	non-satiation, and recall $C=(\omega+Y)-\R^n_+$, convex by
+	\autoref{prop:convex-operations}(ii) and non-empty.
+
+	\emph{Step 1: $B\cap C=\emptyset$.} A point $x\in B\cap C$ satisfies $x\geq0$
+	and $x\leq\omega+y$ for some $y\in Y$, so $(x,y)$ is attainable, and
+	$u(x)>u(x^\ast)$ then contradicts efficiency.
+
+	\emph{Step 2: separation.} By \autoref{thm:separation-1} applied to the
+	disjoint non-empty convex sets $C$ and $B$ there are $p\neq0$ and $\alpha\in\R$
+	with
+	\begin{equation}\label{eq:welfare-separation}
+		\ip{p}{z}\leq\alpha\leq\ip{p}{x}\qquad\text{for all }z\in C,\ x\in B .
+	\end{equation}
+
+	\emph{Step 3: $p\geq0$.} Fix $i$ and note $\omega\in C$ (take $y=0$), hence
+	$\omega-te_i\in C$ for every $t\geq0$ because $C-\R^n_+=C$. Then
+	$\ip{p}{\omega}-tp_i\leq\alpha$ for all $t\geq0$, which is possible only if
+	$p_i\geq0$.
+
+	\emph{Step 4: $\alpha=\ip{p}{x^\ast}$.} Local non-satiation produces
+	$x_k\to x^\ast$ with $u(x_k)>u(x^\ast)$, that is $x_k\in B$; the right-hand
+	inequality of \eqref{eq:welfare-separation} and continuity of
+	$\ip{p}{\cdot}$ give $\ip{p}{x^\ast}\geq\alpha$. Attainability gives
+	$x^\ast\leq\omega+y^\ast$ with $y^\ast\in Y$, so $x^\ast\in C$ and the
+	left-hand inequality gives $\ip{p}{x^\ast}\leq\alpha$.
+
+	\emph{Step 5: the three conclusions.} Claim (i) is the right-hand inequality of
+	\eqref{eq:welfare-separation} together with Step~4. For (ii) and (iii), let
+	$y\in Y$. Then $\omega+y\in C$, so $\ip{p}{\omega+y}\leq\alpha=\ip{p}{x^\ast}$.
+	Taking $y=y^\ast$ and using $x^\ast\leq\omega+y^\ast$ with $p\geq0$,
+	\[
+		\ip{p}{\omega+y^\ast}\leq\ip{p}{x^\ast}\leq\ip{p}{\omega+y^\ast},
+	\]
+	so both inequalities are equalities, which is (iii); and then
+	$\ip{p}{\omega+y}\leq\ip{p}{x^\ast}=\ip{p}{\omega+y^\ast}$ for every $y\in Y$
+	reduces to (ii).
+\end{proof}
+
+\paragraph{Reading the hypotheses.} Convexity of $Y$ and quasiconcavity of $u$
+are what make \autoref{thm:separation-1} applicable, and neither can be weakened
+to a topological condition, because separation is a theorem about convex sets and
+has no counterpart for arbitrary disjoint sets. Under increasing returns $Y$ is
+not convex, and then an efficient allocation need not be supportable by any price
+vector at all; the resulting failure of decentralisation is one of the standard
+arguments for regulating a natural monopoly, though the argument identifies a
+market failure rather than prescribing a remedy, and the regulatory literature
+turns on informational constraints that this model does not contain. Local
+non-satiation enters only at Step~4, where it places $x^\ast$ in the closure of
+$B$; without it the separating value $\alpha$ can strictly exceed
+$\ip{p}{x^\ast}$ and conclusion (i) is lost. Continuity of $u$ is used nowhere in
+the proof.
+
+The conclusion is expenditure minimisation over the strictly preferred set, not
+utility maximisation: (i) says that nothing strictly better than $x^\ast$ is
+strictly cheaper. The upgrade to ``$x^\ast$ maximises $u$ on
+$\{x\geq0 : \ip{p}{x}\leq\ip{p}{x^\ast}\}$'' needs continuity of $u$ and a
+cheaper point, that is some $x'\in\R^n_+$ with $\ip{p}{x'}<\ip{p}{x^\ast}$.
+Given both, suppose $u(x)>u(x^\ast)$ with $\ip{p}{x}\leq\ip{p}{x^\ast}$; the
+points $x_\lambda=\lambda x'+(1-\lambda)x$ lie in $\R^n_+$ and satisfy
+$\ip{p}{x_\lambda}<\ip{p}{x^\ast}$ for $\lambda\in(0,1]$, and by continuity of
+$u$ at $x$ the inequality $u(x_\lambda)>u(x^\ast)$ persists for $\lambda$ small,
+contradicting (i). The cheaper-point condition fails
+when $\ip{p}{x^\ast}=0$, which is why the result is usually stated with
+$p\gg0$ and $x^\ast\neq0$, or with the strengthening supplied by monotone
+preferences.
 
 \subsection{No arbitrage and state prices}\label{subsec:cvx-arbitrage}
 
@@ -690,8 +1011,11 @@ $R\theta\in\R^S$ tomorrow.
 		\ip{\phi}{v}>\alpha>\ip{\phi}{w}\qquad\text{for all }v\in K,\ w\in M .
 	\]
 	$M$ is a subspace, so $\ip{\phi}{w}$ is bounded above on it only if it vanishes
-	identically; hence $\ip{\phi}{w}=0$ for all $w\in M$ and $\alpha<0<
-		\ip{\phi}{v}$ for all $v\in K$. Taking $v$ to be each standard basis vector of
+	identically: if $\ip{\phi}{w_0}\neq0$ for some $w_0\in M$, then $\lambda w_0\in M$
+	for every $\lambda\in\R$ and $\ip{\phi}{\lambda w_0}$ is unbounded above. Hence
+	$\ip{\phi}{w}=0$ for all $w\in M$, and since $0\in M$ the displayed inequality
+	forces $\alpha>0$ and therefore
+	$\ip{\phi}{v}>\alpha>0$ for all $v\in K$. Taking $v$ to be each standard basis vector of
 	$\R^{1+S}$, which lies in $K$, gives $\phi_0>0$ and $\psi\gg0$. Applying
 	$\ip{\phi}{w}=0$ to $w$ generated by $\theta=e_j$ gives
 	$-\phi_0q_j+\ip{\psi}{R_{\cdot j}}=0$, that is

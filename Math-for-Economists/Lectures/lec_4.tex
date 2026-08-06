@@ -32,16 +32,16 @@ point of stating them abstractly.
 \begin{definition}[Interior, closure, boundary]\label{def:interior-closure}
 	Let $(X,d)$ be a metric space and $A\subseteq X$.
 	\begin{enumerate}[(i)]
-		\item A point $a\in X$ is \dfnas{interior to}{interior point} $A$ if
+		\item A point $a\in X$ is \dfnas{interior point}{interior to} $A$ if
 		      $\ball{\varepsilon}{a}\subseteq A$ for some $\varepsilon>0$. The
 		      \dfn{interior} $\Int A$ is the set of interior points of $A$; by
-		      definition $\Int A\subseteq A$. The set $A$ is \dfnas{open}{open set} if
+		      definition $\Int A\subseteq A$. The set $A$ is \dfnas{open set}{open} if
 		      $A=\Int A$.
 		\item A point $a\in X$ is a \dfnas{point of closure}{point of closure} of $A$
 		      if $A\cap\ball{\varepsilon}{a}\neq\emptyset$ for every $\varepsilon>0$.
 		      The \dfn{closure} $\closure{A}$ is the set of points of closure; by
-		      definition $A\subseteq\closure{A}$. The set $A$ is \dfnas{closed}{closed
-			      set} if $A=\closure{A}$.
+		      definition $A\subseteq\closure{A}$. The set $A$ is \dfnas{closed
+			      set}{closed} if $A=\closure{A}$.
 		\item The \dfn{boundary} is $\partial A\eqdef\closure{A}\setminus\Int A$.
 	\end{enumerate}
 	\nidx{$\Int A$}{$\Int A$, interior}\nidx{$\overline{A}$}{$\closure{A}$, closure}
@@ -82,9 +82,8 @@ point of stating them abstractly.
 \end{proof}
 
 This is Proposition~7.5 and Corollary~7.1 of \textcite{fukuda2026notes}
-\autocite[slide 35]{fukuda2026analysis}. It is worth stating explicitly because
-almost every proof about closed sets is obtained by complementing a proof about
-open sets.
+\autocite[slide 35]{fukuda2026analysis}. Almost every proof about closed sets
+below is obtained by complementing a proof about open sets.
 
 \begin{proposition}[Open balls are open]\label{prop:ball-open}
 	In any metric space, $\ball{\lambda}{a}$ is open.
@@ -163,7 +162,7 @@ open sets.
 	(i)--(iii) of \autoref{thm:topology-axioms} is a \dfn{topology} on $X$, the pair
 	$(X,\mathcal{O})$ is a \dfn{topological space}, and the members of
 	$\mathcal{O}$ are the open sets. A topology arising from a metric as above is
-	\dfnas{metrisable}{metrisable topology}.
+	\dfnas{metrisable topology}{metrisable}.
 \end{definition}
 
 \begin{remark}[Two abstractions of the same list of axioms]\label{rem:topology-sigma-algebra}
@@ -191,7 +190,7 @@ open sets.
 	$\tau\colon\N\to\N$ is strictly increasing, then $(x_{\tau(n)})_{n\in\N}$ is a
 	\dfn{subsequence}, usually written $(x_{n_k})_{k\in\N}$.
 
-	The sequence \dfnas{converges}{convergent sequence} to $x^\ast\in X$, written
+	The sequence \dfnas{convergent sequence}{converges} to $x^\ast\in X$, written
 	$x_n\to x^\ast$ or $x^\ast=\lim_{n\to\infty}x_n$, if for every $\varepsilon>0$
 	there is $n_0\in\N$ such that $n\geq n_0$ implies $d(x^\ast,x_n)<\varepsilon$.
 \end{definition}
@@ -347,7 +346,7 @@ Bolzano--Weierstrass \emph{fails} there, as \autoref{eg:no-bw-infinite} shows.
 		      $K\subseteq\bigcup_{i\in I}G_i$. The set $K$ is \dfn{compact} if every
 		      open cover of $K$ admits a finite subcover, that is, a finite
 		      $J\subseteq I$ with $K\subseteq\bigcup_{i\in J}G_i$.
-		\item $K$ is \dfnas{sequentially compact}{sequentially compact set} if every
+		\item $K$ is \dfnas{sequentially compact set}{sequentially compact} if every
 		      sequence in $K$ has a subsequence converging to a point of $K$.
 	\end{enumerate}
 \end{definition}
@@ -440,7 +439,7 @@ throughout this volume.
 	the constraint were $\ip{p}{x}<m$ the set would not be closed and the supremum
 	of a strictly increasing utility would not be attained. If consumption were not
 	restricted to $\R^n_+$, the set would again be unbounded whenever some $p_i<0$.
-	The existence half of \autoref{eg:consumer-setup} rests on exactly this
+	The existence half of \autoref{eg:consumer-setup} rests on this
 	proposition, via the Weierstrass theorem of \autoref{ch:continuity}.
 \end{eg}
 
@@ -460,12 +459,48 @@ throughout this volume.
 \end{proposition}
 
 \begin{proof}
-	If $A$ is not an interval, take $x<z<y$ with $x,y\in A$, $z\notin A$; then
-	$A\cap(-\infty,z)$ and $A\cap(z,\infty)$ are disjoint, non-empty, relatively
-	open, and cover $A$, so $A$ is not connected. The converse, and the convexity
-	statement, follow from the observation that a continuous image of a connected
-	set is connected (\autoref{prop:continuous-connected}) applied to the segment
-	map $t\mapsto(1-t)x+ty$, whose domain $[0,1]$ is connected.
+	\emph{Connected $\Rightarrow$ interval.} If $A$ is not an interval, take
+	$x<z<y$ with $x,y\in A$ and $z\notin A$; then $A\cap(-\infty,z)$ and
+	$A\cap(z,\infty)$ are disjoint, non-empty, relatively open, and cover $A$, so
+	$A$ is not connected.
+
+	\emph{Interval $\Rightarrow$ connected.} This direction is proved from the
+	supremum property of $\R$ (\autoref{ass:completeness-axiom}), not from the
+	connectedness of $[0,1]$, which is the same statement. Let $A$ be an interval
+	and suppose $A=U\cup W$ with $U,W$ relatively open, disjoint and non-empty. Pick
+	$x\in U$ and $y\in W$; without loss of generality $x<y$, and $[x,y]\subseteq A$
+	because $A$ is an interval. Put
+	\[
+		s\eqdef\sup\bigl\{t\in[x,y] : [x,t]\subseteq U\bigr\},
+	\]
+	the set being non-empty, since $x$ belongs to it, and bounded above by $y$; so
+	$s$ is a real number lying in $[x,y]\subseteq A$. Since $A=U\cup W$, either
+	$s\in W$ or $s\in U$.
+
+	Suppose $s\in W$. Relative openness gives $\varepsilon>0$ with
+	$A\cap(s-\varepsilon,s+\varepsilon)\subseteq W$, and the definition of the
+	supremum gives $t\in[x,y]$ with $s-\varepsilon<t\leq s$ and $[x,t]\subseteq U$.
+	Then $t\in A\cap(s-\varepsilon,s+\varepsilon)\subseteq W$ and $t\in U$, so
+	$t\in U\cap W=\emptyset$.
+
+	Suppose instead $s\in U$, and take $\varepsilon>0$ with
+	$A\cap(s-\varepsilon,s+\varepsilon)\subseteq U$ and $t$ as above. Put
+	$s'\eqdef\min\{s+\varepsilon/2,\ y\}$. Every point of $[t,s']$ lies in
+	$[x,y]\subseteq A$ and in $(s-\varepsilon,s+\varepsilon)$, hence in $U$;
+	together with $[x,t]\subseteq U$ this gives $[x,s']\subseteq U$ and therefore
+	$s'\leq s$. If $s<y$ then $s'>s$, a contradiction; so $s=y$ and $y\in U$,
+	contradicting $y\in W$.
+
+	Both cases are impossible, so no such decomposition exists and $A$ is
+	connected.
+
+	\emph{Convex sets in $\R^n$.} Let $C\subseteq\R^n$ be convex and non-empty and
+	suppose $C=U\cup W$ with $U,W$ relatively open, disjoint and non-empty. Pick
+	$x\in U$, $y\in W$ and consider $\gamma(t)\eqdef(1-t)x+ty$, which is continuous
+	and maps $[0,1]$ into $C$. Then $\gamma^{-1}(U)$ and $\gamma^{-1}(W)$ are
+	relatively open in $[0,1]$ by \autoref{thm:continuity-preimage}, disjoint,
+	non-empty and cover $[0,1]$, contradicting connectedness of the interval
+	$[0,1]$ just established.
 \end{proof}
 
 Connectedness is what makes the intermediate value theorem true, and hence what

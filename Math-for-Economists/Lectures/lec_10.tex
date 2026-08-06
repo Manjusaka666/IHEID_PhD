@@ -104,9 +104,9 @@ functions, are defined as limits in \autoref{def:improper}.
 \end{proof}
 
 This is Proposition~3.11 of \textcite{fukuda2026notes}
-\autocite[slide 66]{fukuda2026calculus}, with the proofs supplied. Part (iii) is
-worth noting: a monotone function may have countably many discontinuities and is
-still integrable, so (ii) and (iii) are genuinely different criteria. The exact
+\autocite[slide 66]{fukuda2026calculus}, with the proofs supplied. A monotone
+function may have countably many discontinuities and is still integrable, so (ii)
+and (iii) are genuinely different criteria. The exact
 characterisation --- integrable if and only if the set of discontinuities has
 Lebesgue measure zero --- is Lebesgue's criterion, for which see
 \textcite[Thm.~11.33]{rudin1976principles}; it is the point at which the Riemann
@@ -142,25 +142,32 @@ theory is superseded by the Lebesgue theory of \autoref{ch:probability}.
 	Let $f\colon[a,b]\to\R$ be integrable. The \dfn{indefinite integral} of $f$ is
 	$F(x)\eqdef\int_a^xf(t)\,\diff t$ for $x\in[a,b]$. A function
 	$G\colon[a,b]\to\R$ is an \dfnas{antiderivative}{antiderivative} (a primitive)
-	of $f$ if $G'(x)=f(x)$ for every $x\in(a,b)$. Any two antiderivatives differ by
-	a constant, by \autoref{thm:mvt}, which is why the generic antiderivative is
-	written $\int f(x)\,\diff x=G(x)+c$.
+	of $f$ if $G$ is continuous on $[a,b]$ and $G'(x)=f(x)$ for every $x\in(a,b)$.
+	Any two antiderivatives differ by a constant, by \autoref{thm:mvt}, which is
+	why the generic antiderivative is written $\int f(x)\,\diff x=G(x)+c$.
 \end{definition}
 
 \begin{theorem}[Fundamental theorem of calculus]\label{thm:ftc}
-	Let $f\colon[a,b]\to\R$ be Riemann integrable and $F(x)=\int_a^xf(t)\,\diff t$.
+	Let $f\colon[a,b]\to\R$ be Riemann integrable --- hence bounded, by
+	\autoref{def:darboux} --- and let $F(x)=\int_a^xf(t)\,\diff t$.
 	\begin{enumerate}[(i)]
 		\item $F$ is Lipschitz, hence continuous, on $[a,b]$; and $F$ is
 		      differentiable with $F'(x_0)=f(x_0)$ at every point $x_0$ at which $f$ is
-		      continuous. In particular, if $f$ is continuous on $[a,b]$ then $F'=f$
-		      throughout.
-		\item If $G$ is any antiderivative of $f$ on $[a,b]$ and $f$ is integrable,
-		      then
+		      continuous, one-sidedly at $x_0\in\{a,b\}$. In particular, if $f$ is
+		      continuous on $[a,b]$ then $F'=f$ throughout.
+		\item Let $G\colon[a,b]\to\R$ be continuous on $[a,b]$ and differentiable on
+		      $(a,b)$ with $G'(x)=f(x)$ for every $x\in(a,b)$. Then
 		      \[
 			      \int_a^bf(t)\,\diff t=G(b)-G(a)\eqdef\bigl[G(t)\bigr]_a^b .
 		      \]
 	\end{enumerate}
 \end{theorem}
+
+The regularity demanded of $G$ in (ii) is what the mean value theorem
+consumes and no more: continuity up to the endpoints, differentiability strictly
+inside. Nothing is assumed about $G'$ at $a$ or $b$, and the values $f(a)$ and
+$f(b)$ are irrelevant to both sides --- altering an integrable function at
+finitely many points changes neither its integral nor the hypotheses on $G$.
 
 \begin{proof}
 	(i) With $\abs{f}\leq M$, \autoref{prop:integral-properties}(ii)--(iii) gives
@@ -283,16 +290,16 @@ rule, and the differentials are notation for it.
 	\]
 	when the limit exists in $\R$, and analogously at $-\infty$. The integral over
 	$\R$ is defined as $\int_{-\infty}^0f+\int_0^{\infty}f$, requiring
-	\emph{both} limits to exist separately. The integral \dfnas{converges
-		absolutely}{absolute convergence} if $\int\abs{f}<\infty$, and absolute
+	\emph{both} limits to exist separately. The integral \dfnas{absolute convergence}{converges
+		absolutely} if $\int\abs{f}<\infty$, and absolute
 	convergence implies convergence.
 \end{definition}
 
-The requirement that the two halves converge separately is not pedantry. For
+The two halves must converge separately. For
 $f(x)=x$ the symmetric limit $\lim_{c\to\infty}\int_{-c}^cx\,\diff x=0$ exists while
 $\int_{-\infty}^{\infty}x\,\diff x$ does not, and a distribution with such a density
 tail has no mean --- the Cauchy distribution being the standard example. The
-distinction is exactly the one between the principal value and the integral, and
+distinction is the one between the principal value and the integral, and
 it is what makes ``the expectation does not exist'' a meaningful statement.
 
 \section{Multivariate Integration}\label{sec:int-multi}
@@ -315,8 +322,7 @@ proof and used only where cited; complete treatments are in
 The non-negativity or absolute integrability hypothesis is essential; without
 it the two iterated integrals can exist and differ. In economics the theorem is
 what licenses interchanging an expectation over states with an integral over
-time, or summing a double sum in either order --- routine steps that are valid
-under conditions worth stating rather than assuming.
+time, or summing a double sum in either order.
 
 \begin{theorem}[Change of variables]\label{thm:change-of-variables}
 	Let $U,V\subseteq\R^n$ be open and $\Phi\colon U\to V$ a
@@ -595,11 +601,11 @@ exactly the derivative needed for a substitution.
 	$\Var[X]=\E[(X-\mu)^2]=\sigma^2$.
 \end{proof}
 
-These are the computations of \autocite[slides 85--88]{fukuda2026calculus}. Two
-points of technique are worth isolating. First, the identity
+These are the computations of \autocite[slides 85--88]{fukuda2026calculus}. The
+identity
 $f'=-(x-\mu)\sigma^{-2}f$ is what makes the normal tractable: the density is its
 own antiderivative up to the linear factor, so every moment computation is an
-integration by parts that reduces the power by one. Second, both boundary terms
+integration by parts that reduces the power by one. Both boundary terms
 are evaluated as limits over $[-c,c]$; writing
 $\bigl[\,\cdot\,\bigr]_{-\infty}^{\infty}$ directly, as the slides do,
 presupposes the convergence that \autoref{def:improper} requires be checked, and
