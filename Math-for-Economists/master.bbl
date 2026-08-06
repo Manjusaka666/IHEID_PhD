@@ -1,0 +1,1240 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nyt/global//global/global/global}
+  \entry{acemoglu2009introduction}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=AD}{%
+         family={Acemoglu},
+         familyi={A\bibinitperiod},
+         given={Daron},
+         giveni={D\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{AD1}
+    \strng{fullhash}{AD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2009}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{title}{Introduction to Modern Economic Growth}
+    \list{location}{1}{%
+      {Princeton, NJ}%
+    }
+    \field{year}{2009}
+  \endentry
+
+  \entry{aliprantis2006infinite}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=ACD}{%
+         family={Aliprantis},
+         familyi={A\bibinitperiod},
+         given={Charalambos\bibnamedelima D.},
+         giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+      {{hash=BKC}{%
+         family={Border},
+         familyi={B\bibinitperiod},
+         given={Kim\bibnamedelima C.},
+         giveni={K\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{ACDBKC1}
+    \strng{fullhash}{ACDBKC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2006}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{edition}{3}
+    \field{title}{Infinite Dimensional Analysis: A Hitchhiker's Guide}
+    \list{location}{1}{%
+      {Berlin}%
+    }
+    \field{year}{2006}
+  \endentry
+
+  \entry{amann2005analysisI}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=AH}{%
+         family={Amann},
+         familyi={A\bibinitperiod},
+         given={Herbert},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=EJ}{%
+         family={Escher},
+         familyi={E\bibinitperiod},
+         given={Joachim},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Birkh{\"a}user}%
+    }
+    \strng{namehash}{AHEJ1}
+    \strng{fullhash}{AHEJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2005}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{note}{Translated from the German by Gary Brookfield}
+    \field{title}{Analysis {I}}
+    \list{location}{1}{%
+      {Basel}%
+    }
+    \field{year}{2005}
+  \endentry
+
+  \entry{amann2008analysisII}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=AH}{%
+         family={Amann},
+         familyi={A\bibinitperiod},
+         given={Herbert},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=EJ}{%
+         family={Escher},
+         familyi={E\bibinitperiod},
+         given={Joachim},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Birkh{\"a}user}%
+    }
+    \strng{namehash}{AHEJ1}
+    \strng{fullhash}{AHEJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2008}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{note}{Translated from the German by Silvio Levy and Matthew Cargo}
+    \field{title}{Analysis {II}}
+    \list{location}{1}{%
+      {Basel}%
+    }
+    \field{year}{2008}
+  \endentry
+
+  \entry{amann2009analysisIII}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=AH}{%
+         family={Amann},
+         familyi={A\bibinitperiod},
+         given={Herbert},
+         giveni={H\bibinitperiod},
+      }}%
+      {{hash=EJ}{%
+         family={Escher},
+         familyi={E\bibinitperiod},
+         given={Joachim},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Birkh{\"a}user}%
+    }
+    \strng{namehash}{AHEJ1}
+    \strng{fullhash}{AHEJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2009}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{note}{Translated from the German by Silvio Levy and Matthew Cargo}
+    \field{title}{Analysis {III}}
+    \list{location}{1}{%
+      {Basel}%
+    }
+    \field{year}{2009}
+  \endentry
+
+  \entry{ash1999probability}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=ARB}{%
+         family={Ash},
+         familyi={A\bibinitperiod},
+         given={Robert\bibnamedelima B.},
+         giveni={R\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=DDCA}{%
+         family={Dol{\'e}ans-Dade},
+         familyi={D\bibinithyphendelim D\bibinitperiod},
+         given={Catherine\bibnamedelima A.},
+         giveni={C\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Academic Press}%
+    }
+    \strng{namehash}{ARBDDCA1}
+    \strng{fullhash}{ARBDDCA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1999}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{edition}{2}
+    \field{title}{Probability and Measure Theory}
+    \field{year}{1999}
+  \endentry
+
+  \entry{axler2024linear}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=AS}{%
+         family={Axler},
+         familyi={A\bibinitperiod},
+         given={Sheldon},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{AS1}
+    \strng{fullhash}{AS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2024}
+    \field{labeldatesource}{}
+    \field{sortinit}{A}
+    \field{sortinithash}{A}
+    \field{edition}{4}
+    \field{title}{Linear Algebra Done Right}
+    \field{year}{2024}
+  \endentry
+
+  \entry{bellman1957dynamic}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=BRE}{%
+         family={Bellman},
+         familyi={B\bibinitperiod},
+         given={Richard\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{BRE1}
+    \strng{fullhash}{BRE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1957}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{title}{Dynamic Programming}
+    \list{location}{1}{%
+      {Princeton}%
+    }
+    \field{year}{1957}
+  \endentry
+
+  \entry{benveniste1979differentiability}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=BLM}{%
+         family={Benveniste},
+         familyi={B\bibinitperiod},
+         given={L.\bibnamedelima M.},
+         giveni={L\bibinitperiod\bibinitdelim M\bibinitperiod},
+      }}%
+      {{hash=SJA}{%
+         family={Scheinkman},
+         familyi={S\bibinitperiod},
+         given={J.\bibnamedelima A.},
+         giveni={J\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{BLMSJA1}
+    \strng{fullhash}{BLMSJA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1979}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{number}{3}
+    \field{pages}{727\bibrangedash 732}
+    \field{title}{On the Differentiability of the Value Function in Dynamic Models of Economics}
+    \field{volume}{47}
+    \field{journaltitle}{Econometrica}
+    \field{year}{1979}
+  \endentry
+
+  \entry{boyd2004convex}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=BS}{%
+         family={Boyd},
+         familyi={B\bibinitperiod},
+         given={Stephen},
+         giveni={S\bibinitperiod},
+      }}%
+      {{hash=VL}{%
+         family={Vandenberghe},
+         familyi={V\bibinitperiod},
+         given={Lieven},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Cambridge University Press}%
+    }
+    \strng{namehash}{BSVL1}
+    \strng{fullhash}{BSVL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2004}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{title}{Convex Optimization}
+    \list{location}{1}{%
+      {Cambridge}%
+    }
+    \field{year}{2004}
+  \endentry
+
+  \entry{brockwell2016introduction}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=BPJ}{%
+         family={Brockwell},
+         familyi={B\bibinitperiod},
+         given={Peter\bibnamedelima J.},
+         giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=DRA}{%
+         family={Davis},
+         familyi={D\bibinitperiod},
+         given={Richard\bibnamedelima A.},
+         giveni={R\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{BPJDRA1}
+    \strng{fullhash}{BPJDRA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{}
+    \field{sortinit}{B}
+    \field{sortinithash}{B}
+    \field{edition}{3}
+    \field{series}{Springer Texts in Statistics}
+    \field{title}{Introduction to Time Series and Forecasting}
+    \field{year}{2016}
+  \endentry
+
+  \entry{cesari1983optimization}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=CL}{%
+         family={Cesari},
+         familyi={C\bibinitperiod},
+         given={Lamberto},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{CL1}
+    \strng{fullhash}{CL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1983}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{Optimization---Theory and Applications: Problems with Ordinary Differential Equations}
+    \list{location}{1}{%
+      {New York}%
+    }
+    \field{year}{1983}
+  \endentry
+
+  \entry{corbae2009introduction}{book}{}{}
+    \name{author}{3}{}{%
+      {{hash=CD}{%
+         family={Corbae},
+         familyi={C\bibinitperiod},
+         given={Dean},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=SMB}{%
+         family={Stinchcombe},
+         familyi={S\bibinitperiod},
+         given={Maxwell\bibnamedelima B.},
+         giveni={M\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=ZJ}{%
+         family={Zeman},
+         familyi={Z\bibinitperiod},
+         given={Juraj},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{CD+1}
+    \strng{fullhash}{CDSMBZJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2009}
+    \field{labeldatesource}{}
+    \field{sortinit}{C}
+    \field{sortinithash}{C}
+    \field{title}{An Introduction to Mathematical Analysis for Economic Theory and Econometrics}
+    \list{location}{1}{%
+      {Princeton}%
+    }
+    \field{year}{2009}
+  \endentry
+
+  \entry{fukuda2026calculus}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{1}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (98 slides), Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 3--4 August 2026}
+    \field{title}{Calculus through Economic Applications}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026dynamic}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{2}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (63 slides), Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 6 August 2026}
+    \field{title}{Dynamic Programming}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026optimization}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{3}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (44 slides), Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 4 August 2026}
+    \field{title}{Introduction to Static Optimization}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026notes}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{4}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Version of 9 July 2026; 768 pp. Supplementary reference for the Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee}
+    \field{title}{Lecture Notes on Mathematics for Economics}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026logistics}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{5}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (11 slides), Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 3--6 August 2026}
+    \field{title}{Mathematics Review Course: Course Information}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026probability}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{6}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (32 slides), Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 3 August 2026}
+    \field{title}{Probability Theory}
+    \field{year}{2026}
+  \endentry
+
+  \entry{fukuda2026analysis}{unpublished}{}{}
+    \name{author}{1}{}{%
+      {{hash=FS}{%
+         family={Fukuda},
+         familyi={F\bibinitperiod},
+         given={Satoshi},
+         giveni={S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{FS1}
+    \strng{fullhash}{FS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2026}
+    \field{extradate}{7}
+    \field{labeldatesource}{}
+    \field{sortinit}{F}
+    \field{sortinithash}{F}
+    \field{note}{Lecture slides (77 slides), Mathematics Review Course, Swiss Program for Beginning Doctoral Students in Economics, Study Center Gerzensee, 4--5 August 2026}
+    \field{title}{Real Analysis}
+    \field{year}{2026}
+  \endentry
+
+  \entry{gelman2013bayesian}{book}{}{}
+    \name{author}{6}{}{%
+      {{hash=GA}{%
+         family={Gelman},
+         familyi={G\bibinitperiod},
+         given={Andrew},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=CJB}{%
+         family={Carlin},
+         familyi={C\bibinitperiod},
+         given={John\bibnamedelima B.},
+         giveni={J\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=SHS}{%
+         family={Stern},
+         familyi={S\bibinitperiod},
+         given={Hal\bibnamedelima S.},
+         giveni={H\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=DDB}{%
+         family={Dunson},
+         familyi={D\bibinitperiod},
+         given={David\bibnamedelima B.},
+         giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+      {{hash=VA}{%
+         family={Vehtari},
+         familyi={V\bibinitperiod},
+         given={Aki},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=RDB}{%
+         family={Rubin},
+         familyi={R\bibinitperiod},
+         given={Donald\bibnamedelima B.},
+         giveni={D\bibinitperiod\bibinitdelim B\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{2}{%
+      {Chapman}%
+      {Hall/CRC}%
+    }
+    \strng{namehash}{GA+1}
+    \strng{fullhash}{GACJBSHSDDBVARDB1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2013}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{edition}{3}
+    \field{title}{Bayesian Data Analysis}
+    \field{year}{2013}
+  \endentry
+
+  \entry{grossman1980impossibility}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=GSJ}{%
+         family={Grossman},
+         familyi={G\bibinitperiod},
+         given={Sanford\bibnamedelima J.},
+         giveni={S\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+      {{hash=SJE}{%
+         family={Stiglitz},
+         familyi={S\bibinitperiod},
+         given={Joseph\bibnamedelima E.},
+         giveni={J\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GSJSJE1}
+    \strng{fullhash}{GSJSJE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1980}
+    \field{labeldatesource}{}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{number}{3}
+    \field{pages}{393\bibrangedash 408}
+    \field{title}{On the Impossibility of Informationally Efficient Markets}
+    \field{volume}{70}
+    \field{journaltitle}{American Economic Review}
+    \field{year}{1980}
+  \endentry
+
+  \entry{halkin1974necessary}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=HH}{%
+         family={Halkin},
+         familyi={H\bibinitperiod},
+         given={Hubert},
+         giveni={H\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HH1}
+    \strng{fullhash}{HH1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1974}
+    \field{labeldatesource}{}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{number}{2}
+    \field{pages}{267\bibrangedash 272}
+    \field{title}{Necessary Conditions for Optimal Control Problems with Infinite Horizons}
+    \field{volume}{42}
+    \field{journaltitle}{Econometrica}
+    \field{year}{1974}
+  \endentry
+
+  \entry{kamien1981dynamic}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=KMI}{%
+         family={Kamien},
+         familyi={K\bibinitperiod},
+         given={Morton\bibnamedelima I.},
+         giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod},
+      }}%
+      {{hash=SNL}{%
+         family={Schwartz},
+         familyi={S\bibinitperiod},
+         given={Nancy\bibnamedelima L.},
+         giveni={N\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Dover}%
+    }
+    \strng{namehash}{KMISNL1}
+    \strng{fullhash}{KMISNL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1981}
+    \field{labeldatesource}{}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{title}{Dynamic Optimization: The Calculus of Variations and Optimal Control in Economics and Management}
+    \field{year}{1981}
+  \endentry
+
+  \entry{kyle1985continuous}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=KAS}{%
+         family={Kyle},
+         familyi={K\bibinitperiod},
+         given={Albert\bibnamedelima S.},
+         giveni={A\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{KAS1}
+    \strng{fullhash}{KAS1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1985}
+    \field{labeldatesource}{}
+    \field{sortinit}{K}
+    \field{sortinithash}{K}
+    \field{number}{6}
+    \field{pages}{1315\bibrangedash 1335}
+    \field{title}{Continuous Auctions and Insider Trading}
+    \field{volume}{53}
+    \field{journaltitle}{Econometrica}
+    \field{year}{1985}
+  \endentry
+
+  \entry{legall2016brownian}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=LGJF}{%
+         family={Le\bibnamedelima Gall},
+         familyi={L\bibinitperiod\bibinitdelim G\bibinitperiod},
+         given={Jean-Fran{\c c}ois},
+         giveni={J\bibinithyphendelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{LGJF1}
+    \strng{fullhash}{LGJF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2016}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{series}{Graduate Texts in Mathematics}
+    \field{title}{Brownian Motion, Martingales, and Stochastic Calculus}
+    \field{volume}{274}
+    \field{year}{2016}
+  \endentry
+
+  \entry{legall2022measure}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=LGJF}{%
+         family={Le\bibnamedelima Gall},
+         familyi={L\bibinitperiod\bibinitdelim G\bibinitperiod},
+         given={Jean-Fran{\c c}ois},
+         giveni={J\bibinithyphendelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer}%
+    }
+    \strng{namehash}{LGJF1}
+    \strng{fullhash}{LGJF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2022}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{series}{Graduate Texts in Mathematics}
+    \field{title}{Measure Theory, Probability, and Stochastic Processes}
+    \field{volume}{295}
+    \field{year}{2022}
+  \endentry
+
+  \entry{leroy2000principles}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=LSF}{%
+         family={LeRoy},
+         familyi={L\bibinitperiod},
+         given={Stephen\bibnamedelima F.},
+         giveni={S\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+      {{hash=WJ}{%
+         family={Werner},
+         familyi={W\bibinitperiod},
+         given={Jan},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Cambridge University Press}%
+    }
+    \strng{namehash}{LSFWJ1}
+    \strng{fullhash}{LSFWJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2000}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{title}{Principles of Financial Economics}
+    \list{location}{1}{%
+      {Cambridge}%
+    }
+    \field{year}{2000}
+  \endentry
+
+  \entry{ljungqvist2018recursive}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=LL}{%
+         family={Ljungqvist},
+         familyi={L\bibinitperiod},
+         given={Lars},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=STJ}{%
+         family={Sargent},
+         familyi={S\bibinitperiod},
+         given={Thomas\bibnamedelima J.},
+         giveni={T\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {MIT Press}%
+    }
+    \strng{namehash}{LLSTJ1}
+    \strng{fullhash}{LLSTJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2018}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{edition}{4}
+    \field{title}{Recursive Macroeconomic Theory}
+    \list{location}{1}{%
+      {Cambridge, MA}%
+    }
+    \field{year}{2018}
+  \endentry
+
+  \entry{lucas1978asset}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=LREJ}{%
+         family={Lucas},
+         familyi={L\bibinitperiod},
+         suffix={Jr.},
+         suffixi={J\bibinitperiod},
+         given={Robert\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{LJRE1}
+    \strng{fullhash}{LJRE1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1978}
+    \field{labeldatesource}{}
+    \field{sortinit}{L}
+    \field{sortinithash}{L}
+    \field{number}{6}
+    \field{pages}{1429\bibrangedash 1445}
+    \field{title}{Asset Prices in an Exchange Economy}
+    \field{volume}{46}
+    \field{journaltitle}{Econometrica}
+    \field{year}{1978}
+  \endentry
+
+  \entry{mangasarian1994nonlinear}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=MOL}{%
+         family={Mangasarian},
+         familyi={M\bibinitperiod},
+         given={Olvi\bibnamedelima L.},
+         giveni={O\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{2}{%
+      {Society for Industrial}%
+      {Applied Mathematics}%
+    }
+    \strng{namehash}{MOL1}
+    \strng{fullhash}{MOL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1994}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Nonlinear Programming}
+    \list{location}{1}{%
+      {Philadelphia}%
+    }
+    \field{year}{1994}
+  \endentry
+
+  \entry{meyer2000matrix}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=MCD}{%
+         family={Meyer},
+         familyi={M\bibinitperiod},
+         given={Carl\bibnamedelima D.},
+         giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{2}{%
+      {Society for Industrial}%
+      {Applied Mathematics}%
+    }
+    \strng{namehash}{MCD1}
+    \strng{fullhash}{MCD1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2000}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{title}{Matrix Analysis and Applied Linear Algebra}
+    \list{location}{1}{%
+      {Philadelphia}%
+    }
+    \field{year}{2000}
+  \endentry
+
+  \entry{milgrom2002envelope}{article}{}{}
+    \name{author}{2}{}{%
+      {{hash=MP}{%
+         family={Milgrom},
+         familyi={M\bibinitperiod},
+         given={Paul},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=SI}{%
+         family={Segal},
+         familyi={S\bibinitperiod},
+         given={Ilya},
+         giveni={I\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{MPSI1}
+    \strng{fullhash}{MPSI1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2002}
+    \field{labeldatesource}{}
+    \field{sortinit}{M}
+    \field{sortinithash}{M}
+    \field{number}{2}
+    \field{pages}{583\bibrangedash 601}
+    \field{title}{Envelope Theorems for Arbitrary Choice Sets}
+    \field{volume}{70}
+    \field{journaltitle}{Econometrica}
+    \field{year}{2002}
+  \endentry
+
+  \entry{nash1950bargaining}{article}{}{}
+    \name{author}{1}{}{%
+      {{hash=NJF}{%
+         family={Nash},
+         familyi={N\bibinitperiod},
+         given={John\bibnamedelima F.},
+         giveni={J\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NJF1}
+    \strng{fullhash}{NJF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1950}
+    \field{labeldatesource}{}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{number}{2}
+    \field{pages}{155\bibrangedash 162}
+    \field{title}{The Bargaining Problem}
+    \field{volume}{18}
+    \field{journaltitle}{Econometrica}
+    \field{year}{1950}
+  \endentry
+
+  \entry{ohara1998market}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=OM}{%
+         family={O'Hara},
+         familyi={O\bibinitperiod},
+         given={Maureen},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{2}{%
+      {John Wiley}%
+      {Sons}%
+    }
+    \strng{namehash}{OM1}
+    \strng{fullhash}{OM1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1998}
+    \field{labeldatesource}{}
+    \field{sortinit}{O}
+    \field{sortinithash}{O}
+    \field{title}{Market Microstructure Theory}
+    \field{year}{1998}
+  \endentry
+
+  \entry{ok2007real}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=OEA}{%
+         family={Ok},
+         familyi={O\bibinitperiod},
+         given={Efe\bibnamedelima A.},
+         giveni={E\bibinitperiod\bibinitdelim A\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{OEA1}
+    \strng{fullhash}{OEA1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{2007}
+    \field{labeldatesource}{}
+    \field{sortinit}{O}
+    \field{sortinithash}{O}
+    \field{title}{Real Analysis with Economic Applications}
+    \list{location}{1}{%
+      {Princeton}%
+    }
+    \field{year}{2007}
+  \endentry
+
+  \entry{pontryagin1962mathematical}{book}{}{}
+    \name{author}{4}{}{%
+      {{hash=PLS}{%
+         family={Pontryagin},
+         familyi={P\bibinitperiod},
+         given={L.\bibnamedelima S.},
+         giveni={L\bibinitperiod\bibinitdelim S\bibinitperiod},
+      }}%
+      {{hash=BVG}{%
+         family={Boltyanskii},
+         familyi={B\bibinitperiod},
+         given={V.\bibnamedelima G.},
+         giveni={V\bibinitperiod\bibinitdelim G\bibinitperiod},
+      }}%
+      {{hash=GRV}{%
+         family={Gamkrelidze},
+         familyi={G\bibinitperiod},
+         given={R.\bibnamedelima V.},
+         giveni={R\bibinitperiod\bibinitdelim V\bibinitperiod},
+      }}%
+      {{hash=MEF}{%
+         family={Mishchenko},
+         familyi={M\bibinitperiod},
+         given={E.\bibnamedelima F.},
+         giveni={E\bibinitperiod\bibinitdelim F\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Interscience}%
+    }
+    \strng{namehash}{PLS+1}
+    \strng{fullhash}{PLSBVGGRVMEF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1962}
+    \field{labeldatesource}{}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{The Mathematical Theory of Optimal Processes}
+    \list{location}{1}{%
+      {New York}%
+    }
+    \field{year}{1962}
+  \endentry
+
+  \entry{rockafellar1970convex}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=RRT}{%
+         family={Rockafellar},
+         familyi={R\bibinitperiod},
+         given={R.\bibnamedelima Tyrrell},
+         giveni={R\bibinitperiod\bibinitdelim T\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Princeton University Press}%
+    }
+    \strng{namehash}{RRT1}
+    \strng{fullhash}{RRT1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1970}
+    \field{labeldatesource}{}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{title}{Convex Analysis}
+    \list{location}{1}{%
+      {Princeton}%
+    }
+    \field{year}{1970}
+  \endentry
+
+  \entry{rudin1976principles}{book}{}{}
+    \name{author}{1}{}{%
+      {{hash=RW}{%
+         family={Rudin},
+         familyi={R\bibinitperiod},
+         given={Walter},
+         giveni={W\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {McGraw-Hill}%
+    }
+    \strng{namehash}{RW1}
+    \strng{fullhash}{RW1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1976}
+    \field{labeldatesource}{}
+    \field{sortinit}{R}
+    \field{sortinithash}{R}
+    \field{edition}{3}
+    \field{title}{Principles of Mathematical Analysis}
+    \list{location}{1}{%
+      {New York}%
+    }
+    \field{year}{1976}
+  \endentry
+
+  \entry{seierstad1987optimal}{book}{}{}
+    \name{author}{2}{}{%
+      {{hash=SA}{%
+         family={Seierstad},
+         familyi={S\bibinitperiod},
+         given={Atle},
+         giveni={A\bibinitperiod},
+      }}%
+      {{hash=SK}{%
+         family={Sydsaeter},
+         familyi={S\bibinitperiod},
+         given={Knut},
+         giveni={K\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {North-Holland}%
+    }
+    \strng{namehash}{SASK1}
+    \strng{fullhash}{SASK1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1987}
+    \field{labeldatesource}{}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{Optimal Control Theory with Economic Applications}
+    \list{location}{1}{%
+      {Amsterdam}%
+    }
+    \field{year}{1987}
+  \endentry
+
+  \entry{stokey1989recursive}{book}{}{}
+    \name{author}{3}{}{%
+      {{hash=SNL}{%
+         family={Stokey},
+         familyi={S\bibinitperiod},
+         given={Nancy\bibnamedelima L.},
+         giveni={N\bibinitperiod\bibinitdelim L\bibinitperiod},
+      }}%
+      {{hash=LREJ}{%
+         family={Lucas},
+         familyi={L\bibinitperiod},
+         suffix={Jr.},
+         suffixi={J\bibinitperiod},
+         given={Robert\bibnamedelima E.},
+         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
+      }}%
+      {{hash=PEC}{%
+         family={Prescott},
+         familyi={P\bibinitperiod},
+         given={Edward\bibnamedelima C.},
+         giveni={E\bibinitperiod\bibinitdelim C\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Harvard University Press}%
+    }
+    \strng{namehash}{SNL+1}
+    \strng{fullhash}{SNLLJREPEC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{labelyear}{1989}
+    \field{labeldatesource}{}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{title}{Recursive Methods in Economic Dynamics}
+    \list{location}{1}{%
+      {Cambridge, MA}%
+    }
+    \field{year}{1989}
+  \endentry
+\enddatalist
+\endinput
