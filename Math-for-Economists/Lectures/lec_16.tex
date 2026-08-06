@@ -1,0 +1,952 @@
+% Source: Fukuda (2026), Supplementary Ch. 16 "Introduction to Continuous-Time
+% Dynamic Optimization" (pp. 563-575): Sec. 16.1 (the continuous-time cake-eating
+% problem solved by a direct variation, and the transversality condition that
+% pins down the constant); Sec. 16.2 (the optimal-control problem, the
+% present-value Hamiltonian and the three first-order conditions with their
+% derivation by perturbation and integration by parts, the current-value
+% Hamiltonian and the change mu = e^{rt} lambda, and the cake-eating example
+% solved with both Hamiltonians); Sec. 16.3 (the calculus-of-variations problem,
+% the Euler-Lagrange equation, its derivation from optimal control and its direct
+% derivation); Sec. 16.4 and Example 16.1 (the heuristic continuous-time limit of
+% the Bellman equation and the resulting HJB equation, solved for the cake
+% problem by guess and verify). Proposition 7.30 (p. 288), the fundamental lemma
+% of the calculus of variations, is the tool used throughout.
+% External references actually cited in this chapter: Amann-Escher (2008),
+% Cesari (1983), Halkin (1974), Kamien-Schwartz (1981), Pontryagin et al.
+% (1962), Seierstad-Sydsaeter (1987).
+% No Gerzensee slide covers
+% its material: every statement is drawn from the supplementary lecture notes
+% listed above. The connection to the slides runs through the discrete-time
+% Ramsey model of Dynamic Programming slides 36-41, treated in lec_15.tex.
+
+\chapter{Continuous-Time Dynamic Optimisation}
+\label{ch:continuoustime}
+
+\section{From Sequences to Paths}\label{sec:ct-motivation}
+
+The chapter preceding treated the choice of a sequence; this one treats the choice
+of a function of time. The change is more than notational. A sequence is a point
+in a space of countably many coordinates and can be perturbed one coordinate at a
+time; a path must be perturbed by another path, and the first-order condition is
+therefore an equation that must hold for \emph{every} admissible perturbation.
+Converting such a family of scalar conditions into a pointwise differential
+equation is the office of the following lemma, and every result in this chapter
+rests on it.
+
+\begin{lemma}[Fundamental lemma of the calculus of variations]\label{lem:fundamental-cov}
+	Let $t_0<t_1$ and let $g\in\Cspace{[t_0,t_1]}{\R}$ satisfy
+	\begin{equation}\label{eq:fundamental-cov}
+		\int_{t_0}^{t_1}g(t)h(t)\,\diff t=0
+		\qquad\text{for every }h\in\Cspace{[t_0,t_1]}{\R}
+		\text{ with }h(t_0)=h(t_1)=0 .
+	\end{equation}
+	Then $g\equiv0$ on $[t_0,t_1]$.
+\end{lemma}
+
+\begin{proof}
+	Suppose $g(s)\neq0$ for some $s\in(t_0,t_1)$; without loss of generality
+	$g(s)>0$, otherwise replace $g$ by $-g$. By continuity there are
+	$\alpha,\beta$ with $t_0<\alpha<s<\beta<t_1$ and
+	$g(t)>\tfrac12g(s)$ for every $t\in[\alpha,\beta]$. Define
+	\[
+		h(t)\eqdef\begin{cases}(t-\alpha)(\beta-t), & t\in[\alpha,\beta], \\
+              0,                            & \text{otherwise.}\end{cases}
+	\]
+	This $h$ is continuous on $[t_0,t_1]$ --- it vanishes at $\alpha$ and $\beta$,
+	where the two branches meet --- non-negative, and satisfies
+	$h(t_0)=h(t_1)=0$. Then
+	\[
+		\int_{t_0}^{t_1}g(t)h(t)\,\diff t
+		=\int_{\alpha}^{\beta}g(t)h(t)\,\diff t
+		>\frac{g(s)}{2}\int_{\alpha}^{\beta}(t-\alpha)(\beta-t)\,\diff t
+		=\frac{g(s)}{2}\cdot\frac{(\beta-\alpha)^{3}}{6}>0,
+	\]
+	using \autoref{prop:integral-properties} for the strict monotonicity of the
+	integral of a continuous function that is strictly positive on
+	$[\alpha,\beta]$. This contradicts \eqref{eq:fundamental-cov}. Hence $g$
+	vanishes on the open interval, and by continuity at the endpoints as well.
+\end{proof}
+
+This is Proposition~7.30 of \textcite[p.~288]{fukuda2026notes}. Read in the
+language of \autoref{ch:projection}, it says that the only continuous function
+orthogonal, in the $L^{2}$ inner product $\ip{g}{h}=\int g h$, to every continuous
+function vanishing at the endpoints is the zero function: the set of such $h$ is
+dense in $L^{2}[t_0,t_1]$, so its orthogonal complement is trivial by
+\autoref{prop:orthogonal-complement}. The elementary proof above avoids the
+density argument and is the one used here because it also delivers the conclusion
+for the piecewise-defined perturbations that appear in constrained problems.
+
+\section{The Calculus of Variations}\label{sec:ct-variations}
+
+\begin{definition}[Variational problem]\label{def:variational-problem}
+	Given $f\colon[t_0,t_1]\times\R\times\R\to\R$ continuously differentiable and
+	endpoints $x_0,x_1\in\R$, the \dfnas{calculus of variations}{calculus-of-variations
+		problem} is
+	\begin{equation}\label{eq:cov-problem}
+		\max_{x(\cdot)}\ \int_{t_0}^{t_1}f\bigl(t,x(t),\dot x(t)\bigr)\,\diff t
+		\qquad\st\quad x(t_0)=x_0,\ x(t_1)=x_1,
+	\end{equation}
+	the maximum being over continuously differentiable paths $x\colon[t_0,t_1]\to\R$.
+\end{definition}
+
+\begin{theorem}[Euler--Lagrange equation]\label{thm:euler-lagrange}
+	Let $x^{\ast}$ solve \eqref{eq:cov-problem} and suppose
+	$t\mapsto f_{\dot x}\bigl(t,x^{\ast}(t),\dot x^{\ast}(t)\bigr)$ is continuously
+	differentiable. Then
+	\begin{equation}\label{eq:euler-lagrange}
+		f_x\bigl(t,x^{\ast}(t),\dot x^{\ast}(t)\bigr)
+		-\deriv{}{t}\Bigl[f_{\dot x}\bigl(t,x^{\ast}(t),\dot x^{\ast}(t)\bigr)\Bigr]=0
+		\qquad\text{for every }t\in[t_0,t_1].
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	Fix a continuously differentiable $h$ with $h(t_0)=h(t_1)=0$, so that
+	$x^{\ast}+ah$ is admissible for every $a\in\R$, and set
+	\[
+		J(a)\eqdef\int_{t_0}^{t_1}
+		f\bigl(t,x^{\ast}(t)+ah(t),\dot x^{\ast}(t)+a\dot h(t)\bigr)\,\diff t .
+	\]
+	Optimality of $x^{\ast}$ gives $J(0)\geq J(a)$ for all $a$, so $a=0$ is an
+	interior maximiser of $J$ and \autoref{thm:fermat} gives $J'(0)=0$, provided
+	$J$ is differentiable. It is, by
+	\autoref{thm:differentiation-under-integral}: the integrand is continuously
+	differentiable in $a$ and its $a$-derivative is continuous in $(t,a)$, hence
+	bounded on the compact set $[t_0,t_1]\times[-1,1]$. Differentiating under the
+	integral sign and using \autoref{thm:chain-rule},
+	\[
+		J'(a)=\int_{t_0}^{t_1}\Bigl\{f_x\bigl(t,x,\dot x\bigr)h(t)
+		+f_{\dot x}\bigl(t,x,\dot x\bigr)\dot h(t)\Bigr\}\,\diff t,
+		\qquad x=x^{\ast}+ah .
+	\]
+	Integrating the second term by parts (\autoref{thm:by-parts}),
+	\[
+		\int_{t_0}^{t_1}f_{\dot x}\dot h\,\diff t
+		=\at{f_{\dot x}h}{t_0}{t_1}
+		-\int_{t_0}^{t_1}\deriv{f_{\dot x}}{t}h\,\diff t
+		=-\int_{t_0}^{t_1}\deriv{f_{\dot x}}{t}h\,\diff t,
+	\]
+	the boundary term vanishing because $h(t_0)=h(t_1)=0$. Hence
+	\[
+		0=J'(0)=\int_{t_0}^{t_1}
+		\Bigl[f_x\bigl(t,x^{\ast},\dot x^{\ast}\bigr)
+			-\deriv{}{t}f_{\dot x}\bigl(t,x^{\ast},\dot x^{\ast}\bigr)\Bigr]h(t)\,\diff t
+	\]
+	for every admissible $h$, and \autoref{lem:fundamental-cov} gives
+	\eqref{eq:euler-lagrange}.
+\end{proof}
+
+The derivative $\deriv{}{t}f_{\dot x}$ in \eqref{eq:euler-lagrange} is a total
+derivative along the path, not a partial derivative: expanded by the chain rule
+it is
+$f_{\dot xt}+f_{\dot xx}\dot x^{\ast}+f_{\dot x\dot x}\ddot x^{\ast}$, so the
+Euler--Lagrange equation is a second-order ordinary differential equation in
+$x^{\ast}$, and the two endpoint conditions of \eqref{eq:cov-problem} are exactly
+what a second-order equation requires. That count is the structural reason a
+variational problem with one free endpoint needs a substitute boundary condition,
+and the substitute is the transversality condition of
+\autoref{sec:ct-control}.
+
+\begin{remark}[Necessary, not sufficient]\label{rem:el-necessary}
+	\autoref{thm:euler-lagrange} is a first-order necessary condition and nothing
+	more: it is \autoref{thm:fermat} applied along a one-parameter family, so it
+	identifies stationary paths, among which are minima and saddles. Sufficiency
+	requires concavity, exactly as in \autoref{thm:foc-concave}. If
+	$(x,\dot x)\mapsto f(t,x,\dot x)$ is concave for each $t$, then a path
+	satisfying \eqref{eq:euler-lagrange} is a global maximiser, because for any
+	admissible $x$,
+	\[
+		\int_{t_0}^{t_1}\bigl[f(t,x,\dot x)-f(t,x^{\ast},\dot x^{\ast})\bigr]\,\diff t
+		\leq\int_{t_0}^{t_1}\bigl[f_x\cdot(x-x^{\ast})
+			+f_{\dot x}\cdot(\dot x-\dot x^{\ast})\bigr]\,\diff t=0,
+	\]
+	the inequality by \autoref{thm:concave-gradient} and the final equality by the
+	same integration by parts as in the proof, using \eqref{eq:euler-lagrange} and
+	$x(t_i)=x^{\ast}(t_i)$. The concavity hypothesis is satisfied in the economic
+	problems below because $U$ is concave and the constraint is linear in the
+	control.
+\end{remark}
+
+\section{Optimal Control}\label{sec:ct-control}
+
+Optimal control generalises \autoref{def:variational-problem} by separating the
+control from the rate of change of the state, which permits constraints on the
+control and transitions that are not of the form $\dot x=u$.
+
+\begin{definition}[Optimal control problem]\label{def:control-problem}
+	Fix a horizon $t_1<\infty$, an open \dfnas{control region}{control region}
+	$U\subseteq\R$, and functions $f,g\colon[t_0,t_1]\times\R\times U\to\R$ that are
+	continuously differentiable. An \dfnas{admissible control}{admissible control}
+	is a continuously differentiable $u\colon[t_0,t_1]\to U$ for which the initial
+	value problem
+	\begin{equation}\label{eq:state-ode}
+		\dot x(t)=g\bigl(t,x(t),u(t)\bigr),\qquad x(t_0)=x_0
+	\end{equation}
+	has a solution on the whole of $[t_0,t_1]$; that solution is then unique and is
+	the \dfnas{state trajectory}{state trajectory} generated by $u$, by the
+	Picard--Lindel\"of theorem \autocite[Thm.~VII.8.14, p.~235]{amann2008analysisII}
+	applied to the locally Lipschitz right-hand side. The problem is
+	\begin{equation}\label{eq:control-problem}
+		\max_{u(\cdot)\ \text{admissible}}\ \int_{t_0}^{t_1}f\bigl(t,x(t),u(t)\bigr)\,\diff t
+		\qquad\st\quad\eqref{eq:state-ode},
+	\end{equation}
+	with $x(t_1)$ unrestricted. The function $x$ is the \dfn{state}, $u$ the
+	\dfn{control}, and the \dfnas{Hamiltonian}{present-value Hamiltonian} is
+	\begin{equation}\label{eq:hamiltonian}
+		\mathcal{H}(t,x,u,\lambda)\eqdef f(t,x,u)+\lambda(t)\,g(t,x,u),
+	\end{equation}
+	with $\lambda$ the \dfnas{co-state variable}{co-state variable}.
+	\nidx{hamiltonian}{$\mathcal{H}$, Hamiltonian}
+\end{definition}
+
+Openness of $U$ is what makes the perturbation $u^{\ast}+ah$ admissible for small
+$\abs{a}$, and it is why the theorem below produces a stationarity condition
+rather than a maximisation. The restriction to continuously differentiable
+controls is a genuine loss --- optimal controls are frequently only piecewise
+continuous, and in bang-bang problems they are discontinuous --- and
+\autoref{rem:pmp-general} records what the general theory delivers instead.
+
+\begin{theorem}[First-order necessary conditions, interior case]
+	\label{thm:maximum-principle}
+	Let $(u^{\ast},x^{\ast})$ solve \eqref{eq:control-problem}, and assume that for
+	every continuously differentiable $h\colon[t_0,t_1]\to\R$ the perturbed problem
+	\eqref{eq:state-ode} with control $u^{\ast}+ah$ has a solution $y(\cdot,a)$ on
+	$[t_0,t_1]$ for all $\abs{a}$ small, with $(t,a)\mapsto y(t,a)$ continuous and
+	$a\mapsto y(t,a)$ continuously differentiable, uniformly in $t$. Then there is a
+	continuously differentiable
+	$\lambda\colon[t_0,t_1]\to\R$ such that, for every $t$,
+	\begin{align}
+		\pderiv{\mathcal{H}}{u}=0
+		 & \iff f_u+\lambda g_u=0,\label{eq:mp-optimality}                     \\
+		-\pderiv{\mathcal{H}}{x}=\dot\lambda
+		 & \iff \dot\lambda(t)=-\bigl(f_x+\lambda g_x\bigr),\label{eq:mp-costate} \\
+		\pderiv{\mathcal{H}}{\lambda}=\dot x
+		 & \iff \dot x=g,\label{eq:mp-state}
+	\end{align}
+	together with the initial condition $x(t_0)=x_0$ and the
+	\dfnas{transversality condition}{transversality condition} $\lambda(t_1)=0$.
+\end{theorem}
+
+\begin{proof}
+	Perturb the control, $u=u^{\ast}+ah$ for a fixed continuously differentiable
+	$h$, and let $y(t,a)$ be the state path it induces through
+	\eqref{eq:state-ode}, so $y(t,0)=x^{\ast}(t)$ and $y(t_0,a)=x_0$ for every $a$;
+	the hypothesis of the theorem is that this family is well defined and
+	differentiable in $a$. Let $\lambda$ be any continuously differentiable
+	function, to be chosen. Since
+	the constraint holds identically along every admissible path, the objective is
+	unchanged by adding $\lambda(g-\dot x)\equiv0$ to the integrand, and
+	integration by parts (\autoref{thm:by-parts}) gives
+	\begin{align*}
+		J(a) & \eqdef\int_{t_0}^{t_1}
+		\Bigl\{f\bigl(t,y,u^{\ast}+ah\bigr)
+		+\lambda g\bigl(t,y,u^{\ast}+ah\bigr)-\lambda\dot y\Bigr\}\,\diff t                        \\
+		     & =\int_{t_0}^{t_1}\Bigl\{f+\lambda g+\dot\lambda\,y\Bigr\}\,\diff t
+		-\lambda(t_1)y(t_1,a)+\lambda(t_0)\underbrace{y(t_0,a)}_{=x_0} .
+	\end{align*}
+	Differentiating at $a=0$, legitimate by
+	\autoref{thm:differentiation-under-integral}, and writing
+	$y_a\eqdef\partial y/\partial a$ evaluated at $a=0$,
+	\begin{equation}\label{eq:mp-variation}
+		J'(0)=\int_{t_0}^{t_1}
+		\Bigl\{\bigl(f_u+\lambda g_u\bigr)h
+		+\bigl(f_x+\lambda g_x+\dot\lambda\bigr)y_a\Bigr\}\,\diff t
+		-\lambda(t_1)\,y_a(t_1),
+	\end{equation}
+	the term in $\lambda(t_0)$ contributing nothing because $y(t_0,a)=x_0$ for all
+	$a$.
+
+	The function $\lambda$ is still free. Choose it to solve the linear differential
+	equation \eqref{eq:mp-costate} with terminal condition $\lambda(t_1)=0$; a
+	solution exists and is unique on $[t_0,t_1]$ because the equation is linear in
+	$\lambda$ with continuous coefficients, and the integrating-factor
+	representation
+	$\lambda(t)=\int_{t}^{t_1}f_x(s)\exp\bigl(\int_{t}^{s}g_x(\tau)\,\diff\tau\bigr)\,\diff s$
+	exhibits it. This choice annihilates the second and third terms of
+	\eqref{eq:mp-variation}, and $J'(0)=0$ by optimality, leaving
+	\[
+		\int_{t_0}^{t_1}\bigl(f_u+\lambda g_u\bigr)h(t)\,\diff t=0
+		\qquad\text{for every admissible }h .
+	\]
+	\autoref{lem:fundamental-cov} then gives \eqref{eq:mp-optimality} pointwise.
+	Equation \eqref{eq:mp-state} is the constraint, restated as a partial derivative
+	of $\mathcal{H}$.
+\end{proof}
+
+\begin{remark}[What Pontryagin's maximum principle actually says]
+	\label{rem:pmp-general}
+	\autoref{thm:maximum-principle} is a stationarity result, not a maximum
+	principle. It says $\partial\mathcal{H}/\partial u=0$ along the optimal path,
+	which locates a critical point of $\mathcal{H}$ in the control, and it obtains
+	that conclusion from an interior perturbation in an open control region. It
+	differs from the theorem of \textcite{pontryagin1962mathematical} in the
+	following respects.
+
+	First, the conclusion. The maximum principle asserts
+	\begin{equation}\label{eq:pmp}
+		u^{\ast}(t)\in\argmax_{u\in U}\ \mathcal{H}\bigl(t,x^{\ast}(t),u,\lambda(t)\bigr)
+		\qquad\text{for almost every }t,
+	\end{equation}
+	with $U$ an arbitrary set, closed or finite included. Where $U$ is open and
+	$\mathcal{H}$ is differentiable in $u$, \eqref{eq:pmp} implies
+	\eqref{eq:mp-optimality}; the converse fails, since a stationary point of
+	$\mathcal{H}$ need be neither a maximum nor even a local maximum. In a problem
+	linear in the control, $\partial\mathcal{H}/\partial u$ never vanishes except on
+	singular arcs, \eqref{eq:mp-optimality} is empty, and \eqref{eq:pmp} selects the
+	bang-bang solution.
+
+	Second, the multipliers. The general statement produces a pair
+	$(\lambda_0,\lambda)$ with $\lambda_0\in\{0,1\}$, replaces $\mathcal{H}$ by
+	$\lambda_0f+\lambda g$, and asserts only $(\lambda_0,\lambda)\neq(0,0)$. The
+	\dfnas{abnormal multiplier}{abnormal case} $\lambda_0=0$ deletes the objective
+	from the Hamiltonian; it arises when the constraint structure alone determines
+	the optimal path, and it cannot be excluded without a constraint qualification.
+	\autoref{thm:maximum-principle} silently normalises $\lambda_0=1$, which the
+	free terminal state and the open control region make legitimate here.
+
+	Third, the class of controls and the constraints. The general theorem admits
+	measurable controls and yields \eqref{eq:pmp} almost everywhere; it accommodates
+	terminal constraints $x(t_1)\in S$, in which case $\lambda(t_1)$ is normal to
+	$S$ rather than zero, and pure state constraints $\psi(t,x)\geq0$, in which case
+	$\lambda$ acquires jumps at the entry and exit times of the constrained arc and
+	is only of bounded variation. None of these appears below, and each is treated
+	in \textcite{kamien1981dynamic}.
+\end{remark}
+
+\begin{remark}[Existence of an optimal control]\label{rem:ct-existence}
+	\autoref{thm:maximum-principle} and \eqref{eq:pmp} are necessary conditions:
+	they describe an optimal control if one exists, and every application below
+	establishes optimality separately, by concavity or by a verification argument.
+	Existence itself needs a compactness argument, and the compactness is supplied
+	by \autoref{thm:arzela-ascoli}.
+
+	Suppose the control values lie in a compact $U\subseteq\R^{k}$, that $g$ is
+	continuous and bounded by $C$ on $[t_0,t_1]\times K\times U$ for a compact $K$
+	containing every admissible trajectory, and that $f$ is continuous. Every
+	admissible trajectory then satisfies
+	$\abs{x(s)-x(t)}=\bigl\lvert\int_t^sg\bigr\rvert\leq C\abs{s-t}$ and starts at
+	$x_0$, so the admissible trajectories form a uniformly Lipschitz family with a
+	common value at $t_0$ and, by \autoref{cor:lipschitz-compact}, a relatively
+	compact subset of $\Cspace{[t_0,t_1]}{\R^{n}}$. A maximising sequence of
+	admissible pairs therefore has a subsequence whose trajectories converge
+	uniformly.
+
+	The limit trajectory need not be admissible. What can fail is that the limit is
+	generated by no single control, and the standard illustration is
+	\[
+		\min_{u(\cdot)}\ \int_0^1x(t)^2\,\diff t
+		\qquad\st\quad \dot x=u,\quad u(t)\in\{-1,1\},\quad x(0)=0 .
+	\]
+	Switching $u$ between $-1$ and $1$ every $1/n$ units of time keeps
+	$\abs{x}\leq1/n$, so the infimum is $0$; but a control attaining it would need
+	$x\equiv0$ and hence $\dot x=0\notin\{-1,1\}$. The trajectories converge
+	uniformly to $x\equiv0$ and the limit is generated by no admissible control.
+	Replacing $\{-1,1\}$ by its convex hull $[-1,1]$ restores existence, with
+	$u\equiv0$ optimal.
+
+	What the example isolates is convexity of the set of attainable velocities. The
+	Filippov--Cesari theorem states that if, in addition to the compactness
+	hypotheses above, the set
+	\[
+		N(t,x)\eqdef\bigl\{\bigl(f(t,x,u)+\gamma,\ g(t,x,u)\bigr)
+		: u\in U,\ \gamma\leq0\bigr\}\subseteq\R^{1+n}
+	\]
+	is convex for every $(t,x)$, and at least one admissible control exists, then an
+	optimal control exists. The proof is the compactness argument above together
+	with a closure theorem showing that the limit of admissible pairs is admissible,
+	for which convexity of $N(t,x)$ is what is needed; see
+	\textcite{cesari1983optimization} for the general theory of such existence and
+	closure theorems and \textcite{seierstad1987optimal} for the version stated for
+	economic problems. Convexity of $N(t,x)$ holds automatically when $g$ is affine
+	in $u$ and $f$ is concave in $u$ with $U$ convex, which covers the models of
+	\autoref{sec:ct-cake} and \autoref{sec:ct-ramsey}.
+\end{remark}
+
+\begin{remark}[What the three conditions say]\label{rem:mp-reading}
+	The co-state $\lambda(t)$ is the shadow price of the state at time $t$, the
+	continuous-time counterpart of the multiplier of \autoref{thm:kuhn-tucker} and
+	of the derivative $V'(x)$ of \autoref{thm:euler-envelope}. The optimality
+	condition \eqref{eq:mp-optimality} equates the marginal current return of the
+	control to its marginal cost in terms of the state it consumes, valued at
+	$\lambda$. The co-state equation \eqref{eq:mp-costate} is an asset-pricing
+	condition: rearranged as $-\dot\lambda=f_x+\lambda g_x$, it says the capital loss
+	on a unit of the state equals its current dividend plus its contribution to
+	future accumulation. The transversality condition $\lambda(t_1)=0$ says a unit
+	of the state has no value at the terminal date when the terminal state is free:
+	anything left over is wasted, so nothing should be left over.
+
+	When $t_1=\infty$ the terminal condition must be replaced, and the replacement
+	is less automatic than the finite-horizon case suggests. The condition usually
+	written is
+	\begin{equation}\label{eq:infinite-tvc}
+		\lim_{t\to\infty}\lambda(t)x(t)=0,
+		\qquad\text{equivalently}\qquad
+		\lim_{t\to\infty}e^{-\rho t}\mu(t)x(t)=0
+	\end{equation}
+	in current-value terms. It is \emph{not} a necessary condition for optimality in
+	general: \textcite{halkin1974necessary} exhibits an infinite-horizon control
+	problem with a smooth, bounded, concave structure whose unique optimal path
+	violates \eqref{eq:infinite-tvc}, and shows that no condition of that form can
+	be appended to the maximum principle without further hypotheses. What is true,
+	and is what the applications below use, is the converse direction: if $f$ and
+	$g$ are concave in $(x,u)$, if $(u^{\ast},x^{\ast})$ together with a
+	non-negative $\lambda$ satisfies \eqref{eq:mp-optimality}--\eqref{eq:mp-state},
+	and if $\liminf_{t\to\infty}\lambda(t)\bigl(x(t)-x^{\ast}(t)\bigr)\geq0$ for
+	every admissible $x$, then $(u^{\ast},x^{\ast})$ is optimal. Condition
+	\eqref{eq:infinite-tvc} together with $\lambda\geq0$ and $x\geq0$ implies that
+	hypothesis, so it functions as a sufficient condition and as a selection device
+	among candidates. \autoref{sec:ct-cake} is the illustration: the first-order
+	conditions leave a free constant, and \eqref{eq:infinite-tvc} is what pins it
+	down --- but the argument there proceeds by verification, exhibiting a solution
+	of the Hamilton--Jacobi--Bellman equation and checking optimality directly,
+	rather than by appeal to \eqref{eq:infinite-tvc} as a necessary condition.
+\end{remark}
+
+\begin{proposition}[Current-value Hamiltonian]\label{prop:current-value}
+	Consider the discounted problem
+	\begin{equation}\label{eq:discounted-control}
+		\max_{u(\cdot)}\ \int_{t_0}^{t_1}e^{-\rho t}f\bigl(t,x(t),u(t)\bigr)\,\diff t
+		\qquad\st\quad\dot x=g(t,x,u),\ x(t_0)=x_0,
+	\end{equation}
+	and define the \dfnas{current-value Hamiltonian}{current-value Hamiltonian}
+	$H\eqdef e^{\rho t}\mathcal{H}=f(t,x,u)+\mu(t)g(t,x,u)$ with
+	$\mu(t)\eqdef e^{\rho t}\lambda(t)$. Then \eqref{eq:mp-optimality}--%
+	\eqref{eq:mp-state} become
+	\begin{equation}\label{eq:current-value-conditions}
+		\pderiv{H}{u}=0,
+		\qquad
+		\dot\mu(t)=\rho\mu(t)-\pderiv{H}{x},
+		\qquad
+		\pderiv{H}{\mu}=\dot x .
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	The optimality condition is unaffected by multiplying $\mathcal{H}$ by the
+	positive factor $e^{\rho t}$, which does not depend on $u$. For the co-state
+	equation, \eqref{eq:mp-costate} reads
+	$-\dot\lambda=\partial\mathcal{H}/\partial x$, and multiplying by $e^{\rho t}$
+	gives $-e^{\rho t}\dot\lambda=\partial H/\partial x$. Since
+	$\mu=e^{\rho t}\lambda$, the product rule
+	(\autoref{prop:deriv-product}) gives
+	\[
+		\dot\mu=\rho e^{\rho t}\lambda+e^{\rho t}\dot\lambda
+		=\rho\mu-\pderiv{H}{x} .
+	\]
+	The state equation is unchanged since $\partial H/\partial\mu=g$.
+\end{proof}
+
+The current-value formulation removes the explicit $e^{-\rho t}$ from every
+equation and leaves an autonomous system whenever $f$ and $g$ do not depend on
+$t$ directly. That is the practical reason it is preferred in economics: the
+resulting pair of differential equations in $(x,\mu)$ has a phase diagram, and
+the steady state and saddle path of \autoref{sec:ct-ramsey} are features of that
+diagram.
+
+\begin{proposition}[Calculus of variations as a special case]\label{prop:cov-from-control}
+	The problem \eqref{eq:cov-problem} is \eqref{eq:control-problem} with
+	$u\eqdef\dot x$ and $g(t,x,u)=u$, and the maximum principle then reproduces the
+	Euler--Lagrange equation \eqref{eq:euler-lagrange}.
+\end{proposition}
+
+\begin{proof}
+	With $g=u$ the Hamiltonian is $\mathcal{H}=f(t,x,u)+\lambda u$, so
+	\eqref{eq:mp-optimality} reads $f_u+\lambda=0$ and \eqref{eq:mp-costate} reads
+	$\dot\lambda=-f_x$. Differentiating the first along the path and using
+	$u=\dot x$ from \eqref{eq:mp-state},
+	\[
+		\dot\lambda=-\deriv{}{t}f_u\bigl(t,x,u\bigr)
+		=-\deriv{}{t}f_{\dot x}\bigl(t,x,\dot x\bigr),
+	\]
+	and eliminating $\dot\lambda$ between this and $\dot\lambda=-f_x$ gives
+	$f_x=\deriv{}{t}f_{\dot x}$.
+\end{proof}
+
+\section{The Hamilton--Jacobi--Bellman Equation}\label{sec:ct-hjb}
+
+The third route to the same conditions is dynamic programming, obtained as the
+continuous-time limit of \autoref{ch:dynamic}.
+
+\paragraph{Heuristic derivation.} Divide time into periods of length $\delta>0$
+and discount one period by $1/(1+\delta\rho)$. Calendar date $t$ is reached after
+$t/\delta$ periods, so the factor applied to a payoff at $t$ is
+$(1+\delta\rho)^{-t/\delta}$, and writing it as
+$\bigl[(1+\delta\rho)^{1/(\delta\rho)}\bigr]^{-\rho t}$ shows
+\[
+	(1+\delta\rho)^{-t/\delta}\longrightarrow e^{-\rho t}
+	\qquad\text{as }\delta\downarrow0,
+\]
+since $(1+h)^{1/h}\to e$ as $h\downarrow0$. The problem is stationary, so its
+value depends on the state alone and the accounting can be done in current
+values, avoiding the factor entirely. Over one period the flow payoff is
+$r(x,u)\delta$ and the state moves to $x+g(x,u)\delta$, so
+\[
+	V(x)=\max_{u}\ \Bigl\{r(x,u)\,\delta
+	+\tfrac{1}{1+\rho\delta}\,V\bigl(x+g(x,u)\delta\bigr)\Bigr\}.
+\]
+Assume $V$ differentiable and expand both factors to first order, using
+\autoref{thm:taylor-n} for the value and
+$(1+\rho\delta)^{-1}=1-\rho\delta+o(\delta)$ for the discount:
+\[
+	\tfrac{1}{1+\rho\delta}V\bigl(x+g\delta\bigr)
+	=V(x)+\bigl[V'(x)g(x,u)-\rho V(x)\bigr]\delta+o(\delta).
+\]
+Substituting, cancelling $V(x)$, dividing by $\delta$ and letting
+$\delta\downarrow0$ gives
+$0=\max_u\{r(x,u)+V'(x)g(x,u)-\rho V(x)\}$, and $\rho V(x)$ does not depend on
+$u$.
+
+\begin{definition}[HJB equation]\label{def:hjb}
+	The \dfnas{Hamilton--Jacobi--Bellman
+		equation}{Hamilton--Jacobi--Bellman equation} of the stationary infinite-horizon problem
+	$V(x)=\max\int_0^{\infty}e^{-\rho t}r(x_t,u_t)\,\diff t$ subject to
+	$\dot x=g(x,u)$, $x_0=x$, is
+	\begin{equation}\label{eq:hjb}
+		\rho V(x)=\max_{u}\ \bigl\{r(x,u)+V'(x)\,g(x,u)\bigr\}.
+	\end{equation}
+\end{definition}
+
+Equation \eqref{eq:hjb} is the asset-pricing form of the Bellman equation and was
+met in \eqref{eq:hjb-scalar}: the required return $\rho V$ on the ``asset'' $x$
+equals the current dividend $r$ plus the expected capital gain
+$V'(x)\dot x$. Comparing \eqref{eq:hjb} with \eqref{eq:hamiltonian} identifies
+the maximand as the current-value Hamiltonian with $\mu=V'(x)$: the co-state is
+the derivative of the value function, exactly as $\lambda$ was the shadow price in
+\autoref{rem:mp-reading} and as $V'$ was in \eqref{eq:ramsey-envelope}. The three
+methods of this chapter --- variations, the maximum principle, dynamic programming
+--- are therefore three presentations of one set of conditions, and which is most
+convenient depends on the problem rather than on the mathematics.
+
+\begin{remark}[The status of the derivation]\label{rem:hjb-heuristic}
+	The passage to the limit above assumes what it should prove: that $V$ is
+	differentiable, that the limit and the maximum interchange, and that the
+	discrete problems converge to the continuous one. None of these is automatic.
+	The value function of a control problem is in general only continuous, and
+	\eqref{eq:hjb} then holds in the weaker \emph{viscosity} sense rather than
+	pointwise. Where a classical solution of \eqref{eq:hjb} does exist and the
+	associated policy is admissible, a verification argument establishes optimality
+	directly, without any limit: this is the content of
+	\autoref{prop:ct-cake-verification} below, and it is why guess-and-verify is the
+	honest way to use \eqref{eq:hjb}.
+\end{remark}
+
+\section{The Continuous-Time Cake-Eating Problem}\label{sec:ct-cake}
+
+\paragraph{Problem.} Maximise $\int_0^{\infty}e^{-rt}\log c(t)\,\diff t$ subject to
+$\dot k(t)=-c(t)$, $k(0)=k_0>0$, $c(t)>0$, together with the transversality
+condition $\lim_{t\to\infty}k(t)=0$.
+
+\begin{proposition}[Solution by three routes]\label{prop:ct-cake}
+	The problem has the unique solution
+	\begin{equation}\label{eq:ct-cake-solution}
+		k^{\ast}(t)=k_0e^{-rt},
+		\qquad
+		c^{\ast}(t)=rk_0e^{-rt},
+		\qquad
+		V(k)=\frac{\log r-1+\log k}{r},
+	\end{equation}
+	and the optimal feedback rule is $c=rk$.
+\end{proposition}
+
+\begin{proof}
+	\emph{Variational route.} Substituting $c=-\dot k$ turns the problem into
+	\eqref{eq:cov-problem} with $f(t,k,\dot k)=e^{-rt}\log(-\dot k)$. Here $f_k=0$
+	and $f_{\dot k}=-e^{-rt}/(-\dot k)\cdot(-1)=e^{-rt}/\dot k$, so
+	\eqref{eq:euler-lagrange} reduces to
+	\[
+		\deriv{}{t}\left(\frac{e^{-rt}}{\dot k^{\ast}(t)}\right)=0,
+	\]
+	that is $e^{-rt}/\dot k^{\ast}(t)$ is constant in $t$, so
+	$\dot k^{\ast}(t)=ae^{-rt}$ for some $a\in\R$. Integrating from $0$ to $t$ by
+	\autoref{thm:ftc},
+	\[
+		k^{\ast}(t)=k_0+\int_0^{t}ae^{-r\tau}\,\diff\tau
+		=k_0+\frac{a}{r}\bigl(1-e^{-rt}\bigr).
+	\]
+	Letting $t\to\infty$ and imposing $\lim_tk^{\ast}(t)=0$ gives
+	$k_0+a/r=0$, that is $a=-rk_0$, whence
+	$k^{\ast}(t)=k_0e^{-rt}$ and $c^{\ast}(t)=-\dot k^{\ast}(t)=rk_0e^{-rt}$.
+
+	\emph{Hamiltonian route.} The current-value Hamiltonian is
+	$H=\log c-\mu c$. Condition \eqref{eq:current-value-conditions} gives
+	$1/c=\mu$; and $\partial H/\partial k=0$, so $\dot\mu=r\mu$. This separable
+	equation integrates to $\mu(t)=\mu(0)e^{rt}$, hence
+	$c(t)=1/\mu(t)=ae^{-rt}$ with $a=1/\mu(0)$. The state equation and the
+	transversality condition then reproduce the previous paragraph with the
+	sign of $a$ reversed, giving $a=rk_0$ and the same paths. With the
+	present-value Hamiltonian $\mathcal{H}=e^{-rt}\log c-\lambda c$ the co-state
+	equation is $-\dot\lambda=\partial\mathcal{H}/\partial k=0$, so $\lambda$ is
+	constant and $e^{-rt}/c(t)=\lambda$ delivers $c(t)=ae^{-rt}$ directly.
+
+	\emph{Dynamic programming route.} See
+	\autoref{prop:ct-cake-verification}.
+\end{proof}
+
+\begin{proposition}[Verification via HJB]\label{prop:ct-cake-verification}
+	The function $V(k)=(\log r-1+\log k)/r$ solves \eqref{eq:hjb} for the
+	cake problem, the maximiser is $c=rk$, and the resulting path is optimal.
+\end{proposition}
+
+\begin{proof}
+	Here $r(k,c)=\log c$ and $g(k,c)=-c$, so \eqref{eq:hjb} reads
+	$rV(k)=\max_{c>0}\{\log c-V'(k)c\}$. Guess $V(k)=A+B\log k$, so
+	$V'(k)=B/k>0$ for $B>0$; the objective is then strictly concave in $c$ with
+	$\lim_{c\downarrow0}$ derivative $+\infty$, so by \autoref{thm:foc-concave} the
+	unique maximiser solves $1/c=B/k$, that is $c=k/B$. Substituting,
+	\[
+		r(A+B\log k)=\log\frac{k}{B}-\frac{B}{k}\cdot\frac{k}{B}
+		=\log k-\log B-1 .
+	\]
+	Matching the coefficient of $\log k$ gives $rB=1$, so $B=1/r$; matching
+	constants gives $rA=-\log B-1=\log r-1$, so $A=(\log r-1)/r$. The feedback rule
+	is $c=k/B=rk$, so the state obeys $\dot k=-rk$, giving
+	$k^{\ast}(t)=k_0e^{-rt}$ and $c^{\ast}(t)=rk_0e^{-rt}$, which satisfy the
+	transversality condition.
+
+	\emph{Optimality.} The usual verification argument integrates
+	$\deriv{}{t}[e^{-rt}V(k(t))]\leq-e^{-rt}\log c(t)$ from $0$ to $T$ to obtain
+	\[
+		\int_0^{T}e^{-rt}\log c(t)\,\diff t\leq V(k_0)-e^{-rT}V\bigl(k(T)\bigr)
+	\]
+	and then discards the terminal term. That step is not available here:
+	$V(k)\to-\infty$ as $k\downarrow0$, so on a path whose stock is driven to zero
+	quickly the term $-e^{-rT}V(k(T))$ diverges to $+\infty$ and the bound becomes
+	vacuous rather than tight. Since $k(T)\to0$ is precisely what the candidate path
+	does, the terminal term must be avoided rather than estimated. The following
+	argument does that, and uses nothing beyond concavity of the logarithm.
+
+	Let $(c,k)$ be admissible: $c\geq0$ measurable, $\dot k=-c$, $k(0)=k_0$ and
+	$k(t)\geq0$ for all $t$. If $c=0$ on a set of positive measure, or if the
+	negative part of $t\mapsto e^{-rt}\log c(t)$ is not integrable, the objective is
+	$-\infty$ and there is nothing to prove; so assume $c>0$ almost everywhere with
+	the objective well defined in $[-\infty,\infty)$. Write
+	$c^{\ast}(t)\eqdef rk_0e^{-rt}$ for the candidate. Concavity of $\log$ gives the
+	tangent-line bound (\autoref{thm:concave-gradient})
+	\[
+		\log c(t)\leq\log c^{\ast}(t)+\frac{c(t)-c^{\ast}(t)}{c^{\ast}(t)}
+		\qquad\text{for almost every }t .
+	\]
+	Multiply by $e^{-rt}$ and integrate. Using
+	$\int_0^{\infty}e^{-rt}\diff t=1/r$ and
+	$\int_0^{\infty}te^{-rt}\diff t=1/r^{2}$,
+	\begin{align*}
+		\int_0^{\infty}e^{-rt}\log c^{\ast}(t)\,\diff t
+		 & =\int_0^{\infty}e^{-rt}\bigl(\log(rk_0)-rt\bigr)\,\diff t
+		=\frac{\log(rk_0)-1}{r}=V(k_0),                                            \\
+		\int_0^{\infty}e^{-rt}\frac{c(t)-c^{\ast}(t)}{c^{\ast}(t)}\,\diff t
+		 & =\frac{1}{rk_0}\int_0^{\infty}c(t)\,\diff t-\frac1r,
+	\end{align*}
+	the second line because $e^{-rt}/c^{\ast}(t)=1/(rk_0)$ is constant. Feasibility
+	gives $\int_0^{T}c(t)\,\diff t=k_0-k(T)\leq k_0$ for every $T$, hence
+	$\int_0^{\infty}c\leq k_0$ and the second display is at most $1/r-1/r=0$.
+	Therefore
+	\[
+		\int_0^{\infty}e^{-rt}\log c(t)\,\diff t\leq V(k_0),
+	\]
+	and the candidate attains the bound, since the first display is an equality.
+	Equality requires $c=c^{\ast}$ almost everywhere, because the tangent-line
+	inequality is strict wherever $c\neq c^{\ast}$ and $\log$ is strictly concave;
+	the optimal path is therefore unique up to a null set.
+\end{proof}
+
+\begin{figure}[htbp]
+	\centering
+	\input{Figures/cake-paths.tex}
+	\caption[Optimal paths in the continuous-time cake problem]{The optimal
+		paths \eqref{eq:ct-cake-solution}. Both decay at the common rate $r$, so
+		the ratio $c^{\ast}(t)/k^{\ast}(t)$ is constant and equal to $r$: the
+		feedback rule $c=rk$ is what makes the two curves scaled copies of each
+		other. The cake is exhausted only in the limit, which is the content of
+		the transversality condition $\lim_{t\to\infty}k(t)=0$.}
+	\label{fig:cake-paths}
+\end{figure}
+
+\begin{remark}[The discrete-time limit]\label{rem:ct-discrete-limit}
+	Compare \eqref{eq:ct-cake-solution}, drawn in \autoref{fig:cake-paths}, with
+	\eqref{eq:cake-solution}. In discrete
+	time with period length $\Delta$ and discount factor
+	$\beta=e^{-r\Delta}$, the policy is $c=(1-\beta)w$ per period, so the
+	consumption \emph{rate} is
+	\[
+		\frac{(1-e^{-r\Delta})w}{\Delta}\xrightarrow[\Delta\downarrow0]{}rw,
+	\]
+	by \autoref{thm:taylor-1d} applied to $\Delta\mapsto e^{-r\Delta}$, which is
+	exactly the feedback rule $c=rk$. Correspondingly the cake decays at rate
+	$\beta^{t/\Delta}=e^{-rt}$, matching $k^{\ast}(t)=k_0e^{-rt}$. The rate of time
+	preference $r$ in continuous time and the discount factor $\beta$ in discrete
+	time are related by $\beta=1/(1+r\Delta)+o(\Delta)$, which is the substitution
+	made in the derivation of \eqref{eq:hjb}. The agreement is not automatic --- it
+	requires the transversality conditions to correspond, which they do here
+	because both take the form ``the state is asymptotically exhausted''.
+\end{remark}
+
+\section{The Ramsey Model in Continuous Time}\label{sec:ct-ramsey}
+
+\paragraph{Problem.} A planner maximises
+$\int_0^{\infty}e^{-\rho t}u(c(t))\,\diff t$ subject to
+\begin{equation}\label{eq:ct-ramsey-constraint}
+	\dot k(t)=f\bigl(k(t)\bigr)-\delta k(t)-c(t),
+	\qquad k(0)=k_0>0,\ c(t)\geq0,\ k(t)\geq0,
+\end{equation}
+with $f$ strictly increasing, strictly concave and satisfying the Inada
+conditions, $u$ strictly increasing and twice differentiable with $u''(c)<0$ at
+every $c>0$, $\rho>0$ and $\delta\in[0,1]$. The pointwise condition $u''<0$ is
+strictly stronger than strict concavity, which for a $C^{2}$ function gives only
+$u''\leq0$ and permits isolated points where $u''$ vanishes. On $(0,2)$ the
+function $u(c)=c-\tfrac14(c-1)^{4}$ has $u'(c)=1-(c-1)^{3}\in(0,2)$ and
+$u''(c)=-3(c-1)^{2}$, so it is strictly increasing and strictly concave while
+$u''(1)=0$ and $\gamma(1)=0$. The pointwise condition is needed because
+\eqref{eq:keynes-ramsey} divides by $\gamma(c)$.
+
+\begin{theorem}[Keynes--Ramsey rule and the modified golden rule]\label{thm:keynes-ramsey}
+	Along an interior optimal path of \eqref{eq:ct-ramsey-constraint},
+	\begin{equation}\label{eq:keynes-ramsey}
+		\frac{\dot c(t)}{c(t)}
+		=\frac{f'\bigl(k(t)\bigr)-\delta-\rho}{\gamma\bigl(c(t)\bigr)},
+		\qquad
+		\gamma(c)\eqdef-\frac{c\,u''(c)}{u'(c)},
+	\end{equation}
+	and the unique interior steady state $(k^{\ast},c^{\ast})$ satisfies
+	\begin{equation}\label{eq:modified-golden-rule}
+		f'(k^{\ast})=\rho+\delta,
+		\qquad
+		c^{\ast}=f(k^{\ast})-\delta k^{\ast}.
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	The current-value Hamiltonian is
+	$H=u(c)+\mu\bigl(f(k)-\delta k-c\bigr)$. By
+	\autoref{prop:current-value},
+	\begin{equation}\label{eq:ct-ramsey-foc}
+		\pderiv{H}{c}=u'(c)-\mu=0,
+		\qquad
+		\dot\mu=\rho\mu-\pderiv{H}{k}=\rho\mu-\mu\bigl(f'(k)-\delta\bigr)
+		=\mu\bigl(\rho+\delta-f'(k)\bigr).
+	\end{equation}
+	Differentiating $u'(c)=\mu$ in $t$ by \autoref{prop:chain-rule-1d} gives
+	$u''(c)\dot c=\dot\mu=u'(c)\bigl(\rho+\delta-f'(k)\bigr)$, so
+	\[
+		\frac{c\,u''(c)}{u'(c)}\cdot\frac{\dot c}{c}=\rho+\delta-f'(k),
+		\qquad\text{that is}\qquad
+		-\gamma(c)\frac{\dot c}{c}=\rho+\delta-f'(k),
+	\]
+	which is \eqref{eq:keynes-ramsey}. At a steady state $\dot c=0$, and since
+	$\gamma(c)>0$ by the hypothesis $u''<0$, the numerator must vanish:
+	$f'(k^{\ast})=\rho+\delta$. Strict concavity of $f$ makes $f'$ strictly
+	decreasing, and the Inada conditions make it range over $(0,\infty)$, so
+	$k^{\ast}$ exists and is unique. Setting $\dot k=0$ in
+	\eqref{eq:ct-ramsey-constraint} gives $c^{\ast}=f(k^{\ast})-\delta k^{\ast}$.
+\end{proof}
+
+\begin{remark}[Reading the Keynes--Ramsey rule]\label{rem:keynes-ramsey}
+	Equation \eqref{eq:keynes-ramsey} decomposes consumption growth into a rate
+	of return and a willingness to substitute. Consumption rises when the net
+	marginal product of capital $f'(k)-\delta$ exceeds the rate of time preference
+	$\rho$, and the responsiveness is the elasticity of intertemporal substitution
+	$1/\gamma$. For CRRA utility $\gamma$ is constant and \eqref{eq:keynes-ramsey}
+	is the continuous-time counterpart of \eqref{eq:ramsey-euler}; at
+	$\rho=\beta^{-1}-1$ the two steady-state conditions
+	$f'(k^{\ast})=\rho+\delta$ and $\beta\bigl(f'(k^{\ast})+1-\delta\bigr)=1$
+	coincide, as they must.
+
+	The modified golden rule places $k^{\ast}$ strictly below the golden-rule stock
+	$k^{g}$ defined by $f'(k^{g})=\delta$, which maximises steady-state consumption
+	$f(k)-\delta k$. The gap is impatience: a planner with $\rho=0$ would accumulate
+	to $k^{g}$, and the discounted problem sacrifices steady-state consumption for
+	consumption today. That the discounted planner is not dynamically inefficient
+	--- unlike a decentralised overlapping-generations economy, which can
+	over-accumulate past $k^{g}$ --- follows from $f'(k^{\ast})=\rho+\delta>\delta$.
+\end{remark}
+
+\begin{remark}[Saddle-path stability]\label{rem:ct-saddle-path}
+	The pair \eqref{eq:ct-ramsey-constraint} and \eqref{eq:keynes-ramsey} is an
+	autonomous planar system in $(k,c)$. Linearising about $(k^{\ast},c^{\ast})$ by
+	\autoref{thm:taylor-n}, the Jacobian is
+	\[
+		J=\begin{pmatrix}
+			f'(k^{\ast})-\delta                            & -1 \\[2pt]
+			\dfrac{c^{\ast}f''(k^{\ast})}{\gamma(c^{\ast})} & 0
+		\end{pmatrix}
+		=\begin{pmatrix}
+			\rho                                           & -1 \\[2pt]
+			\dfrac{c^{\ast}f''(k^{\ast})}{\gamma(c^{\ast})} & 0
+		\end{pmatrix},
+	\]
+	the $(2,2)$ entry vanishing because differentiating
+	$c\bigl(f'(k)-\delta-\rho\bigr)/\gamma(c)$ in $c$ leaves the factor
+	$f'(k^{\ast})-\delta-\rho=0$. The determinant is
+	$c^{\ast}f''(k^{\ast})/\gamma(c^{\ast})<0$ because
+	$f''<0$. By \autoref{def:eigen} the eigenvalues of a $2\times2$ matrix are the
+	roots of $p_J(\lambda)=\lambda^{2}-(\tr J)\lambda+\det J$, so
+	$\lambda_1\lambda_2=\det J<0$ and the discriminant
+	$(\tr J)^{2}-4\det J>0$: the eigenvalues are real and of opposite signs.
+	The steady state is therefore a saddle. Since $\tr J=\rho=\lambda_1+\lambda_2$,
+	the first row of $J-\lambda_{s}I$ gives the eigenvector $v_{s}$ of the negative
+	eigenvalue $\lambda_{s}$ the slope $\rho-\lambda_{s}=\lambda_{u}$ in the
+	$(k,c)$ plane: the stable arm crosses the steady state rising at the rate of
+	the \emph{unstable} eigenvalue.
+	The stable manifold theorem for a
+	hyperbolic equilibrium then supplies a neighbourhood $N$ of
+	$(k^{\ast},c^{\ast})$ and a one-dimensional $C^{1}$ manifold
+	$W^{s}\subseteq N$, tangent at $(k^{\ast},c^{\ast})$ to the eigenvector of the
+	negative eigenvalue, consisting of the points of $N$ whose forward orbit remains
+	in $N$ and converges to the steady state. That theorem is not proved in this
+	volume; it belongs to the qualitative theory of ordinary differential equations
+	rather than to the material developed here, and the statement used is the
+	standard one for a hyperbolic equilibrium of a $C^{1}$ planar system. Two
+	limitations of it bear on what follows.
+
+	First, $W^{s}$ is local. For $k_0$ near $k^{\ast}$ it determines $c(0)$
+	uniquely, and that is the sense in which the initial consumption level is
+	pinned down. For $k_0$ far from $k^{\ast}$ --- the case drawn in
+	\autoref{fig:ramsey-phase} --- the relevant object is the \emph{global} stable
+	set, obtained by flowing $W^{s}$ backwards in time. That this global set is
+	again the graph of a single-valued function of $k$ on all of $(0,\infty)$, so
+	that $c(0)$ is unique for every $k_0$, is a separate result, proved from
+	strict concavity of the planner's objective and of the feasible set --- which
+	make the optimal path unique --- together with the transversality condition,
+	which rules out the divergent paths. Neither ingredient is the eigenvalue
+	calculation, and neither is established in this volume; the argument is
+	\textcite[Ch.~8]{acemoglu2009introduction}.
+
+	Second, the eigenvalue calculation is a statement about the linearisation. It
+	certifies that the non-linear system has a saddle structure near the steady
+	state, and nothing about behaviour elsewhere in the phase plane. Paths starting
+	off the stable set do exhibit the two failures the diagram suggests: with $c(0)$
+	too high, capital reaches zero in finite time and the path is infeasible; with
+	$c(0)$ too low, capital rises without bound and consumption falls, and such a
+	path is dominated by one that consumes the excess. Establishing that dichotomy
+	requires the global argument just described, not the Jacobian.
+
+	The count of stable eigenvalues against the count of predetermined variables is
+	the continuous-time form of the Blanchard--Kahn condition of
+	\autoref{rem:saddle-path}, with ``outside the unit circle'' replaced by
+	``positive real part'': here one predetermined variable $k$ and one jump
+	variable $c$ face one negative and one positive eigenvalue, which is the
+	configuration under which the linearised system has a locally unique
+	non-explosive solution.
+
+	\autoref{fig:ramsey-phase} takes $f(k)=k^{0.3}$, $\delta=0.1$, $\rho=0.05$ and
+	$u=\log$, so that $\gamma\equiv1$. Then $k^{\ast}=2.6918$, $c^{\ast}=1.0767$,
+	$f''(k^{\ast})=-0.039007$, $\det J=-0.0420$, and the eigenvalues are
+	$\lambda_{s}=-0.18146$ and $\lambda_{u}=0.23146$; the arm therefore leaves the
+	steady state with slope $0.23146$ and the stable mode has half-life
+	$\log2/\abs{\lambda_{s}}=3.82$. The arm drawn there is the global stable set,
+	obtained by integrating the planar system backwards in time from
+	$(k^{\ast},c^{\ast})\pm10^{-9}v_{s}$: reversing time turns $\lambda_{s}$ into
+	$-\lambda_{s}>0$, which carries the solution outwards along the manifold, and
+	turns $\lambda_{u}$ into $-\lambda_{u}<0$, so a component off the manifold
+	contracts. Backwards is thus the numerically stable direction, and forwards
+	is not.
+\end{remark}
+
+\begin{figure}[htbp]
+	\centering
+	\input{Figures/ramsey-phase.tex}
+	\caption[Phase diagram of the Ramsey problem]{The two loci of
+		\autoref{thm:keynes-ramsey} and the stable manifold of
+		\autoref{rem:ct-saddle-path}. Consumption rises to the left of $k^{\ast}$
+		and falls to its right; capital rises below the hump and falls above it.
+		The grey arrows give the direction of motion in each of the four regions.
+		The modified golden rule places $k^{\ast}$ strictly below the golden-rule
+		stock $k^{g}$ at which $f'(k)=\delta$, the wedge being the rate of time
+		preference $\rho$. The arm is the manifold itself, obtained by integrating
+		the system backwards in time from the stable eigenvector as described in
+		\autoref{rem:ct-saddle-path}, and not a sketch of it. To the right of
+		$k^{\ast}$ it runs well above the $\dot k=0$ locus, so capital is drawn
+		down; at the right-hand edge $k=8.4$ it reaches $c=2.15$ against output
+		$f(k)=1.89$, consumption exceeding output rather than merely net output.}
+	\label{fig:ramsey-phase}
+\end{figure}
+
+\section{Chapter Summary}\label{sec:ct-summary}
+
+Continuous-time optimisation replaces the choice of a sequence by the choice of a
+path, and the first-order condition accordingly holds against every admissible
+perturbation. The fundamental lemma converts such a family of integral conditions
+into a pointwise differential equation, and it is the single analytic tool behind
+all three methods presented.
+
+The calculus of variations perturbs the path directly and yields the
+Euler--Lagrange equation $f_x=\deriv{}{t}f_{\dot x}$, a second-order differential
+equation matched to two endpoint conditions. It is necessary, not sufficient;
+concavity of $f$ in $(x,\dot x)$ upgrades it to sufficient. Optimal control
+separates the control from the state and perturbs the control, producing the
+Hamiltonian $\mathcal{H}=f+\lambda g$ and three conditions --- optimality in the
+control, a differential equation for the co-state, and the state equation ---
+together with $\lambda(t_1)=0$ when the terminal state is free. The co-state is
+the shadow price of the state, and the co-state equation is a no-arbitrage
+condition on that price. The current-value Hamiltonian removes the discount factor
+from the equations and leaves an autonomous system whose phase diagram carries
+the dynamics. The calculus of variations is the case $g=u$. Dynamic programming
+gives the Hamilton--Jacobi--Bellman equation
+$\rho V(x)=\max_u\{r(x,u)+V'(x)g(x,u)\}$, in which the co-state is identified as
+$V'(x)$; the heuristic passage from discrete time assumes differentiability of
+the value function, and the rigorous route is verification against a candidate.
+
+The continuous-time cake-eating problem yields $c=rk$, $k(t)=k_0e^{-rt}$ by all
+three methods, and matches the discrete-time policy $c=(1-\beta)w$ in the limit
+of short periods. In each derivation the first-order conditions leave one free
+constant and only the transversality condition fixes it. The continuous-time
+Ramsey model yields the Keynes--Ramsey rule
+$\dot c/c=(f'(k)-\delta-\rho)/\gamma$ and the modified golden rule
+$f'(k^{\ast})=\rho+\delta$, which places capital strictly below the golden-rule
+level by the amount of impatience. The linearisation shows the steady state is a
+saddle, so for $k_0$ near $k^{\ast}$ initial consumption is the unique level
+placing the economy on the local stable manifold; the corresponding statement
+for arbitrary $k_0$ is a global result, and \autoref{rem:ct-saddle-path} records
+what it needs beyond the eigenvalues.
+
+\paragraph{Scope of the chapter.} The results of this chapter
+carrying full proofs are the fundamental lemma
+(\autoref{lem:fundamental-cov}), the Euler--Lagrange equation and its
+concavity-based sufficiency, the maximum principle in the fixed-endpoint and
+free-endpoint forms of \autoref{thm:maximum-principle} under the
+differentiability hypotheses stated there, the current-value transformation, the
+verification theorem \autoref{prop:ct-cake-verification}, and the Keynes--Ramsey
+rule with the modified golden rule. Four things are stated and used but not
+established. The maximum principle in the generality of
+\textcite{pontryagin1962mathematical}, with control sets that are merely compact
+and no differentiability in $u$, needs the needle-variation argument. The
+existence of an optimal control needs the compactness and convexity conditions
+of \autoref{rem:ct-existence}. The stable manifold theorem, and with it the
+global saddle-path property, belongs to the qualitative theory of differential
+equations. And the value function of a control problem is in general not
+differentiable, so \eqref{eq:hjb} holds only in the viscosity sense; the
+heuristic derivation above assumes away the difficulty, and the verification
+theorem is what makes the chapter's use of \eqref{eq:hjb} legitimate without it.
+Each of the four is a standard topic of a graduate course in dynamic
+optimisation, and \textcite{seierstad1987optimal} and
+\textcite{cesari1983optimization} are the references used above.
+
+\begin{exercise}\label{ex:ct-1}
+	Prove \autoref{lem:fundamental-cov} under the weaker hypothesis that
+	\eqref{eq:fundamental-cov} holds only for infinitely differentiable $h$
+	supported in $(t_0,t_1)$, by replacing the quadratic bump with
+	$h(t)=\exp\bigl(-1/((t-\alpha)(\beta-t))\bigr)$ on $[\alpha,\beta]$ and $0$
+	elsewhere, and verifying that this $h$ is smooth. Explain why the strengthening
+	matters for problems in which the admissible perturbations are constrained.
+\end{exercise}
+
+\begin{exercise}\label{ex:ct-2}
+	Solve $\max\int_0^{T}e^{-\rho t}u(c)\,\diff t$ subject to $\dot a=ra-c$,
+	$a(0)=a_0$ and $a(T)=0$, with $u(c)=c^{1-\gamma}/(1-\gamma)$. Show that
+	$\dot c/c=(r-\rho)/\gamma$, solve for $c(0)$ from the terminal condition, and
+	verify that the solution converges as $T\to\infty$ to the infinite-horizon
+	solution under the transversality condition
+	$\lim_{t\to\infty}e^{-\rho t}u'(c(t))a(t)=0$. Identify precisely where the
+	terminal condition $a(T)=0$ replaces $\lambda(T)=0$ of
+	\autoref{thm:maximum-principle} and why both cannot be imposed.
+\end{exercise}
+
+\begin{exercise}\label{ex:ct-3}
+	Consider the Hotelling problem $\max\int_0^{\infty}e^{-\rho t}p(t)q(t)\,\diff t$
+	subject to $\dot S=-q$, $S(0)=S_0$, where $p(t)$ is a given price path and
+	$q\geq0$ is extraction. Show that the maximum principle gives
+	$\dot\mu=\rho\mu$, so the shadow price of the resource grows at the rate of
+	interest, and deduce Hotelling's rule that the price of the extracted resource
+	net of extraction cost must grow at rate $\rho$ along any interior path. State
+	what fails when extraction is constrained to a capacity $q\leq\bar q$, and
+	relate the answer to \autoref{rem:which-bind}.
+\end{exercise}

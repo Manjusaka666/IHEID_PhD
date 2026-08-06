@@ -1,0 +1,844 @@
+% Source: Gerzensee "Real Analysis" slides 49-57 (epsilon-delta continuity, the
+% sin(x)/x and sin(1/x) examples, continuity of linear functionals and of the
+% norm, separate versus joint continuity, composition, max of finitely many
+% continuous functions, sequential characterization).
+% Supplementary: Fukuda (2026), Sec. 7.4.2 (pp. 239-252), Sec. 7.5 (pp. 254-256),
+% Sec. 8.1 (compactness and continuity, pp. 261-270), Sec. 8.3 (semicontinuity
+% and the Weierstrass theorem, pp. 271-278).
+% External references actually cited in this chapter: Rudin (1976).
+
+\chapter{Continuity, Semicontinuity, and the Weierstrass Theorem}
+\label{ch:continuity}
+
+\section{Motivation: Why Optima Exist}\label{sec:cont-motivation}
+
+An economic model that begins ``the consumer chooses $x$ to maximise $u(x)$
+subject to $\ip{p}{x}\leq m$'' has presupposed that a maximiser exists. Nothing
+guarantees this. The supremum of a function over a set need not be attained, and
+when it is not, the demand function is undefined, comparative statics are
+vacuous, and equilibrium existence arguments have no starting point.
+
+The Weierstrass theorem gives the standard sufficient conditions: a compact
+feasible set and enough continuity of the objective. \autoref{ch:topology}
+supplied compactness. This chapter supplies continuity, and then weakens it as
+far as the existence conclusion permits --- to upper semicontinuity for maxima
+and lower semicontinuity for minima. Indirect utility functions, value functions of dynamic programs and profit functions
+arise as suprema of families of continuous functions, and
+\autoref{prop:sup-semicontinuous} shows that such suprema are in general only
+semicontinuous.
+
+\section{Continuity}\label{sec:cont-basic}
+
+Throughout, $A\subseteq\R^n$ and $f\colon A\to\R^m$ unless stated otherwise. Two
+metrics are in play --- the Euclidean metric on the domain and on the codomain
+--- and both are written $d$.
+
+\begin{definition}[Relative topology]\label{def:relative-topology}
+	Let $A\subseteq X$ with $(X,d)$ a metric space. A set $U\subseteq A$ is
+	\dfnas{relatively open set}{open relative to $A$} if $U=G\cap A$ for some open
+	$G\subseteq X$; equivalently, if for every $x\in U$ there is $\varepsilon>0$
+	with $\ball{\varepsilon}{x}\cap A\subseteq U$. Relative closedness is defined
+	analogously. This is the topology induced by restricting $d$ to
+	$A\times A$, so ``relatively open in $A$'' and ``open in the metric space
+	$(A,\restr{d}{A\times A})$'' are the same statement.
+\end{definition}
+
+The distinction matters because $[0,1)$ is not open in $\R$ but is open relative
+to $[0,1]$, and hypotheses about feasible sets are almost always relative
+hypotheses.
+
+\begin{definition}[Continuity]\label{def:continuity}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$. The mapping $f$ is
+	\dfnas{continuity}{continuous at} $x_0\in A$ if for every $\varepsilon>0$ there
+	is $\delta>0$ such that
+	\[
+		x\in A\ \text{and}\ d(x_0,x)<\delta
+		\quad\Longrightarrow\quad
+		d\bigl(f(x_0),f(x)\bigr)<\varepsilon .
+	\]
+	It is \dfnas{continuous mapping}{continuous on $A$} if it is continuous at every
+	point of $A$.
+\end{definition}
+
+Two features of the definition are easy to pass over. First, $\delta$ may depend
+on $x_0$ as well as on $\varepsilon$; requiring that it not is uniform
+continuity (\autoref{def:uniform-continuity}). Second, the implication is
+restricted to $x\in A$, so continuity is a statement relative to the domain. A
+function defined only on $\Z$ is continuous at every point of its domain, for
+trivial reasons.
+
+\begin{eg}[Removable and essential discontinuities]\label{eg:sinx-over-x}
+	Define $f\colon\R\to\R$ by $f(x)=\sin(x)/x$ for $x\neq0$ and $f(0)=1$. Then $f$
+	is continuous at $0$: since $\cos x\leq\sin(x)/x\leq1$ for $0<\abs{x}<\pi/2$ and
+	$\cos$ is continuous with $\cos0=1$, the value $1$ is the only value at $0$ that
+	makes $f$ continuous, and it has been assigned. The discontinuity of the
+	function $x\mapsto\sin(x)/x$ on $\R\setminus\{0\}$ is \emph{removable}.
+
+	Define $g\colon\R\to\R$ by $g(x)=\sin(1/x)$ for $x\neq0$ and $g(0)=0$. No
+	assignment at $0$ makes $g$ continuous. Taking $x_k=\bigl(\pi/2+2k\pi\bigr)^{-1}$
+	and $y_k=\bigl(-\pi/2+2k\pi\bigr)^{-1}$ gives $x_k\to0$, $y_k\to0$ but
+	$g(x_k)=1$, $g(y_k)=-1$, so no value of $g(0)$ is compatible with
+	\autoref{prop:sequential-continuity}. The discontinuity is \emph{essential}
+	\autocite[slides 50--51]{fukuda2026analysis}.
+\end{eg}
+
+\begin{proposition}[Continuity of linear functionals and of the norm]
+	\label{prop:linear-continuous}
+	Let $a\in\R^n$.
+	\begin{enumerate}[(i)]
+		\item The functional $f(x)=\ip{a}{x}$ is continuous on $\R^n$.
+		\item Every linear map $T\colon\R^n\to\R^m$ is continuous.
+		\item The norm $\norm{\cdot}\colon\R^n\to\R$ is continuous.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) If $a=0$ then $f\equiv0$ is constant, hence continuous. Let $a\neq0$, fix
+	$x_0\in\R^n$ and $\varepsilon>0$, and set $\delta\eqdef\varepsilon/\norm{a}>0$.
+	If $\norm{x-x_0}<\delta$ then by Cauchy--Schwarz
+	(\autoref{lem:cauchy-schwarz})
+	\[
+		\abs{f(x)-f(x_0)}=\abs{\ip{a}{x-x_0}}\leq\norm{a}\norm{x-x_0}
+		<\norm{a}\delta=\varepsilon .
+	\]
+
+	(ii) Write $T$ in the canonical bases as in \autoref{thm:matrix-rep}, so that the
+	$i$th component of $Tx$ is $\ip{a_i}{x}$ with $a_i$ the $i$th row of the
+	representing matrix. Given $\varepsilon>0$, apply (i) to each component with
+	tolerance $\varepsilon/\sqrt m$ and take the smallest of the resulting $\delta_i$.
+
+	(iii) By the reverse triangle inequality (\autoref{prop:reverse-triangle}),
+	$\abs{\norm{x}-\norm{x_0}}\leq\norm{x-x_0}$, so $\delta=\varepsilon$ works.
+\end{proof}
+
+Part (i) is Proposition~7.17 of \textcite{fukuda2026notes}, proved on
+\autocite[slide 52]{fukuda2026analysis}; part (iii) is Proposition~7.18 there,
+whose hint is Exercise~7.4, recorded here as
+\autoref{prop:reverse-triangle}. The $\delta$ produced in (i) does not depend on
+$x_0$, so linear functionals are in fact uniformly continuous; this is a
+consequence of linearity, not of the specific bound.
+
+\begin{proposition}[Algebra of continuous functions]\label{prop:continuity-algebra}
+	Let $A\subseteq\R^n$ and let $f,g\colon A\to\R$ be continuous at $x_0$.
+	\begin{enumerate}[(i)]
+		\item $f+g$, $fg$ and $\alpha f$ for $\alpha\in\R$ are continuous at $x_0$;
+		      $f/g$ is continuous at $x_0$ provided $g(x_0)\neq0$.
+		\item If $h\colon B\to\R^m$ is continuous at $f(x_0)$ and $f(A)\subseteq B$,
+		      then $h\circ f$ is continuous at $x_0$.
+		\item If $f_1,\dots,f_m\colon A\to\R$ are continuous at $x_0$, then so are
+		      $\max_{1\leq i\leq m}f_i$ and $\min_{1\leq i\leq m}f_i$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) and (ii) are the standard $\varepsilon$--$\delta$ arguments; see
+	\textcite[Thms.~4.4 and~4.7]{rudin1976principles}.
+
+	(iii) For $m=2$ use the identity
+	$\max\{s,t\}=\tfrac12\bigl(s+t+\abs{s-t}\bigr)$ and combine (i), (ii) and the
+	continuity of $\abs{\cdot}$; the general case follows by induction on $m$, since
+	$\max_{i\leq m}f_i=\max\{\max_{i\leq m-1}f_i,f_m\}$. The corresponding identity
+	for the minimum is $\min\{s,t\}=\tfrac12(s+t-\abs{s-t})$.
+\end{proof}
+
+Part (iii) is Exercise~7.34 of \autocite[slide 56]{fukuda2026analysis}. The
+restriction to \emph{finitely} many functions is essential and is what
+fails in \autoref{eg:sup-not-usc}; the induction consumes one step per function
+and cannot be run to infinity.
+
+\begin{proposition}[Sequential characterisation]\label{prop:sequential-continuity}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$. Then $f$ is continuous at $x_0\in A$
+	if and only if for every sequence $(x_k)\subseteq A$ with $x_k\to x_0$ one has
+	$f(x_k)\to f(x_0)$; that is,
+	$f\bigl(\lim_{k}x_k\bigr)=\lim_{k}f(x_k)$.
+\end{proposition}
+
+\begin{proof}
+	($\Rightarrow$) Given $\varepsilon>0$, take $\delta$ from
+	\autoref{def:continuity} and then $k_0$ with $d(x_0,x_k)<\delta$ for $k\geq k_0$;
+	then $d(f(x_0),f(x_k))<\varepsilon$ for $k\geq k_0$.
+
+	($\Leftarrow$) Suppose $f$ is not continuous at $x_0$. Then there is
+	$\varepsilon_0>0$ such that for every $\delta>0$ some $x\in A$ has
+	$d(x_0,x)<\delta$ and $d(f(x_0),f(x))\geq\varepsilon_0$. Taking
+	$\delta=1/k$ produces $x_k\in A$ with $x_k\to x_0$ and
+	$d(f(x_0),f(x_k))\geq\varepsilon_0$ for every $k$, so $f(x_k)\not\to f(x_0)$.
+\end{proof}
+
+This is Proposition~7.22 of \textcite{fukuda2026notes}
+\autocite[slide 57]{fukuda2026analysis}. The contrapositive is the practical
+tool: to refute continuity, exhibit two sequences approaching the same point
+along which $f$ has different limits, as in
+\autoref{eg:separate-vs-joint}.
+
+\begin{theorem}[Topological characterisation]\label{thm:continuity-preimage}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$. The following are equivalent.
+	\begin{enumerate}[(i)]
+		\item $f$ is continuous on $A$.
+		\item $f^{-1}(V)$ is open relative to $A$ for every open $V\subseteq\R^m$.
+		\item $f^{-1}(F)$ is closed relative to $A$ for every closed $F\subseteq\R^m$.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	(i)$\Rightarrow$(ii). Let $V$ be open and $x_0\in f^{-1}(V)$. Since $V$ is open
+	there is $\varepsilon>0$ with $\ball{\varepsilon}{f(x_0)}\subseteq V$;
+	continuity supplies $\delta>0$ with
+	$f\bigl(\ball{\delta}{x_0}\cap A\bigr)\subseteq\ball{\varepsilon}{f(x_0)}
+		\subseteq V$, that is $\ball{\delta}{x_0}\cap A\subseteq f^{-1}(V)$.
+
+	(ii)$\Rightarrow$(i). Fix $x_0\in A$ and $\varepsilon>0$. The set
+	$V=\ball{\varepsilon}{f(x_0)}$ is open, so $f^{-1}(V)$ is relatively open and
+	contains $x_0$; hence some $\delta>0$ has
+	$\ball{\delta}{x_0}\cap A\subseteq f^{-1}(V)$, which is the required
+	implication.
+
+	(ii)$\Leftrightarrow$(iii). Preimages commute with complements:
+	$f^{-1}(\comp{F})=\comp{\bigl(f^{-1}(F)\bigr)}$ relative to $A$
+	(\autoref{prop:image-preimage}). Apply
+	\autoref{prop:interior-closure-duality}.
+\end{proof}
+
+\begin{remark}[Continuity, measurability, and the shape of the definition]
+	\label{rem:continuity-measurability}
+	\autoref{thm:continuity-preimage} states continuity without reference to any
+	metric: only the two collections of open sets are used. This is the definition of
+	continuity in a general topological space, and it is what makes the parallel of
+	\autoref{rem:topology-sigma-algebra} exact. A map is continuous when preimages
+	of open sets are open; a map is measurable when preimages of measurable sets are
+	measurable (\autoref{def:random-variable}). The same asymmetry appears in both:
+	the condition constrains preimages, never images. Images of open sets under
+	continuous maps need not be open --- $x\mapsto x^2$ sends the open set
+	$(-1,1)$ to $[0,1)$ --- and this is why \autoref{prop:continuous-compact}, which
+	does concern images, requires compactness rather than openness.
+\end{remark}
+
+\begin{eg}[Separate continuity does not imply joint continuity]
+	\label{eg:separate-vs-joint}
+	Let $f\colon\R^p\times\R^q\to\R^m$ be continuous. For fixed $y_0$ the section
+	$x\mapsto f(x,y_0)$ is continuous, since $x\mapsto(x,y_0)$ is continuous and
+	\autoref{prop:continuity-algebra}(ii) applies; symmetrically in the other
+	argument. The converse fails. Define $f\colon\R^2\to\R$ by
+	\[
+		f(x_1,x_2)=
+		\begin{cases}
+			\dfrac{x_1x_2}{x_1^2+x_2^2}, & (x_1,x_2)\neq(0,0), \\[1.2ex]
+			0,                           & (x_1,x_2)=(0,0).
+		\end{cases}
+	\]
+	Both sections through the origin are identically zero, hence continuous. But
+	along the diagonal $f(\rho,\rho)=\tfrac12$ and along the anti-diagonal
+	$f(\rho,-\rho)=-\tfrac12$ for every $\rho\neq0$, so by
+	\autoref{prop:sequential-continuity} $f$ is not continuous at the origin. In
+	fact $f$ is constant on every ray through the origin, and takes every value in
+	$[-\tfrac12,\tfrac12]$ in every ball around it
+	\autocite[slides 54--55]{fukuda2026analysis}.
+
+	The example is a standing warning in comparative statics. Verifying that a
+	function of prices and income responds continuously to each argument separately
+	establishes nothing about its joint behaviour, and it is joint continuity that
+	the maximum theorem of \autoref{ch:maximum} requires.
+\end{eg}
+
+\subsection{Continuity, compactness, and connectedness}
+
+\begin{proposition}[Continuous images of compact sets]\label{prop:continuous-compact}
+	Let $K\subseteq\R^n$ be compact and $f\colon K\to\R^m$ continuous. Then $f(K)$
+	is compact.
+\end{proposition}
+
+\begin{proof}
+	Let $(y_k)\subseteq f(K)$ and choose $x_k\in K$ with $f(x_k)=y_k$. By
+	compactness of $K$ some subsequence $x_{k_j}\to x^\ast\in K$, and by
+	\autoref{prop:sequential-continuity} $y_{k_j}=f(x_{k_j})\to f(x^\ast)\in f(K)$.
+	So $f(K)$ is sequentially compact, hence compact by
+	\autoref{thm:compact-seq-compact}.
+\end{proof}
+
+\begin{proposition}[Continuous images of connected sets]\label{prop:continuous-connected}
+	Let $C\subseteq\R^n$ be connected and $f\colon C\to\R^m$ continuous. Then $f(C)$
+	is connected.
+\end{proposition}
+
+\begin{proof}
+	Suppose $f(C)=U_1\cup U_2$ with $U_1,U_2$ non-empty, disjoint and open relative
+	to $f(C)$. By \autoref{thm:continuity-preimage} the sets $f^{-1}(U_1)$ and
+	$f^{-1}(U_2)$ are open relative to $C$, non-empty, disjoint, and their union is
+	$C$ --- contradicting connectedness of $C$.
+\end{proof}
+
+\begin{corollary}[Intermediate value theorem]\label{cor:ivt}
+	Let $f\colon[a,b]\to\R$ be continuous and let $y$ lie between $f(a)$ and $f(b)$.
+	Then $f(c)=y$ for some $c\in[a,b]$.
+\end{corollary}
+
+\begin{proof}
+	$[a,b]$ is connected by \autoref{prop:connected-interval}, so $f([a,b])$ is
+	connected by \autoref{prop:continuous-connected}, hence an interval by
+	\autoref{prop:connected-interval} again. An interval containing $f(a)$ and
+	$f(b)$ contains everything between them.
+\end{proof}
+
+\subsection{Uniform and Lipschitz continuity}
+
+\begin{definition}[Uniform, Lipschitz and H\"older continuity]\label{def:uniform-continuity}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R^m$.
+	\begin{enumerate}[(i)]
+		\item $f$ is \dfnas{uniform continuity}{uniformly continuous} on $A$ if for
+		      every $\varepsilon>0$ there is $\delta>0$, \emph{depending only on
+			      $\varepsilon$}, such that $x,y\in A$ and $d(x,y)<\delta$ imply
+		      $d(f(x),f(y))<\varepsilon$.
+		\item $f$ is \dfnas{Lipschitz continuity}{Lipschitz continuous} with constant
+		      $L\geq0$ if $d(f(x),f(y))\leq L\,d(x,y)$ for all $x,y\in A$. If
+		      $L<1$ the map is a contraction (\autoref{def:contraction}).
+		\item $f$ is \dfnas{Holder continuity@H\"older continuity}{H\"older continuous}
+		      of order $\alpha\in(0,1]$ if $d(f(x),f(y))\leq L\,d(x,y)^\alpha$ for all
+		      $x,y\in A$.
+	\end{enumerate}
+	Lipschitz continuity is H\"older continuity of order $1$; H\"older continuity of
+	any order implies uniform continuity, with
+	$\delta=(\varepsilon/L)^{1/\alpha}$; and uniform continuity implies continuity.
+	None of the three implications reverses.
+\end{definition}
+
+\begin{eg}[The implications are strict]\label{eg:continuity-hierarchy}
+	On $(0,1]$, $x\mapsto1/x$ is continuous but not uniformly continuous: taking
+	$x_k=1/k$ and $y_k=1/(k+1)$ gives $\abs{x_k-y_k}\to0$ while
+	$\abs{f(x_k)-f(y_k)}=1$ for every $k$. On $[0,1]$, $x\mapsto\sqrt x$ is
+	uniformly continuous --- it is H\"older of order $\tfrac12$ --- but not
+	Lipschitz, since $\bigl(\sqrt x-\sqrt0\bigr)/(x-0)=x^{-1/2}\to\infty$ as
+	$x\downarrow0$.
+\end{eg}
+
+\begin{theorem}[Heine--Cantor]\label{thm:heine-cantor}
+	A continuous function on a compact set is uniformly continuous.
+\end{theorem}
+
+\begin{proof}
+	Let $K$ be compact, $f$ continuous on $K$, and suppose $f$ is not uniformly
+	continuous. Then some $\varepsilon_0>0$ admits, for each $k\in\N$, points
+	$x_k,y_k\in K$ with $d(x_k,y_k)<1/k$ and
+	$d(f(x_k),f(y_k))\geq\varepsilon_0$. By compactness pass to a subsequence with
+	$x_{k_j}\to x^\ast\in K$; then $y_{k_j}\to x^\ast$ as well, because
+	$d(y_{k_j},x^\ast)\leq d(y_{k_j},x_{k_j})+d(x_{k_j},x^\ast)\to0$. Continuity and
+	\autoref{prop:sequential-continuity} give
+	$f(x_{k_j})\to f(x^\ast)$ and $f(y_{k_j})\to f(x^\ast)$, so
+	$d(f(x_{k_j}),f(y_{k_j}))\to0$, contradicting the lower bound $\varepsilon_0$.
+\end{proof}
+
+Uniform continuity is what allows a single $\delta$ to be quoted for an entire
+domain, and it is the hypothesis under which Riemann sums converge in
+\autoref{ch:integration} and under which numerical approximation error can be
+bounded uniformly over a state space in \autoref{ch:dynamic}.
+
+\section{Semicontinuity}\label{sec:cont-semi}
+
+Continuity is more than existence of optima requires. The following weakening
+isolates what is needed, and it is the form in which the hypothesis is
+verifiable for the value functions that arise in economics.
+
+\begin{definition}[Semicontinuity]\label{def:semicontinuity}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R$.
+	\begin{enumerate}[(i)]
+		\item $f$ is \dfnas{lower semicontinuity}{lower semicontinuous} (lsc) if
+		      $f^{-1}\bigl((\lambda,\infty)\bigr)=\{x\in A : f(x)>\lambda\}$ is open
+		      relative to $A$ for every $\lambda\in\R$; equivalently, if every lower
+		      section $\{x\in A: f(x)\leq\lambda\}$ is closed relative to $A$.
+		\item $f$ is \dfnas{upper semicontinuity}{upper semicontinuous} (usc) if $-f$
+		      is lower semicontinuous; equivalently, if every upper section
+		      $\{x\in A: f(x)\geq\lambda\}$ is closed relative to $A$.
+	\end{enumerate}
+	\nidx{lsc}{lsc, lower semicontinuous}\nidx{usc}{usc, upper semicontinuous}
+\end{definition}
+
+\begin{proposition}[Pointwise form]\label{prop:semicontinuity-pointwise}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R$.
+	\begin{enumerate}[(i)]
+		\item $f$ is lsc if and only if for every $x_0\in A$ and every
+		      $\lambda<f(x_0)$ there is $\delta>0$ such that
+		      $x\in\ball{\delta}{x_0}\cap A$ implies $\lambda<f(x)$.
+		\item $f$ is usc if and only if for every $x_0\in A$ and every
+		      $\lambda>f(x_0)$ there is $\delta>0$ such that
+		      $x\in\ball{\delta}{x_0}\cap A$ implies $f(x)<\lambda$.
+	\end{enumerate}
+	Equivalently, in sequential form: $f$ is lsc at $x_0$ if
+	$x_k\to x_0$ implies $f(x_0)\leq\liminf_kf(x_k)$, and usc at $x_0$ if
+	$x_k\to x_0$ implies $\limsup_kf(x_k)\leq f(x_0)$.
+\end{proposition}
+
+\begin{proof}
+	(i) If $f$ is lsc and $\lambda<f(x_0)$, then $x_0$ belongs to the relatively open
+	set $\{f>\lambda\}$, which therefore contains
+	$\ball{\delta}{x_0}\cap A$ for some $\delta>0$. Conversely, given $\lambda$ and
+	$x_0\in\{f>\lambda\}$, the hypothesis produces such a $\delta$, so
+	$\{f>\lambda\}$ is relatively open. Part (ii) follows by replacing $f$ with
+	$-f$.
+
+	For the sequential form, suppose $f$ is lsc at $x_0$ and $x_k\to x_0$. For any
+	$\lambda<f(x_0)$ the ball $\ball{\delta}{x_0}$ eventually contains every $x_k$,
+	so $f(x_k)>\lambda$ eventually and $\liminf_kf(x_k)\geq\lambda$; letting
+	$\lambda\uparrow f(x_0)$ gives the claim. The converse is the same argument run
+	backwards.
+\end{proof}
+
+This is Proposition~8.10 of \textcite[p.~271]{fukuda2026notes}. Verbally: at a
+point of lower semicontinuity the function
+cannot \emph{drop} suddenly as one moves away from $x_0$, and at a point of upper
+semicontinuity it cannot \emph{jump up}. A jump downward is compatible with
+upper semicontinuity, which is why the maximum of a usc function can sit exactly
+at the top of a jump. \autoref{fig:semicontinuity} draws the two cases.
+
+\begin{figure}[htbp]
+	\centering
+	\input{Figures/semicontinuity.tex}
+	\caption[Upper and lower semicontinuity at a jump]{%
+		The two ways a jump can be closed, for a function equal to $a$ on one side
+		of $x_0$ and to $b>a$ on the other. In (a) the value at $x_0$ is $b$, so
+		$\limsup_{x\to x_0}f(x)=b=f(x_0)$ and the function is upper semicontinuous
+		at $x_0$; it is not lower semicontinuous, since
+		$\liminf_{x\to x_0}f(x)=a<b$. In (b) the value at $x_0$ is $a$ and the two
+		conclusions are exchanged. Filled circles mark the value taken at $x_0$.}
+	\label{fig:semicontinuity}
+\end{figure}
+
+\begin{corollary}\label{cor:semicontinuity-continuity}
+	$f$ is continuous if and only if it is both lower and upper semicontinuous.
+\end{corollary}
+
+\begin{proof}
+	If $f$ is continuous, then $f^{-1}$ of the open sets $(\lambda,\infty)$ and
+	$(-\infty,\lambda)$ are relatively open by \autoref{thm:continuity-preimage},
+	giving both properties. Conversely, if both hold then
+	$f^{-1}\bigl((\lambda,\mu)\bigr)=f^{-1}((\lambda,\infty))\cap
+		f^{-1}((-\infty,\mu))$ is relatively open, and every open subset of $\R$ is a
+	countable union of such intervals, so \autoref{thm:topology-axioms}(i) and
+	\autoref{thm:continuity-preimage} apply.
+\end{proof}
+
+\begin{proposition}[Epigraph and hypograph]\label{prop:epigraph}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R$. Then $f$ is lsc if and only if its
+	\dfn{epigraph}
+	\[
+		\epi f\eqdef\{(x,z)\in A\times\R : f(x)\leq z\}
+	\]
+	is closed in $A\times\R$, and $f$ is usc if and only if its
+	\dfn{hypograph} $\hyp f\eqdef\{(x,z)\in A\times\R : f(x)\geq z\}$ is closed.
+	\nidx{Epi f}{$\epi f$, epigraph}
+\end{proposition}
+
+\begin{proof}
+	Suppose $f$ is lsc and $(x_k,z_k)\to(x,z)$ in $A\times\R$ with $f(x_k)\leq z_k$.
+	\autoref{prop:semicontinuity-pointwise} gives
+	$f(x)\leq\liminf_kf(x_k)\leq\liminf_kz_k=z$, so that $(x,z)\in\epi f$; now
+	apply \autoref{thm:closed-sequential}.
+
+	Conversely, let $\epi f$ be closed and $x_k\to x$ in $A$; we must show
+	$f(x)\leq\ell$, where $\ell\eqdef\liminf_kf(x_k)\in[-\infty,+\infty]$. If
+	$\ell=+\infty$ there is nothing to prove. If $\ell=-\infty$, choose a
+	subsequence with $f(x_{k_j})\to-\infty$; then for each fixed $z\in\R$ one has
+	$f(x_{k_j})\leq z$ for all large $j$, so $(x_{k_j},z)\in\epi f$, and
+	$(x_{k_j},z)\to(x,z)$ forces $(x,z)\in\epi f$, that is $f(x)\leq z$. As
+	$z\in\R$ was arbitrary this contradicts $f(x)\in\R$, so the case
+	$\ell=-\infty$ does not arise. There remains $\ell\in\R$: pass to a
+	subsequence along which $f(x_{k_j})\to\ell$, so that
+	$(x_{k_j},f(x_{k_j}))\in\epi f$ converges to $(x,\ell)\in A\times\R$; closedness
+	gives $(x,\ell)\in\epi f$, that is $f(x)\leq\ell$. The hypograph statement
+	follows by applying this to $-f$.
+\end{proof}
+
+This is Proposition~8.12 of \textcite[p.~273]{fukuda2026notes}. The epigraph
+characterisation is the bridge to \autoref{ch:convex}: convexity of $f$ is
+convexity of $\epi f$, and lower semicontinuity is closedness of $\epi f$, so
+``closed convex function'' means precisely that the epigraph is a closed convex
+set.
+
+\begin{proposition}[Suprema and infima]\label{prop:sup-semicontinuous}
+	Let $A\subseteq\R^n$ and let $(f_i)_{i\in I}$ be a family of functions
+	$A\to\R$ indexed by an arbitrary set $I$.
+	\begin{enumerate}[(i)]
+		\item If every $f_i$ is lsc and $f\eqdef\sup_{i\in I}f_i$ is finite on $A$,
+		      then $f$ is lsc.
+		\item If every $f_i$ is usc and $f\eqdef\inf_{i\in I}f_i$ is finite on $A$,
+		      then $f$ is usc.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) For any $\lambda$,
+	$\{x : \sup_if_i(x)>\lambda\}=\bigcup_{i\in I}\{x : f_i(x)>\lambda\}$: the
+	supremum exceeds $\lambda$ exactly when some member does. Each set on the right
+	is relatively open, and \autoref{thm:topology-axioms}(i) permits arbitrary
+	unions. Part (ii) follows by negation.
+\end{proof}
+
+\begin{eg}[A supremum of continuous functions that is not usc]\label{eg:sup-not-usc}
+	For each $a\in(0,1]$ define the continuous function $f_a\colon[0,1]\to\R$ by
+	$f_a(x)=x/a$ for $0\leq x\leq a$ and $f_a(x)=1$ for $a\leq x\leq1$. Then
+	\[
+		f(x)\eqdef\sup_{a\in(0,1]}f_a(x)=
+		\begin{cases}
+			0, & x=0,          \\
+			1, & 0<x\leq1 .
+		\end{cases}
+	\]
+	Indeed $f_a(0)=0$ for every $a$, while for $x>0$ the choice $a=x$ gives
+	$f_x(x)=1$. The limit function is lsc --- consistent with
+	\autoref{prop:sup-semicontinuous}(i) --- and it is not usc, since
+	$\{f\geq1\}=(0,1]$ is not closed in $[0,1]$. This is Example~8.4 of
+	\textcite[p.~272]{fukuda2026notes}.
+
+	The pattern recurs throughout economics. Indirect utility, the profit function
+	and the value function of a dynamic program are all defined as suprema over a
+	feasible set indexed by a parameter, and the general theory delivers only one of
+	the two semicontinuity properties for free. Establishing the other requires
+	additional structure --- compactness of the feasible correspondence and
+	continuity of the objective, which is the content of Berge's theorem in
+	\autoref{thm:berge-maximum}.
+\end{eg}
+
+\section{The Weierstrass Theorem}\label{sec:cont-weierstrass}
+
+\begin{theorem}[Weierstrass]\label{thm:weierstrass}
+	Let $A\subseteq\R^n$ be compact and non-empty.
+	\begin{enumerate}[(i)]
+		\item A lower semicontinuous $f\colon A\to\R$ attains its minimum: there is
+		      $x_\ast\in A$ with $f(x_\ast)=\inf_{x\in A}f(x)$, and this infimum is
+		      finite.
+		\item An upper semicontinuous $f\colon A\to\R$ attains its maximum: there is
+		      $x^\ast\in A$ with $f(x^\ast)=\sup_{x\in A}f(x)$, and this supremum is
+		      finite.
+	\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+	It suffices to prove (i); (ii) follows by applying (i) to $-f$.
+
+	Write $\alpha\eqdef\inf_{x\in A}f(x)\in[-\infty,\infty)$ and consider the lower
+	sections $L_\lambda\eqdef\{x\in A : f(x)\leq\lambda\}$, each closed relative to
+	$A$ by \autoref{def:semicontinuity}, hence compact by
+	\autoref{prop:compact-stability}(i).
+
+	First, $\alpha>-\infty$. If not, $L_\lambda\neq\emptyset$ for every
+	$\lambda\in\R$, and the family $(L_\lambda)_{\lambda\in\R}$ is nested
+	decreasing as $\lambda$ decreases, so every finite subfamily has non-empty
+	intersection. A nested family of non-empty compact sets has non-empty
+	intersection (\autoref{lem:finite-intersection}), so some
+	$x\in\bigcap_{\lambda\in\R}L_\lambda$, giving $f(x)\leq\lambda$ for every real
+	$\lambda$, which is impossible for a real-valued $f$. Hence $\alpha$ is finite.
+
+	Second, the infimum is attained. The sets $L_\lambda$ for $\lambda>\alpha$ are
+	non-empty by definition of the infimum, compact, and nested. By
+	\autoref{lem:finite-intersection} again,
+	$\bigcap_{\lambda>\alpha}L_\lambda\neq\emptyset$; any $x_\ast$ in this
+	intersection satisfies $f(x_\ast)\leq\lambda$ for every $\lambda>\alpha$, hence
+	$f(x_\ast)\leq\alpha$, and $f(x_\ast)\geq\alpha$ because $\alpha$ is a lower
+	bound. So $f(x_\ast)=\alpha=\min_{x\in A}f(x)$.
+\end{proof}
+
+\begin{lemma}[Finite intersection property]\label{lem:finite-intersection}
+	Let $(K_i)_{i\in I}$ be a family of non-empty compact subsets of a metric space
+	such that every finite subfamily has non-empty intersection. Then
+	$\bigcap_{i\in I}K_i\neq\emptyset$.
+\end{lemma}
+
+\begin{proof}
+	Fix $i_0\in I$ and suppose $\bigcap_{i}K_i=\emptyset$. Then the relatively open
+	sets $\comp{K_i}\cap K_{i_0}$, $i\in I$, cover $K_{i_0}$: a point of $K_{i_0}$
+	lying in no $\comp{K_i}$ would lie in every $K_i$. By compactness finitely many
+	suffice, say for $i_1,\dots,i_m$, which says
+	$K_{i_0}\cap K_{i_1}\cap\dots\cap K_{i_m}=\emptyset$ --- contradicting the
+	hypothesis on finite subfamilies.
+\end{proof}
+
+\begin{corollary}[Weierstrass, continuous case]\label{cor:weierstrass-continuous}
+	A continuous real-valued function on a non-empty compact set attains both its
+	minimum and its maximum.
+\end{corollary}
+
+\begin{proof}
+	By \autoref{cor:semicontinuity-continuity} the function is both lsc and usc;
+	apply both parts of \autoref{thm:weierstrass}.
+
+	A second proof avoids semicontinuity altogether and generalises differently. By \autoref{prop:continuous-compact} the image $f(A)$
+	is a compact subset of $\R$, hence closed and bounded by
+	\autoref{thm:heine-borel}. Boundedness gives finite
+	$M\eqdef\sup f(A)$ and $m\eqdef\inf f(A)$, and by
+	\autoref{prop:sup-char}(ii) both are points of closure of $f(A)$; closedness
+	then gives $M,m\in f(A)$, that is, both are attained.
+\end{proof}
+
+This is Corollary~8.6 of \textcite[p.~275]{fukuda2026notes}, with both proofs as
+given there.
+
+\begin{eg}[Each hypothesis is needed]\label{eg:weierstrass-failures}
+	\begin{enumerate}[(i)]
+		\item \emph{Semicontinuity of the wrong type.} Let $f\colon[0,1]\to\R$ be
+		      $f(0)=\tfrac12$ and $f(x)=1-x$ for $x\in(0,1]$. This function is lsc, so
+		      by \autoref{thm:weierstrass}(i) it attains its minimum, at $x=1$. It has
+		      no maximum: $\sup f=1$, approached as $x\downarrow0$, but $f(0)=\tfrac12$.
+		      Symmetrically, $g(0)=\tfrac12$ and $g(x)=x$ on $(0,1]$ is usc, attains its
+		      maximum at $x=1$, and has no minimum \autocite[Ex.~8.5,
+			      p.~274]{fukuda2026notes}.
+		\item \emph{Non-compact domain, unbounded.} $f(x)=x$ on $[0,\infty)$ is
+		      continuous and attains no maximum.
+		\item \emph{Non-compact domain, not closed.} $f(x)=x$ on $[0,1)$ is continuous
+		      and bounded, and attains no maximum: the supremum $1$ is not in the image
+		      because the point at which it would be attained is not in the domain.
+		\item \emph{Infinite dimensions.} Let $B$ be the closed unit ball of the
+		      space $\ell^2$ of \autoref{eg:no-bw-infinite} and define
+		      $f\colon B\to\R$ by
+		      $f(x)=\sum_{k\geq1}\bigl(1-\tfrac1k\bigr)x_k^2$. The series converges
+		      because $\sum_kx_k^2\leq1$, and $f$ is continuous on $B$: for
+		      $x,y\in B$,
+		      $\abs{f(x)-f(y)}\leq\sum_k\abs{x_k-y_k}\abs{x_k+y_k}
+			      \leq\norm{x-y}\norm{x+y}\leq2\norm{x-y}$ by Cauchy--Schwarz. Its
+		      supremum is $1$, since $f(e^k)=1-1/k$, and the supremum is not attained:
+		      $f(x)=1$ would force $\sum_kx_k^2/k\leq\sum_kx_k^2-f(x)\leq0$, hence
+		      $x=0$ and $f(x)=0$. The domain is closed and bounded but, by
+		      \autoref{eg:no-bw-infinite}, not compact, and
+		      \autoref{thm:weierstrass} does not apply. No \emph{linear} functional
+		      would serve as the example: every continuous linear functional on
+		      $\ell^2$ is $x\mapsto\ip{a}{x}$ for some $a\in\ell^2$
+		      (\autoref{thm:riesz-rn} is the finite-dimensional case) and attains its
+		      supremum over $B$ at $a/\norm{a}$.
+	\end{enumerate}
+\end{eg}
+
+\begin{proposition}[The solution set is compact]\label{prop:argmax-compact}
+	Let $A\subseteq\R^n$ be compact and non-empty.
+	\begin{enumerate}[(i)]
+		\item If $f\colon A\to\R$ is usc, then
+		      $\argmax_{x\in A}f(x)$ is a non-empty compact subset of $A$.
+		\item If $f\colon A\to\R$ is lsc, then $\argmin_{x\in A}f(x)$ is a non-empty
+		      compact subset of $A$.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) Non-emptiness is \autoref{thm:weierstrass}(ii). Writing
+	$M\eqdef\max_{x\in A}f(x)$, the solution set is
+	$\{x\in A : f(x)\geq M\}$, which is closed relative to $A$ by upper
+	semicontinuity, hence compact by \autoref{prop:compact-stability}(i). Part (ii)
+	is the same argument for $-f$.
+\end{proof}
+
+This is Proposition~8.13 of \textcite[p.~275]{fukuda2026notes}. It is the first
+appearance of the object that \autoref{ch:maximum} studies systematically: the
+solution of an optimisation problem is in general a \emph{set}, and the
+statement that it varies continuously with the parameters is a statement about
+correspondences, not functions. Uniqueness --- which reduces the set to a
+singleton and the correspondence to a function --- requires strict quasiconcavity
+of $f$ and convexity of $A$, and is supplied in \autoref{prop:strict-quasi-unique}.
+
+\section{Economic Application: Existence of Consumer Demand}\label{sec:cont-demand}
+
+The four questions raised in \autoref{eg:consumer-setup} can now be answered in
+part.
+
+\paragraph{Environment.} There are $n$ goods. A consumption bundle is a vector
+$x\in\R^n_+$. Prices are $p\in\R^n_{++}$ and wealth is $m>0$. The consumer's
+feasible set is the budget set
+$\budget(p,m)=\{x\in\R^n_+ : \ip{p}{x}\leq m\}$, and preferences are
+represented by a utility function $u\colon\R^n_+\to\R$.
+
+\paragraph{Problem.} The consumer solves
+\begin{equation}\label{eq:ump}
+	\max_{x}\ u(x)
+	\qquad\st\quad \ip{p}{x}\leq m,\quad x\geq0 .
+\end{equation}
+
+\begin{proposition}[Existence of a solution to the consumer's problem]
+	\label{prop:demand-exists}
+	Let $p\in\R^n_{++}$, $m>0$, and let $u\colon\R^n_+\to\R$ be upper
+	semicontinuous. Then \eqref{eq:ump} has a solution, the set of solutions
+	\[
+		x(p,m)\eqdef\argmax_{x\in\budget(p,m)}u(x)
+	\]
+	is non-empty and compact, and the indirect utility
+	$v(p,m)\eqdef\max_{x\in\budget(p,m)}u(x)$ is finite.
+\end{proposition}
+
+\begin{proof}
+	$\budget(p,m)$ is non-empty, since $0$ belongs to it, and compact by
+	\autoref{eg:budget-compact}. Apply \autoref{thm:weierstrass}(ii) and
+	\autoref{prop:argmax-compact}(i).
+\end{proof}
+
+\paragraph{Economic content of the hypotheses.} Strict positivity of every
+price is what bounds the budget set: a free good can be consumed without limit,
+and if utility is strictly increasing in it, no optimum exists. Positive wealth
+guarantees a non-degenerate problem, though $m=0$ is admissible and yields
+$x=0$. Upper semicontinuity of $u$ is weaker than continuity and permits
+preferences with an upward jump at a threshold --- a consumer who strictly
+prefers reaching a subsistence level to being marginally below it, with the
+preferred value attained \emph{at} the threshold. A \emph{downward} jump at the
+threshold violates upper semicontinuity, and then the supremum of utility over
+the budget set may fail to be attained even though the budget set is compact,
+exactly as in \autoref{eg:weierstrass-failures}(i).
+
+\paragraph{Uniqueness, interiority and continuity.}
+
+First, uniqueness. \autoref{prop:demand-exists} produces a non-empty compact
+solution \emph{set}. With linear utility $u(x)=\ip{a}{x}$ and prices
+proportional to $a$, every point of the budget hyperplane is optimal.
+Uniqueness needs strict quasiconcavity (\autoref{ch:convex}).
+
+Second, an interior solution. Nothing in the argument prevents
+$x(p,m)$ from lying on the boundary of $\R^n_+$, and indeed corner solutions are
+generic when preferences are not strictly monotone in every good. First-order
+conditions therefore take the Kuhn--Tucker form of \autoref{ch:optimization}
+rather than the gradient-equals-zero form.
+
+Third, continuity of $x(\cdot,\cdot)$ and of $v(\cdot,\cdot)$ in $(p,m)$.
+\autoref{prop:demand-exists} is a statement for each fixed $(p,m)$ separately,
+and \autoref{eg:separate-vs-joint} is a reminder that pointwise statements do
+not aggregate into joint continuity. The budget set itself moves with
+$(p,m)$; establishing that the value moves continuously and that the solution
+set moves upper hemicontinuously is Berge's maximum theorem
+(\autoref{thm:berge-maximum}), which requires the budget correspondence to be
+both upper and lower hemicontinuous. Both hold on $\R^{n}_{++}\times\R_{+}$,
+zero wealth included, by \autoref{prop:budget-continuous} and
+\autoref{eg:budget-failures}; what breaks the argument is a price falling to
+zero, and what breaks lower hemicontinuity is the absence of a point strictly
+inside the budget set.
+
+\subsection{Preferences without a utility function}\label{subsec:cont-preferences}
+
+Preferences, not utility functions, are the primitive. Three statements about
+them are often run together, and they are distinct.
+
+Let $\succsim$ be a complete and transitive preference relation on a set
+$X\subseteq\R^n$. Say that $\succsim$ has \dfnas{upper contour set}{closed upper contour
+	sets} if $U(x)\eqdef\{y\in X : y\succsim x\}$ is closed
+relative to $X$ for every $x\in X$. This is a property of $\succsim$ alone. A
+function $u\colon X\to\R$ \dfn{represents} $\succsim$ if $u(y)\geq u(x)$ exactly
+when $y\succsim x$.
+
+\begin{proposition}[Semicontinuity of a representation and of the relation]
+	\label{prop:usc-preferences}
+	Let $u\colon X\to\R$ represent $\succsim$.
+	\begin{enumerate}[(i)]
+		\item If $u$ is upper semicontinuous, then $\succsim$ has closed upper
+		      contour sets.
+		\item The converse fails: $\succsim$ may have closed upper contour sets while
+		      $u$ is not upper semicontinuous.
+		\item If $u$ is upper semicontinuous and $\varphi\colon I\to\R$ is
+		      \emph{strictly} increasing and continuous on an interval
+		      $I\supseteq u(X)$, then $\varphi\circ u$ is upper semicontinuous and
+		      represents $\succsim$. Weak monotonicity is not enough: a constant
+		      $\varphi$ merges all utility levels and represents the indifference
+		      relation instead.
+	\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+	(i) $U(x)=\{y : u(y)\geq u(x)\}$, an upper section of $u$, closed by
+	\autoref{def:semicontinuity}(ii).
+
+	(ii) Take $X=[0,1]$ and let $\succsim$ be the usual order, represented by the
+	continuous function $u(x)=x$, so that $U(x)=[x,1]$ is closed for every $x$. Let
+	$\varphi(t)=t$ for $t\leq\tfrac12$ and $\varphi(t)=t+1$ for $t>\tfrac12$, which
+	is increasing on $[0,1]$, and put $\tilde u\eqdef\varphi\circ u$. Then
+	$\tilde u$ represents the same $\succsim$, but
+	$\{\tilde u\geq1\}=(\tfrac12,1]$ is not closed, so $\tilde u$ is not upper
+	semicontinuous.
+
+	(iii) That $\varphi\circ u$ represents $\succsim$ is immediate from strict
+	monotonicity of $\varphi$. For upper semicontinuity, let $x_k\to x_0$ in $X$
+	and fix $\varepsilon>0$ with $u(x_0)+\varepsilon\in I$. Upper semicontinuity of
+	$u$ gives $u(x_k)<u(x_0)+\varepsilon$ for all large $k$, whence
+	$\varphi(u(x_k))\leq\varphi(u(x_0)+\varepsilon)$ and
+	$\limsup_k\varphi(u(x_k))\leq\varphi(u(x_0)+\varepsilon)$. Letting
+	$\varepsilon\downarrow0$ and using continuity of $\varphi$ at $u(x_0)$ gives
+	$\limsup_k\varphi(u(x_k))\leq\varphi(u(x_0))$. If instead $u(x_0)$ is the right
+	endpoint of $I$, then $u(x_k)\leq u(x_0)$ for every $k$ and the same conclusion
+	is immediate. Apply
+	\autoref{prop:semicontinuity-pointwise}.
+\end{proof}
+
+The distinction matters because upper semicontinuity of a \emph{particular}
+representation is not an ordinal property, whereas closedness of the upper
+contour sets is. The gap does not, however, affect the existence question, which
+can be settled for $\succsim$ directly.
+
+\begin{proposition}[Existence of a greatest element]\label{prop:greatest-element}
+	Let $K\subseteq\R^n$ be non-empty and compact and let $\succsim$ be a complete
+	and transitive relation on $K$ with closed upper contour sets. Then the set
+	\[
+		G\eqdef\{x^\ast\in K : x^\ast\succsim y\ \text{for all }y\in K\}
+	\]
+	of $\succsim$-greatest elements of $K$ is non-empty and compact.
+\end{proposition}
+
+\begin{proof}
+	For $y\in K$ the set $U(y)=\{x\in K : x\succsim y\}$ is closed in $K$, hence
+	compact by \autoref{prop:compact-stability}(i), and non-empty because
+	$y\in U(y)$ by completeness. Given finitely many $y_1,\dots,y_m\in K$,
+	completeness and transitivity produce an index $j$ with $y_j\succsim y_i$ for
+	all $i$ --- take a maximal element of a finite set under a complete transitive
+	relation, obtained by induction on $m$ --- and then
+	$y_j\in\bigcap_{i\leq m}U(y_i)$, so every finite subfamily of $(U(y))_{y\in K}$
+	has non-empty intersection. \autoref{lem:finite-intersection} gives
+	$G=\bigcap_{y\in K}U(y)\neq\emptyset$, and $G$ is an intersection of closed
+	subsets of the compact set $K$, hence compact.
+\end{proof}
+
+\autoref{prop:demand-exists} is the special case $K=\budget(p,m)$ with
+$\succsim$ represented by an upper semicontinuous $u$; the argument above shows
+that the utility function is a convenience rather than a necessity, and that the
+substantive hypotheses are compactness of the feasible set and closedness of the
+upper contour sets. What a utility representation buys is the machinery of
+\autoref{ch:calculusn} and \autoref{ch:optimization}, which needs a real-valued
+objective to differentiate.
+
+\section{Chapter Summary}\label{sec:cont-summary}
+
+Continuity at a point admits three equivalent formulations: the
+$\varepsilon$--$\delta$ condition, preservation of limits of sequences
+(\autoref{prop:sequential-continuity}), and relative openness of preimages of
+open sets (\autoref{thm:continuity-preimage}). The third is metric-free and is
+the definition that transfers to general topological spaces and, with
+``open'' replaced by ``measurable'', to random variables. Linear maps and norms
+are continuous; sums, products, quotients with non-vanishing denominator,
+compositions and finite maxima of continuous functions are continuous; separate
+continuity in each argument is strictly weaker than joint continuity
+(\autoref{eg:separate-vs-joint}). Continuous images of compact sets are compact
+and of connected sets are connected, which gives the intermediate value theorem
+and the boundedness half of the Weierstrass theorem. Continuity on a compact set
+upgrades to uniform continuity (\autoref{thm:heine-cantor}).
+
+Splitting continuity into its two halves isolates what existence of an optimum
+actually needs: upper semicontinuity for a maximum, lower semicontinuity for a
+minimum, in both cases on a compact domain (\autoref{thm:weierstrass}). The
+solution set is then non-empty and compact (\autoref{prop:argmax-compact}). An
+arbitrary supremum of lsc functions is lsc, but an arbitrary supremum of
+continuous functions need not be usc (\autoref{eg:sup-not-usc}), which is why
+the continuity of value functions in their parameters is a separate theorem
+rather than a corollary. For the consumer's problem with strictly positive
+prices, upper semicontinuity of utility delivers existence of demand and
+finiteness of indirect utility, and nothing more.
+
+\begin{exercise}\label{ex:cont-1}
+	Prove \autoref{prop:continuity-algebra}(i) directly from
+	\autoref{def:continuity}, and identify at which step the hypothesis
+	$g(x_0)\neq0$ is used in the quotient case. Then show by example that
+	continuity of $f$ and $g$ at $x_0$ is not enough for $f/g$ to have a
+	\emph{removable} discontinuity at a zero of $g$.
+\end{exercise}
+
+\begin{exercise}\label{ex:cont-2}
+	Let $A\subseteq\R^n$ and $f\colon A\to\R$. Show that $f$ is lsc if and only if
+	$f=\sup_{i\in I}f_i$ for some family of continuous functions $f_i$ when $A$ is
+	compact and $f$ is bounded below. (Hint: for each $x_0$ and each
+	$\lambda<f(x_0)$, construct a continuous function below $f$ that takes the value
+	$\lambda$ at $x_0$.) Deduce that \autoref{prop:sup-semicontinuous}(i) is sharp.
+\end{exercise}
+
+\begin{exercise}\label{ex:cont-3}
+	A firm with technology $Y\subseteq\R^n$ closed and prices $p\in\R^n$ solves
+	$\pi(p)=\sup_{y\in Y}\ip{p}{y}$. Show that $\pi$ is convex and lsc on $\R^n$ as a
+	supremum of linear functions, that $\pi(p)=+\infty$ is possible when $Y$ is
+	unbounded, and that if $Y$ is compact then $\pi$ is finite, continuous, and the
+	supremum is attained. Relate the failure at unbounded $Y$ to
+	\autoref{eg:weierstrass-failures}(ii).
+\end{exercise}

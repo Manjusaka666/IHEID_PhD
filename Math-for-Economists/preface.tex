@@ -1,0 +1,292 @@
+% Source: front matter for the volume. Structure follows the Gerzensee course
+% description in Fukuda (2026), "Mathematics Review Course," slides 2-6, and the
+% "Structure of the Lecture Notes" section of Fukuda (2026), pp. xi-xiii.
+
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+\markboth{Preface}{Preface}
+
+A first-year economics doctoral student meets three kinds of mathematical
+difficulty. The first is technical: an argument uses the implicit function
+theorem, or the Banach fixed point theorem, or the fact that a continuous
+function on a compact set attains its maximum, and the student has either never
+seen the result or has seen it without its hypotheses. The second is
+translational: the mathematics is familiar but the economic object it stands for
+is not, so that a Lagrange multiplier is manipulated correctly without being
+recognised as a shadow price and a fixed point is computed without being
+recognised as an equilibrium. The third is architectural: the results are known
+individually but not as a system, so that the student does not see that the
+existence of a Walrasian equilibrium, the existence of a value function solving
+a Bellman equation, and the existence of a least-squares projection are three
+instances of the same handful of theorems about compactness, completeness, and
+convexity.
+
+These notes address all three. They follow the topics of the Mathematics Review
+Course of the Swiss Program for Beginning Doctoral Students in Economics, taught
+at the Study Center Gerzensee: probability and conditional expectation, calculus
+in one and several variables, static optimisation, real analysis, and
+discrete-time dynamic programming \autocite{fukuda2026logistics}. That course
+compresses these subjects into four days, and its slides are deliberately
+economical --- they state what is needed, illustrate it, and move on. A student
+who wants to know why a hypothesis is there, what fails without it, or how a
+result generalises must look elsewhere. The purpose of this volume is to be that
+elsewhere, while keeping the course's sequence, its notation, and above all its
+economic motivation.
+
+The mathematical standard aimed at is that of a graduate text rather than that
+of a review course: hypotheses are attached to the space on which a statement is
+made, necessary conditions are distinguished from sufficient ones, existence from
+uniqueness, and local statements from global ones. Where a teaching-level
+simplification appears in the course slides, the simplification is retained for
+its intuitive value and the exact statement is given alongside it, with the
+relation between the two made explicit; the Kuhn--Tucker theorem in
+\autoref{ch:optimization} and the envelope formula in \autoref{ch:dynamic} are
+the clearest instances. A result that is quoted rather than proved is marked as
+such, with the source and the reason for the omission given where it is used.
+
+The economic applications are worked rather than named. Each one specifies the
+environment, the preferences or technology, the constraint set, the
+correspondence between mathematical and economic objects, the derivation, and
+what goes wrong when a hypothesis fails.
+The applications are drawn from the course itself: profit maximisation by
+price-taking and price-setting firms, the risk premium and the Arrow--Pratt
+coefficient, ordinary least squares as an orthogonal projection, the
+consumer-choice problem, intertemporal consumption and the Euler equation, Nash
+bargaining, Bayesian updating in a market-microstructure setting, normal-normal
+learning, and the cake-eating, Ramsey growth, and Lucas asset-pricing problems.
+
+\section*{Sources}
+
+Three layers of source material stand behind the volume.
+
+The first is the set of six slide decks of the Gerzensee course
+\autocite{fukuda2026probability,fukuda2026calculus,fukuda2026optimization,%
+fukuda2026analysis,fukuda2026dynamic,fukuda2026logistics}. These fix the scope:
+the topics are the course's topics, and the results the slides state are carried
+over here with their hypotheses supplied.
+
+The second is the accompanying reference volume
+\autocite{fukuda2026notes}, a 768-page set of lecture notes of which the slides
+are a distillation. It supplies definitions the slides state informally, proofs
+the slides sketch, exercises the slides mark optional, and the technical
+conditions the slides suppress. Where a result appears in both, the numbering of
+the reference volume is given so that the two can be read together.
+
+The third consists of the mathematical texts that carry each topic beyond
+what a review course can reach:
+\textcite{rudin1976principles} and \textcite{amann2005analysisI,%
+amann2008analysisII,amann2009analysisIII} for real analysis;
+\textcite{axler2024linear} for linear algebra;
+\textcite{boyd2004convex} and \textcite{rockafellar1970convex} for convexity and
+optimisation; \textcite{legall2022measure} and \textcite{legall2016brownian} for
+measure-theoretic probability; \textcite{corbae2009introduction} and
+\textcite{ok2007real} for analysis written with economic applications in view;
+and \textcite{ljungqvist2018recursive} and \textcite{stokey1989recursive} for
+recursive methods. Each is cited, with the relevant chapter or section, at the
+points where its content is used. \textcite{legall2016brownian} is listed
+because it is the natural continuation for readers who go on to
+continuous-time finance; nothing in this volume requires stochastic calculus,
+and it is therefore not cited again.
+
+\chapter*{How to Use These Notes}
+\addcontentsline{toc}{chapter}{How to Use These Notes}
+\markboth{How to Use These Notes}{How to Use These Notes}
+
+\section*{Order of reading}
+
+The chapters are ordered by logical dependence, not by the order in which the
+four-day course presents them. The course opens with probability because Bayes'
+rule is immediately useful; but the sharpest statement about conditional
+expectation --- that it is the orthogonal projection of a square-integrable
+random variable onto the space of functions of the conditioning variable --- needs
+completeness, convexity, and a projection theorem. Those are developed in
+Chapters~\ref{ch:completeness} and~\ref{ch:convex}, so probability appears here as
+\autoref{ch:probability}. The dependence structure is as follows.
+
+\begin{itemize}
+	\item \textbf{Foundations.} \autoref{ch:sets} (sets, relations, logic, the real
+	      number system) and \autoref{ch:linear} (vector spaces, linear maps,
+	      matrices, spectra) presuppose nothing.
+	\item \textbf{Analysis.} \autoref{ch:metric} (inner products, norms, metrics)
+	      requires \autoref{ch:linear}. \autoref{ch:topology} (open and closed sets,
+	      sequences, compactness) requires \autoref{ch:metric}.
+	      \autoref{ch:continuity} (continuity, semicontinuity, the Weierstrass
+	      theorem) requires \autoref{ch:topology}. \autoref{ch:completeness}
+	      (completeness, the contraction mapping theorem, Blackwell's conditions)
+	      requires \autoref{ch:continuity}.
+	\item \textbf{Calculus.} \autoref{ch:calculus1} (one variable) requires only
+	      \autoref{ch:sets} and the limit notions of \autoref{ch:topology}.
+	      \autoref{ch:calculusn} (several variables, the implicit function theorem)
+	      requires \autoref{ch:calculus1}, \autoref{ch:linear} and, for the proof of
+	      the implicit function theorem, \autoref{ch:completeness}.
+	      \autoref{ch:integration} (integration) requires \autoref{ch:calculus1}.
+	\item \textbf{Convexity and optimisation.} \autoref{ch:convex} (convex sets and
+	      functions, separation) requires \autoref{ch:topology} and
+	      \autoref{ch:calculusn}. \autoref{ch:projection} (projection, orthogonality,
+	      least squares) requires \autoref{ch:completeness} and \autoref{ch:convex}.
+	      \autoref{ch:optimization} (Lagrange and Kuhn--Tucker) requires
+	      \autoref{ch:convex} and \autoref{ch:calculusn}. \autoref{ch:maximum}
+	      (correspondences, the maximum theorem, fixed points) requires
+	      \autoref{ch:continuity} and \autoref{ch:convex}.
+	\item \textbf{Probability and dynamics.} \autoref{ch:probability} requires
+	      \autoref{ch:integration} and \autoref{ch:projection}.
+	      \autoref{ch:dynamic} (discrete-time dynamic programming) requires
+	      \autoref{ch:completeness}, \autoref{ch:optimization}, \autoref{ch:maximum},
+	      and, for the stochastic case, \autoref{ch:probability}.
+	      \autoref{ch:continuoustime} (continuous-time optimisation) requires
+	      \autoref{ch:calculusn} and \autoref{ch:dynamic}.
+\end{itemize}
+
+A reader following the four-day course can read
+\autoref{ch:probability}, then Chapters~\ref{ch:calculus1},
+\ref{ch:calculusn} and~\ref{ch:integration}, then \autoref{ch:optimization},
+then Chapters~\ref{ch:metric}--\ref{ch:completeness}, then
+\autoref{ch:dynamic}, consulting earlier chapters as the cross-references
+demand.
+
+\section*{Conventions used throughout}
+
+Definitions are boxed in green, formal statements in blue, and remarks and
+examples are set plainly. A statement labelled \textbf{Assumption} is a standing
+hypothesis that remains in force until it is explicitly withdrawn; a statement
+labelled \textbf{Theorem}, \textbf{Proposition}, \textbf{Lemma}, or
+\textbf{Corollary} carries all of its hypotheses within it and depends on no
+standing assumption except those stated in its own text or in an assumption it
+cites by number.
+
+Every result is numbered within its section, so that Theorem~7.3.2 is the second
+numbered statement of Section~7.3. Cross-references are hyperlinked. The two
+indices at the end of the volume list, respectively, defined terms and named
+results, and the symbols with the page on which each is introduced.
+
+\chapter*{Mathematical Prerequisites}
+\addcontentsline{toc}{chapter}{Mathematical Prerequisites}
+\markboth{Mathematical Prerequisites}{Mathematical Prerequisites}
+
+The volume is self-contained in the sense that every object it uses is defined
+before it is used. It is not self-contained in the sense of assuming no prior
+exposure: a reader meeting the derivative or the determinant for the first time
+here will find the treatment too fast. What is assumed is the content of a solid
+undergraduate program in mathematics for economics, namely
+
+\begin{enumerate}[(i)]
+	\item elementary set notation and the manipulation of quantifiers;
+	\item single-variable differential and integral calculus at the computational
+	      level --- differentiating and integrating elementary functions, and the
+	      statement of the fundamental theorem of calculus;
+	\item matrix algebra: multiplication, inversion, determinants, and the solution
+	      of linear systems;
+	\item elementary probability: random variables, expectation, variance, and the
+	      common families of distributions.
+\end{enumerate}
+
+Each of these is revisited from a higher standpoint rather than assumed silently.
+\autoref{ch:sets} restates set theory in the language of relations and mappings
+and constructs the real numbers axiomatically; \autoref{ch:linear} replaces
+matrix algebra by the theory of linear maps between vector spaces, recovering
+matrices as coordinate representations; \autoref{ch:calculus1} rebuilds the
+derivative as a local linear approximation; and \autoref{ch:probability} builds
+probability on a measure space. A reader who is comfortable with (i)--(iv) can
+read the corresponding chapters quickly, but should not skip them: the higher
+standpoint is what the later chapters use.
+
+No prior exposure to metric-space topology, convex analysis, measure theory, or
+dynamic programming is assumed.
+
+\chapter*{Notation and Conventions}
+\addcontentsline{toc}{chapter}{Notation and Conventions}
+\markboth{Notation and Conventions}{Notation and Conventions}
+
+The notation follows the Gerzensee course materials wherever they fix a
+convention, and standard mathematical usage elsewhere. Conflicts between sources
+have been resolved in favour of the version that makes hypotheses most visible;
+where a competing convention is common in economics, it is noted at the point of
+first use.
+
+\section*{Sets and numbers}
+
+\begin{center}
+	\renewcommand{\arraystretch}{1.25}
+	\begin{tabular}{@{}ll@{}}
+		\toprule
+		Symbol                                       & Meaning                                                        \\
+		\midrule
+		$\N$, $\Z$, $\Q$, $\R$, $\C$                 & natural numbers (excluding $0$), integers, rationals, reals,
+		complex numbers                                                                                               \\
+		$\N_0$                                       & $\N\cup\{0\}$                                                  \\
+		$\R_+$, $\R_{++}$                            & $[0,\infty)$ and $(0,\infty)$                                  \\
+		$\overline{\R}$                              & extended real line $\R\cup\{-\infty,+\infty\}$                 \\
+		$\R^n$                                       & $n$-fold Cartesian product of $\R$; elements are column vectors \\
+		$\R^n_+$, $\R^n_{++}$                        & vectors with all coordinates $\geq 0$, respectively $>0$        \\
+		$\comp{A}$, $A\setminus B$                   & complement of $A$, set difference                              \\
+		$\pow{X}$                                    & power set of $X$                                               \\
+		$\Int A$, $\closure{A}$, $\partial A$        & interior, closure, boundary of $A$                             \\
+		$\relint A$, $\conv A$, $\aff A$             & relative interior, convex hull, affine hull of $A$             \\
+		$\one_A$                                     & indicator function of the set $A$                              \\
+		$\eqdef$                                     & equality that defines the left-hand side                       \\
+		\bottomrule
+	\end{tabular}
+\end{center}
+
+\section*{Vectors, matrices and maps}
+
+Vectors in $\R^n$ are columns; $x^{\transp}$ denotes the transpose, so that
+$x^{\transp}y=\ip{x}{y}=\sum_{i=1}^n x_iy_i$. Matrices are written $A$, $B$,
+$X$, with $A^{\transp}$ the transpose, $A^{-1}$ the inverse when it exists,
+$\rank A$ the rank, $\tr A$ the trace, $\det A$ the determinant, $\Ker A$ the
+kernel and $\Image A$ the image. The $i$-th standard basis vector of $\R^n$ is
+$e^i$. For a matrix $A$, the notation $A\succeq 0$ ($A\succ 0$) means that $A$
+is symmetric positive semidefinite (positive definite).
+
+For $f\colon A\to B$ the notation $f(S)$ denotes the image of $S\subseteq A$ and
+$f^{-1}(T)$ the preimage of $T\subseteq B$; $f^{-1}$ is used for the inverse map
+only where $f$ is stated to be a bijection. A correspondence, that is a
+set-valued map, is written $\Gamma\colon A\rightrightarrows B$ and its graph is
+$\gph\Gamma$.
+
+Derivatives use $f'(x)$ in one variable, $\nabla f(x)\in\R^n$ for the gradient of
+a real-valued $f$ on $\R^n$, $Df(x)$ for the $m\times n$ Jacobian matrix of
+$f\colon\R^n\to\R^m$, and $\Hess f(x)$ for the $n\times n$ Hessian. The gradient
+is a column vector and $Df(x)=\nabla f(x)^{\transp}$ when $m=1$.
+
+\section*{Analysis}
+
+A metric space is a pair $(X,d)$ and a normed space a pair $(X,\norm{\cdot})$;
+the pair is abbreviated to $X$ when the metric or norm is clear. Open balls are
+$\ball{\varepsilon}{x}=\{y\in X: d(x,y)<\varepsilon\}$. Sequences are
+$(x_n)_{n\in\N}$ and subsequences $(x_{n_k})_{k\in\N}$. The spaces of continuous
+and of bounded functions from $X$ to $Y$ are $\Cspace{X}{Y}$ and
+$\Bspace{X}{Y}$; both carry the supremum norm
+$\norm{f}_\infty=\sup_{x\in X}\abs{f(x)}$ unless stated otherwise.
+
+\section*{Optimisation}
+
+A constrained problem is written
+\[
+	\max_{x\in\R^m} f(x)\quad \st\quad g_j(x)\geq 0,\ j=1,\dots,n,
+\]
+with the constraints in the $\geq 0$ orientation used throughout the Gerzensee
+course \autocite[slide 3]{fukuda2026optimization}. The feasible set is $D$, the
+Lagrangian is $\Lag$, and multipliers are $y=(y_1,\dots,y_n)\in\R^n_+$. Writing
+constraints as $g_j\geq0$ rather than $g_j\leq0$ fixes the sign of the multiplier
+at a maximum to be non-negative, which is what makes the shadow-price reading
+correct without a case distinction; the opposite convention, common in the
+optimisation literature, is noted in \autoref{ch:optimization}.
+
+\section*{Probability}
+
+A probability space is $(\Omega,\mathcal{F},\Prob)$, random variables are
+$X,Y,Z$, and realisations are $x,y,z$. Expectation, variance and covariance are
+$\E$, $\Var$ and $\Cov$; $X\indep Y$ denotes independence. Conditional
+expectation given an event $H$ is $\E[X\mid H]$ and given a random variable $Y$
+is $\E[X\mid Y]$, the latter being a random variable, that is, a function of $Y$.
+Precision is $\tau=1/\sigma^2$, following the treatment of normal-normal updating
+in \autocite[slides 27--28]{fukuda2026probability}.
+
+\section*{Dynamics}
+
+Time is $t\in\N_0$ in discrete time and $t\in[0,\infty)$ in continuous time.
+State variables are $x$ and controls $u$; the discount factor is
+$\beta\in(0,1)$; the transition is $x'=g(x,u)$, with a prime denoting the
+next period, as in \autocite[slide 8]{fukuda2026dynamic}. The value function is
+$V$, the policy function is $\policy$, and the Bellman operator is $T$.
